@@ -1,2 +1,4 @@
-cd /home/zwh/tilelang-tileir-ascend
+(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend/3rdparty/tvm/build# cd /home/zwh/tilelang-tileir-ascend
 grep -n "create_symlink\|DISABLE_TVM_SPLIT_LIBS" 3rdparty/tvm/CMakeLists.txt
+567:    COMMAND ${CMAKE_COMMAND} -E create_symlink libtvm.so "${CMAKE_BINARY_DIR}/lib/libtvm_runtime.so"
+568:    COMMAND ${CMAKE_COMMAND} -E create_symlink libtvm.so "${CMAKE_BINARY_DIR}/lib/libtvm_compiler.so"
