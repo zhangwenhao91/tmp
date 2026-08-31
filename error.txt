@@ -1,9 +1,17 @@
-(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend# cd "$REPO/3rdparty/tvm"
-(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend/3rdparty/tvm# mkdir -p build && cd build
-(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend/3rdparty/tvm/build# cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_SHARED_LINKER_FLAGS="-pthread"
-ninja -j12
-CMake Error: CMake was unable to find a build program corresponding to "Ninja".  CMAKE_MAKE_PROGRAM is not set.  You probably need to select a different build tool.
-CMake Error: CMAKE_C_COMPILER not set, after EnableLanguage
-CMake Error: CMAKE_CXX_COMPILER not set, after EnableLanguage
--- Configuring incomplete, errors occurred!
-bash: ninja: command not found
+(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend/3rdparty/tvm/build# apt-get update
+Reading package lists... Done
+E: Could not get lock /var/lib/apt/lists/lock. It is held by process 485 (apt-get)
+N: Be aware that removing the lock file is not a solution and may break your system.
+E: Unable to lock directory /var/lib/apt/lists/
+N: Repository 'Debian bookworm' changed its 'non-free component' value from 'non-free' to 'non-free non-free-firmware'
+N: More information about this can be found online in the Release notes at: https://www.debian.org/releases/bookworm/amd64/release-notes/ch-information.html#non-free-split
+(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend/3rdparty/tvm/build# cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+NAME="Debian GNU/Linux"
+VERSION_ID="12"
+VERSION="12 (bookworm)"
+VERSION_CODENAME=bookworm
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
