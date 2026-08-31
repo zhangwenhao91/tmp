@@ -1,6 +1,9 @@
-(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend# ls -la 3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/
-total 16
-drwxr-xr-x  4 root root 4096 Aug 31 11:45 .
-drwxr-xr-x 15 root root 4096 Aug 31 11:45 ..
-drwxr-xr-x  9 root root 4096 Aug 31 11:45 dlpack
-drwxr-xr-x  3 root root 4096 Aug 31 11:45 libbacktrace
+(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend# cd "$REPO/3rdparty/tvm"
+(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend/3rdparty/tvm# mkdir -p build && cd build
+(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend/3rdparty/tvm/build# cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_SHARED_LINKER_FLAGS="-pthread"
+ninja -j12
+CMake Error: CMake was unable to find a build program corresponding to "Ninja".  CMAKE_MAKE_PROGRAM is not set.  You probably need to select a different build tool.
+CMake Error: CMAKE_C_COMPILER not set, after EnableLanguage
+CMake Error: CMAKE_CXX_COMPILER not set, after EnableLanguage
+-- Configuring incomplete, errors occurred!
+bash: ninja: command not found
