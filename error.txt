@@ -1,15 +1,3 @@
-(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend/3rdparty/tvm/build# sleep 60
-tail -5 /tmp/tvm_build.log
-ps -p 1338 -o pid,stat
-                                                                               
-Broadcast message from root@localhost.localdomain (pts/60) (Mon Aug 31 23:13:20
-                                                                               
-磁盘空间满了，麻烦清理一下/home个人目录
-                                                                               
-[3]   Done                    nohup make -j12 > /tmp/tvm_build.log 2>&1
-[100%] Built target tvm_objs
-[100%] Linking CXX shared library lib/libtvm_compiler.so
-[100%] Linking CXX shared library lib/libtvm.so
-[100%] Built target tvm_compiler
-[100%] Built target tvm
-    PID STAT
+df -h /
+du -sh /home/* 2>/dev/null | sort -h
+du -sh /home/zwh/* 2>/dev/null | sort -h
