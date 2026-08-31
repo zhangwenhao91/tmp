@@ -1,2 +1,6 @@
-(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend# git submodule status --recursive 3rdparty/tvm/3rdparty/tvm-ffi
-error: pathspec '3rdparty/tvm/3rdparty/tvm-ffi' did not match any file(s) known to git
+(.venv) root@localhost:/home/zwh/tilelang-tileir-ascend# ls -la 3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/
+total 16
+drwxr-xr-x  4 root root 4096 Aug 31 11:45 .
+drwxr-xr-x 15 root root 4096 Aug 31 11:45 ..
+drwxr-xr-x  9 root root 4096 Aug 31 11:45 dlpack
+drwxr-xr-x  3 root root 4096 Aug 31 11:45 libbacktrace
