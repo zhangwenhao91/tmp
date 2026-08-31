@@ -1,0 +1,16 @@
+# step 0
+source /data/setenv.bash
+# step 1
+tile-opt --convert-tilelang-to-npu xxx_tilelang.mlir -o xxx.mlir  
+# step 2
+tile-opt --npu-split-dataflow --npu-plan-memory --npu-split-mix-kernel --npu-sync-pipeline xxx.mlir -o xxx_npu.mlir 
+# step 3
+tile-opt --cce-pipeline="target=dav-351x" xxx_npu.mlir &> xxx_cce.mlir 
+# step 4
+tile-translate --cce-to-backend xxx_cce.mlir -o xxx_kernel.ll
+# step 5
+ccec --cce-aicore-arch=dav-c310-cube --cce-aicore-only -cce-enable-mix -O2 -cce-bitcode-is-aicore -c -v xxx_kernel.ll -o xxx_kernel.o
+# step 6
+export KERNEL_PATH=xxx_kernel.o
+# step 7
+python xxx.py
