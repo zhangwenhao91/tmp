@@ -1,16 +1,4 @@
-root@localhost:/home/zwh# REPO=/home/zwh/tilelang-tileir-ascend 
-root@localhost:/home/zwh# cd "$REPO"
-root@localhost:/home/zwh/tilelang-tileir-ascend# git submodule sync --recursive
-git submodule update --init --recursive
-Synchronizing submodule url for '3rdparty/composable_kernel'
-Synchronizing submodule url for '3rdparty/cutlass'
-Synchronizing submodule url for '3rdparty/tvm'
-Synchronizing submodule url for '3rdparty/tvm/3rdparty/OpenCL-Headers'
-Synchronizing submodule url for '3rdparty/tvm/3rdparty/cutlass'
-Synchronizing submodule url for '3rdparty/tvm/3rdparty/cutlass_fpA_intB_gemm'
-Synchronizing submodule url for '3rdparty/tvm/3rdparty/cutlass_fpA_intB_gemm/cutlass'
-Synchronizing submodule url for '3rdparty/tvm/3rdparty/libflash_attn'
-Synchronizing submodule url for '3rdparty/tvm/3rdparty/libflash_attn/cutlass'
-Synchronizing submodule url for '3rdparty/tvm/3rdparty/tvm-ffi'
-Synchronizing submodule url for '3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/dlpack'
-Synchronizing submodule url for '3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/libbacktrace'
+root@localhost:/home/zwh/tilelang-tileir-ascend# python -m venv .venv
+source .venv/bin/activate
+python --version
+Python 3.11.0
