@@ -2,10 +2,8 @@ import os
 import tilelang
 import tilelang.language as T
 
-# out = reduce_sum(A, dim=1)
-# A [M, K] -> OUT [M]
-def reduce_sum(M, K, VL=64):
-    assert K % VL == 0, f"K must be a multiple of VL ({VL}), got K={K}"
+# out = reduce_sum(A, dim=1)，纯循环逐元素累加（不使用 vreduce_sum）
+def reduce_sum(M, K):
     num_blocks = 1
     dtype = "float32"
 
@@ -22,15 +20,13 @@ def reduce_sum(M, K, VL=64):
             with T.SimdVF():
                 for r in range(0, M):
                     acc = T.alloc_frag((1,), dtype)
-                    T.fill(acc, 0.0)
+                    # 用首元素初始化 acc，避免 linalg.fill（OpenTileAS 不处理）
+                    T.copy(a_shared[r, 0:1], acc)
 
-                    for i in range(0, K // VL):
-                        a_frag = T.alloc_frag((VL,), dtype)
-                        partial = T.alloc_frag((1,), dtype)
-
-                        T.copy(a_shared[r, i * VL : (i + 1) * VL], a_frag)
-                        T.vreduce_sum(a_frag, partial)
-                        T.vadd(acc, partial, acc)
+                    for k in range(1, K):
+                        elem = T.alloc_frag((1,), dtype)
+                        T.copy(a_shared[r, k : k + 1], elem)
+                        T.vadd(acc, elem, acc)
 
                     T.copy(acc, out_shared[r])
 
@@ -46,7 +42,7 @@ if __name__ == "__main__":
     artifact = tilelang.lower(program, target="tile")
     mlir_str = artifact.kernel_source
 
-    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reduce_sum.mlir")
+    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reduce_sum_loop.mlir")
     with open(out_path, "w") as f:
         f.write(mlir_str)
     print(f"mlir saved to: {out_path}")
