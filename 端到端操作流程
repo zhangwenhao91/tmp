@@ -1,5 +1,9 @@
 # step 0
 source /data/setenv.bash
+which ccec
+export PATH=/home/zwh/OpenTileAS/build/bin:$PATH
+which tile-opt
+which tile-translate
 # step 1
 tile-opt --convert-tilelang-to-npu xxx_tilelang.mlir -o xxx.mlir  
 # step 2
