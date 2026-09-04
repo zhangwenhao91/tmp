@@ -1,27 +1,21 @@
-看出来了——服务器上装的 mlir-python-bindings 是 `0.0.1` 这个版本,这是个冒牌空壳包(大概率是之前某次 pip install -r requirements.txt 时没带 --find-links,从阿里云 PyPI 镜像拉到的占位包,里面根本没有 mlir 模块)。真正的包在 https://llvm.github.io/eudsl 上,版本是日期格式(如本机的 20260830+45c256b55)。
-
-刚才 pip 说 "already satisfied" 就是因为 0.0.1 已装在 site-packages,无版本约束时 pip 不会再去别的源找新版。
-
-执行(先卸掉假包,再固定版本装真包):
-
-pip uninstall -y mlir-python-bindings
+root@localhost:/home/zwh/tmp# pip uninstall -y mlir-python-bindings
 
 pip install "mlir-python-bindings==20260830+45c256b55" \
     --find-links https://llvm.github.io/eudsl
+Found existing installation: mlir-python-bindings 0.0.1
+Uninstalling mlir-python-bindings-0.0.1:
+  Successfully uninstalled mlir-python-bindings-0.0.1
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
+Looking in links: https://llvm.github.io/eudsl
+WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))': /eudsl
+WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))': /eudsl
+WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))': /eudsl
+WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))': /eudsl
+WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))': /eudsl
+Could not fetch URL https://llvm.github.io/eudsl: There was a problem confirming the ssl certificate: HTTPSConnectionPool(host='llvm.github.io', port=443): Max retries exceeded with url: /eudsl (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))) - skipping
+ERROR: Could not find a version that satisfies the requirement mlir-python-bindings==20260830+45c256b55 (from versions: 0.0.1)
 
-验证装到的是真包:
-
-pip show mlir-python-bindings | head -2
-python -c "import mlir; import mlir.dialects._ods_common; print('mlir ok')"
-
-看到版本是 20260830+45c256b55 而不是 0.0.1,且打印出 mlir ok,再跑:
-
-cd /home/zwh/tmp && python reduce_sum.py
-
-如果固定版本号在你服务器上找不到(理论上应该能找到,这是 eudsl 的 nightly 轮子),就退而求其次:
-
-pip install mlir-python-bindings --find-links https://llvm.github.io/eudsl --no-index
-
---no-index 强制只从 eudsl 找,不会再碰到 PyPI 那个 0.0.1 占位包。
-
-顺带提醒:如果后续又遇到奇奇怪怪的 ModuleNotFoundError 或行为异常,先怀疑同一类问题——当初装依赖时从普通 PyPI 装到了占位包或错误版本。缺什么依赖就 pip install -r /home/zwh/tilelang-tileir-ascend/requirements.txt --find-links https://llvm.github.io/eudsl 一次补齐(注意加 --no-deps 防止动 torch)。装完把 python reduce_sum.py 的结果贴我。
+[notice] A new release of pip is available: 25.2 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+ERROR: No matching distribution found for mlir-python-bindings==20260830+45c256b55
