@@ -1,5 +1,10 @@
-root@localhost:/home/zwh/tmp# tile-opt --convert-tilelang-to-npu reduce_max.mlir -o reduce_max_v2.mlir
-reduce_max.mlir:67:11: error: 'npu.max' op rhs must match the destination shape or be a row-broadcast source
-          linalg.generic {indexing_maps = [#map, #map, #map], iterator_types = []} ins(%reinterpret_cast_22, %reinterpret_cast_23 : memref<f32, strided<[]>, 2>, memref<f32, strided<[]>, 2>) outs(%reinterpret_cast_24 : memref<f32, strided<[]>, 2>) {
-          ^
-reduce_max.mlir:67:11: note: see current operation: %24 = "npu.max"(%16, %23) : (vector<f32>, vector<1xf32>) -> vector<f32>
+root@localhost:/home/zwh/tmp# tile-opt --cce-pipeline="target=dav-351x" reduce_max_npu.mlir &> reduce_max_cce.mlir
+root@localhost:/home/zwh/tmp# cat reduce_max_cce.mlir 
+reduce_max_npu.mlir:26:14: error: cannot compute vector load offset
+        %4 = npu.vload %reinterpret_cast_3 {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #npu.address_space<ub>>) -> vector<1xf32>
+             ^
+reduce_max_npu.mlir:26:14: note: see current operation: %21 = "npu.vload"(%20) {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #cce.address_space<ub>>) -> vector<1xf32>
+reduce_max_npu.mlir:26:14: error: NPU-to-CCE vector lowering is not implemented
+        %4 = npu.vload %reinterpret_cast_3 {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #npu.address_space<ub>>) -> vector<1xf32>
+             ^
+reduce_max_npu.mlir:26:14: note: see current operation: %21 = "npu.vload"(%20) {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #cce.address_space<ub>>) -> vector<1xf32>
