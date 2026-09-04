@@ -1,13 +1,23 @@
-先试最简修正——把 github.com 也加进 trusted-host:
-
-pip install "mlir-python-bindings==20260830+45c256b55" \
+root@localhost:/home/zwh/tmp# curl -sk https://llvm.github.io/eudsl/ | grep -oE 'mlir_python_bindings[^"<]*\.whl' | grep -E 'cp311' | sort -u | tail -5
+bash: curl: command not found
+root@localhost:/home/zwh/tmp# pip install "mlir-python-bindings==20260830+45c256b55" \
     --find-links https://llvm.github.io/eudsl \
     --trusted-host llvm.github.io \
     --trusted-host github.com
+Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
+Looking in links: https://llvm.github.io/eudsl
+Collecting mlir-python-bindings==20260830+45c256b55
+  WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))': /github-production-release-asset/885192468/3af59afa-5adf-4e09-ba36-3d51ff1dce78?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-09-04T08%3A10%3A12Z&rscd=attachment%3B+filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-09-04T07%3A09%3A36Z&ske=2026-09-04T08%3A10%3A12Z&sks=b&skv=2018-11-09&sig=YtHPbL4ZXIZw31JpLUwkmwMB7ViKmveKgn%2FjfTjddBs%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4ODUwODYzMCwibmJmIjoxNzg4NTA2ODMwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.yr_aeVs3Frp_eWRi-gifSfON7tCjMc5UiOARBgk33ek&response-content-disposition=attachment%3B%20filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&response-content-type=application%2Foctet-stream
+  WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))': /github-production-release-asset/885192468/3af59afa-5adf-4e09-ba36-3d51ff1dce78?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-09-04T08%3A10%3A12Z&rscd=attachment%3B+filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-09-04T07%3A09%3A36Z&ske=2026-09-04T08%3A10%3A12Z&sks=b&skv=2018-11-09&sig=YtHPbL4ZXIZw31JpLUwkmwMB7ViKmveKgn%2FjfTjddBs%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4ODUwODYzMCwibmJmIjoxNzg4NTA2ODMwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.yr_aeVs3Frp_eWRi-gifSfON7tCjMc5UiOARBgk33ek&response-content-disposition=attachment%3B%20filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&response-content-type=application%2Foctet-stream
+  WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))': /github-production-release-asset/885192468/3af59afa-5adf-4e09-ba36-3d51ff1dce78?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-09-04T08%3A10%3A12Z&rscd=attachment%3B+filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-09-04T07%3A09%3A36Z&ske=2026-09-04T08%3A10%3A12Z&sks=b&skv=2018-11-09&sig=YtHPbL4ZXIZw31JpLUwkmwMB7ViKmveKgn%2FjfTjddBs%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4ODUwODYzMCwibmJmIjoxNzg4NTA2ODMwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.yr_aeVs3Frp_eWRi-gifSfON7tCjMc5UiOARBgk33ek&response-content-disposition=attachment%3B%20filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&response-content-type=application%2Foctet-stream
+  WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))': /github-production-release-asset/885192468/3af59afa-5adf-4e09-ba36-3d51ff1dce78?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-09-04T08%3A10%3A12Z&rscd=attachment%3B+filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-09-04T07%3A09%3A36Z&ske=2026-09-04T08%3A10%3A12Z&sks=b&skv=2018-11-09&sig=YtHPbL4ZXIZw31JpLUwkmwMB7ViKmveKgn%2FjfTjddBs%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4ODUwODYzMCwibmJmIjoxNzg4NTA2ODMwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.yr_aeVs3Frp_eWRi-gifSfON7tCjMc5UiOARBgk33ek&response-content-disposition=attachment%3B%20filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&response-content-type=application%2Foctet-stream
+  WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)'))': /github-production-release-asset/885192468/3af59afa-5adf-4e09-ba36-3d51ff1dce78?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-09-04T08%3A10%3A12Z&rscd=attachment%3B+filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-09-04T07%3A09%3A36Z&ske=2026-09-04T08%3A10%3A12Z&sks=b&skv=2018-11-09&sig=YtHPbL4ZXIZw31JpLUwkmwMB7ViKmveKgn%2FjfTjddBs%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4ODUwODYzMCwibmJmIjoxNzg4NTA2ODMwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.yr_aeVs3Frp_eWRi-gifSfON7tCjMc5UiOARBgk33ek&response-content-disposition=attachment%3B%20filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&response-content-type=application%2Foctet-stream
+ERROR: Could not install packages due to an OSError: HTTPSConnectionPool(host='release-assets.githubusercontent.com', port=443): Max retries exceeded with url: /github-production-release-asset/885192468/3af59afa-5adf-4e09-ba36-3d51ff1dce78?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-09-04T08%3A10%3A12Z&rscd=attachment%3B+filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-09-04T07%3A09%3A36Z&ske=2026-09-04T08%3A10%3A12Z&sks=b&skv=2018-11-09&sig=YtHPbL4ZXIZw31JpLUwkmwMB7ViKmveKgn%2FjfTjddBs%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4ODUwODYzMCwibmJmIjoxNzg4NTA2ODMwLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.yr_aeVs3Frp_eWRi-gifSfON7tCjMc5UiOARBgk33ek&response-content-disposition=attachment%3B%20filename%3Dmlir_python_bindings-20260830%2B45c256b55-cp311-cp311-manylinux_2_34_x86_64.whl&response-content-type=application%2Foctet-stream (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:992)')))
 
-如果还报 SSL 错,就用 python 绕过证书验证直接下载 wheel(把下面整段粘贴执行):
 
-cat > /tmp/dl_mlir.py <<'EOF'
+[notice] A new release of pip is available: 25.2 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+root@localhost:/home/zwh/tmp# cat > /tmp/dl_mlir.py <<'EOF'
 import ssl, urllib.request
 ctx = ssl._create_unverified_context()
 url = ("https://github.com/llvm/eudsl/releases/download/mlir-python-bindings/"
@@ -18,15 +28,34 @@ print("downloaded", len(data), "bytes")
 EOF
 
 python /tmp/dl_mlir.py
-
-下载完成后本地安装并验证:
-
-pip install /tmp/mlir_python_bindings.whl
+downloaded 80318269 bytes
+root@localhost:/home/zwh/tmp# pip install /tmp/mlir_python_bindings.whl
 python -c "import mlir; import mlir.dialects._ods_common; print('mlir ok')"
 cd /home/zwh/tmp && python reduce_sum.py
 
-两个可能的后续坑,先给你预防针:
-- glibc 版本:这个 wheel 是 manylinux_2_34,要求 glibc ≥ 2.34。如果安装或 import 时报 GLIBC_2.34 not found,说明系统 glibc 太老,到时告诉我,我们找替代方案(比如让 pip 列出其它可用轮子)。
-- 代理:如果 urllib 下载也卡住,多半是环境代理只对 pip 生效,到时候把 echo $HTTPS_PROXY $HTTP_PROXY 的输出发我。
-
-跑完把结果贴来。
+[notice] A new release of pip is available: 25.2 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+ERROR: Invalid wheel filename (wrong number of parts): 'mlir_python_bindings'
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'mlir'
+Loading tilelang libs from dev root: /home/zwh/tilelang-tileir-ascend/build
+Traceback (most recent call last):
+  File "/home/zwh/tmp/reduce_sum.py", line 2, in <module>
+    import tilelang
+  File "/home/zwh/tilelang-tileir-ascend/tilelang/__init__.py", line 212, in <module>
+    from . import opentile as opentile  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zwh/tilelang-tileir-ascend/tilelang/opentile/__init__.py", line 3, in <module>
+    from . import codegen  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zwh/tilelang-tileir-ascend/tilelang/opentile/codegen.py", line 6, in <module>
+    from tilelangir.codegen import build_tilelang_ir, build_tilelang_ir_without_compile
+  File "/home/zwh/tilelang-tileir-ascend/tilelangir/__init__.py", line 5, in <module>
+    from . import _tilelang_ops_gen  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zwh/tilelang-tileir-ascend/tilelangir/_tilelang_ops_gen.py", line 4, in <module>
+    from mlir.dialects._ods_common import _cext as _ods_cext
+ModuleNotFoundError: No module named 'mlir'
+[ERROR] 2026-09-04-15:28:27 (PID:63451, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+root@localhost:/home/zwh/tmp# 
