@@ -1,51 +1,11 @@
-root@localhost:/home/zwh/tmp# clear
-root@localhost:/home/zwh/tmp# ls -la --time-style=full-iso /home/zwh/tilelang-tileir-ascend/3rdparty/tvm/build/lib/
-ls -la --time-style=full-iso /home/zwh/tilelang-tileir-ascend/build/lib/
-total 89124
-drwxr-xr-x 2 root root     4096 2026-08-31 15:13:56.226610679 +0000 .
-drwxr-xr-x 5 root root     4096 2026-08-31 15:07:41.268580772 +0000 ..
--rwxr-xr-x 1 root root 82239712 2026-08-31 15:13:56.155610673 +0000 libtvm.so
-lrwxrwxrwx 1 root root        9 2026-08-31 15:13:56.226610679 +0000 libtvm_compiler.so -> libtvm.so
--rwxr-xr-x 1 root root  2077576 2026-08-31 15:09:33.602589731 +0000 libtvm_ffi.so
--rw-r--r-- 1 root root  5028268 2026-08-31 15:09:33.936589758 +0000 libtvm_ffi_static.a
--rwxr-xr-x 1 root root  1892808 2026-08-31 15:09:53.075591285 +0000 libtvm_ffi_testing.so
-lrwxrwxrwx 1 root root        9 2026-08-31 15:13:56.214610678 +0000 libtvm_runtime.so -> libtvm.so
-total 146408
-drwxr-xr-x 2 root root     4096 2026-09-04 09:29:16.309046208 +0000 .
-drwxr-xr-x 6 root root     4096 2026-09-04 14:27:51.084475108 +0000 ..
--rwxr-xr-x 1 root root 13336512 2026-09-04 09:29:16.513046225 +0000 libtilelang.so
--rwxr-xr-x 1 root root 83996592 2026-09-04 09:29:16.275046206 +0000 libtvm_compiler.so
--rwxr-xr-x 1 root root  2077576 2026-09-04 09:28:46.338043818 +0000 libtvm_ffi.so
--rwxr-xr-x 1 root root  5160832 2026-09-04 09:28:47.366043900 +0000 libtvm_runtime.so
--rwxr-xr-x 1 root root 22597712 2026-08-31 10:28:31.000000000 +0000 libz3.so
--rwxr-xr-x 1 root root 22597712 2026-08-31 10:28:31.000000000 +0000 libz3.so.4.15
--rwxr-xr-x 1 root root   217184 2026-09-04 09:28:57.146044680 +0000 tilelang_cython_wrapper.abi3.so
-root@localhost:/home/zwh/tmp# cd /home/zwh/tilelang-tileir-ascend
-for f in build/lib/*.so; do
-  echo "=== $f ==="
-  readelf -d "$f" 2>/dev/null | grep -E "NEEDED.*libtvm|RPATH|RUNPATH"
-done
-=== build/lib/libtilelang.so ===
- 0x0000000000000001 (NEEDED)             Shared library: [libtvm_compiler.so]
- 0x0000000000000001 (NEEDED)             Shared library: [libtvm_runtime.so]
- 0x0000000000000001 (NEEDED)             Shared library: [libtvm_ffi.so]
- 0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN:/home/zwh/tilelang-tileir-ascend/build/lib::::]
-=== build/lib/libtvm_compiler.so ===
- 0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN:/usr/local/python3.11.0/lib/python3.11/site-packages/z3/lib:/home/zwh/tilelang-tileir-ascend/build/lib:]
- 0x0000000000000001 (NEEDED)             Shared library: [libtvm_runtime.so]
- 0x0000000000000001 (NEEDED)             Shared library: [libtvm_ffi.so]
-=== build/lib/libtvm_ffi.so ===
-=== build/lib/libtvm_runtime.so ===
- 0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN:/home/zwh/tilelang-tileir-ascend/build/lib::::]
- 0x0000000000000001 (NEEDED)             Shared library: [libtvm_ffi.so]
-=== build/lib/libz3.so ===
-=== build/lib/tilelang_cython_wrapper.abi3.so ===
-root@localhost:/home/zwh/tilelang-tileir-ascend# ls -la /usr/local/python3.11.0/lib/python3.11/site-packages/tilelang/lib/
-total 87280
-drwxr-xr-x 2 root root     4096 Sep  4 09:29 .
-drwxr-xr-x 3 root root     4096 Sep  4 09:29 ..
--rw-r--r-- 1 root root 12022808 Sep  4 09:29 libtilelang.so
--rw-r--r-- 1 root root 72662088 Sep  4 09:29 libtvm_compiler.so
--rw-r--r-- 1 root root  4481112 Sep  4 09:29 libtvm_runtime.so
--rw-r--r-- 1 root root   189664 Sep  4 09:29 tilelang_cython_wrapper.abi3.so
-root@localhost:/home/zwh/tilelang-tileir-ascend# 
+顶层库今天刚建好且 RUNPATH 自洽($ORIGIN),所以大概率移走残留即可,不需要重新编译:
+
+cd /home/zwh/tilelang-tileir-ascend
+mv 3rdparty/tvm/build /tmp/tvm-build-backup-$(date +%s)
+
+cd /home/zwh/tmp
+python reduce_sum.py
+
+两种结果:
+- 正常跑通 → 就是它。旧构建移走后,任何加载尝试要么消失、要么落到顶层 build/lib。
+- 报"找不到 libtvm.so / libtvm_compiler.so"之类的新错 → 说明确实有代码路径显式依赖 3rdparty/tvm/build ,把报错发我,我们顺着那条路径继续查(那时大概率需要清理该引用后重链)。
