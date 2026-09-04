@@ -1,20 +1,28 @@
-root@localhost:/home/zwh/tmp# python reduce_sum.py
-Loading tilelang libs from dev root: /home/zwh/tilelang-tileir-ascend/build
-Traceback (most recent call last):
-  File "../Objects/methodobject.c", line 553, in cfunction_call
-  File "/home/xjh/build_images/Python-3.11.0/Modules/_ctypes/callproc.c", line 1525, in py_dl_open
-  File "<unknown>", line 0, in dlopen
-  File "<unknown>", line 0, in _dl_catch_error
-  File "<unknown>", line 0, in _dl_catch_exception
-  File "<unknown>", line 0, in _dl_catch_exception
-  File "<unknown>", line 0, in _dl_catch_exception
-  File "<unknown>", line 0, in tvm::arith::__TVMFFIStaticInitFunc0()
-  File "src/ffi/function.cc", line 98, in void tvm::ffi::GlobalFunctionTable::Update(const TVMFFIMethodInfo*, bool)
-RuntimeError: Global Function `arith.CreateAnalyzer` is already registered, possible causes:
-- Two GlobalDef().def registrations for the same function 
-Please remove the duplicate registration.
-terminate called after throwing an instance of 'tvm::ffi::Error'
-  what():  Global Function `arith.CreateAnalyzer` is already registered, possible causes:
-- Two GlobalDef().def registrations for the same function 
-Please remove the duplicate registration.
-Aborted (core dumped)
+root@localhost:/home/zwh/tmp# pip list 2>/dev/null | grep -iE "tilelang|tvm"
+apache-tvm-ffi               0.1.11
+tilelang                     0.1.12+cpu.git1f426c81       /home/zwh/tilelang-tileir-ascend
+root@localhost:/home/zwh/tmp# pip show tilelang
+Name: tilelang
+Version: 0.1.12+cpu.git1f426c81
+Summary: A tile level programming language to generate high performance code.
+Home-page: 
+Author: TileLang Contributors, Tile-AI
+Author-email: 
+License-Expression: MIT
+Location: /usr/local/python3.11.0/lib/python3.11/site-packages
+Editable project location: /home/zwh/tilelang-tileir-ascend
+Requires: apache-tvm-ffi, cloudpickle, ml-dtypes, mlir-python-bindings, numpy, psutil, torch, torch-c-dlpack-ext, tqdm, typing-extensions, z3-solver
+Required-by: 
+root@localhost:/home/zwh/tmp# python -c "import sys; print('\n'.join(sys.path))"
+
+/data/pri/Ascend/9.2.0.B030/cann-9.2.0/python/site-packages
+/data/pri/Ascend/9.2.0.B030/cann-9.2.0/opp/built-in/op_impl/ai_core/tbe
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe
+/usr/local/python3.11.0/lib/python311.zip
+/usr/local/python3.11.0/lib/python3.11
+/usr/local/python3.11.0/lib/python3.11/lib-dynload
+/usr/local/python3.11.0/lib/python3.11/site-packages
+/home/zwh/tilelang-tileir-ascend
+/home/zwh
