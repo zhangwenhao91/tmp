@@ -1,15 +1,68 @@
-root@localhost:/home/zwh/tmp# tile-opt --cce-pipeline="target=dav-351x" reduce_max_npu.mlir &> reduce_max_cce.mlir
-root@localhost:/home/zwh/tmp# tile-translate --cce-to-backend reduce_max_cce.mlir -o reduce_max_kernel.ll
-reduce_max_cce.mlir:1:1: error: Dialect `reduce_max_npu' not found for custom op 'reduce_max_npu.mlir' 
-reduce_max_npu.mlir:26:14: error: cannot compute vector load offset
-^
-reduce_max_cce.mlir:1:1: note: Available dialects: acc, affine, amdgpu, amx, arith, arm_neon, arm_sme, arm_sve, async, bufferization, builtin, cce, cf, complex, dlti, emitc, func, gpu, hacc, index, irdl, linalg, llvm, math, memref, ml_program, mpi, npu, nvgpu, nvvm, omp, open_tile, pdl, pdl_interp, ptr, quant, rocdl, scf, shape, shard, smt, sparse_tensor, spirv, tensor, tosa, transform, ub, vector, wasmssa, x86vector, xegpu, xevm ; for more info on dialect registration see https://mlir.llvm.org/getting_started/Faq/#registered-loaded-dependent-whats-up-with-dialects-management
-root@localhost:/home/zwh/tmp# cat reduce_max_cce.mlir 
-reduce_max_npu.mlir:26:14: error: cannot compute vector load offset
-        %4 = npu.vload %reinterpret_cast_3 {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #npu.address_space<ub>>) -> vector<1xf32>
-             ^
-reduce_max_npu.mlir:26:14: note: see current operation: %21 = "npu.vload"(%20) {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #cce.address_space<ub>>) -> vector<1xf32>
-reduce_max_npu.mlir:26:14: error: NPU-to-CCE vector lowering is not implemented
-        %4 = npu.vload %reinterpret_cast_3 {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #npu.address_space<ub>>) -> vector<1xf32>
-             ^
-reduce_max_npu.mlir:26:14: note: see current operation: %21 = "npu.vload"(%20) {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #cce.address_space<ub>>) -> vector<1xf32>
+root@localhost:/home/zwh/tilelang-tileir-ascend/build# 
+root@localhost:/home/zwh/tilelang-tileir-ascend/build# ninja
+[0/2] Re-checking globbed directories...
+ninja: no work to do.
+root@localhost:/home/zwh/tilelang-tileir-ascend/build# cd ..
+root@localhost:/home/zwh/tilelang-tileir-ascend# cd ..
+root@localhost:/home/zwh# ll     
+total 703796
+drwxr-xr-x 12 root root      4096 Sep  3 20:37 OpenTileAS
+drwxr-xr-x  2 root root      4096 Aug 27 21:16 __pycache__
+drwx------  3 root root      4096 Sep  3 21:00 extra-info
+-rw-r--r--  1 root root      1510 Aug 28 17:59 mixCV.py
+-rw-r--r--  1 root root      7625 Aug 29 10:31 msub.mlir
+-rw-r--r--  1 root root      2200 Aug 29 17:48 msub.o
+-rw-r--r--  1 root root        51 Aug 29 10:35 msub_to_npu_v2.mlir
+-rw-r--r--  1 root root      4497 Aug 29 17:41 msub_v2.mlir
+-rw-r--r--  1 root root      5256 Aug 29 17:46 msub_v3.mlir
+-rw-r--r--  1 root root      4833 Aug 29 17:47 msub_v4.mlir
+-rw-r--r--  1 root root      5547 Aug 29 17:47 msub_v5.ll
+drwxr-xr-x  8 root root      4096 Aug 29 16:00 my-IR
+-rw-r--r--  1 root root      2680 Aug 27 20:51 phase5_compute_vexp.o
+-rw-r--r--  1 root root      1268 Aug 27 20:51 phase5_compute_vexp.py
+-rw-r--r--  1 root root      1293 Sep  1 10:40 phase5_reduce_sum.py
+-rw-r--r--  1 root root      2192 Aug 27 20:51 phase5_vsub.o
+-rw-r--r--  1 root root      1383 Aug 28 10:52 phase5_vsub.py
+-rw-r--r--  1 root root      4979 Sep  1 10:07 reduce_sum.mlir
+-rw-r--r--  1 root root      3414 Sep  3 20:59 reduce_sum_cce.mlir
+-rw-r--r--  1 root root      4100 Sep  3 20:59 reduce_sum_kernel.ll
+-rw-r--r--  1 root root      2216 Sep  3 21:00 reduce_sum_kernel.o
+-rw-r--r--  1 root root      3586 Sep  3 20:59 reduce_sum_npu.mlir
+-rw-r--r--  1 root root      2913 Sep  3 20:58 reduce_sum_v2.mlir
+-rw-r--r--  1 root root      1442 Aug 28 18:19 test.py
+-rw-r--r--  1 root root  48058860 Aug 28 18:47 tilelang-0.1.12+cpu.gitb5aa2e18-cp38-abi3-linux_x86_64.whl
+drwxr-xr-x 21 root root      4096 Sep  4 09:29 tilelang-tileir-ascend
+drwxr-xr-x  3 root root      4096 Sep  4 11:52 tmp
+-rw-r--r--  1 root root 433774938 Aug 27 21:01 triton_ascend-3.6.0.dev0+dev20260726001834-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+-rw-r--r--  1 root root 238645867 Aug 28 18:32 triton_opentile-3.6.0+git3c8359a2-cp311-cp311-linux_x86_64.whl
+-rw-r--r--  1 root root      5547 Aug 29 10:50 vadd.ll
+-rw-r--r--  1 root root      4497 Aug 29 10:44 vadd_to_npu_v2.mlir
+-rw-r--r--  1 root root      5256 Aug 29 10:48 vadd_v2_npu_end.mlir
+-rw-r--r--  1 root root      4833 Aug 29 10:49 vadd_v2_to_cce.mlir
+-rw-r--r--  1 root root       407 Aug 29 18:02 vexp_cce.mlir
+-rw-r--r--  1 root root      7555 Aug 29 17:56 vexp_npuir.mlir
+-rw-r--r--  1 root root      2200 Aug 28 10:34 vsub_for.o
+-rw-r--r--  1 root root      2200 Aug 29 12:05 x.o
+root@localhost:/home/zwh# python reduce_sum.py
+python: can't open file '/home/zwh/reduce_sum.py': [Errno 2] No such file or directory
+root@localhost:/home/zwh# cd tmp
+root@localhost:/home/zwh/tmp# python reduce_sum.py
+Loading tilelang libs from dev root: /home/zwh/tilelang-tileir-ascend/build
+Traceback (most recent call last):
+  File "../Objects/methodobject.c", line 553, in cfunction_call
+  File "/home/xjh/build_images/Python-3.11.0/Modules/_ctypes/callproc.c", line 1525, in py_dl_open
+  File "<unknown>", line 0, in dlopen
+  File "<unknown>", line 0, in _dl_catch_error
+  File "<unknown>", line 0, in _dl_catch_exception
+  File "<unknown>", line 0, in _dl_catch_exception
+  File "<unknown>", line 0, in _dl_catch_exception
+  File "<unknown>", line 0, in tvm::arith::__TVMFFIStaticInitFunc0()
+  File "src/ffi/function.cc", line 98, in void tvm::ffi::GlobalFunctionTable::Update(const TVMFFIMethodInfo*, bool)
+RuntimeError: Global Function `arith.CreateAnalyzer` is already registered, possible causes:
+- Two GlobalDef().def registrations for the same function 
+Please remove the duplicate registration.
+terminate called after throwing an instance of 'tvm::ffi::Error'
+  what():  Global Function `arith.CreateAnalyzer` is already registered, possible causes:
+- Two GlobalDef().def registrations for the same function 
+Please remove the duplicate registration.
+Aborted (core dumped)
