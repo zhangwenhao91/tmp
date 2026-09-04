@@ -1,48 +1,27 @@
-root@localhost:/home/zwh/tmp# pip install mlir-python-bindings --find-links https://llvm.github.io/eudsl
-Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
-Looking in links: https://llvm.github.io/eudsl
-Requirement already satisfied: mlir-python-bindings in /usr/local/python3.11.0/lib/python3.11/site-packages (0.0.1)
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+看出来了——服务器上装的 mlir-python-bindings 是 `0.0.1` 这个版本,这是个冒牌空壳包(大概率是之前某次 pip install -r requirements.txt 时没带 --find-links,从阿里云 PyPI 镜像拉到的占位包,里面根本没有 mlir 模块)。真正的包在 https://llvm.github.io/eudsl 上,版本是日期格式(如本机的 20260830+45c256b55)。
 
-[notice] A new release of pip is available: 25.2 -> 26.2.1
-[notice] To update, run: pip install --upgrade pip
-root@localhost:/home/zwh/tmp# python -c "import tilelang; print(tilelang.__file__)"
+刚才 pip 说 "already satisfied" 就是因为 0.0.1 已装在 site-packages,无版本约束时 pip 不会再去别的源找新版。
+
+执行(先卸掉假包,再固定版本装真包):
+
+pip uninstall -y mlir-python-bindings
+
+pip install "mlir-python-bindings==20260830+45c256b55" \
+    --find-links https://llvm.github.io/eudsl
+
+验证装到的是真包:
+
+pip show mlir-python-bindings | head -2
+python -c "import mlir; import mlir.dialects._ods_common; print('mlir ok')"
+
+看到版本是 20260830+45c256b55 而不是 0.0.1,且打印出 mlir ok,再跑:
+
 cd /home/zwh/tmp && python reduce_sum.py
-Loading tilelang libs from dev root: /home/zwh/tilelang-tileir-ascend/build
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-  File "/home/zwh/tilelang-tileir-ascend/tilelang/__init__.py", line 212, in <module>
-    from . import opentile as opentile  # noqa: F401
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/zwh/tilelang-tileir-ascend/tilelang/opentile/__init__.py", line 3, in <module>
-    from . import codegen  # noqa: F401
-    ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/zwh/tilelang-tileir-ascend/tilelang/opentile/codegen.py", line 6, in <module>
-    from tilelangir.codegen import build_tilelang_ir, build_tilelang_ir_without_compile
-  File "/home/zwh/tilelang-tileir-ascend/tilelangir/__init__.py", line 5, in <module>
-    from . import _tilelang_ops_gen  # noqa: F401
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/zwh/tilelang-tileir-ascend/tilelangir/_tilelang_ops_gen.py", line 4, in <module>
-    from mlir.dialects._ods_common import _cext as _ods_cext
-ModuleNotFoundError: No module named 'mlir'
-[ERROR] 2026-09-04-15:13:35 (PID:63294, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
-Loading tilelang libs from dev root: /home/zwh/tilelang-tileir-ascend/build
-Traceback (most recent call last):
-  File "/home/zwh/tmp/reduce_sum.py", line 2, in <module>
-    import tilelang
-  File "/home/zwh/tilelang-tileir-ascend/tilelang/__init__.py", line 212, in <module>
-    from . import opentile as opentile  # noqa: F401
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/zwh/tilelang-tileir-ascend/tilelang/opentile/__init__.py", line 3, in <module>
-    from . import codegen  # noqa: F401
-    ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/zwh/tilelang-tileir-ascend/tilelang/opentile/codegen.py", line 6, in <module>
-    from tilelangir.codegen import build_tilelang_ir, build_tilelang_ir_without_compile
-  File "/home/zwh/tilelang-tileir-ascend/tilelangir/__init__.py", line 5, in <module>
-    from . import _tilelang_ops_gen  # noqa: F401
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/zwh/tilelang-tileir-ascend/tilelangir/_tilelang_ops_gen.py", line 4, in <module>
-    from mlir.dialects._ods_common import _cext as _ods_cext
-ModuleNotFoundError: No module named 'mlir'
-[ERROR] 2026-09-04-15:13:41 (PID:63361, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
-root@localhost:/home/zwh/tmp# 
+
+如果固定版本号在你服务器上找不到(理论上应该能找到,这是 eudsl 的 nightly 轮子),就退而求其次:
+
+pip install mlir-python-bindings --find-links https://llvm.github.io/eudsl --no-index
+
+--no-index 强制只从 eudsl 找,不会再碰到 PyPI 那个 0.0.1 占位包。
+
+顺带提醒:如果后续又遇到奇奇怪怪的 ModuleNotFoundError 或行为异常,先怀疑同一类问题——当初装依赖时从普通 PyPI 装到了占位包或错误版本。缺什么依赖就 pip install -r /home/zwh/tilelang-tileir-ascend/requirements.txt --find-links https://llvm.github.io/eudsl 一次补齐(注意加 --no-deps 防止动 torch)。装完把 python reduce_sum.py 的结果贴我。
