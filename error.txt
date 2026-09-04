@@ -1,25 +1,107 @@
-
-1. site-packages 里有没有残留的 tilelang 包目录或独立 tvm:
-
-ls /usr/local/python3.11.0/lib/python3.11/site-packages/ | grep -iE "tilelang|^tvm|tvm_ffi"
+root@localhost:/home/zwh/tmp# ls /usr/local/python3.11.0/lib/python3.11/site-packages/ | grep -iE "tilelang|^tvm|tvm_ffi"
 ls -la /usr/local/python3.11.0/lib/python3.11/site-packages/tilelang/ 2>/dev/null
-
-判读:editable 模式正常应只有 tilelang-*.dist-info、_editable_skbc_tilelang.pth、_editable_skbc_tilelang.py;如果出现 `tilelang/lib/*.so` 或 `tilelang/lib/libtvm_*.so`,那就是残留拷贝,删掉它。
-
-2. 动态库搜索路径里有没有多个含 tilelang/tvm 的目录(最容易踩的坑):
-
-echo "$LD_LIBRARY_PATH" | tr ':' '\n' | grep -iE "tilelang|tvm|ascend|cann"
-
-判读:如果同时出现 /home/zwh/tilelang-tileir-ascend/build/lib 和某个 site-packages / CANN 目录里也带 libtvm* 或 libtilelang* ,加载器就可能把两份不同文件都 dlopen 进来 → 重复注册。
-
-3. 直接抓运行时到底 dlopen 了哪些库(最实锤):
-
-cd /home/zwh/tmp && LD_DEBUG=libs python -c "import tilelang" 2>&1 | grep -iE "tilelang|libtvm" | head -60
-
-判读:abort 之前会打印两次 calling init / 两个不同路径的 libtvm_compiler.so(或 libtilelang.so),那两行路径就是冲突源。
-
-4. 顺手确认 PYTHONPATH 来源(sys.path 里有 `/home/zwh`,多半是环境脚本加的):
-
-echo "$PYTHONPATH" | tr ':' '\n'
-
-把这几条的输出发给我,尤其是第 2、3 条的路径列表,我就能告诉你删哪个、留哪个。我目前判断最可能的是:昇腾环境脚本(或历史遗留 export)把某个带 `libtvm*`/`libtilelang*` 的目录塞进了 `LD_LIBRARY_PATH`,而它和你源码树 build/lib 里那份是不同文件,于是被加载了两次。
+_editable_skbc_tilelang.pth
+_editable_skbc_tilelang.py
+apache_tvm_ffi-0.1.11.dist-info
+tilelang
+tilelang-0.1.12+cpu.git1f426c81.dist-info
+tvm_ffi
+total 16
+drwxr-xr-x 3 root root 4096 Sep  4 09:29 .
+drwxr-xr-x 1 root root 4096 Sep  4 09:29 ..
+drwxr-xr-x 2 root root 4096 Sep  4 09:29 lib
+root@localhost:/home/zwh/tmp# echo "$LD_LIBRARY_PATH" | tr ':' '\n' | grep -iE "tilelang|tvm|ascend|cann"
+/data/pri/Ascend/9.2.0.B030/cann-9.2.0/lib64
+/data/pri/Ascend/9.2.0.B030/cann-9.2.0/lib64/plugin/opskernel
+/data/pri/Ascend/9.2.0.B030/cann-9.2.0/lib64/plugin/nnengine
+/data/pri/Ascend/9.2.0.B030/cann-9.2.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64
+/usr/local/Ascend/driver/lib64
+/usr/local/Ascend/driver/lib64/common
+/usr/local/Ascend/driver/lib64/driver
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64
+/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64
+/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin
+/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64
+/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64
+/usr/local/Ascend/driver/lib64/common
+/usr/local/Ascend/driver/lib64/driver
+/usr/local/Ascend/driver/lib64
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
+root@localhost:/home/zwh/tmp# cd /home/zwh/tmp && LD_DEBUG=libs python -c "import tilelang" 2>&1 | grep -iE "tilelang|libtvm" | head -60
+Loading tilelang libs from dev root: /home/zwh/tilelang-tileir-ascend/build
+     63130:	calling init: /usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/libtvm_ffi.so
+     63130:	find library=libtvm_ffi_testing.so [0]; searching
+     63130:	  trying file=/data/pri/Ascend/9.2.0.B030/cann-9.2.0/lib64/libtvm_ffi_testing.so
+     63130:	  trying file=/data/pri/Ascend/9.2.0.B030/cann-9.2.0/lib64/plugin/opskernel/libtvm_ffi_testing.so
+     63130:	  trying file=/data/pri/Ascend/9.2.0.B030/cann-9.2.0/lib64/plugin/nnengine/libtvm_ffi_testing.so
+     63130:	  trying file=/data/pri/Ascend/9.2.0.B030/cann-9.2.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/driver/lib64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/driver/lib64/common/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/driver/lib64/driver/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/libtvm_ffi_testing.so
+     63130:	  trying file=glibc-hwcaps/x86-64-v4/libtvm_ffi_testing.so
+     63130:	  trying file=glibc-hwcaps/x86-64-v3/libtvm_ffi_testing.so
+     63130:	  trying file=glibc-hwcaps/x86-64-v2/libtvm_ffi_testing.so
+     63130:	  trying file=tls/x86_64/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=tls/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=tls/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=tls/libtvm_ffi_testing.so
+     63130:	  trying file=x86_64/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/glibc-hwcaps/x86-64-v4/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/glibc-hwcaps/x86-64-v3/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/glibc-hwcaps/x86-64-v2/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/tls/x86_64/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/tls/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/tls/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/tls/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/x86_64/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/x86_64/libtvm_ffi_testing.so
+     63130:	  trying file=/usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/libtvm_ffi_testing.so
+     63130:	calling init: /usr/local/python3.11.0/lib/python3.11/site-packages/tvm_ffi/lib/libtvm_ffi_testing.so
+     63130:	calling init: /home/zwh/tilelang-tileir-ascend/3rdparty/tvm/build/lib/libtvm.so
+     63130:	find library=libtvm_compiler.so [0]; searching
+     63130:	  trying file=/data/pri/Ascend/9.2.0.B030/cann-9.2.0/lib64/libtvm_compiler.so
+     63130:	  trying file=/data/pri/Ascend/9.2.0.B030/cann-9.2.0/lib64/plugin/opskernel/libtvm_compiler.so
+     63130:	  trying file=/data/pri/Ascend/9.2.0.B030/cann-9.2.0/lib64/plugin/nnengine/libtvm_compiler.so
+     63130:	  trying file=/data/pri/Ascend/9.2.0.B030/cann-9.2.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64/libtvm_compiler.so
+     63130:	  trying file=/usr/local/Ascend/driver/lib64/libtvm_compiler.so
+     63130:	  trying file=/usr/local/Ascend/driver/lib64/common/libtvm_compiler.so
+     63130:	  trying file=/usr/local/Ascend/driver/lib64/driver/libtvm_compiler.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64/libtvm_compiler.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/libtvm_compiler.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/libtvm_compiler.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin/libtvm_compiler.so
+     63130:	  trying file=/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64/libtvm_compiler.so
+root@localhost:/home/zwh/tmp# echo "$PYTHONPATH" | tr ':' '\n'
+/data/pri/Ascend/9.2.0.B030/cann-9.2.0/python/site-packages
+/data/pri/Ascend/9.2.0.B030/cann-9.2.0/opp/built-in/op_impl/ai_core/tbe
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
+root@localhost:/home/zwh/tmp# 
