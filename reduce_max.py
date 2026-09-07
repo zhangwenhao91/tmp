@@ -2,15 +2,16 @@ import os
 import tilelang
 import tilelang.language as T
 
-# out = reduce_max(A, dim=1)，使用 vreduce_max 函数实现
+# out = reduce_max(A, dim=1)：每行取最大值，输出 (M,)
 #
-# 说明：本版本去掉内层串行分块循环（原 for i in range(0, K // VL) 的
-# 2×64 分段 + 跨迭代 acc 累加），改为整行 (K) 一次 vreduce_max 归约，
-# 每行只产生一次 copy/reduce/max，无跨迭代 fragment 状态。
-def reduce_max(M, K, VL=128):
-    assert K % VL == 0, f"K must be a multiple of VL ({VL}), got K={K}"
+# 采用行块批量归约模式（与 tilelangir/test/test_DSA_codegen.py 一致）：
+#   一次把 BR 行 (BR, K) 载入 fragment，vreduce_max 沿最后一维归约出 (BR,)，
+#   再整块写回，避免逐行标量写回（1 元素 fragment -> 标量位置在
+#   convert-tilelang-to-npu / cce-pipeline 中不被支持）。
+def reduce_max(M, K, BR=32):
     num_blocks = 1
     dtype = "float32"
+    assert M % BR == 0, f"M must be a multiple of BR ({BR}), got M={M}"
 
     @T.prim_func
     def reduce_max_kernel(
@@ -23,19 +24,12 @@ def reduce_max(M, K, VL=128):
             T.copy(A, a_shared)
 
             with T.SimdVF():
-                for r in range(0, M):
-                    acc = T.alloc_frag((1,), dtype)
-                    # 用首元素初始化 acc
-                    T.copy(a_shared[r, 0:1], acc)
-
-                    # 整行一次归约：无内层循环
-                    a_frag = T.alloc_frag((K,), dtype)
-                    partial = T.alloc_frag((1,), dtype)
-                    T.copy(a_shared[r, 0:K], a_frag)
-                    T.vreduce_max(a_frag, partial)
-                    T.vmax(acc, partial, acc)
-
-                    T.copy(acc, out_shared[r])
+                for blk in range(0, M // BR):
+                    a_frag = T.alloc_frag((BR, K), dtype)
+                    row_max = T.alloc_frag((BR,), dtype)
+                    T.copy(a_shared[blk * BR : (blk + 1) * BR, 0:K], a_frag)
+                    T.vreduce_max(a_frag, row_max)
+                    T.copy(row_max, out_shared[blk * BR : (blk + 1) * BR])
 
             T.copy(out_shared, OUT)
 
@@ -44,13 +38,14 @@ def reduce_max(M, K, VL=128):
 
 if __name__ == "__main__":
     M, K = 32, 128
-    VL = K
-    program = reduce_max(M, K, VL)
+    program = reduce_max(M, K, BR=32)
 
     artifact = tilelang.lower(program, target="tile")
     mlir_str = artifact.kernel_source
 
-    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reduce_max.mlir")
+    out_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "reduce_max_tilelangir.mlir"
+    )
     with open(out_path, "w") as f:
         f.write(mlir_str)
     print(f"mlir saved to: {out_path}")
