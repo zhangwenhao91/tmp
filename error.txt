@@ -1,10 +1,17 @@
-root@localhost:/home/zwh/tmp# tile-opt --cce-pipeline="target=dav-351x" reduce_max_npu.mlir &> reduce_max_cce.mlir
-root@localhost:/home/zwh/tmp# cat reduce_max_cce.mlir 
-reduce_max_npu.mlir:26:14: error: cannot compute vector load offset
-        %4 = npu.vload %reinterpret_cast_3 {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #npu.address_space<ub>>) -> vector<1xf32>
-             ^
-reduce_max_npu.mlir:26:14: note: see current operation: %21 = "npu.vload"(%20) {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #cce.address_space<ub>>) -> vector<1xf32>
-reduce_max_npu.mlir:26:14: error: NPU-to-CCE vector lowering is not implemented
-        %4 = npu.vload %reinterpret_cast_3 {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #npu.address_space<ub>>) -> vector<1xf32>
-             ^
-reduce_max_npu.mlir:26:14: note: see current operation: %21 = "npu.vload"(%20) {tcore_type = #npu.tcore_type<VECTOR>} : (memref<f32, strided<[], offset: ?>, #cce.address_space<ub>>) -> vector<1xf32>
+root@localhost:/home/zwh/tmp/reduce_kernels/reduce_max# ccec --cce-aicore-arch=dav-c310-cube --cce-aicore-only -cce-enable-mix -O2 -cce-bitcode-is-aicore -c -v 05_reduce_max.ll -o reduce_max.o
+2025-08-19T14:26:35+08:00 clang version 15.0.5
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/12
+Selected GCC installation: /usr/lib/gcc/x86_64-linux-gnu/12
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ (in-process)
+ "/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/ccec_compiler/bin/bisheng" -cc1 -triple hiipu64-hisilicon-cce -fcce-is-aicore -cce-bitcode-is-aicore -cce-enable-mix -mllvm -enable-mix=true -fno-zero-initialized-in-bss -fno-use-cxa-atexit -mllvm -cce-aicore-disable-argmem-alias-check=true -mllvm -cce-aicore-basicaa-disjoint-addrspace=true -mllvm -cce-aicore-hwloops=false -mllvm -cce-aicore-hwloops-threshold=0 -mllvm -cce-aicore-analysis-peel=false -mllvm -cce-aicore-dcache-safe-mode=false -mllvm -cce-aicore-loop-unroll-tti=false -mllvm -licm-safe-hoist=false -cce-aicore-initialization-list-opt=true -mllvm -handle-output-dep=true -mllvm -sroa-allow-skip-function=false -mllvm -misched-allow-skip-func=false -mllvm -enable-post-ra-sched=true -mllvm -misched-postra=true -mllvm -early-cse-allow-skip-function=false -mllvm -loop-unswitch-allow-skip-loop=false -mllvm -enable-vloop-lowering=true -mllvm -cce-aicore-cleanup-metadata=false -mllvm -cce-aicore-backend-loop-lower=true -mllvm -cce-aicore-loop-unrotate=true -mllvm -cce-aicore-if-predicate=true -mllvm -cce-vf-auto-sync=fused -mllvm -cce-aicore-dcpreload-args=true -mllvm -cce-dyn-kernel-stack-size=true -mllvm -cce-aicore-jump-table=true -mllvm -enable-npm-O3-nontrivial-unswitch=false -mllvm -cce-vf-enable-blockldst-trans=true -fcce-add-annotation-array-subscript -mllvm -cce-sroa-allow-variable-arrayidx=true -mllvm -cce-aicore-movx8-opt=false -Wuninitialized -mllvm -hoist-common-insts=true -mllvm -enable-load-pre=false -mllvm -disable-ifcvt-simple=true -mllvm -disable-ifcvt-simple-false=true -mllvm -cce-stack-opt-sp-relocated=true -mllvm -cce-aicore-frame-idx-handle-opt=true -mllvm -cce-aicore-long-call=true -mllvm -vectorize-slp=false -mllvm -cce-aicore-number-of-cluster-loads=5 -mllvm -cce-aicore-addr-transform=true -mllvm -cce-aicore-jump-expand=true -aux-triple x86_64-unknown-linux-gnu -emit-obj --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name 05_reduce_max.ll -mrelocation-model static -mframe-pointer=all -fmath-errno -ffp-contract=on -fno-rounding-math -fno-verbose-asm -target-cpu dav-c310-cube -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -debug-info-kind=line-tables-only -mllvm -cce-aicore-cleanup-metadata=true -v -fcoverage-compilation-dir=/home/zwh/tmp/reduce_kernels/reduce_max -resource-dir /usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/ccec_compiler/lib/clang/15.0.5 -O2 -fdebug-compilation-dir=/home/zwh/tmp/reduce_kernels/reduce_max -ferror-limit 19 -fgnuc-version=4.2.1 -fcolor-diagnostics -vectorize-loops -vectorize-slp -faddrsig -o reduce_max.o -x ir 05_reduce_max.ll
+clang -cc1 version 15.0.5 based upon LLVM 15.0.5 default target x86_64-unknown-linux-gnu
+bisheng: error: clang frontend command failed with exit code 139 (use -v to see invocation)
+2025-08-19T14:26:35+08:00 clang version 15.0.5
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin
