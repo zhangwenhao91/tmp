@@ -1,13 +1,13 @@
 module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_core_type<AIV>} {
-  llvm.func @reduce_max_kernel(%arg0: !llvm.ptr<1> {hacc.arg_type = #hacc.arg_type<sync_block_lock>}, %arg1: !llvm.ptr<1> {hacc.arg_type = #hacc.arg_type<workspace>}, %arg2: !llvm.ptr<1>, %arg3: !llvm.ptr<1>) attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, cce.core = #cce.core, func_core_type = #npu.func_core_type<AIV>, global_kernel = "local", hivm.part_of_mix, mix_mode = "mix", parallel_mode = "simd"} {
+  llvm.func @reduce_max_kernel(%arg0: !llvm.ptr<1>, %arg1: !llvm.ptr<1>, %arg2: i32) attributes {cce.core = #cce.core, func_core_type = #npu.func_core_type<AIV>} {
     %0 = llvm.mlir.constant(1 : i32) : i32
     %1 = llvm.mlir.constant(0 : i32) : i32
     %2 = llvm.mlir.constant(48 : i64) : i64
     %3 = llvm.mlir.constant(60 : i64) : i64
     %4 = llvm.mlir.constant(0 : i64) : i64
-    %5 = llvm.mlir.constant(128 : index) : i64
+    %5 = llvm.mlir.constant(0 : index) : i64
     %6 = llvm.mlir.constant(16 : i32) : i32
-    %7 = llvm.mlir.constant(0 : index) : i64
+    %7 = llvm.mlir.constant(128 : index) : i64
     %8 = llvm.mlir.constant(8192 : i64) : i64
     %9 = llvm.mlir.constant(288230377225457664 : i64) : i64
     %10 = llvm.mlir.constant(35184372088864 : i64) : i64
@@ -35,9 +35,9 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %28 = llvm.trunc %27 : i64 to i32
     %29 = llvm.mul %28, %6 : i32
     %30 = llvm.sext %29 : i32 to i64
-    %31 = llvm.mul %30, %5 : i64
+    %31 = llvm.mul %30, %7 : i64
     %32 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
-    %33 = llvm.ptrtoint %arg2 : !llvm.ptr<1> to i64
+    %33 = llvm.ptrtoint %arg0 : !llvm.ptr<1> to i64
     %34 = llvm.mul %31, %20 : i64
     %35 = llvm.add %33, %34 : i64
     %36 = llvm.inttoptr %35 : i64 to !llvm.ptr<1>
@@ -53,7 +53,7 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
   ^bb4:  // pred: ^bb3
     %39 = cce.pset(%1) {mask_bitwidth = 32 : i32} : (i32) -> vector<256xi1>
     %40 = cce.pset(%11) {mask_bitwidth = 32 : i32} : (i32) -> vector<256xi1>
-    llvm.br ^bb5(%7 : i64)
+    llvm.br ^bb5(%5 : i64)
   ^bb5(%41: i64):  // 2 preds: ^bb4, ^bb6
     %42 = llvm.icmp "slt" %41, %14 : i64
     llvm.cond_br %42, ^bb6, ^bb7
@@ -82,7 +82,7 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
   ^bb9:  // pred: ^bb3
     cce.set_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
     cce.wait_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
-    %58 = llvm.ptrtoint %arg3 : !llvm.ptr<1> to i64
+    %58 = llvm.ptrtoint %arg1 : !llvm.ptr<1> to i64
     %59 = llvm.mul %30, %20 : i64
     %60 = llvm.add %58, %59 : i64
     %61 = llvm.inttoptr %60 : i64 to !llvm.ptr<1>
