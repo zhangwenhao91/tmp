@@ -1,31 +1,54 @@
-root@localhost:/home/zwh/tmp/reduce_kernels/reduce_sum# python 7_phase5_reduce_sum.py 
+root@localhost:/home/zwh/tmp/reduce_kernels/reduce_sum# python 7_phase5_reduce_sum_chunked.py 
+=======this indicates I'm running my kernel.o========
+Kernel binary found at 6_reduce_sum.o
 Traceback (most recent call last):
-  File "/home/zwh/tmp/reduce_kernels/reduce_sum/7_phase5_reduce_sum.py", line 45, in <module>
+  File "/home/zwh/tmp/reduce_kernels/reduce_sum/7_phase5_reduce_sum_chunked.py", line 52, in <module>
     assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 RuntimeError: operator():torch_npu/csrc/aten/common/LocalScalarDenseNpu.cpp:23 NPU function error: c10_npu::acl::AclrtSynchronizeStreamWithTimeout(copy_stream), error code is 507035
-[ERROR] 2026-09-08-09:13:07 (PID:504, Device:0, RankID:-1) ERR00100 PTA call acl api failed
+[ERROR] 2026-09-08-09:23:21 (PID:610, Device:0, RankID:-1) ERR00100 PTA call acl api failed
 [Error]: The vector core execution is abnormal. 
         Rectify the fault based on the error information in the ascend log.
 EZ9999: Internal error!
-EZ9999[PID: 504] 2026-09-08-09:13:07.337.276 (EZ9999):  An error occurs on the device(chipId:0, dieId:0), the serial number is 3, the error is aivec error, core id is 0, error code = 95, 340, dump info: pc start: 0x120041003000, current: 0x120041003108, sc error info: 0xffffffffffff, su error info: 0xd7af8d7d285e09e1,0x42600c0c4800bfff, mte error info: 0x20c25, vec error info: 0x4100321400310c36, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600168, mte error: 0x80000000, aic cond: 0.
-The extend info: errcode:(95, 340) errorStr: The MTE instruction accesses an invalid GM address or the cross-device memory access timeout.The address for VEC to access UB is not aligned. subErrType: 0x4.
+EZ9999[PID: 610] 2026-09-08-09:23:21.124.246 (EZ9999):  An error occurs on the device(chipId:0, dieId:0), the serial number is 4, the error is aivec error, core id is 0, error code = 95, dump info: pc start: 0x120041003000, current: 0x120041003100, sc error info: 0xffffffffffff, su error info: 0xd7af8d7d285e09e1,0x42600c0c4800bfff, mte error info: 0x20c25, vec error info: 0x4100321400310c36, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600168, mte error: 0x80000000, aic cond: 0.
+The extend info: errcode:(95) errorStr: The MTE instruction accesses an invalid GM address or the cross-device memory access timeout. subErrType: 0x4.
 For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
 TraceBack (most recent call last):
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 4, the error is aivec error, core id is 1, error code = 95, dump info: pc start: 0x120041003000, current: 0x120041003100, sc error info: 0xffffffffffff, su error info: 0xffbf9dff3bdadfef,0x8705d9f5e0007f78, mte error info: 0x20c25, vec error info: 0xfbbfedff005d5177, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600168, mte error: 0x80000000, aic cond: 0.
+The extend info: errcode:(95) errorStr: The MTE instruction accesses an invalid GM address or the cross-device memory access timeout. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 4, the error is aivec error, core id is 2, error code = 95, dump info: pc start: 0x120041003000, current: 0x120041003100, sc error info: 0xffffffffffff, su error info: 0xbfd9f1d03fde09e1,0x42600c0c3000cbfe, mte error info: 0x20c25, vec error info: 0xfd7db6fd007efcdf, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600168, mte error: 0x80000000, aic cond: 0.
+The extend info: errcode:(95) errorStr: The MTE instruction accesses an invalid GM address or the cross-device memory access timeout. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 4, the error is aivec error, core id is 3, error code = 95, dump info: pc start: 0x120041003000, current: 0x120041003100, sc error info: 0xffffffffffff, su error info: 0xffc95f4e1e7eaddf,0xc7fcf5ddf8007fff, mte error info: 0x5000020c25, vec error info: 0xbf379fff007f9edd, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600168, mte error: 0x80000000, aic cond: 0.
+The extend info: errcode:(95) errorStr: The MTE instruction accesses an invalid GM address or the cross-device memory access timeout. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 4, the error is aivec error, core id is 36, error code = 95, dump info: pc start: 0x120041003000, current: 0x120041003100, sc error info: 0xffffffffffff, su error info: 0xe9fbdff1183809e1,0x42600c0cd8007ff3, mte error info: 0x20c25, vec error info: 0x7ec7f9df003f5f3e, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600168, mte error: 0x80000000, aic cond: 0.
+The extend info: errcode:(95) errorStr: The MTE instruction accesses an invalid GM address or the cross-device memory access timeout. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 4, the error is aivec error, core id is 37, error code = 95, dump info: pc start: 0x120041003000, current: 0x120041003100, sc error info: 0xffffffffffff, su error info: 0xfb7ffeff0af8fdb7,0xcefffe79f800dc5e, mte error info: 0x20c25, vec error info: 0x7f67bbfd003dffd8, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600168, mte error: 0x80000000, aic cond: 0.
+The extend info: errcode:(95) errorStr: The MTE instruction accesses an invalid GM address or the cross-device memory access timeout. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 4, the error is aivec error, core id is 38, error code = 95, dump info: pc start: 0x120041003000, current: 0x120041003100, sc error info: 0xffffffffffff, su error info: 0xfffbdf4114fa09e1,0x42600c0cd8007ff8, mte error info: 0x20c25, vec error info: 0xf13fd700077ed7f, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600168, mte error: 0x80000000, aic cond: 0.
+The extend info: errcode:(95) errorStr: The MTE instruction accesses an invalid GM address or the cross-device memory access timeout. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 4, the error is aivec error, core id is 39, error code = 95, dump info: pc start: 0x120041003000, current: 0x120041003100, sc error info: 0xffffffffffff, su error info: 0xfddb7d4d39faef6d,0x5d7b727c0800d797, mte error info: 0x20c25, vec error info: 0xef3fdf9d007f7cdd, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600168, mte error: 0x80000000, aic cond: 0.
+The extend info: errcode:(95) errorStr: The MTE instruction accesses an invalid GM address or the cross-device memory access timeout. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
        An error occurred in the kernel task, retCode=0x31, [vector core exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1005]
        rtStreamSynchronizeWithTimeout execution failed, reason=vector core exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
 
-[W908 09:13:07.662520586 NPUStream.cpp:595] Warning: NPU warning, error code is 507035[Error]: 
+[W908 09:23:21.449798019 NPUStream.cpp:595] Warning: NPU warning, error code is 507035[Error]: 
 [Error]: The vector core execution is abnormal. 
         Rectify the fault based on the error information in the ascend log.
 EE9999: Internal error!
-EE9999[PID: 504] 2026-09-08-09:13:07.339.681 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=vector core exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+EE9999[PID: 610] 2026-09-08-09:23:21.126.960 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=vector core exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
 TraceBack (most recent call last):
  (function npuSynchronizeUsedDevices)
-[W908 09:13:07.662758023 NPUStream.cpp:577] Warning: NPU warning, error code is 507035[Error]: 
+[W908 09:23:21.450089927 NPUStream.cpp:577] Warning: NPU warning, error code is 507035[Error]: 
 [Error]: The vector core execution is abnormal. 
         Rectify the fault based on the error information in the ascend log.
 EE9999: Internal error!
-EE9999[PID: 504] 2026-09-08-09:13:07.339.968 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=vector core exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+EE9999[PID: 610] 2026-09-08-09:23:21.127.288 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=vector core exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
 TraceBack (most recent call last):
  (function npuSynchronizeDevice)
