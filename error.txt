@@ -1,19 +1,41 @@
-root@localhost:/home/zwh/tmp/reduce_kernels/reduce_max# which python python3 pip
-python -m pip list 2>/dev/null | grep -i -E "triton|torch|npu"
-python -c "import triton, sys; print(sys.executable); print(triton.__file__); print(getattr(triton, '__version__', '?'))"
-/usr/bin/python
-/usr/local/python3.11.0/bin/python3
-/usr/local/python3.11.0/bin/pip
-deepctr-torch                0.2.9
-hybrid-torchrec              1.1.0
-torch                        2.7.1+cpu
-torch_c_dlpack_ext           0.1.5
-torch_npu                    2.7.1.post3.dev20260129
-torchmetrics                 1.0.3
-torchrec                     1.1.0+npu
-torchx                       0.7.0
-triton_ascend                3.6.0.dev0+dev20260726001834
-/usr/bin/python
-/usr/local/python3.11.0/lib/python3.11/site-packages/triton/__init__.py
-3.5.0
-root@localhost:/home/zwh/tmp/reduce_kernels/reduce_max# 
+root@localhost:/home/zwh/tmp# pip uninstall triton-ascend
+Found existing installation: triton_ascend 3.6.0.dev0+dev20260726001834
+Uninstalling triton_ascend-3.6.0.dev0+dev20260726001834:
+  Would remove:
+    /usr/local/python3.11.0/lib/python3.11/site-packages/triton/*
+    /usr/local/python3.11.0/lib/python3.11/site-packages/triton_ascend-3.6.0.dev0+dev20260726001834.dist-info/*
+Proceed (Y/n)? y
+  Successfully uninstalled triton_ascend-3.6.0.dev0+dev20260726001834
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+root@localhost:/home/zwh/tmp# ll
+total 423712
+-rw-r--r-- 1 root root     27346 Sep  8 09:48  FA_s4096_mix_ref.ll
+-rw-r--r-- 1 root root         5 Sep  8 09:48  README.md
+-rw-r--r-- 1 root root      5899 Sep  8 09:48  TileLang_Compilation_Flow.md
+-rw-r--r-- 1 root root       961 Sep  8 15:18  error.txt
+-rw-r--r-- 1 root root       869 Sep  8 09:48  process.txt
+-rw-r--r-- 1 root root       178 Sep  8 09:48  proxy.txt
+drwxr-xr-x 7 root root      4096 Sep  8 09:48  reduce_kernels
+-rw-r--r-- 1 root root        41 Sep  8 09:48  token
+-rw-r--r-- 1 root root 433774938 Sep  8 15:35 'triton_ascend-3.6.0.dev0+dev20260726001834-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64 (1).whl'
+drwxr-xr-x 2 root root      4096 Sep  8 15:14  vadd_wiki_demo
+-rw-r--r-- 1 root root      5640 Sep  8 09:48  verify_reduce_precision.py
+-rw-r--r-- 1 root root     12544 Sep  8 09:48 ''$'\347\216\257\345\242\203\351\205\215\347\275\256\344\270\216\351\252\214\350\257\201''.md'
+-rw-r--r-- 1 root root      6583 Sep  8 09:48 ''$'\347\216\257\345\242\203\351\205\215\347\275\256\345\277\203\345\276\227''.md'
+root@localhost:/home/zwh/tmp# pip install --no-deps {download-ta-package}
+
+[notice] A new release of pip is available: 25.2 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+ERROR: Invalid requirement: '{download-ta-package}': Expected package name at the start of dependency specifier
+    {download-ta-package}
+    ^
+root@localhost:/home/zwh/tmp# pip install --no-deps triton_ascend-3.6.0.dev0+dev20260726001834-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64\ \(1\).whl 
+Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
+Processing ./triton_ascend-3.6.0.dev0+dev20260726001834-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64 (1).whl
+Installing collected packages: triton-ascend
+Successfully installed triton-ascend-3.6.0.dev0+dev20260726001834
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 25.2 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+root@localhost:/home/zwh/tmp# 
