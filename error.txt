@@ -1,1 +1,250 @@
+## 环境配置
+
+服务器IP：141.61.33.113
+密码：（可以找人要）
+
+### step1 创建docker容器
+
+```bash
+docker run -u 0 -dit --shm-size=512g --name={YOUR_NAME} --net=host --privileged=true --shm-size='300g' --ulimit memlock=150000000000:150000000000 -e ASCEND_RT_VISIBLE_DEVICES=7 -v /data:/data -v /home:/home -v /root/.ssh:/root/.ssh -v /usr/local/Ascend/driver/:/usr/local/Ascend/driver/ -v /etc/ascend_install.info:/etc/ascend_install.info triton_op_pipeline:v1.0 /bin/bash
+```
+
+### step2 更新triton-ascend
+
+容器中的 triton-ascend 版本较老, 与`triton-npu` 版本不匹配, 点击[链接](https://clouddrive.huawei.com/p/491d6a8276de35ff9af10cdbf3aefb1a) 下载合适版本TA进行安装. 进入容器后:
+
+```bash
+pip uninstall triton-ascend # 卸载旧包
+
+pip install --no-deps {download-ta-package} # 加上选项跳过联网
+```
+
+### step3 修改triton-ascend后端以使用指定二进制文件
+
+目录:
+
+```
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/ascend/compiler.py:511
+```
+
+在使用以上提供ta包的基础上, 修改以上文件, 并在该文件第511行添加以下内容:
+
+```python
+print("=======this indicates I'm running my kernel.o========")
+    binary_path = os.getenv("KERNEL_PATH")
+    if binary_path:
+        if not os.path.exists(binary_path):
+            raise FileNotFoundError(f"Kernel binary not found at {binary_path}")
+        print(f"Kernel binary found at {binary_path}")
+        return Path(binary_path).read_bytes()
+```
+
+## 运行指导
+
+需要组件：
+
+- CANN包
+
+首先需要 `source /data/setenv.bash` 将 CANN 添加到 path
+
+### 修改 mlir文件
+
+在func的参数后面加上以下内容:
+
+```
 attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, global_kernel = "local", hivm.part_of_mix, mix_mode = "mix", parallel_mode = "simd"}
+```
+
+以`vadd` 为例, 原始的 mlir  func是不包含 attributes 的, 需要手动复制以下注释部分:
+
+```C++
+module {
+  func.func @vadd_kernel(%arg0: memref<?xi8> {hacc.arg_type = #hacc.arg_type<sync_block_lock>}, %arg1: memref<?xi8> {hacc.arg_type = #hacc.arg_type<workspace>}, %inputA: memref<?xf32, #npu.address_space<gm>>, %inputB: memref<?xf32, #npu.address_space<gm>>, %outputC: memref<?xf32, #npu.address_space<gm>>)/* attributes {SyncBlockLockArgIdx = 0 : i64, WorkspaceArgIdx = 1 : i64, global_kernel = "local", hivm.part_of_mix, mix_mode = "mix", parallel_mode = "simd"} */ {
+    %c0 = arith.constant 0 : index
+    %c32 = arith.constant 32 : index
+    %c256 = arith.constant 256 : index
+    %c64 = arith.constant 64 : index
+    %c32_i32 = arith.constant 32 : i32
+    %c64_i32 = arith.constant 64 : i32
+    %bid64 = npu.get_block_idx() : i64
+    %bid = arith.trunci %bid64 : i64 to i32
+    %1 = arith.muli %bid, %c32_i32 : i32
+    %2 = arith.index_cast %1 : i32 to index // gm offset
+
+    // 1. Allocate UB shared memory (32*256*4 = 32768 bytes)
+    %raw_A = memref.alloc() : memref<32768xi8, #npu.address_space<ub>>
+    %raw_B = memref.alloc() : memref<32768xi8, #npu.address_space<ub>>
+    %raw_C = memref.alloc() : memref<32768xi8, #npu.address_space<ub>>
+
+    // 2. View as flat f32 memrefs (32*256 = 8192 f32 elements)
+    %A_shared = memref.view %raw_A[%c0][] : memref<32768xi8, #npu.address_space<ub>> to memref<8192xf32, #npu.address_space<ub>>
+    %B_shared = memref.view %raw_B[%c0][] : memref<32768xi8, #npu.address_space<ub>> to memref<8192xf32, #npu.address_space<ub>>
+    %C_shared = memref.view %raw_C[%c0][] : memref<32768xi8, #npu.address_space<ub>> to memref<8192xf32, #npu.address_space<ub>>
+
+    // 3. Reinterpret GM buffers with dynamic offset, flat 1D
+    %A = memref.reinterpret_cast %inputA to offset: [%2], sizes: [8192], strides: [1] : memref<?xf32, #npu.address_space<gm>> to memref<8192xf32, strided<[1], offset: ?>, #npu.address_space<gm>>
+    %B = memref.reinterpret_cast %inputB to offset: [%2], sizes: [8192], strides: [1] : memref<?xf32, #npu.address_space<gm>> to memref<8192xf32, strided<[1], offset: ?>, #npu.address_space<gm>>
+    %C = memref.reinterpret_cast %outputC to offset: [%2], sizes: [8192], strides: [1] : memref<?xf32, #npu.address_space<gm>> to memref<8192xf32, strided<[1], offset: ?>, #npu.address_space<gm>>
+
+    // 4. Copy GM -> UB
+    npu.copy ins(%A : memref<8192xf32, strided<[1], offset: ?>, #npu.address_space<gm>>) outs(%A_shared : memref<8192xf32, #npu.address_space<ub>>)
+    npu.copy ins(%B : memref<8192xf32, strided<[1], offset: ?>, #npu.address_space<gm>>) outs(%B_shared : memref<8192xf32, #npu.address_space<ub>>)
+
+    // 5. Vector add in SIMD scope (8192 elements = 128 vectors of 64)
+    npu.scope() {
+      %c0_1 = arith.constant 0 : index
+      %c1 = arith.constant 1 : index
+      %c128 = arith.constant 128 : index
+      scf.for %tile = %c0_1 to %c128 step %c1 {
+        %tile_offset = arith.muli %tile, %c64 : index
+        %tile_A = memref.reinterpret_cast %A_shared to offset: [%tile_offset], sizes: [64], strides: [1] : memref<8192xf32, #npu.address_space<ub>> to memref<64xf32, strided<[1], offset: ?>, #npu.address_space<ub>>
+        %tile_B = memref.reinterpret_cast %B_shared to offset: [%tile_offset], sizes: [64], strides: [1] : memref<8192xf32, #npu.address_space<ub>> to memref<64xf32, strided<[1], offset: ?>, #npu.address_space<ub>>
+        %tile_C = memref.reinterpret_cast %C_shared to offset: [%tile_offset], sizes: [64], strides: [1] : memref<8192xf32, #npu.address_space<ub>> to memref<64xf32, strided<[1], offset: ?>, #npu.address_space<ub>>
+        %frag_A = npu.vload %tile_A : (memref<64xf32, strided<[1], offset: ?>, #npu.address_space<ub>>) -> vector<64xf32>
+        %frag_B = npu.vload %tile_B : (memref<64xf32, strided<[1], offset: ?>, #npu.address_space<ub>>) -> vector<64xf32>
+        %frag_C = npu.add %frag_A, %frag_B : vector<64xf32>, vector<64xf32> -> vector<64xf32>
+        npu.vstore %frag_C, %tile_C : (vector<64xf32>, memref<64xf32, strided<[1], offset: ?>, #npu.address_space<ub>>) -> ()
+      }
+      npu.yield
+    }  {mode = #npu.scope_mode<simd>} : () -> ()
+
+    // 6. Copy UB -> GM
+    npu.copy ins(%C_shared : memref<8192xf32, #npu.address_space<ub>>) outs(%C : memref<8192xf32, strided<[1], offset: ?>, #npu.address_space<gm>>)
+    return
+  }
+}
+```
+
+### 编译算子
+
+如果是从 `tilelang-tileir-ascend` 编译获得的 mlir 算子(包含tilelang方言op), 从 step 1 开始;
+如果是以上示例, 从 step 2 开始;
+
+编译指令为:
+
+```shell
+# step 1
+tile-opt --convert-tilelang-to-npu vadd_tilelang.mlir -o vadd.mlir  
+# step 2
+tile-opt \ 
+  --npu-split-dataflow \ 
+  --npu-plan-memory \ 
+  --npu-split-mix-kernel \ 
+  --npu-sync-pipeline \ 
+  vadd.mlir -o vadd_npu.mlir 
+# step 3
+tile-opt \ 
+  --cce-pipeline="target=dav-351x" \ 
+  vadd_npu.mlir &> vadd_cce.mlir 
+# step 4
+tile-translate --cce-to-backend vadd_cce.mlir -o vadd_kernel.ll
+```
+
+最后使用 ccec 指令编译得到 .o 文件
+
+### ccec 指令
+
+```bash
+ccec --cce-aicore-arch=dav-c310-cube --cce-aicore-only -cce-enable-mix -O2 -cce-bitcode-is-aicore -c -v vadd_kernel.ll -o vadd_kernel.o
+```
+
+### 运行算子
+
+首先编辑环境变量:
+
+```shell
+export KERNEL_PATH="你的.o路径"
+```
+
+然后使用以下triton算子框架运行指令
+
+```python
+import torch
+import triton
+import triton.language as tl
+
+@triton.jit
+def vadd_kernel(
+    a_ptr, 
+    b_ptr, 
+    output_ptr, 
+    num_elements, 
+    BLOCK_SIZE: tl.constexpr
+):
+    # Program ID is 0 since grid=1
+    pid = tl.program_id(axis=0)
+
+    # Compute element offsets for the 1D block
+    offsets = pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)
+
+    # Mask to keep memory access within bounds
+    mask = offsets < num_elements
+
+    # Load input tensors from GPU memory
+    a = tl.load(a_ptr + offsets, mask=mask)
+    b = tl.load(b_ptr + offsets, mask=mask)
+
+    # Elementwise addition
+    output = a + b
+
+    # Store result back to GPU memory
+    tl.store(output_ptr + offsets, output, mask=mask)
+
+def run_vadd(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
+    # Ensure inputs are contiguous float tensors on CUDA
+    a = a.contiguous()
+    b = b.contiguous()
+    output = torch.empty_like(a)
+
+    num_elements = a.numel()  # 128 * 64 = 8192
+
+    # Set block size to cover all 8192 elements in one call
+    BLOCK_SIZE = triton.next_power_of_2(num_elements)  # 8192
+
+    # Launch kernel with grid = 1
+    vadd_kernel[(1,)](
+        a, 
+        b, 
+        output, 
+        num_elements, 
+        BLOCK_SIZE=BLOCK_SIZE
+    )
+
+    return output
+
+# --- Verification ---
+if __name__ == "__main__":
+    # Create two [128, 64] input tensors
+    a = torch.randn((128, 64), device='npu')
+    b = torch.randn((128, 64), device='npu')
+
+    # Run Triton kernel
+    triton_output = run_vadd(a, b)
+
+    # PyTorch reference check
+    a = a.cpu()
+    b = b.cpu()
+    torch_output = a + b
+    triton_output = triton_output.cpu()
+    # Verify correctness
+
+    assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
+    print("Success! Output shape:", triton_output.shape)
+    print("\nSample Output (First 2x4 values):")
+    print(triton_output[:2, :4])
+
+```
+
+## 注意事项
+
+- func的名字一定与triton 算子的名字一致, 即 `func.func @vadd_kernel` 与
+
+```python
+@triton.jit
+def vadd_kernel(
+```
+
+必须一致
+
+- triton tensor 的输入与 mlir tensor 输入的顺序和数量必须一致
+
