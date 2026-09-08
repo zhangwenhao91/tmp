@@ -1,41 +1,67 @@
-root@localhost:/home/zwh/tmp# pip uninstall triton-ascend
-Found existing installation: triton_ascend 3.6.0.dev0+dev20260726001834
-Uninstalling triton_ascend-3.6.0.dev0+dev20260726001834:
-  Would remove:
-    /usr/local/python3.11.0/lib/python3.11/site-packages/triton/*
-    /usr/local/python3.11.0/lib/python3.11/site-packages/triton_ascend-3.6.0.dev0+dev20260726001834.dist-info/*
-Proceed (Y/n)? y
-  Successfully uninstalled triton_ascend-3.6.0.dev0+dev20260726001834
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
-root@localhost:/home/zwh/tmp# ll
-total 423712
--rw-r--r-- 1 root root     27346 Sep  8 09:48  FA_s4096_mix_ref.ll
--rw-r--r-- 1 root root         5 Sep  8 09:48  README.md
--rw-r--r-- 1 root root      5899 Sep  8 09:48  TileLang_Compilation_Flow.md
--rw-r--r-- 1 root root       961 Sep  8 15:18  error.txt
--rw-r--r-- 1 root root       869 Sep  8 09:48  process.txt
--rw-r--r-- 1 root root       178 Sep  8 09:48  proxy.txt
-drwxr-xr-x 7 root root      4096 Sep  8 09:48  reduce_kernels
--rw-r--r-- 1 root root        41 Sep  8 09:48  token
--rw-r--r-- 1 root root 433774938 Sep  8 15:35 'triton_ascend-3.6.0.dev0+dev20260726001834-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64 (1).whl'
-drwxr-xr-x 2 root root      4096 Sep  8 15:14  vadd_wiki_demo
--rw-r--r-- 1 root root      5640 Sep  8 09:48  verify_reduce_precision.py
--rw-r--r-- 1 root root     12544 Sep  8 09:48 ''$'\347\216\257\345\242\203\351\205\215\347\275\256\344\270\216\351\252\214\350\257\201''.md'
--rw-r--r-- 1 root root      6583 Sep  8 09:48 ''$'\347\216\257\345\242\203\351\205\215\347\275\256\345\277\203\345\276\227''.md'
-root@localhost:/home/zwh/tmp# pip install --no-deps {download-ta-package}
-
-[notice] A new release of pip is available: 25.2 -> 26.2.1
-[notice] To update, run: pip install --upgrade pip
-ERROR: Invalid requirement: '{download-ta-package}': Expected package name at the start of dependency specifier
-    {download-ta-package}
-    ^
-root@localhost:/home/zwh/tmp# pip install --no-deps triton_ascend-3.6.0.dev0+dev20260726001834-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64\ \(1\).whl 
-Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
-Processing ./triton_ascend-3.6.0.dev0+dev20260726001834-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64 (1).whl
-Installing collected packages: triton-ascend
-Successfully installed triton-ascend-3.6.0.dev0+dev20260726001834
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
-
-[notice] A new release of pip is available: 25.2 -> 26.2.1
-[notice] To update, run: pip install --upgrade pip
-root@localhost:/home/zwh/tmp# 
+root@localhost:/home/zwh/tmp/elementwise_kernels/vadd# export KERNEL_PATH=$PWD/6_vadd.o 
+root@localhost:/home/zwh/tmp/elementwise_kernels/vadd# python 7_phase5_vadd.py 
+/home/zwh/tmp/elementwise_kernels/vadd/7_phase5_vadd.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/elementwise_kernels/vadd/6_vadd.o (2192 bytes) for kernel 'vadd_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+Traceback (most recent call last):
+  File "/home/zwh/tmp/elementwise_kernels/vadd/7_phase5_vadd.py", line 54, in <module>
+    triton_output = run_vadd(a, b)  # (32, 128)
+                    ^^^^^^^^^^^^^^
+  File "/home/zwh/tmp/elementwise_kernels/vadd/7_phase5_vadd.py", line 36, in run_vadd
+    vadd_kernel[(M // BM,)](
+  File "/usr/local/python3.11.0/lib/python3.11/site-packages/triton/runtime/jit.py", line 370, in <lambda>
+    return lambda *args, **kwargs: self.run(grid=grid, warmup=False, *args, **kwargs)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.0/lib/python3.11/site-packages/triton/runtime/jit.py", line 744, in run
+    kernel.run(grid_0, grid_1, grid_2, stream, kernel.function, kernel.packed_metadata, launch_metadata,
+  File "/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py", line 638, in __call__
+    self._launch_dynamic(runtime_metadata, gridX, gridY, gridZ, stream, function, kernel_args)
+  File "/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py", line 606, in _launch_dynamic
+    self.generated_launcher(function, stream, blocknum,
+  File "/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py", line 557, in __call__
+    return self.launch(int(function), int(stream), int(blocknum), *kernel_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+[W908 19:30:30.895816449 NPUStream.cpp:595] Warning: NPU warning, error code is 507034[Error]: 
+[Error]: Vector core execution timed out. 
+        Rectify the fault based on the error information in the ascend log.
+EZ9999: Internal error!
+EZ9999[PID: 4187] 2026-09-08-19:30:30.564.646 (EZ9999):  An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 0, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xd7af8d7d285e0c2b,0x42600c0c4800bfff, mte error info: 0x80000800002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+TraceBack (most recent call last):
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 2, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xbfd9f1d03fde0c2b,0x42600c0c3000cbfe, mte error info: 0x80008900002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 3, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xffc95f4e1e7e0c2b,0xc7fcf5ddf8007fff, mte error info: 0x80008800002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 4, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0x7ff3fca63cee09e1,0x42600c0cf00017df, mte error info: 0x80010d00002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 36, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xe9fbdff118380c2b,0x42600c0cd8007ff3, mte error info: 0x84000d00002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 37, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xfb7ffeff0af80c2b,0xcefffe79f800dc5e, mte error info: 0x84000800002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 38, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xfffbdf4114fa0c2b,0x42600c0cd8007ff8, mte error info: 0x84008900002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 39, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xfddb7d4d39fa0c2b,0x5d7b727c0800d797, mte error info: 0x84008800002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
+       An error occurred in the kernel task, retCode=0x30, [vector core timeout].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1005]
+       rtStreamSynchronize execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+       rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+ (function npuSynchronizeUsedDevices)
+[W908 19:30:30.896765913 NPUStream.cpp:577] Warning: NPU warning, error code is 507034[Error]: 
+[Error]: Vector core execution timed out. 
+        Rectify the fault based on the error information in the ascend log.
+EE9999: Internal error!
+EE9999[PID: 4187] 2026-09-08-19:30:30.573.912 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+TraceBack (most recent call last):
+ (function npuSynchronizeDevice)
+[ERROR] 2026-09-08-19:30:31 (PID:4187, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
