@@ -36,7 +36,7 @@ def run_reduce_min(input_tensor: torch.Tensor) -> torch.Tensor:
 
 
 if __name__ == "__main__":
-    input_tensor = torch.randn((128, 64), device="npu")
+    input_tensor = torch.randn((32, 128), device="npu")
 
     triton_output = run_reduce_min(input_tensor)
 
@@ -45,4 +45,4 @@ if __name__ == "__main__":
     assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
     print("Success! Output:", triton_output.item())
     print("\nSample Input (First 2x4 values):")
-    print(input_tensor.view(128, 64)[:2, :4])
+    print(input_tensor.view(32, 128)[:2, :4])
