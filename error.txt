@@ -1,2 +1,3 @@
-root@localhost:/home/zwh/tmp/reduce_kernels/reduce_max# pip list | grep -i triton
-triton_ascend                3.6.0.dev0+dev20260726001834
+which python python3 pip
+python -m pip list 2>/dev/null | grep -i -E "triton|torch|npu"
+python -c "import triton, sys; print(sys.executable); print(triton.__file__); print(getattr(triton, '__version__', '?'))"
