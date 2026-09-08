@@ -1,10 +1,92 @@
-① 目标机 triton 后端的 `.o` 加载/launch 契约（最关键）
-
-grep -n "KERNEL_PATH\|KERNEL\b\|binary_path" /usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/ascend/compiler.py
+root@localhost:/home/zwh/tmp/reduce_kernels/reduce_max# grep -n "KERNEL_PATH\|KERNEL\b\|binary_path" /usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/ascend/compiler.py
 sed -n '480,560p' /usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/ascend/compiler.py
+513:    binary_path = os.getenv("KERNEL_PATH")
+514:    if binary_path:
+515:        if not os.path.exists(binary_path):
+516:            raise FileNotFoundError(f"Kernel binary not found at {binary_path}")
+517:        print(f"Kernel binary found at {binary_path}")
+518:        return Path(binary_path).read_bytes()
+    If compilation fails due to UB overflow or other errors, returns (False, error_msg).
+    If compilation succeeds, returns (True, "").
+    """
+    # Must import from ubtuner.py - this is the single source of truth
+    from triton.backends.ascend.runtime.ubtuner import UB_TO_NPU_OPTION_MAP
+    option_mapping = UB_TO_NPU_OPTION_MAP
 
-我需要看它拿到 .o 之后怎么调：参数按 triton kernel 的签名传吗？grid 用什么？6_reduce_max.o 是 tilelang 编的固定形状 kernel（ (32,128)→(32,)、内部按 2 blocks × 16 行寻址），而 7_phase5_reduce_max.py 里的 triton kernel 是"8192 元素 → 1 标量"的语义——两者契约不一致时，后端按 triton 语义传参/launch，kernel 按固化形状算 GM 地址，就产生你看到的越界访问。 代码确认前我不建议继续盲试脚本。
+    metadata = dict(metadata)
 
-② 目标机芯片型号（确认指令集匹配）
+    for ub_key, meta_key in option_mapping.items():
+        if ub_key in ub_config:
+            metadata[meta_key] = ub_config[ub_key]
 
-npu-smi info        # 或 ascend-dmi -i
+    # Choose compile function based on options
+    if opt.compile_on_910_95:
+        compile_func = linalg_to_bin_enable_npu_compile_910_95
+    else:
+        compile_func = linalg_to_bin_enable_npu_compile_A2_A3
+
+    try:
+        compile_func(linalg, metadata, opt)
+        return (True, "")
+    except subprocess.CalledProcessError as e:
+        error_msg = e.stderr.decode('utf-8') if e.stderr else str(e)
+        return (False, error_msg)
+    except Exception as e:
+        return (False, str(e))
+
+
+def linalg_to_bin_enable_npu_compile_910_95(linalg: str, metadata, opt):
+    linalg, metadata = _parse_linalg_metadata(linalg, metadata)
+    
+    print("=======this indicates I'm running my kernel.o========")
+    binary_path = os.getenv("KERNEL_PATH")
+    if binary_path:
+        if not os.path.exists(binary_path):
+            raise FileNotFoundError(f"Kernel binary not found at {binary_path}")
+        print(f"Kernel binary found at {binary_path}")
+        return Path(binary_path).read_bytes()
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_file_name = "kernel.mlir" if opt.use_bytecode else "kernel.ttadapter.mlir"
+        ttadapter_path = os.path.join(tmpdir, tmp_file_name)
+        Path(ttadapter_path).write_text(linalg)
+        bin_file = os.path.join(tmpdir, "kernel")
+        if _check_bishengir_api_change():
+            bin_file_with_ext = "kernel.o"
+        else:
+            bin_file_with_ext = "kernel_reloc.o"
+        bin_path = os.path.join(tmpdir, bin_file_with_ext)
+        callback_path = os.path.join(tmpdir, "libkernel.so")
+        _compile_option_list = get_common_bishengir_compile_options(metadata)
+
+        multibuffer = metadata.get("multibuffer")
+        num_stages = metadata.get("num_stages")
+
+        if multibuffer is not None or num_stages is not None:
+            multi_buffer_value = True
+            if multibuffer is not None and not multibuffer:
+                multi_buffer_value = False
+            elif num_stages is not None and num_stages == 1:
+                multi_buffer_value = False
+            _compile_option_list += [
+                f"--enable-auto-multi-buffer={multi_buffer_value}",
+            ]
+
+        storage_align = metadata["storage_align"]
+        if storage_align is not None:
+            _compile_option_list += [
+                f"--enable-hivm-auto-storage-align={storage_align}",
+            ]
+
+        ops_reorder = metadata["ops_reorder"]
+        if ops_reorder is not None:
+            _compile_option_list += [
+                f"--enable-ops-reorder={ops_reorder}",
+            ]
+
+        vf_fusion_mode = metadata["vf_fusion_mode"]
+        if vf_fusion_mode is not None:
+            _compile_option_list += [
+root@localhost:/home/zwh/tmp/reduce_kernels/reduce_max# npu-smi info
+bash: npu-smi: command not found
+root@localhost:/home/zwh/tmp/reduce_kernels/reduce_max# 
