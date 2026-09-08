@@ -1,3 +1,19 @@
-which python python3 pip
+root@localhost:/home/zwh/tmp/reduce_kernels/reduce_max# which python python3 pip
 python -m pip list 2>/dev/null | grep -i -E "triton|torch|npu"
 python -c "import triton, sys; print(sys.executable); print(triton.__file__); print(getattr(triton, '__version__', '?'))"
+/usr/bin/python
+/usr/local/python3.11.0/bin/python3
+/usr/local/python3.11.0/bin/pip
+deepctr-torch                0.2.9
+hybrid-torchrec              1.1.0
+torch                        2.7.1+cpu
+torch_c_dlpack_ext           0.1.5
+torch_npu                    2.7.1.post3.dev20260129
+torchmetrics                 1.0.3
+torchrec                     1.1.0+npu
+torchx                       0.7.0
+triton_ascend                3.6.0.dev0+dev20260726001834
+/usr/bin/python
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/__init__.py
+3.5.0
+root@localhost:/home/zwh/tmp/reduce_kernels/reduce_max# 
