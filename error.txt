@@ -1,7 +1,14 @@
-cd /home/zwh/tmp/elementwise_kernels && git pull
+root@localhost:/home/zwh/tmp# cd /home/zwh/tmp/elementwise_kernels && git pull
 for d in vadd vsub vmul vdiv vmax vexp; do
   cd /home/zwh/tmp/elementwise_kernels/$d
   export KERNEL_PATH=$PWD/6_$d.o
   echo -n "$d: "
   python 8_phase5_$d.py 2>&1 | grep -oE "Success|AssertionError|Error" | head -1
 done
+Already up to date.
+vadd: Success
+vsub: AssertionError
+vmul: AssertionError
+vdiv: AssertionError
+vmax: AssertionError
+vexp: Success
