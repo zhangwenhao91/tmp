@@ -1,4 +1,4 @@
-cd /home/zwh/tmp/elementwise_kernels/vsub
+root@localhost:/home/zwh/tmp/elementwise_kernels/vexp# cd /home/zwh/tmp/elementwise_kernels/vsub
 export KERNEL_PATH=$PWD/6_vsub.o
 python -c "
 import torch
@@ -14,3 +14,13 @@ for seed in [0, 1, 2, 3, 4, 5]:
     diff = (out.cpu() - (a - b).cpu()).abs()
     print(seed, 'maxdiff', diff.max().item(), 'nbad', (diff > 1e-5).sum().item())
 "
+/home/zwh/tmp/elementwise_kernels/vsub/8_phase5_vsub.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+0 maxdiff 0.0 nbad 0
+1 maxdiff 0.0 nbad 0
+2 maxdiff 0.0 nbad 0
+3 maxdiff 0.0 nbad 0
+4 maxdiff 0.0 nbad 0
+5 maxdiff 0.0 nbad 0
