@@ -1,8 +1,41 @@
-cd /home/zwh/tmp/elementwise_kernels
-git pull
-for d in vadd vsub vmul vdiv vmax vexp; do
+root@localhost:/home/zwh/tmp# git pull
+remote: Enumerating objects: 42, done.
+remote: Counting objects: 100% (42/42), done.
+remote: Compressing objects: 100% (14/14), done.
+remote: Total 27 (delta 19), reused 15 (delta 13), pack-reused 0 (from 0)
+Unpacking objects: 100% (27/27), 6.01 KiB | 3.01 MiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   595f1b4..6ff50da  main       -> origin/main
+Updating 595f1b4..6ff50da
+Fast-forward
+ elementwise_kernels/vadd/8_phase5_vadd.py |  1 +
+ elementwise_kernels/vdiv/8_phase5_vdiv.py |  1 +
+ elementwise_kernels/vexp/8_phase5_vexp.py |  1 +
+ elementwise_kernels/vmax/8_phase5_vmax.py |  1 +
+ elementwise_kernels/vmul/8_phase5_vmul.py |  1 +
+ elementwise_kernels/vsub/8_phase5_vsub.py |  1 +
+ error.txt                                 | 24 ++++++++----------------
+ 7 files changed, 14 insertions(+), 16 deletions(-)
+root@localhost:/home/zwh/tmp# cd /home/zwh/tmp/elementwise_kernels
+root@localhost:/home/zwh/tmp/elementwise_kernels# for d in vadd vsub vmul vdiv vmax vexp; do
   cd /home/zwh/tmp/elementwise_kernels/$d
   export KERNEL_PATH=$PWD/6_$d.o
   echo "===== $d ====="
   python 8_phase5_$d.py 2>&1 | grep -E "Success|Error|assert" | head -2
 done
+===== vadd =====
+Success! Output shape: torch.Size([32, 128])
+===== vsub =====
+    assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
+AssertionError: Outputs do not match!
+===== vmul =====
+    assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
+AssertionError: Outputs do not match!
+===== vdiv =====
+    assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
+AssertionError: Outputs do not match!
+===== vmax =====
+    assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
+AssertionError: Outputs do not match!
+===== vexp =====
+Success! Output shape: torch.Size([32, 128])
