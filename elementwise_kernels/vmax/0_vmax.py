@@ -2,15 +2,15 @@ import os
 import tilelang
 import tilelang.language as T
 
-# elementwise vadd: OUT = A + B, 形状 (M, K) -> (M, K)
+# elementwise vmax: OUT = A + B, 形状 (M, K) -> (M, K)
 # SimdVF 内不使用 for 循环；行并行交给 T.Kernel(M//BR) 网格，每 block 直排。
-def vadd(M, K, BR=16):
+def vmax(M, K, BR=16):
     assert M % BR == 0, f"M must be a multiple of BR ({BR}), got M={M}"
     num_blocks = M // BR
     dtype = "float32"
 
     @T.prim_func
-    def vadd_kernel(
+    def vmax_kernel(
         A: T.Buffer((M, K), dtype),
         B: T.Buffer((M, K), dtype),
         OUT: T.Buffer((M, K), dtype),
@@ -28,23 +28,23 @@ def vadd(M, K, BR=16):
                 c_frag = T.alloc_frag((BR, K), dtype)
                 T.copy(a_shared[0:BR, 0:K], a_frag)
                 T.copy(b_shared[0:BR, 0:K], b_frag)
-                T.vadd(a_frag, b_frag, c_frag)
+                T.vmax(a_frag, b_frag, c_frag)
                 T.copy(c_frag, c_shared[0:BR, 0:K])
 
             T.copy(c_shared, OUT[bx * BR : (bx + 1) * BR, 0:K])
 
-    return vadd_kernel
+    return vmax_kernel
 
 
 if __name__ == "__main__":
     M, K = 32, 128
-    program = vadd(M, K, BR=16)
+    program = vmax(M, K, BR=16)
 
     artifact = tilelang.lower(program, target="tile")
     mlir_str = artifact.kernel_source
 
     out_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "1_vadd_tilelangir.mlir"
+        os.path.dirname(os.path.abspath(__file__)), "1_vmax_tilelangir.mlir"
     )
     with open(out_path, "w") as f:
         f.write(mlir_str)
