@@ -51,6 +51,7 @@ if __name__ == "__main__":
 
     torch_output = torch.exp(a)
 
+    torch.npu.synchronize()
     assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
     print("Success! Output shape:", triton_output.shape)
     print("\nSample Output (First 2x4 values):")
