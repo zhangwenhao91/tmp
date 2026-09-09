@@ -1,67 +1,191 @@
-root@localhost:/home/zwh/tmp/elementwise_kernels/vadd# export KERNEL_PATH=$PWD/6_vadd.o 
-root@localhost:/home/zwh/tmp/elementwise_kernels/vadd# python 7_phase5_vadd.py 
-/home/zwh/tmp/elementwise_kernels/vadd/7_phase5_vadd.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+root@localhost:/home/zwh/tmp# cd elementwise_kernels/
+root@localhost:/home/zwh/tmp/elementwise_kernels# ll
+total 24
+drwxr-xr-x 3 root root 4096 Sep  9 11:06 vadd
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vdiv
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vexp
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vmax
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vmul
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vsub
+root@localhost:/home/zwh/tmp/elementwise_kernels# cd vadd/
+root@localhost:/home/zwh/tmp/elementwise_kernels/vadd# ll
+total 48
+-rw-r--r-- 1 root root 1706 Sep  9 11:06 0_vadd.py
+-rw-r--r-- 1 root root 4528 Sep  8 19:20 1_vadd_tilelangir.mlir
+-rw-r--r-- 1 root root 3013 Sep  8 19:20 2_vadd_npu.mlir
+-rw-r--r-- 1 root root 3769 Sep  8 19:20 3_vadd_mix_npu.mlir
+-rw-r--r-- 1 root root 4266 Sep  8 19:20 4_vadd_cce.mlir
+-rw-r--r-- 1 root root 4974 Sep  8 19:20 5_vadd.ll
+-rw-r--r-- 1 root root 2192 Sep  8 19:20 6_vadd.o
+-rw-r--r-- 1 root root 1592 Sep  9 11:06 8_phase5_vadd.py
+drwx------ 3 root root 4096 Sep  8 19:30 extra-info
+root@localhost:/home/zwh/tmp/elementwise_kernels/vadd# export KERNEL_PATH=6_vadd.o    
+root@localhost:/home/zwh/tmp/elementwise_kernels/vadd# python 8_phase5_vadd.py 
+/home/zwh/tmp/elementwise_kernels/vadd/8_phase5_vadd.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   output = torch.empty_like(a)
 [RUNTIME_CACHE] using cached OpenTile runtime extension
 [KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/elementwise_kernels/vadd/6_vadd.o (2192 bytes) for kernel 'vadd_kernel' cv_mode=aiv
 [RUNTIME_CACHE] using cached OpenTile runtime extension
+Success! Output shape: torch.Size([32, 128])
+
+Sample Output (First 2x4 values):
+[W909 11:07:43.733671869 ToKernelNpu.cpp:164] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+tensor([[-1.1619,  0.2824,  1.1117, -2.9232],
+        [ 1.0667,  0.8892, -0.7587, -0.4166]], device='npu:0')
+root@localhost:/home/zwh/tmp/elementwise_kernels/vadd# cd ..
+root@localhost:/home/zwh/tmp/elementwise_kernels# cd vdiv/
+root@localhost:/home/zwh/tmp/elementwise_kernels/vdiv# ll
+total 44
+-rw-r--r-- 1 root root 1706 Sep  9 11:06 0_vdiv.py
+-rw-r--r-- 1 root root 4528 Sep  9 11:06 1_vdiv_tilelangir.mlir
+-rw-r--r-- 1 root root 3013 Sep  9 11:06 2_vdiv_npu.mlir
+-rw-r--r-- 1 root root 3769 Sep  9 11:06 3_vdiv_mix_npu.mlir
+-rw-r--r-- 1 root root 4266 Sep  9 11:06 4_vdiv_cce.mlir
+-rw-r--r-- 1 root root 4974 Sep  9 11:06 5_vdiv.ll
+-rw-r--r-- 1 root root 2192 Sep  9 11:06 6_vdiv.o
+-rw-r--r-- 1 root root 1592 Sep  9 11:06 8_phase5_vdiv.py
+root@localhost:/home/zwh/tmp/elementwise_kernels/vdiv# export KERNEL_PATH=6_vdiv.o 
+root@localhost:/home/zwh/tmp/elementwise_kernels/vdiv# python 8_phase5_vdiv.py 
+/home/zwh/tmp/elementwise_kernels/vdiv/8_phase5_vdiv.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/elementwise_kernels/vdiv/6_vdiv.o (2192 bytes) for kernel 'vdiv_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
 Traceback (most recent call last):
-  File "/home/zwh/tmp/elementwise_kernels/vadd/7_phase5_vadd.py", line 54, in <module>
-    triton_output = run_vadd(a, b)  # (32, 128)
-                    ^^^^^^^^^^^^^^
-  File "/home/zwh/tmp/elementwise_kernels/vadd/7_phase5_vadd.py", line 36, in run_vadd
-    vadd_kernel[(M // BM,)](
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/triton/runtime/jit.py", line 370, in <lambda>
-    return lambda *args, **kwargs: self.run(grid=grid, warmup=False, *args, **kwargs)
-                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/triton/runtime/jit.py", line 744, in run
-    kernel.run(grid_0, grid_1, grid_2, stream, kernel.function, kernel.packed_metadata, launch_metadata,
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py", line 638, in __call__
-    self._launch_dynamic(runtime_metadata, gridX, gridY, gridZ, stream, function, kernel_args)
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py", line 606, in _launch_dynamic
-    self.generated_launcher(function, stream, blocknum,
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py", line 557, in __call__
-    return self.launch(int(function), int(stream), int(blocknum), *kernel_args)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
-[W908 19:30:30.895816449 NPUStream.cpp:595] Warning: NPU warning, error code is 507034[Error]: 
-[Error]: Vector core execution timed out. 
-        Rectify the fault based on the error information in the ascend log.
-EZ9999: Internal error!
-EZ9999[PID: 4187] 2026-09-08-19:30:30.564.646 (EZ9999):  An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 0, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xd7af8d7d285e0c2b,0x42600c0c4800bfff, mte error info: 0x80000800002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
-The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
-For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
-TraceBack (most recent call last):
-       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 2, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xbfd9f1d03fde0c2b,0x42600c0c3000cbfe, mte error info: 0x80008900002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
-The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
-For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
-       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 3, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xffc95f4e1e7e0c2b,0xc7fcf5ddf8007fff, mte error info: 0x80008800002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
-The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
-For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
-       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 4, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0x7ff3fca63cee09e1,0x42600c0cf00017df, mte error info: 0x80010d00002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
-The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
-For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
-       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 36, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xe9fbdff118380c2b,0x42600c0cd8007ff3, mte error info: 0x84000d00002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
-The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
-For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
-       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 37, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xfb7ffeff0af80c2b,0xcefffe79f800dc5e, mte error info: 0x84000800002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
-The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
-For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
-       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 38, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xfffbdf4114fa0c2b,0x42600c0cd8007ff8, mte error info: 0x84008900002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
-The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
-For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
-       An error occurs on the device(chipId:0, dieId:0), the serial number is 48, the error is aivec error, core id is 39, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004105d2b8, sc error info: 0xffffffffffff, su error info: 0xfddb7d4d39fa0c2b,0x5d7b727c0800d797, mte error info: 0x84008800002de26, vec error info: 0x411563f8003959f5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
-The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
-For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:694]
-       An error occurred in the kernel task, retCode=0x30, [vector core timeout].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1005]
-       rtStreamSynchronize execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
-       rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
- (function npuSynchronizeUsedDevices)
-[W908 19:30:30.896765913 NPUStream.cpp:577] Warning: NPU warning, error code is 507034[Error]: 
-[Error]: Vector core execution timed out. 
-        Rectify the fault based on the error information in the ascend log.
-EE9999: Internal error!
-EE9999[PID: 4187] 2026-09-08-19:30:30.573.912 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
-TraceBack (most recent call last):
- (function npuSynchronizeDevice)
-[ERROR] 2026-09-08-19:30:31 (PID:4187, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+  File "/home/zwh/tmp/elementwise_kernels/vdiv/8_phase5_vdiv.py", line 58, in <module>
+    assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
+AssertionError: Outputs do not match!
+[ERROR] 2026-09-09-11:08:23 (PID:592, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+root@localhost:/home/zwh/tmp/elementwise_kernels/vdiv# cd ..
+root@localhost:/home/zwh/tmp/elementwise_kernels# ll 
+total 24
+drwxr-xr-x 3 root root 4096 Sep  9 11:06 vadd
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vdiv
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vexp
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vmax
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vmul
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vsub
+root@localhost:/home/zwh/tmp/elementwise_kernels# cd vexp/
+root@localhost:/home/zwh/tmp/elementwise_kernels/vexp# ll
+total 36
+-rw-r--r-- 1 root root 1441 Sep  9 11:06 0_vexp.py
+-rw-r--r-- 1 root root 3057 Sep  9 11:06 1_vexp_tilelangir.mlir
+-rw-r--r-- 1 root root 2117 Sep  9 11:06 2_vexp_npu.mlir
+-rw-r--r-- 1 root root 2752 Sep  9 11:06 3_vexp_mix_npu.mlir
+-rw-r--r-- 1 root root 3722 Sep  9 11:06 4_vexp_cce.mlir
+-rw-r--r-- 1 root root 4467 Sep  9 11:06 5_vexp.ll
+-rw-r--r-- 1 root root 2184 Sep  9 11:06 6_vexp.o
+-rw-r--r-- 1 root root 1428 Sep  9 11:06 8_phase5_vexp.py
+root@localhost:/home/zwh/tmp/elementwise_kernels/vexp# export KERNEL_PATH=6_vexp.o 
+root@localhost:/home/zwh/tmp/elementwise_kernels/vexp# python 8_phase5_vexp.py 
+/home/zwh/tmp/elementwise_kernels/vexp/8_phase5_vexp.py:32: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/elementwise_kernels/vexp/6_vexp.o (2184 bytes) for kernel 'vexp_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+Success! Output shape: torch.Size([32, 128])
+
+Sample Output (First 2x4 values):
+[W909 11:10:07.880813221 ToKernelNpu.cpp:164] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+tensor([[2.5492, 4.7341, 2.9863, 2.4875],
+        [0.1514, 0.8835, 2.0629, 0.6358]], device='npu:0')
+root@localhost:/home/zwh/tmp/elementwise_kernels/vexp# cd .. 
+root@localhost:/home/zwh/tmp/elementwise_kernels# ll
+total 24
+drwxr-xr-x 3 root root 4096 Sep  9 11:06 vadd
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vdiv
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vexp
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vmax
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vmul
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vsub
+root@localhost:/home/zwh/tmp/elementwise_kernels# cd vmax/
+root@localhost:/home/zwh/tmp/elementwise_kernels/vmax# ll
+total 44
+-rw-r--r-- 1 root root 1706 Sep  9 11:06 0_vmax.py
+-rw-r--r-- 1 root root 4786 Sep  9 11:06 1_vmax_tilelangir.mlir
+-rw-r--r-- 1 root root 3013 Sep  9 11:06 2_vmax_npu.mlir
+-rw-r--r-- 1 root root 3769 Sep  9 11:06 3_vmax_mix_npu.mlir
+-rw-r--r-- 1 root root 4266 Sep  9 11:06 4_vmax_cce.mlir
+-rw-r--r-- 1 root root 4974 Sep  9 11:06 5_vmax.ll
+-rw-r--r-- 1 root root 2192 Sep  9 11:06 6_vmax.o
+-rw-r--r-- 1 root root 1592 Sep  9 11:06 8_phase5_vmax.py
+root@localhost:/home/zwh/tmp/elementwise_kernels/vmax# export KERNEL_PATH=6_vexp.o 
+root@localhost:/home/zwh/tmp/elementwise_kernels/vmax# export KERNEL_PATH=6_vmax.o 
+root@localhost:/home/zwh/tmp/elementwise_kernels/vmax# python 8_phase5_vmax.py 
+/home/zwh/tmp/elementwise_kernels/vmax/8_phase5_vmax.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/elementwise_kernels/vmax/6_vmax.o (2192 bytes) for kernel 'vmax_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+Traceback (most recent call last):
+  File "/home/zwh/tmp/elementwise_kernels/vmax/8_phase5_vmax.py", line 58, in <module>
+    assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
+AssertionError: Outputs do not match!
+[ERROR] 2026-09-09-11:10:52 (PID:762, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+root@localhost:/home/zwh/tmp/elementwise_kernels/vmax# cd ..
+root@localhost:/home/zwh/tmp/elementwise_kernels# ll 
+total 24
+drwxr-xr-x 3 root root 4096 Sep  9 11:06 vadd
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vdiv
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vexp
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vmax
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vmul
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vsub
+root@localhost:/home/zwh/tmp/elementwise_kernels# cd vmu
+bash: cd: vmu: No such file or directory
+root@localhost:/home/zwh/tmp/elementwise_kernels# cd vmul/
+root@localhost:/home/zwh/tmp/elementwise_kernels/vmul# ll
+total 44
+-rw-r--r-- 1 root root 1706 Sep  9 11:06 0_vmul.py
+-rw-r--r-- 1 root root 4528 Sep  8 19:20 1_vmul_tilelangir.mlir
+-rw-r--r-- 1 root root 3013 Sep  8 19:20 2_vmul_npu.mlir
+-rw-r--r-- 1 root root 3769 Sep  8 19:20 3_vmul_mix_npu.mlir
+-rw-r--r-- 1 root root 4266 Sep  8 19:20 4_vmul_cce.mlir
+-rw-r--r-- 1 root root 4974 Sep  8 19:20 5_vmul.ll
+-rw-r--r-- 1 root root 2192 Sep  8 19:20 6_vmul.o
+-rw-r--r-- 1 root root 1592 Sep  9 11:06 8_phase5_vmul.py
+root@localhost:/home/zwh/tmp/elementwise_kernels/vmul# export KERNEL_PATH=6_vmul.o 
+root@localhost:/home/zwh/tmp/elementwise_kernels/vmul# python 8_phase5_vmul.py 
+/home/zwh/tmp/elementwise_kernels/vmul/8_phase5_vmul.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/elementwise_kernels/vmul/6_vmul.o (2192 bytes) for kernel 'vmul_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+Traceback (most recent call last):
+  File "/home/zwh/tmp/elementwise_kernels/vmul/8_phase5_vmul.py", line 58, in <module>
+    assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
+AssertionError: Outputs do not match!
+[ERROR] 2026-09-09-11:11:43 (PID:847, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+root@localhost:/home/zwh/tmp/elementwise_kernels/vmul# cd ..
+root@localhost:/home/zwh/tmp/elementwise_kernels# ll 
+total 24
+drwxr-xr-x 3 root root 4096 Sep  9 11:06 vadd
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vdiv
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vexp
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vmax
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vmul
+drwxr-xr-x 2 root root 4096 Sep  9 11:06 vsub
+root@localhost:/home/zwh/tmp/elementwise_kernels# cd vsub/
+root@localhost:/home/zwh/tmp/elementwise_kernels/vsub# ll
+total 44
+-rw-r--r-- 1 root root 1706 Sep  9 11:06 0_vsub.py
+-rw-r--r-- 1 root root 4528 Sep  9 11:06 1_vsub_tilelangir.mlir
+-rw-r--r-- 1 root root 3013 Sep  9 11:06 2_vsub_npu.mlir
+-rw-r--r-- 1 root root 3769 Sep  9 11:06 3_vsub_mix_npu.mlir
+-rw-r--r-- 1 root root 4266 Sep  9 11:06 4_vsub_cce.mlir
+-rw-r--r-- 1 root root 4974 Sep  9 11:06 5_vsub.ll
+-rw-r--r-- 1 root root 2192 Sep  9 11:06 6_vsub.o
+-rw-r--r-- 1 root root 1592 Sep  9 11:06 8_phase5_vsub.py
+root@localhost:/home/zwh/tmp/elementwise_kernels/vsub# export KERNEL_PATH=6_vsub.o 
+root@localhost:/home/zwh/tmp/elementwise_kernels/vsub# python 8_phase5_vsub.py 
+/home/zwh/tmp/elementwise_kernels/vsub/8_phase5_vsub.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/elementwise_kernels/vsub/6_vsub.o (2192 bytes) for kernel 'vsub_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+Traceback (most recent call last):
+  File "/home/zwh/tmp/elementwise_kernels/vsub/8_phase5_vsub.py", line 58, in <module>
+    assert torch.allclose(triton_output, torch_output, atol=1e-5), "Outputs do not match!"
+AssertionError: Outputs do not match!
+[ERROR] 2026-09-09-11:12:23 (PID:932, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+root@localhost:/home/zwh/tmp/elementwise_kernels/vsub# 
