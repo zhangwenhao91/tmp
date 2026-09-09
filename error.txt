@@ -1,4 +1,4 @@
-cd /home/zwh/tmp/elementwise_kernels
+root@localhost:/home/zwh/tmp/elementwise_kernels/vexp# cd /home/zwh/tmp/elementwise_kernels
 for d in vadd vsub vmul vdiv vmax vexp; do
   cd /home/zwh/tmp/elementwise_kernels/$d
   export KERNEL_PATH=$PWD/6_$d.o
@@ -25,3 +25,57 @@ print('max diff     :', d.max().item())
 print('num bad      :', (d > 1e-5).sum().item())
 "
 done
+===== vadd =====
+/home/zwh/tmp/elementwise_kernels/vadd/8_phase5_vadd.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+npu allclose : True
+cpu  allclose: True
+max diff     : 0.0
+num bad      : 0
+===== vsub =====
+/home/zwh/tmp/elementwise_kernels/vsub/8_phase5_vsub.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+npu allclose : True
+cpu  allclose: True
+max diff     : 0.0
+num bad      : 0
+===== vmul =====
+/home/zwh/tmp/elementwise_kernels/vmul/8_phase5_vmul.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+npu allclose : True
+cpu  allclose: True
+max diff     : 0.0
+num bad      : 0
+===== vdiv =====
+/home/zwh/tmp/elementwise_kernels/vdiv/8_phase5_vdiv.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+npu allclose : True
+cpu  allclose: True
+max diff     : 3.0517578125e-05
+num bad      : 1
+===== vmax =====
+/home/zwh/tmp/elementwise_kernels/vmax/8_phase5_vmax.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+npu allclose : True
+cpu  allclose: True
+max diff     : 0.0
+num bad      : 0
+===== vexp =====
+/home/zwh/tmp/elementwise_kernels/vexp/8_phase5_vexp.py:32: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  output = torch.empty_like(a)
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+npu allclose : True
+cpu  allclose: True
+max diff     : 0.0
+num bad      : 0
