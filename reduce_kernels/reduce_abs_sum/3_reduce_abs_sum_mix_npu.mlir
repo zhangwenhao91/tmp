@@ -21,11 +21,12 @@ module attributes {npu.module_core_type = #npu.module_core_type<AIV>} {
     npu.set_flag[<PIPE_MTE2>, <PIPE_V>, <EVENT_ID0>]
     npu.wait_flag[<PIPE_MTE2>, <PIPE_V>, <EVENT_ID0>]
     npu.scope() {
-      %9 = npu.vload %view {tcore_type = #npu.tcore_type<VECTOR>} : (memref<16x128xf32, #npu.address_space<ub>>) -> vector<16x128xf32>
-      %10 = npu.mul %9, %cst : vector<16x128xf32>, f32 -> vector<16x128xf32> {tcore_type = #npu.tcore_type<VECTOR>}
-      %11 = npu.max %9, %10 : vector<16x128xf32>, vector<16x128xf32> -> vector<16x128xf32> {tcore_type = #npu.tcore_type<VECTOR>}
-      %12 = npu.reduce %11, %c1_i64 : vector<16x128xf32>, i64 -> vector<16xf32> #npu.reduce_op<sum> identities=[0.000000e+00 : f32] {tcore_type = #npu.tcore_type<VECTOR>}
-      npu.vstore %12, %view_0 {tcore_type = #npu.tcore_type<VECTOR>} : (vector<16xf32>, memref<16xf32, #npu.address_space<ub>>) -> ()
+      %9 = npu.broadcast %cst : f32 -> vector<16x128xf32> {tcore_type = #npu.tcore_type<VECTOR>}
+      %10 = npu.vload %view {tcore_type = #npu.tcore_type<VECTOR>} : (memref<16x128xf32, #npu.address_space<ub>>) -> vector<16x128xf32>
+      %11 = npu.mul %10, %9 : vector<16x128xf32>, vector<16x128xf32> -> vector<16x128xf32> {tcore_type = #npu.tcore_type<VECTOR>}
+      %12 = npu.max %10, %11 : vector<16x128xf32>, vector<16x128xf32> -> vector<16x128xf32> {tcore_type = #npu.tcore_type<VECTOR>}
+      %13 = npu.reduce %12, %c1_i64 : vector<16x128xf32>, i64 -> vector<16xf32> #npu.reduce_op<sum> identities=[0.000000e+00 : f32] {tcore_type = #npu.tcore_type<VECTOR>}
+      npu.vstore %13, %view_0 {tcore_type = #npu.tcore_type<VECTOR>} : (vector<16xf32>, memref<16xf32, #npu.address_space<ub>>) -> ()
       npu.yield
     } {mode = #npu.scope_mode<simd>} : () -> ()
     npu.set_flag[<PIPE_V>, <PIPE_MTE3>, <EVENT_ID0>]

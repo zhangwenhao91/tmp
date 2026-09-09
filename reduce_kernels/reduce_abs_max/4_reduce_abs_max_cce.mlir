@@ -64,35 +64,36 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %46 = llvm.mul %44, %19 : i32
     %47 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
     %48 = cce.intr.vldsx1.f32(%47, %46, %1, %1) : (!llvm.ptr<6>, i32, i32, i32) -> vector<64xf32>
-    %49 = cce.vmuls(%48, %8, %40) : (vector<64xf32>, f32, vector<256xi1>) -> vector<64xf32>
-    %50 = cce.vmax(%48, %49, %40) : (vector<64xf32>, vector<64xf32>, vector<256xi1>) -> vector<64xf32>
-    %51 = llvm.add %45, %20 : i32
-    %52 = llvm.mul %51, %14 : i32
-    %53 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
-    %54 = cce.intr.vldsx1.f32(%53, %52, %1, %1) : (!llvm.ptr<6>, i32, i32, i32) -> vector<64xf32>
-    %55 = cce.vmuls(%54, %8, %40) : (vector<64xf32>, f32, vector<256xi1>) -> vector<64xf32>
-    %56 = cce.vmax(%54, %55, %40) : (vector<64xf32>, vector<64xf32>, vector<256xi1>) -> vector<64xf32>
-    %57 = cce.vmax(%50, %56, %40) : (vector<64xf32>, vector<64xf32>, vector<256xi1>) -> vector<64xf32>
-    %58 = cce.vcmax(%57, %40) : (vector<64xf32>, vector<256xi1>) -> vector<64xf32>
-    %59 = llvm.mul %44, %14 : i32
-    %60 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
-    cce.intr.vstsx1.f32(%58, %60, %59, %13, %1, %41) : (vector<64xf32>, <6>, i32, i32, i32, vector<256xi1>)
-    %61 = llvm.add %42, %16 : i64
-    llvm.br ^bb5(%61 : i64)
+    %49 = cce.vdups(%8, %40, %1) {mode = ["z"]} : (f32, vector<256xi1>, i32) -> vector<64xf32>
+    %50 = cce.vmul(%48, %49, %40) : (vector<64xf32>, vector<64xf32>, vector<256xi1>) -> vector<64xf32>
+    %51 = cce.vmax(%48, %50, %40) : (vector<64xf32>, vector<64xf32>, vector<256xi1>) -> vector<64xf32>
+    %52 = llvm.add %45, %20 : i32
+    %53 = llvm.mul %52, %14 : i32
+    %54 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
+    %55 = cce.intr.vldsx1.f32(%54, %53, %1, %1) : (!llvm.ptr<6>, i32, i32, i32) -> vector<64xf32>
+    %56 = cce.vmul(%55, %49, %40) : (vector<64xf32>, vector<64xf32>, vector<256xi1>) -> vector<64xf32>
+    %57 = cce.vmax(%55, %56, %40) : (vector<64xf32>, vector<64xf32>, vector<256xi1>) -> vector<64xf32>
+    %58 = cce.vmax(%51, %57, %40) : (vector<64xf32>, vector<64xf32>, vector<256xi1>) -> vector<64xf32>
+    %59 = cce.vcmax(%58, %40) : (vector<64xf32>, vector<256xi1>) -> vector<64xf32>
+    %60 = llvm.mul %44, %14 : i32
+    %61 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
+    cce.intr.vstsx1.f32(%59, %61, %60, %13, %1, %41) : (vector<64xf32>, <6>, i32, i32, i32, vector<256xi1>)
+    %62 = llvm.add %42, %16 : i64
+    llvm.br ^bb5(%62 : i64)
   ^bb7:  // pred: ^bb5
     llvm.br ^bb8
   ^bb8:  // pred: ^bb7
-    %62 = llvm.add %38, %0 : i32
-    llvm.br ^bb3(%62 : i32) {cce.vec_scope = #cce.vec_scope}
+    %63 = llvm.add %38, %0 : i32
+    llvm.br ^bb3(%63 : i32) {cce.vec_scope = #cce.vec_scope}
   ^bb9:  // pred: ^bb3
     cce.set_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
     cce.wait_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
-    %63 = llvm.ptrtoint %arg1 : !llvm.ptr<1> to i64
-    %64 = llvm.mul %31, %21 : i64
-    %65 = llvm.add %63, %64 : i64
-    %66 = llvm.inttoptr %65 : i64 to !llvm.ptr<1>
-    %67 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
-    cce.intr.mov.ub.to.out.align.v2.dv(%66, %67, %18, %11) : (<1>, <6>, i64, i64)
+    %64 = llvm.ptrtoint %arg1 : !llvm.ptr<1> to i64
+    %65 = llvm.mul %31, %21 : i64
+    %66 = llvm.add %64, %65 : i64
+    %67 = llvm.inttoptr %66 : i64 to !llvm.ptr<1>
+    %68 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
+    cce.intr.mov.ub.to.out.align.v2.dv(%67, %68, %18, %11) : (<1>, <6>, i64, i64)
     cce.barrier pipe = <PIPE_ALL>
     llvm.br ^bb2
   }

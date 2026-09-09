@@ -28,13 +28,13 @@ define dso_local ptc_kernel void @reduce_abs_max_kernel(ptr addrspace(1) %0, ptr
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 4, i64 1, i64 0)
   br label %21
 
-20:                                               ; preds = %49, %3
+20:                                               ; preds = %50, %3
   ret void
 
-21:                                               ; preds = %47, %10
-  %22 = phi i32 [ %48, %47 ], [ 0, %10 ]
+21:                                               ; preds = %48, %10
+  %22 = phi i32 [ %49, %48 ], [ 0, %10 ]
   %23 = icmp sle i32 %22, 0
-  br i1 %23, label %24, label %49
+  br i1 %23, label %24, label %50
 
 24:                                               ; preds = %21
   %25 = call <256 x i1> @llvm.hivm.pset.b32(i32 0)
@@ -42,44 +42,45 @@ define dso_local ptc_kernel void @reduce_abs_max_kernel(ptr addrspace(1) %0, ptr
   br label %27
 
 27:                                               ; preds = %30, %24
-  %28 = phi i64 [ %45, %30 ], [ 0, %24 ]
+  %28 = phi i64 [ %46, %30 ], [ 0, %24 ]
   %29 = icmp slt i64 %28, 16
-  br i1 %29, label %30, label %46
+  br i1 %29, label %30, label %47
 
 30:                                               ; preds = %27
   %31 = trunc i64 %28 to i32
   %32 = mul i32 %31, 128
   %33 = mul i32 %31, 512
   %34 = call <64 x float> @llvm.hivm.vldsx1.v64f32(ptr addrspace(6) null, i32 %33, i32 0, i32 0)
-  %35 = call <64 x float> @llvm.hivm.vmuls.s.x.v64f32(<64 x float> %34, float -1.000000e+00, <256 x i1> %25)
-  %36 = call <64 x float> @llvm.hivm.vmax.s.x.v64f32(<64 x float> %34, <64 x float> %35, <256 x i1> %25)
-  %37 = add i32 %32, 64
-  %38 = mul i32 %37, 4
-  %39 = call <64 x float> @llvm.hivm.vldsx1.v64f32(ptr addrspace(6) null, i32 %38, i32 0, i32 0)
-  %40 = call <64 x float> @llvm.hivm.vmuls.s.x.v64f32(<64 x float> %39, float -1.000000e+00, <256 x i1> %25)
-  %41 = call <64 x float> @llvm.hivm.vmax.s.x.v64f32(<64 x float> %39, <64 x float> %40, <256 x i1> %25)
-  %42 = call <64 x float> @llvm.hivm.vmax.s.x.v64f32(<64 x float> %36, <64 x float> %41, <256 x i1> %25)
-  %43 = call <64 x float> @llvm.hivm.vcmax.s.x.v64f32(<64 x float> %42, <256 x i1> %25)
-  %44 = mul i32 %31, 4
-  call void @llvm.hivm.vstsx1.v64f32(<64 x float> %43, ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), i32 %44, i32 5, i32 0, <256 x i1> %26)
-  %45 = add i64 %28, 1
+  %35 = call <64 x float> @llvm.hivm.vdups.z.v64f32(float -1.000000e+00, <256 x i1> %25, i32 0)
+  %36 = call <64 x float> @llvm.hivm.vmul.s.x.v64f32(<64 x float> %34, <64 x float> %35, <256 x i1> %25)
+  %37 = call <64 x float> @llvm.hivm.vmax.s.x.v64f32(<64 x float> %34, <64 x float> %36, <256 x i1> %25)
+  %38 = add i32 %32, 64
+  %39 = mul i32 %38, 4
+  %40 = call <64 x float> @llvm.hivm.vldsx1.v64f32(ptr addrspace(6) null, i32 %39, i32 0, i32 0)
+  %41 = call <64 x float> @llvm.hivm.vmul.s.x.v64f32(<64 x float> %40, <64 x float> %35, <256 x i1> %25)
+  %42 = call <64 x float> @llvm.hivm.vmax.s.x.v64f32(<64 x float> %40, <64 x float> %41, <256 x i1> %25)
+  %43 = call <64 x float> @llvm.hivm.vmax.s.x.v64f32(<64 x float> %37, <64 x float> %42, <256 x i1> %25)
+  %44 = call <64 x float> @llvm.hivm.vcmax.s.x.v64f32(<64 x float> %43, <256 x i1> %25)
+  %45 = mul i32 %31, 4
+  call void @llvm.hivm.vstsx1.v64f32(<64 x float> %44, ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), i32 %45, i32 5, i32 0, <256 x i1> %26)
+  %46 = add i64 %28, 1
   br label %27
 
-46:                                               ; preds = %27
-  br label %47
+47:                                               ; preds = %27
+  br label %48
 
-47:                                               ; preds = %46
-  %48 = add i32 %22, 1
+48:                                               ; preds = %47
+  %49 = add i32 %22, 1
   br label %21, !llvm.loop !2
 
-49:                                               ; preds = %21
+50:                                               ; preds = %21
   call void @llvm.hivm.SET.FLAG.IMM(i64 1, i64 5, i64 0)
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 1, i64 5, i64 0)
-  %50 = ptrtoint ptr addrspace(1) %1 to i64
-  %51 = mul i64 %14, 4
-  %52 = add i64 %50, %51
-  %53 = inttoptr i64 %52 to ptr addrspace(1)
-  call void @llvm.hivm.MOV.UB.TO.OUT.ALIGN.V2.DV(ptr addrspace(1) %53, ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), i64 288230377225453600, i64 35184372088864)
+  %51 = ptrtoint ptr addrspace(1) %1 to i64
+  %52 = mul i64 %14, 4
+  %53 = add i64 %51, %52
+  %54 = inttoptr i64 %53 to ptr addrspace(1)
+  call void @llvm.hivm.MOV.UB.TO.OUT.ALIGN.V2.DV(ptr addrspace(1) %54, ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), i64 288230377225453600, i64 35184372088864)
   call void @llvm.hivm.BARRIER(i64 6)
   br label %20
 }
@@ -124,7 +125,10 @@ declare <256 x i1> @llvm.hivm.pset.b32(i32)
 declare <64 x float> @llvm.hivm.vldsx1.v64f32(ptr addrspace(6), i32, i32, i32)
 
 ; Unknown intrinsic
-declare <64 x float> @llvm.hivm.vmuls.s.x.v64f32(<64 x float>, float, <256 x i1>)
+declare <64 x float> @llvm.hivm.vdups.z.v64f32(float, <256 x i1>, i32)
+
+; Unknown intrinsic
+declare <64 x float> @llvm.hivm.vmul.s.x.v64f32(<64 x float>, <64 x float>, <256 x i1>)
 
 ; Unknown intrinsic
 declare <64 x float> @llvm.hivm.vmax.s.x.v64f32(<64 x float>, <64 x float>, <256 x i1>)

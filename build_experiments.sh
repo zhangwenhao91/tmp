@@ -1,6 +1,6 @@
 #!/bin/bash
 # 编译 E1/E2/E3 三个实验 .o（全部用官方 TO_process 的 ccec 参数组合）
-export PATH="/home/z30086261/OpenTileAS/build/bin:$PATH"
+export PATH="/home/z30086261/tilelang-ascend-private/OpenTileAS/build/bin:$PATH"
 CCEC=/home/z30086261/Ascend/ascend-toolkit/cann-9.1.0/x86_64-linux/bin/ccec
 VADD=/home/z30086261/tmp/elementwise_kernels/vadd
 RMAX=/home/z30086261/tmp/reduce_kernels/reduce_max

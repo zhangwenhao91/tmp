@@ -17,11 +17,12 @@ module {
     %reinterpret_cast = memref.reinterpret_cast %arg0 to offset: [%4], sizes: [16, 128], strides: [128, 1] : memref<?xf32, #npu.address_space<gm>> to memref<16x128xf32, strided<[128, 1], offset: ?>, #npu.address_space<gm>>
     npu.copy ins(%reinterpret_cast : memref<16x128xf32, strided<[128, 1], offset: ?>, #npu.address_space<gm>>) outs(%view : memref<16x128xf32, #npu.address_space<ub>>)
     npu.scope() {
-      %7 = npu.vload %view : (memref<16x128xf32, #npu.address_space<ub>>) -> vector<16x128xf32>
-      %8 = npu.mul %7, %cst : vector<16x128xf32>, f32 -> vector<16x128xf32>
-      %9 = npu.max %7, %8 : vector<16x128xf32>, vector<16x128xf32> -> vector<16x128xf32>
-      %10 = npu.reduce %9, %c1_i64 : vector<16x128xf32>, i64 -> vector<16xf32> #npu.reduce_op<max> identities=[0xFF800000 : f32]
-      npu.vstore %10, %view_1 : (vector<16xf32>, memref<16xf32, #npu.address_space<ub>>) -> ()
+      %7 = npu.broadcast %cst : f32 -> vector<16x128xf32>
+      %8 = npu.vload %view : (memref<16x128xf32, #npu.address_space<ub>>) -> vector<16x128xf32>
+      %9 = npu.mul %8, %7 : vector<16x128xf32>, vector<16x128xf32> -> vector<16x128xf32>
+      %10 = npu.max %8, %9 : vector<16x128xf32>, vector<16x128xf32> -> vector<16x128xf32>
+      %11 = npu.reduce %10, %c1_i64 : vector<16x128xf32>, i64 -> vector<16xf32> #npu.reduce_op<max> identities=[0xFF800000 : f32]
+      npu.vstore %11, %view_1 : (vector<16xf32>, memref<16xf32, #npu.address_space<ub>>) -> ()
       npu.yield
     } {mode = #npu.scope_mode<simd>} : () -> ()
     %5 = arith.muli %1, %c16_i32 : i32
