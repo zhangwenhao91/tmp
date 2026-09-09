@@ -1,26 +1,7 @@
-root@localhost:/home/zwh/tmp/elementwise_kernels/vexp# cd /home/zwh/tmp/elementwise_kernels/vsub
-export KERNEL_PATH=$PWD/6_vsub.o
-python -c "
-import torch
-import importlib.util
-spec = importlib.util.spec_from_file_location('t', '8_phase5_vsub.py')
-m = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(m)
-for seed in [0, 1, 2, 3, 4, 5]:
-    torch.manual_seed(seed)
-    a = torch.randn((32,128), device='npu')
-    b = torch.randn((32,128), device='npu')
-    out = m.run_vsub(a, b)
-    diff = (out.cpu() - (a - b).cpu()).abs()
-    print(seed, 'maxdiff', diff.max().item(), 'nbad', (diff > 1e-5).sum().item())
-"
-/home/zwh/tmp/elementwise_kernels/vsub/8_phase5_vsub.py:34: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
-  output = torch.empty_like(a)
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-0 maxdiff 0.0 nbad 0
-1 maxdiff 0.0 nbad 0
-2 maxdiff 0.0 nbad 0
-3 maxdiff 0.0 nbad 0
-4 maxdiff 0.0 nbad 0
-5 maxdiff 0.0 nbad 0
+cd /home/zwh/tmp/elementwise_kernels && git pull
+for d in vadd vsub vmul vdiv vmax vexp; do
+  cd /home/zwh/tmp/elementwise_kernels/$d
+  export KERNEL_PATH=$PWD/6_$d.o
+  echo -n "$d: "
+  python 8_phase5_$d.py 2>&1 | grep -oE "Success|AssertionError|Error" | head -1
+done
