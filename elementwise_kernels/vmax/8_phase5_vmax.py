@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     triton_output = run_vmax(a, b)  # (32, 128)
 
-    torch_output = a + b
+    torch_output = torch.maximum(a, b)
 
     torch.npu.synchronize()
     assert torch.allclose(triton_output.cpu(), torch_output.cpu(), atol=1e-5), "Outputs do not match!"
