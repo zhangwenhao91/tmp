@@ -1,7 +1,32 @@
-cd /home/zwh/tmp/elementwise_kernels && git pull
+root@localhost:/home/zwh/tmp# git pull
+remote: Enumerating objects: 27, done.
+remote: Counting objects: 100% (25/25), done.
+remote: Compressing objects: 100% (11/11), done.
+remote: Total 27 (delta 17), reused 16 (delta 14), pack-reused 2 (from 1)
+Unpacking objects: 100% (27/27), 7.24 KiB | 3.62 MiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   6ff50da..37b9c36  main       -> origin/main
+Updating 6ff50da..37b9c36
+Fast-forward
+ elementwise_kernels/vadd/8_phase5_vadd.py | 2 +-
+ elementwise_kernels/vdiv/8_phase5_vdiv.py | 2 +-
+ elementwise_kernels/vexp/8_phase5_vexp.py | 2 +-
+ elementwise_kernels/vmax/8_phase5_vmax.py | 2 +-
+ elementwise_kernels/vmul/8_phase5_vmul.py | 2 +-
+ elementwise_kernels/vsub/8_phase5_vsub.py | 2 +-
+ error.txt                                 | 7 +++----
+ 7 files changed, 9 insertions(+), 10 deletions(-)
+root@localhost:/home/zwh/tmp# cd /home/zwh/tmp/elementwise_kernels && git pull
 for d in vadd vsub vmul vdiv vmax vexp; do
   cd /home/zwh/tmp/elementwise_kernels/$d
   export KERNEL_PATH=$PWD/6_$d.o
   echo -n "$d: "
   python 8_phase5_$d.py 2>&1 | grep -oE "Success|AssertionError" | head -1
 done
+Already up to date.
+vadd: Success
+vsub: AssertionError
+vmul: AssertionError
+vdiv: AssertionError
+vmax: AssertionError
+vexp: Success
