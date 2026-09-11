@@ -1,40 +1,57 @@
-root@localhost:/home/zwh/tmp/gemm_kernels/gemm# python diag_gemm_variants.py 64 128 128 64
+root@localhost:/home/zwh/tmp/gemm_kernels/gemm# python diag_gemm_sentinel.py 32 128 128 16
+=== sentinel diag M=32 K=128 N=128 BM=16 ===
+[run 1] out pre-filled with 777.0
 [RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/gemm_kernels/gemm/6_gemm_v1.o (2528 bytes) for kernel 'gemm_kernel' cv_mode=mix
+[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/gemm_kernels/gemm/6_gemm.o (2568 bytes) for kernel 'gemm_kernel' cv_mode=mix
 [RUNTIME_CACHE] using cached OpenTile runtime extension
-=== variant M=64 K=128 N=128 BM=64 ===
-=== ref (2x4) ===
-[W911 08:55:01.042751714 ToKernelNpu.cpp:164] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
-tensor([[  2.1592, -15.4647,   2.6700,  -4.0773],
-        [ 18.7923,   5.8135,  -6.0461,   5.6786]], device='npu:0')
-=== out (2x4) ===
-tensor([[ 1.0207,  0.5115,  0.1108, -0.8730],
-        [ 0.2772, -1.1526,  0.5735,  0.5108]], device='npu:0')
-=== stats ===
-max |diff| = nan
-mean |diff| = nan
-out is all zero: False
-out is nan: True
-bad rows (>0.1 diff): [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] ... (total 64/64)
-VERDICT: FAIL
-root@localhost:/home/zwh/tmp/gemm_kernels/gemm# export KERNEL_PATH=6_gemm_v2.o   
-root@localhost:/home/zwh/tmp/gemm_kernels/gemm# python diag_gemm_variants.py 16 64 128 16
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/gemm_kernels/gemm/6_gemm_v2.o (2536 bytes) for kernel 'gemm_kernel' cv_mode=mix
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-=== variant M=16 K=64 N=128 BM=16 ===
-=== ref (2x4) ===
-[W911 08:56:02.098580436 ToKernelNpu.cpp:164] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
-tensor([[ -2.3789,  -2.6268,  -2.5229,  -4.7874],
-        [-10.6385,  -4.7023,   0.9125,   0.8321]], device='npu:0')
-=== out (2x4) ===
-tensor([[ 1.0207,  0.5115,  0.1108, -0.8730],
-        [ 0.2772, -1.1526,  0.5735,  0.5108]], device='npu:0')
-=== stats ===
-max |diff| = nan
-mean |diff| = nan
-out is all zero: False
-out is nan: True
-bad rows (>0.1 diff): [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] (total 16/16)
-VERDICT: FAIL
-root@localhost:/home/zwh/tmp/gemm_kernels/gemm# 
+  sentinel 777 remaining: 2048/4096
+[W911 09:12:54.573401109 ToKernelNpu.cpp:164] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+  out[:2,:4] =
+tensor([[777., 777., 777., 777.],
+        [777., 777., 777., 777.]], device='npu:0')
+  nan count: 6
+[run 2] same, second launch on same buffer
+  sentinel 777 remaining: 1024/4096
+  out[:2,:4] =
+tensor([[6., 6., 6., 6.],
+        [0., 0., 0., 0.]], device='npu:0')
+  nan count: 0
+[run 3] fresh buffer pre-filled 777.0 again
+  sentinel 777 remaining: 2048/4096
+  out[:2,:4] =
+tensor([[777., 777., 777., 777.],
+        [777., 777., 777., 777.]], device='npu:0')
+  nan count: 0
+=== verdict ===
+OUTPUT PARTIALLY WRITTEN: 2048 cells untouched — address/layout mismatch
+root@localhost:/home/zwh/tmp/gemm_kernels/gemm# python -m pip show triton-opentile | grep Location
+Location: /usr/local/python3.11.0/lib/python3.11/site-packages
+root@localhost:/home/zwh/tmp/gemm_kernels/gemm# grep -rn "cv_mode\|_mix_aic|\mix" /usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/ --include="*.py" | grep -iv test
+
+bash: rep: command not found
+root@localhost:/home/zwh/tmp/gemm_kernels/gemm# grep -rn "cv_mode\|_mix_aic|\mix" /usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/ --include="*.py" | grep -iv test
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/conf.py:28:    def kernel_cv_mode():
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/conf.py:29:        """Optional cv_mode override for KERNEL_PATH binaries: aiv, aic, or mix."""
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:49:    kernel_cv_mode: str = ""
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:66:        kernel_cv_mode = OpenTileEnvConf.kernel_cv_mode()
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:67:        if kernel_cv_mode:
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:68:            if kernel_cv_mode not in ("aiv", "aic", "mix"):
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:69:                raise ValueError(f"Invalid KERNEL_CV_MODE '{kernel_cv_mode}'. Valid: [aiv, aic, mix]")
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:70:            object.__setattr__(self, "kernel_cv_mode", kernel_cv_mode)
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:121:def _apply_cv_mode(ir_text: str, metadata, opt):
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:122:    if opt.kernel_cv_mode:
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:123:        metadata["cv_mode"] = opt.kernel_cv_mode
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:125:    # Extract auto-detected cv_mode from optimization_hints and update
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:127:    match = re.search(r'cv_mode\s*=\s*"(\w+)"', ir_text)
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:129:        metadata["cv_mode"] = match.group(1)
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:133:    _apply_cv_mode(ir_text, metadata, opt)
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py:139:            f"cv_mode={metadata.get('cv_mode', 'aiv')}"
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py:95:    # Per-kernel cv_mode registry: populated by OpenTileLauncher (has metadata),
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py:96:    # consumed by load_binary (called by triton core without cv_mode arg).
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py:106:        self._cv_mode_by_name: dict = {}
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py:108:    def register_cv_mode(self, name: str, cv_mode: str | None) -> None:
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py:109:        if cv_mode:
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py:110:            self._cv_mode_by_name[name] = cv_mode
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py:124:        mode = self._cv_mode_by_name.get(name) or "aiv"
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py:586:        utils.register_cv_mode(
+/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/runtime.py:587:            metadata.name, getattr(metadata, "cv_mode", None)
