@@ -1,0 +1,25 @@
+=== sentinel diag M=16 K=128 N=128 BM=16 ===
+[run 1] out pre-filled with 777.0
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/gemm_kernels/gemm/6_gemm_split.o (2600 bytes) for kernel 'gemm_kernel' cv_mode=mix
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[W911 14:43:33.800724533 ToKernelNpu.cpp:164] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+  sentinel 777 remaining: 1024/2048
+  out[:2,:4] =
+tensor([[777., 777., 777., 777.],
+        [777., 777., 777., 777.]], device='npu:0')
+  nan count: 0
+[run 2] same, second launch on same buffer
+  sentinel 777 remaining: 0/2048
+  out[:2,:4] =
+tensor([[0., 0., 0., 0.],
+        [0., 0., 0., 0.]], device='npu:0')
+  nan count: 0
+[run 3] fresh buffer pre-filled 777.0 again
+  sentinel 777 remaining: 1024/2048
+  out[:2,:4] =
+tensor([[777., 777., 777., 777.],
+        [777., 777., 777., 777.]], device='npu:0')
+  nan count: 0
+=== verdict ===
+OUTPUT PARTIALLY WRITTEN: 1024 cells untouched — address/layout mismatch

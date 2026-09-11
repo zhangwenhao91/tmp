@@ -1,0 +1,241 @@
+    Py_DECREF(ret);
+    PyErr_SetString(PyExc_TypeError, "data_ptr() must return a 64-bit integer address");
+    return 0;
+  }}
+  uint64_t value = asU64(ret, "data_ptr()");
+  if (PyErr_Occurred()) {{
+    Py_DECREF(ret);
+    return 0;
+  }}
+  if (value == 0) {{
+    Py_DECREF(ret);
+    return 0;
+  }}
+  aclrtPtrAttributes attributes;
+  aclError status = aclrtPointerGetAttributes(reinterpret_cast<void *>(value), &attributes);
+  if (status == ACL_SUCCESS) {{
+    if (attributes.location.type != ACL_MEM_LOCATION_TYPE_DEVICE && attributes.location.type != 4) {{
+      Py_DECREF(ret);
+      PyErr_Format(PyExc_ValueError,
+                   "pointer argument %d cannot be accessed from OpenTile runtime (cpu tensor?)",
+                   idx);
+      return 0;
+    }}
+  }} else {{
+    Py_DECREF(ret);
+    PyErr_Format(PyExc_RuntimeError,
+                 "failed to query pointer attributes at argument %d, error code: 0x%x",
+                 idx, status);
+    return 0;
+  }}
+  Py_DECREF(ret);
+  return value;
+}}
+
+void appendPointer(std::vector<uint8_t> &buffer, PyObject *obj, int idx) {{
+  alignBuffer<uint64_t>(buffer);
+  uint64_t ptr = getPointer(obj, idx);
+  if (PyErr_Occurred()) return;
+  appendBytes<uint64_t>(buffer, ptr);
+}}
+
+template <typename T>
+void appendInteger(std::vector<uint8_t> &buffer, PyObject *obj, const char *name, int) {{
+  alignBuffer<T>(buffer);
+  appendBytes<T>(buffer, static_cast<T>(asI64(obj, name)));
+}}
+
+template <typename T>
+void appendUnsigned(std::vector<uint8_t> &buffer, PyObject *obj, const char *name, int) {{
+  alignBuffer<T>(buffer);
+  appendBytes<T>(buffer, static_cast<T>(asU64(obj, name)));
+}}
+
+template <typename T>
+void appendFloat(std::vector<uint8_t> &buffer, PyObject *obj, const char *name, int) {{
+  alignBuffer<T>(buffer);
+  appendBytes<T>(buffer, static_cast<T>(asDouble(obj, name)));
+}}
+
+template <typename T>
+void appendConstInt(std::vector<uint8_t> &buffer, T value) {{
+  appendBytes<T>(buffer, value);
+}}
+
+template <typename T>
+void appendConstFloat(std::vector<uint8_t> &buffer, T value) {{
+  appendBytes<T>(buffer, value);
+}}
+
+PyObject *launch(PyObject *, PyObject *args) {{
+  uint64_t functionValue = 0;
+  uint64_t streamValue = 0;
+  uint32_t blocknum = kDefaultBlockNum;
+  {arg_decls}
+  {grid_decls}
+  if (!PyArg_ParseTuple(args, "KKI{arg_format}", &functionValue, &streamValue, &blocknum{parse_targets})) {{
+    return nullptr;
+  }}
+
+  std::vector<uint8_t> argsBuffer;
+  {append_lines}
+  void *argsPtr = argsBuffer.empty() ? nullptr : static_cast<void *>(argsBuffer.data());
+  rtError_t ret = rtKernelLaunch(reinterpret_cast<void *>(functionValue), blocknum,
+                                 argsPtr, argsBuffer.size(), nullptr,
+                                 reinterpret_cast<rtStream_t>(streamValue));
+  if (ret != RT_ERROR_NONE) {{
+    raiseRtError("rtKernelLaunch", ret);
+    return nullptr;
+  }}
+  ret = rtStreamSynchronize(reinterpret_cast<rtStream_t>(streamValue));
+  if (ret != RT_ERROR_NONE) {{
+    raiseRtError("rtStreamSynchronize", ret);
+    return nullptr;
+  }}
+  Py_RETURN_NONE;
+}}
+
+PyMethodDef ModuleMethods[] = {{
+    {{"launch", launch, METH_VARARGS, "Launch one OpenTile kernel with a generated ABI wrapper."}},
+    {{nullptr, nullptr, 0, nullptr}},
+}};
+
+PyModuleDef ModuleDef = {{
+    PyModuleDef_HEAD_INIT,
+    "opentile_generated_launcher",
+    nullptr,
+    -1,
+    ModuleMethods,
+}};
+
+}} // namespace
+
+PyMODINIT_FUNC PyInit_opentile_generated_launcher(void) {{ return PyModule_Create(&ModuleDef); }}
+"""
+
+    return source
+
+
+def _env_flag(name: str, default: str = "false") -> bool:
+    return os.getenv(name, default).lower() in ("1", "true", "on", "yes")
+
+
+def _compile_opentile_launcher(src: str) -> str:
+    ascend_home = _find_ascend_home()
+    cxx = _get_cxx()
+    version = "|".join([src, str(ascend_home), cxx, sysconfig.get_config_var("EXT_SUFFIX") or ""])
+    key = hashlib.sha256(version.encode("utf-8")).hexdigest()
+    cache = get_cache_manager(key)
+    suffix = sysconfig.get_config_var("EXT_SUFFIX")
+    fname = f"opentile_generated_launcher{suffix}"
+    cached = cache.get_file(fname)
+    if cached is not None:
+        return cached
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        src_path = os.path.join(tmpdir, "opentile_generated_launcher.cpp")
+        so_path = os.path.join(tmpdir, fname)
+        Path(src_path).write_text(src)
+
+        include_dirs = [
+            _python_include_dir(),
+            os.path.join(ascend_home, "include"),
+            os.path.join(ascend_home, "include/experiment"),
+            os.path.join(ascend_home, "include/experiment/runtime"),
+            os.path.join(ascend_home, "pkg_inc"),
+        ]
+        lib_dirs = [
+            os.path.join(ascend_home, "lib64"),
+            os.path.join(ascend_home, "runtime/lib64"),
+            os.path.join(ascend_home, "runtime/lib64/stub"),
+            os.path.join(ascend_home, "lib64/stub"),
+        ]
+        cmd = [cxx, src_path, "-O3", "-shared", "-fPIC", "-std=c++17", "-w", "-o", so_path]
+        cmd += [f"-I{path}" for path in include_dirs if path and Path(path).exists()]
+        cmd += [f"-L{path}" for path in lib_dirs if path and Path(path).exists()]
+        cmd += ["-lruntime", "-lascendcl"]
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if result.returncode != 0:
+            raise RuntimeError(
+                "Failed to build OpenTile generated launcher extension.\n"
+                f"Command: {' '.join(cmd)}\n"
+                f"stderr:\n{result.stderr}"
+            )
+        return cache.put(Path(so_path).read_bytes(), fname, binary=True)
+
+
+class OpenTileGeneratedLauncher:
+    def __init__(self, metadata):
+        self.metadata = metadata
+        source = make_opentile_launcher_source(metadata)
+        self._module = _load_module_from_path(
+            "opentile_generated_launcher",
+            _compile_opentile_launcher(source),
+        )
+        self.launch = self._module.launch
+
+    def __call__(self, function, stream, blocknum, *kernel_args):
+        return self.launch(int(function), int(stream), int(blocknum), *kernel_args)
+
+
+class OpenTileLauncher:
+
+    def make_runtime_metadata(self, metadata):
+        signature = _expand_runtime_signature(self.src.signature)
+        return {
+            "kernel_name": metadata.name,
+            "signature": signature,
+            "arg_names": list(signature),
+        }
+
+    def __init__(self, src, metadata):
+        self.src = src
+        self.metadata = metadata
+        self.runtime_metadata = self.make_runtime_metadata(metadata)
+        self.generated_launcher = None
+        self.compile_only = _env_flag("TRITON_COMPILE_ONLY") or _env_flag("OPENTILE_COMPILE_ONLY")
+        source_arg_names = src.fn.arg_names if hasattr(src, "fn") else ()
+        self.runtime_arg_specs = tuple(
+            (
+                source_arg_names.index(name) if isinstance(name, str) else name,
+                signature,
+            )
+            for name, signature in src.signature.items()
+            if signature != "constexpr"
+        )
+        utils = OpenTileAscendUtils()
+        utils.register_cv_mode(
+            metadata.name, getattr(metadata, "cv_mode", None)
+        )
+
+    def _runtime_values(self, kernel_args):
+        values = []
+        for index, signature in self.runtime_arg_specs:
+            values.extend(_expand_runtime_argument(kernel_args[index], signature))
+        return values
+
+    def _launch_dynamic(self, runtime_metadata, gridX, gridY, gridZ, stream, function, kernel_args):
+        if self.generated_launcher is None:
+            self.generated_launcher = OpenTileGeneratedLauncher(runtime_metadata)
+        blocknum = int(gridX) * int(gridY) * int(gridZ)
+        if blocknum <= 0:
+            blocknum = int(_metadata_value(runtime_metadata, "launch.blocknum", 1))
+
+        runtime_values = self._runtime_values(kernel_args)
+        # Args order matches PyArg_ParseTuple format "KKI{O*N}{iii}":
+        # function(K), stream(K), blocknum(I), *user_args(O), gridX/Y/Z(i)
+        self.generated_launcher(function, stream, blocknum,
+                                *runtime_values, int(gridX), int(gridY), int(gridZ))
+
+    def __call__(
+        self,
+        gridX,
+        gridY,
+        gridZ,
+        stream,
+        function,
+        packed_metadata=None,
+        launch_metadata=None,
+        launch_enter_hook=None,
+        launch_exit_hook=None,
+        *kernel_args,
