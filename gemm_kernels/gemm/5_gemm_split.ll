@@ -29,8 +29,9 @@ define dso_local ptc_kernel void @gemm_kernel_mix_aic(ptr addrspace(1) %0, ptr a
   call void @llvm.hivm.SET.FLAG.IMM(i64 2, i64 10, i64 0)
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 2, i64 10, i64 0)
   call void @llvm.hivm.SET.LOOP3.PARA(i64 1)
-  call void @llvm.hivm.FIX.L0C.TO.UB.f32.EXT(ptr addrspace(6) null, ptr addrspace(5) null, i64 549756864512, i64 8796093022224)
+  call void @llvm.hivm.FIX.L0C.TO.UB.f32.EXT(ptr addrspace(6) null, ptr addrspace(5) null, i64 549756864512, i64 8796093088760)
   call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 0)
+  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 16)
   call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 10, i64 1)
   call void @llvm.hivm.BARRIER(i64 6)
   ret void
@@ -43,18 +44,20 @@ define dso_local ptc_kernel void @gemm_kernel_mix_aiv(ptr addrspace(1) %0, ptr a
   %7 = call i64 @llvm.hivm.GET.CTRL()
   %8 = call i64 @llvm.hivm.SBITSET1(i64 %7, i64 48)
   call void @llvm.hivm.SET.CTRL(i64 %8)
-  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 0)
   %9 = call i64 @llvm.hivm.GET.SUBBLOCKID()
   %10 = icmp eq i64 %9, 0
   br i1 %10, label %11, label %14
 
 11:                                               ; preds = %4
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 0)
   %12 = ptrtoint ptr addrspace(1) %2 to i64
   %13 = inttoptr i64 %12 to ptr addrspace(1)
   call void @llvm.hivm.MOV.UB.TO.OUT.ALIGN.V2.DV(ptr addrspace(1) %13, ptr addrspace(6) null, i64 288230377225455616, i64 35184372088864)
+  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 5, i64 1)
   br label %18
 
 14:                                               ; preds = %4
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 16)
   %15 = ptrtoint ptr addrspace(1) %2 to i64
   %16 = add i64 %15, 4096
   %17 = inttoptr i64 %16 to ptr addrspace(1)
@@ -62,7 +65,6 @@ define dso_local ptc_kernel void @gemm_kernel_mix_aiv(ptr addrspace(1) %0, ptr a
   br label %18
 
 18:                                               ; preds = %11, %14
-  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 5, i64 1)
   call void @llvm.hivm.BARRIER(i64 6)
   ret void
 }
