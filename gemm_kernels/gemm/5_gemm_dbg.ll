@@ -3,6 +3,9 @@ source_filename = "LLVMDialectModule"
 target triple = "hiipu64-hisilicon-cce"
 
 @_debug_prefix_12108603912770652896 = private constant [8 x i8] c"l0c_acc\00"
+
+@_debug_desc_0 = private constant { ptr addrspace(6), ptr addrspace(6), i64, [2 x i64], [2 x i64] } { ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), i64 0, [2 x i64] [i64 16, i64 128], [2 x i64] [i64 128, i64 1] }
+@_debug_desc_1 = private constant { ptr addrspace(6), ptr addrspace(6), i64, [2 x i64], [2 x i64] } { ptr addrspace(6) null, ptr addrspace(6) null, i64 0, [2 x i64] [i64 16, i64 128], [2 x i64] [i64 128, i64 1] }
 @_debug_prefix_9586956735109918980 = private constant [11 x i8] c"ub_fix_out\00"
 
 ; Unknown intrinsic
@@ -90,12 +93,8 @@ define dso_local ptc_kernel void @gemm_kernel_mix_aic(ptr addrspace(1) %0, ptr a
   call void @llvm.hivm.SET.LOOP3.PARA(i64 1)
   call void @llvm.hivm.FIX.L0C.TO.UB.f32.EXT(ptr addrspace(6) null, ptr addrspace(5) null, i64 549756864512, i64 8796093022224)
   call void @llvm.hivm.FIX.L0C.TO.UB.f32.EXT(ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), ptr addrspace(5) null, i64 549756864512, i64 8796093022224)
-  %13 = alloca { ptr addrspace(6), ptr addrspace(6), i64, [2 x i64], [2 x i64] }, align 8
-  store { ptr addrspace(6), ptr addrspace(6), i64, [2 x i64], [2 x i64] } { ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), i64 0, [2 x i64] [i64 16, i64 128], [2 x i64] [i64 128, i64 1] }, ptr %13, align 8
-  call void @_mlir_ciface_print_2d_float_ubuf.cube(ptr @_debug_prefix_12108603912770652896, i64 7, ptr %13, i8 0)
-  %14 = alloca { ptr addrspace(6), ptr addrspace(6), i64, [2 x i64], [2 x i64] }, align 8
-  store { ptr addrspace(6), ptr addrspace(6), i64, [2 x i64], [2 x i64] } { ptr addrspace(6) null, ptr addrspace(6) null, i64 0, [2 x i64] [i64 16, i64 128], [2 x i64] [i64 128, i64 1] }, ptr %14, align 8
-  call void @_mlir_ciface_print_2d_float_ubuf.cube(ptr @_debug_prefix_9586956735109918980, i64 10, ptr %14, i8 0)
+  call void @_mlir_ciface_print_2d_float_ubuf.cube(ptr @_debug_prefix_12108603912770652896, i64 7, ptr @_debug_desc_0, i8 0)
+  call void @_mlir_ciface_print_2d_float_ubuf.cube(ptr @_debug_prefix_9586956735109918980, i64 10, ptr @_debug_desc_1, i8 0)
   call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 0)
   call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 10, i64 1)
   call void @llvm.hivm.BARRIER(i64 6)
