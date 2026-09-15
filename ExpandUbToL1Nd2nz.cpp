@@ -199,7 +199,10 @@ public:
 
     // ---- 第一步：分配 UB scratch buffer ----
     // 构造一个 1D memref 类型：
-    //   形状 = (rows + 1) * cols  <- 多一行做 padding（防 NZ 重排时末尾越界）
+    //   形状 = (rows + 1) * cols  <- 多一行是 UB bank 交错布局的一部分
+    //   vsstb 按 (rows+1) 个 32B 块的间隔散布 8 个块，+1 让相邻块
+    //   落在不同 UB bank（避免 bank 冲突）；写入恰好铺满 (rows+1)*cols，
+    //   每 pass 留 8 个 32B 的洞（交错间隔本身）
     //   元素类型同源
     //   布局 = 默认（连续）
     //   地址空间 = UB
@@ -316,7 +319,7 @@ std::unique_ptr<Pass> createExpandUbToL1Nd2nzPass() {
 //         ↓ pass 执行后
 //
 // 输出 IR:
-//   %scratch : memref<(M+1)xNxf16, UB>  (临时 NZ buffer，多一行 padding)
+//   %scratch : memref<(M+1)xNxf16, UB>  (临时 NZ buffer，含 bank 交错洞)
 //   %ub_data : memref<MxNxf16, UB>       (原数据不变)
 //   npu.nd2nz_scatter %ub_data -> %scratch (在 UB 内做 ND->NZ 重排)
 //   npu.copy %scratch -> %l1_buf           (linear_transfer，线性搬运，不再重排)
@@ -325,5 +328,5 @@ std::unique_ptr<Pass> createExpandUbToL1Nd2nzPass() {
 //   1. alloc scratch    分配 UB 临时空间（NZ 重排需要中间 buffer）
 //   2. Nd2nzScatterOp   ND->NZ 重排（在 UB 内完成布局转换）
 //   3. copy+linear      线性搬运到 L1（源已是 NZ，直接搬不需再重排）
-//   4. 多一行 padding   (rows+1)*cols，NZ 重排末尾可能越界，多一行安全
+//   4. (rows+1)*cols   UB bank 交错布局（防 bank 冲突），写入恰好铺满
 // =============================================================================
