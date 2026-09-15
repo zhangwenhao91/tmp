@@ -1,0 +1,24 @@
+    __aicore__ inline void NZ2ZN()
+    {
+        int srcOffset = 0;
+        int dstOffset = 0;
+        LocalTensor<half> b1Local = inQueueB1.DeQue<half>();
+        LocalTensor<half> b2Local = inQueueB2.AllocTensor<half>();
+
+        LoadData2dParams loadDataParams;
+        loadDataParams.repeatTimes = 2;   // 迭代次数为2
+        loadDataParams.srcStride = 2;     // 源分形矩阵（头与头）间隔为2 * 512B
+        loadDataParams.dstGap = 0;              // 目的分形矩阵（头与头）间隔为0 * 512B
+        loadDataParams.ifTranspose = true;      // 对每个分形矩阵进行转置
+
+        // transform nz to zn
+        for (int i = 0; i < 2; ++i) {
+            LoadData(b2Local[dstOffset], b1Local[srcOffset], loadDataParams);
+
+            srcOffset += 32 / 2 * 16;
+            dstOffset += 32 * 16;
+        }
+
+        inQueueB1.FreeTensor(b1Local);
+        inQueueB2.EnQue<half>(b2Local);
+    }
