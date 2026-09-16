@@ -1,0 +1,62 @@
+{
+  "kernel_o": "dsa_6.o",
+  "kernel_name": "main_mix_aic",
+  "device": 0,
+  "mix_mode": "mix",
+  "blocknum": 32,
+  "golden": {
+    "module_path": "golden_dsa.py",
+    "function": "dsa_golden",
+    "atol": 0.5,
+    "rtol": 0.05
+  },
+  "args": [
+    {
+      "name": "Q",
+      "kind": "input",
+      "dtype": "uint16",
+      "shape": [1, 4096, 64, 256],
+      "path": "Q.npy"
+    },
+    {
+      "name": "KV",
+      "kind": "input",
+      "dtype": "uint16",
+      "shape": [1, 4096, 256],
+      "path": "KV.npy"
+    },
+    {
+      "name": "AttnSink",
+      "kind": "input",
+      "dtype": "float32",
+      "shape": [64],
+      "path": "AttnSink.npy"
+    },
+    {
+      "name": "TopKIndices",
+      "kind": "input",
+      "dtype": "int32",
+      "shape": [1, 4096, 128],
+      "path": "TopKIndices.npy"
+    },
+    {
+      "name": "O",
+      "kind": "output",
+      "dtype": "float32",
+      "shape": [1, 4096, 64, 256],
+      "path": "O_output.npy"
+    },
+    {
+      "name": "cid",
+      "kind": "scalar",
+      "dtype": "int32",
+      "value": 0
+    },
+    {
+      "name": "vid",
+      "kind": "scalar",
+      "dtype": "int32",
+      "value": 0
+    }
+  ]
+}
