@@ -1,14 +1,80 @@
+root@localhost:/home/zwh/tmp/bench_transfer# git pull
+remote: Enumerating objects: 35, done.
+remote: Counting objects: 100% (35/35), done.
+remote: Compressing objects: 100% (12/12), done.
+remote: Total 30 (delta 21), reused 23 (delta 18), pack-reused 0 (from 0)
+Unpacking objects: 100% (30/30), 8.68 KiB | 177.00 KiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   48c98b2..3d68c2f  main       -> origin/main
+Updating 48c98b2..3d68c2f
+Fast-forward
+ bench_transfer/.gitignore                      |   8 ++++++--
+ bench_transfer/6_l1ub_bfloat16_16x256_r128.o   | Bin 0 -> 3120 bytes
+ bench_transfer/6_l1ub_bfloat16_16x256_r16.o    | Bin 0 -> 3120 bytes
+ bench_transfer/6_l1ub_bfloat16_64x256_r128.o   | Bin 0 -> 3136 bytes
+ bench_transfer/6_l1ub_bfloat16_64x256_r16.o    | Bin 0 -> 3136 bytes
+ bench_transfer/6_l1ub_float32_16x256_r128.o    | Bin 0 -> 2848 bytes
+ bench_transfer/6_l1ub_float32_16x256_r16.o     | Bin 0 -> 2848 bytes
+ bench_transfer/6_ub2ub_bfloat16_128x256_r128.o | Bin 0 -> 1864 bytes
+ bench_transfer/6_ub2ub_bfloat16_128x256_r16.o  | Bin 0 -> 1864 bytes
+ bench_transfer/6_ub2ub_bfloat16_16x256_r128.o  | Bin 0 -> 1856 bytes
+ bench_transfer/6_ub2ub_bfloat16_16x256_r16.o   | Bin 0 -> 1856 bytes
+ bench_transfer/6_ub2ub_bfloat16_64x256_r128.o  | Bin 0 -> 1856 bytes
+ bench_transfer/6_ub2ub_bfloat16_64x256_r16.o   | Bin 0 -> 1856 bytes
+ bench_transfer/6_ub2ub_float32_16x256_r128.o   | Bin 0 -> 1856 bytes
+ bench_transfer/6_ub2ub_float32_16x256_r16.o    | Bin 0 -> 1856 bytes
+ bench_transfer/6_ub2ub_float32_64x256_r128.o   | Bin 0 -> 1864 bytes
+ bench_transfer/6_ub2ub_float32_64x256_r16.o    | Bin 0 -> 1864 bytes
+ bench_transfer/bench_run.py                    |  40 ++++++++++++++++++++++++++++++----------
+ error.txt                                      |  34 ++++++++++++++--------------------
+ 19 files changed, 50 insertions(+), 32 deletions(-)
+ create mode 100644 bench_transfer/6_l1ub_bfloat16_16x256_r128.o
+ create mode 100644 bench_transfer/6_l1ub_bfloat16_16x256_r16.o
+ create mode 100644 bench_transfer/6_l1ub_bfloat16_64x256_r128.o
+ create mode 100644 bench_transfer/6_l1ub_bfloat16_64x256_r16.o
+ create mode 100644 bench_transfer/6_l1ub_float32_16x256_r128.o
+ create mode 100644 bench_transfer/6_l1ub_float32_16x256_r16.o
+ create mode 100644 bench_transfer/6_ub2ub_bfloat16_128x256_r128.o
+ create mode 100644 bench_transfer/6_ub2ub_bfloat16_128x256_r16.o
+ create mode 100644 bench_transfer/6_ub2ub_bfloat16_16x256_r128.o
+ create mode 100644 bench_transfer/6_ub2ub_bfloat16_16x256_r16.o
+ create mode 100644 bench_transfer/6_ub2ub_bfloat16_64x256_r128.o
+ create mode 100644 bench_transfer/6_ub2ub_bfloat16_64x256_r16.o
+ create mode 100644 bench_transfer/6_ub2ub_float32_16x256_r128.o
+ create mode 100644 bench_transfer/6_ub2ub_float32_16x256_r16.o
+ create mode 100644 bench_transfer/6_ub2ub_float32_64x256_r128.o
+ create mode 100644 bench_transfer/6_ub2ub_float32_64x256_r16.o
 root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py all
 [prep] inputs saved
-[skip] missing /home/zwh/tmp/bench_transfer/6_ub2ub_bfloat16_16x256_r16.o
-[skip] missing /home/zwh/tmp/bench_transfer/6_ub2ub_bfloat16_64x256_r16.o
-[skip] missing /home/zwh/tmp/bench_transfer/6_ub2ub_bfloat16_128x256_r16.o
-[skip] missing /home/zwh/tmp/bench_transfer/6_ub2ub_float32_16x256_r16.o
-[skip] missing /home/zwh/tmp/bench_transfer/6_ub2ub_float32_64x256_r16.o
-[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_16x256_r16.o
-[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_64x256_r16.o
-[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_float32_16x256_r16.o
+ERROR: kernel_runner not found or not compiled.
+On NPU machine, run:
+  cd ~/tilelang-ascend-private/OpenTileAS/tools/kernel_runner
+  pip install -e .
+Or set: export KERNEL_RUNNER_PATH=/path/to/kernel_runner
+root@localhost:/home/zwh/tmp/bench_transfer# cd /home/zwh/OpenTileAS/tools/kernel_runner/
+root@localhost:/home/zwh/OpenTileAS/tools/kernel_runner# pip install -e .
+Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
+Obtaining file:///home/zwh/OpenTileAS/tools/kernel_runner
+  Preparing metadata (setup.py) ... done
+Requirement already satisfied: numpy in /usr/local/python3.11.0/lib/python3.11/site-packages (from kernel-runner==0.1.0) (1.23.5)
+Installing collected packages: kernel-runner
+  Attempting uninstall: kernel-runner
+    Found existing installation: kernel-runner 0.1.0
+    Uninstalling kernel-runner-0.1.0:
+      Successfully uninstalled kernel-runner-0.1.0
+  DEPRECATION: Legacy editable install of kernel-runner==0.1.0 from file:///home/zwh/OpenTileAS/tools/kernel_runner (setup.py develop) is deprecated. pip 25.3 will enforce this behaviour change. A possible replacement is to add a pyproject.toml or enable --use-pep517, and use setuptools >= 64. If the resulting installation is not behaving as expected, try using --config-settings editable_mode=compat. Please consult the setuptools documentation for more information. Discussion can be found at https://github.com/pypa/pip/issues/11457
+  Running setup.py develop for kernel-runner
+Successfully installed kernel-runner-0.1.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
-===== 差分法汇总（t_round 消除 launch/GM/gemm 常数）=====
-variant  dtype           shape     KB  t_r16us  t_r128us  round_us  dma_us  GB/s(mv)  GB/s(tr)
+[notice] A new release of pip is available: 25.2 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+root@localhost:/home/zwh/OpenTileAS/tools/kernel_runner# cd /home/zwh/tmp/bench_transfer/
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py all
+[prep] inputs saved
+ERROR: kernel_runner not found or not compiled.
+On NPU machine, run:
+  cd ~/tilelang-ascend-private/OpenTileAS/tools/kernel_runner
+  pip install -e .
+Or set: export KERNEL_RUNNER_PATH=/path/to/kernel_runner
 root@localhost:/home/zwh/tmp/bench_transfer# 
