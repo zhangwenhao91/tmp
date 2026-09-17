@@ -1,52 +1,46 @@
 root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 40, done.
-remote: Counting objects: 100% (40/40), done.
-remote: Compressing objects: 100% (5/5), done.
-remote: Total 30 (delta 27), reused 27 (delta 25), pack-reused 0 (from 0)
-Unpacking objects: 100% (30/30), 14.71 KiB | 2.94 MiB/s, done.
+remote: Enumerating objects: 44, done.
+remote: Counting objects: 100% (44/44), done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 30 (delta 28), reused 27 (delta 26), pack-reused 0 (from 0)
+Unpacking objects: 100% (30/30), 10.86 KiB | 358.00 KiB/s, done.
 From https://github.com/zhangwenhao91/tmp
-   172f174..4e652e4  main       -> origin/main
-Updating 172f174..4e652e4
+   4e652e4..57d14c7  main       -> origin/main
+Updating 4e652e4..57d14c7
 Fast-forward
- bench_transfer/3_l1ub_bfloat16_16x256_r128_mix_npu.mlir |   4 +--
- bench_transfer/3_l1ub_bfloat16_16x256_r16_mix_npu.mlir  |   4 +--
- bench_transfer/3_l1ub_bfloat16_64x256_r128_mix_npu.mlir |   4 +--
- bench_transfer/3_l1ub_bfloat16_64x256_r16_mix_npu.mlir  |   4 +--
- bench_transfer/3_l1ub_float32_16x256_r128_mix_npu.mlir  |   4 +--
- bench_transfer/3_l1ub_float32_16x256_r16_mix_npu.mlir   |   4 +--
- bench_transfer/4_l1ub_bfloat16_16x256_r128_cce.mlir     | 332 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------------------------------------------------------------
- bench_transfer/4_l1ub_bfloat16_16x256_r16_cce.mlir      | 332 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------------------------------------------------------------
- bench_transfer/4_l1ub_bfloat16_64x256_r128_cce.mlir     | 332 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------------------------------------------------------------
- bench_transfer/4_l1ub_bfloat16_64x256_r16_cce.mlir      | 332 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------------------------------------------------------------
- bench_transfer/4_l1ub_float32_16x256_r128_cce.mlir      | 332 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------------------------------------------------------------
- bench_transfer/4_l1ub_float32_16x256_r16_cce.mlir       | 332 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------------------------------------------------------------
- bench_transfer/5_l1ub_bfloat16_16x256_r128.ll           | 329 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/5_l1ub_bfloat16_16x256_r16.ll            | 329 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/5_l1ub_bfloat16_64x256_r128.ll           | 329 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/5_l1ub_bfloat16_64x256_r16.ll            | 329 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/5_l1ub_float32_16x256_r128.ll            | 329 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/5_l1ub_float32_16x256_r16.ll             | 329 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/3_l1ub_bfloat16_16x256_r128_mix_npu.mlir |   4 ++--
+ bench_transfer/3_l1ub_bfloat16_16x256_r16_mix_npu.mlir  |   4 ++--
+ bench_transfer/3_l1ub_bfloat16_64x256_r128_mix_npu.mlir |   4 ++--
+ bench_transfer/3_l1ub_bfloat16_64x256_r16_mix_npu.mlir  |   4 ++--
+ bench_transfer/3_l1ub_float32_16x256_r128_mix_npu.mlir  |   4 ++--
+ bench_transfer/3_l1ub_float32_16x256_r16_mix_npu.mlir   |   4 ++--
+ bench_transfer/4_l1ub_bfloat16_16x256_r128_cce.mlir     |   4 ++--
+ bench_transfer/4_l1ub_bfloat16_16x256_r16_cce.mlir      |   4 ++--
+ bench_transfer/4_l1ub_bfloat16_64x256_r128_cce.mlir     |   4 ++--
+ bench_transfer/4_l1ub_bfloat16_64x256_r16_cce.mlir      |   4 ++--
+ bench_transfer/4_l1ub_float32_16x256_r128_cce.mlir      |   4 ++--
+ bench_transfer/4_l1ub_float32_16x256_r16_cce.mlir       |   4 ++--
+ bench_transfer/5_l1ub_bfloat16_16x256_r128.ll           |   4 ++--
+ bench_transfer/5_l1ub_bfloat16_16x256_r16.ll            |   4 ++--
+ bench_transfer/5_l1ub_bfloat16_64x256_r128.ll           |   4 ++--
+ bench_transfer/5_l1ub_bfloat16_64x256_r16.ll            |   4 ++--
+ bench_transfer/5_l1ub_float32_16x256_r128.ll            |   4 ++--
+ bench_transfer/5_l1ub_float32_16x256_r16.ll             |   4 ++--
  bench_transfer/6_l1ub_bfloat16_16x256_r128.o            | Bin 3696 -> 3696 bytes
  bench_transfer/6_l1ub_bfloat16_16x256_r16.o             | Bin 3696 -> 3696 bytes
  bench_transfer/6_l1ub_bfloat16_64x256_r128.o            | Bin 3704 -> 3704 bytes
  bench_transfer/6_l1ub_bfloat16_64x256_r16.o             | Bin 3704 -> 3704 bytes
  bench_transfer/6_l1ub_float32_16x256_r128.o             | Bin 3720 -> 3720 bytes
  bench_transfer/6_l1ub_float32_16x256_r16.o              | Bin 3720 -> 3720 bytes
- error.txt                                               |  67 +++++++++++++++++++--------------------
- 25 files changed, 3022 insertions(+), 1035 deletions(-)
- create mode 100644 bench_transfer/5_l1ub_bfloat16_16x256_r128.ll
- create mode 100644 bench_transfer/5_l1ub_bfloat16_16x256_r16.ll
- create mode 100644 bench_transfer/5_l1ub_bfloat16_64x256_r128.ll
- create mode 100644 bench_transfer/5_l1ub_bfloat16_64x256_r16.ll
- create mode 100644 bench_transfer/5_l1ub_float32_16x256_r128.ll
- create mode 100644 bench_transfer/5_l1ub_float32_16x256_r16.ll
+ error.txt                                               |  65 +++++++++++++++++++++++++++++++++++++----------------------------
+ 25 files changed, 73 insertions(+), 64 deletions(-)
 root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py all
 [prep] inputs saved
-[ub2ub bfloat16 16x256] T(r16)=239.5us T(r128)=1909.3us round=14.91us dma=14.91us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
-[ub2ub bfloat16 64x256] T(r16)=955.3us T(r128)=7632.4us round=59.62us dma=59.62us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
-[ub2ub bfloat16 128x256] T(r16)=1910.2us T(r128)=15264.2us round=119.23us dma=119.23us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
-[ub2ub float32 16x256] T(r16)=213.5us T(r128)=427.0us round=1.91us dma=1.91us bw(move)=8.59GB/s bw(traffic)=17.19GB/s
-[ub2ub float32 64x256] T(r16)=302.5us T(r128)=1276.0us round=8.69us dma=8.69us bw(move)=7.54GB/s bw(traffic)=15.08GB/s
+[ub2ub bfloat16 16x256] T(r16)=239.5us T(r128)=1909.2us round=14.91us dma=14.91us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
+[ub2ub bfloat16 64x256] T(r16)=955.2us T(r128)=7632.6us round=59.62us dma=59.62us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
+[ub2ub bfloat16 128x256] T(r16)=1909.4us T(r128)=15263.7us round=119.23us dma=119.23us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
+[ub2ub float32 16x256] T(r16)=41.2us T(r128)=321.8us round=2.51us dma=2.51us bw(move)=6.54GB/s bw(traffic)=13.08GB/s
+[ub2ub float32 64x256] T(r16)=161.0us T(r128)=1276.0us round=9.96us dma=9.96us bw(move)=6.58GB/s bw(traffic)=13.17GB/s
 Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/bench_run.py", line 348, in <module>
     main()
@@ -58,3 +52,4 @@ Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/bench_run.py", line 135, in _bench_once
     rt.synchronize_stream(stream)
 RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
+root@localhost:/home/zwh/tmp/bench_transfer# 
