@@ -92,16 +92,36 @@ def do_prep():
 # run: 计时 + 差分
 # ---------------------------------------------------------------------------
 def _load_rt():
-    sys.path.insert(
-        0,
-        os.path.expanduser(
-            "~/tilelang-ascend-private/OpenTileAS/tools/kernel_runner"
-        ),
-    )
-    from kernel_runner import _ascend_runtime as rt
-
-    return rt
-
+    # 1) 环境变量指定路径（优先）
+    # 2) 常见路径探测
+    # 3) 已 pip install 的全局 site-packages
+    candidates = []
+    env_path = os.environ.get('KERNEL_RUNNER_PATH')
+    if env_path:
+        candidates.append(env_path)
+    for home in (os.path.expanduser('~'), '/home/zwh', '/home/z30086261'):
+        candidates.append(
+            os.path.join(home, 'tilelang-ascend-private/OpenTileAS/tools/kernel_runner')
+        )
+    seen = set()
+    for p in candidates:
+        p = os.path.abspath(p)
+        if p in seen or not os.path.isdir(p):
+            continue
+        seen.add(p)
+        sys.path.insert(0, p)
+        try:
+            from kernel_runner import _ascend_runtime as rt
+            return rt
+        except ModuleNotFoundError:
+            sys.path.pop(0)
+            continue
+    print('ERROR: kernel_runner not found or not compiled.', file=sys.stderr)
+    print('On NPU machine, run:', file=sys.stderr)
+    print('  cd ~/tilelang-ascend-private/OpenTileAS/tools/kernel_runner', file=sys.stderr)
+    print('  pip install -e .', file=sys.stderr)
+    print('Or set: export KERNEL_RUNNER_PATH=/path/to/kernel_runner', file=sys.stderr)
+    sys.exit(1)
 
 def _bench_once(rt, func, stream, args):
     for _ in range(WARMUP):
