@@ -1,20 +1,13 @@
-root@localhost:/home/zwh/tmp/gemm_kernels/gemm# git pull
-remote: Enumerating objects: 15, done.
-remote: Counting objects: 100% (15/15), done.
-remote: Compressing objects: 100% (4/4), done.
-remote: Total 9 (delta 5), reused 6 (delta 4), pack-reused 0 (from 0)
-Unpacking objects: 100% (9/9), 3.02 KiB | 3.02 MiB/s, done.
-From https://github.com/zhangwenhao91/tmp
-   7071ccc..b5f2bb7  main       -> origin/main
-Updating 7071ccc..b5f2bb7
-Fast-forward
- error.txt                         |  52 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- gemm_kernels/gemm/5_gemm_split.ll |   2 +-
- gemm_kernels/gemm/6_gemm_split.o  | Bin 2584 -> 2584 bytes
- 3 files changed, 52 insertions(+), 2 deletions(-)
-root@localhost:/home/zwh/tmp/gemm_kernels/gemm# KERNEL_PATH=$PWD/6_gemm_split.o KERNEL_CV_MODE=mix python diag_gemm_sentinel.py 16 128 128 16 2>&1 | tee split_out.txt 
-=== sentinel diag M=16 K=128 N=128 BM=16 ===
-[run 1] out pre-filled with 777.0
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/gemm_kernels/gemm/6_gemm_split.o (2584 bytes) for kernel 'gemm_kernel' cv_mode=mix
-[RUNTIME_CACHE] using cached OpenTile runtime extension
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py all
+[prep] inputs saved
+Traceback (most recent call last):
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 323, in <module>
+    main()
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 316, in main
+    do_run()
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 118, in do_run
+    rt = _load_rt()
+         ^^^^^^^^^^
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 101, in _load_rt
+    from kernel_runner import _ascend_runtime as rt
+ModuleNotFoundError: No module named 'kernel_runner'
