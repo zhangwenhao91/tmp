@@ -172,9 +172,8 @@ def do_run():
         for variant, dtype, M in SPECS:
             entry = uploads[(variant, dtype, M)]
             mode = "aiv" if variant == "ub2ub" else "mix"
-            kname = f"{variant}_kernel"
-            if variant == "l1ub":
-                kname = "l1ub_kernel"
+            # mix 双函数 .o 的入口符号带 _mix_aic 后缀（runtime 自动配对 _mix_aiv）
+            kname = f"{variant}_kernel" if variant == "ub2ub" else f"{variant}_kernel_mix_aic"
             times = {}
             for R in (R_LOW, R_HIGH):
                 path = o_path(variant, dtype, M, R)
@@ -256,7 +255,7 @@ def do_verify():
                 continue
             x = np.load(npy_path(f"X_{variant}_{dtype}_{M}"))
             mode = "aiv" if variant == "ub2ub" else "mix"
-            kname = "ub2ub_kernel" if variant == "ub2ub" else "l1ub_kernel"
+            kname = "ub2ub_kernel" if variant == "ub2ub" else "l1ub_kernel_mix_aic"
             with open(path, "rb") as f:
                 obytes = f.read()
             module, func = rt.load_kernel(kname, obytes, 0, mode)
