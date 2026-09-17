@@ -14,10 +14,10 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %11 = llvm.mlir.constant(0 : index) : i64
     %12 = llvm.mlir.constant(1 : index) : i64
     %13 = llvm.mlir.constant(68719542273 : i64) : i64
-    %14 = llvm.mlir.constant(5 : i64) : i64
-    %15 = llvm.mlir.constant(1099511693313 : i64) : i64
-    %16 = llvm.mlir.constant(16777232 : i64) : i64
-    %17 = llvm.mlir.constant(6 : i64) : i64
+    %14 = llvm.mlir.constant(1099511693313 : i64) : i64
+    %15 = llvm.mlir.constant(16777232 : i64) : i64
+    %16 = llvm.mlir.constant(6 : i64) : i64
+    %17 = llvm.mlir.constant(5 : i64) : i64
     %18 = llvm.mlir.constant(7 : i64) : i64
     %19 = llvm.mlir.constant(1 : i64) : i64
     %20 = llvm.mlir.constant(17596481011712 : i64) : i64
@@ -48,13 +48,12 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %42 = llvm.ptrtoint %arg0 : !llvm.ptr<1> to i64
     %43 = llvm.inttoptr %42 : i64 to !llvm.ptr<1>
     cce.intr.mov.out.to.l1.multi.nd2nz.u16.v310(%41, %43, %33, %34) : (<2>, <1>, i64, i64)
-    cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %14
-    cce.set.mte2.nz.para(%15) : i64
+    cce.set.mte2.nz.para(%14) : i64
     %44 = llvm.inttoptr %5 : i64 to !llvm.ptr<2>
     %45 = llvm.ptrtoint %arg1 : !llvm.ptr<1> to i64
     %46 = llvm.inttoptr %45 : i64 to !llvm.ptr<1>
     cce.intr.mov.out.to.l1.multi.nd2nz.u16.v310(%44, %46, %35, %36) : (<2>, <1>, i64, i64)
-    cce.set.mte2.nz.para(%15) : i64
+    cce.set.mte2.nz.para(%14) : i64
     %47 = llvm.inttoptr %6 : i64 to !llvm.ptr<2>
     %48 = llvm.ptrtoint %arg2 : !llvm.ptr<1> to i64
     %49 = llvm.inttoptr %48 : i64 to !llvm.ptr<1>
@@ -70,7 +69,8 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
   ^bb2:  // pred: ^bb1
     %52 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
     %53 = llvm.inttoptr %2 : i64 to !llvm.ptr<2>
-    cce.intr.mov.l1.to.ub.v310(%52, %53, %16) : (!llvm.ptr<6>, !llvm.ptr<2>, i64) -> ()
+    cce.intr.mov.l1.to.ub.v310(%52, %53, %15) : (!llvm.ptr<6>, !llvm.ptr<2>, i64) -> ()
+    cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %16
     cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %17
     cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %18
     cce.wait.intra.blocki.mode pipe = <PIPE_MTE1> syncid = %19
@@ -91,7 +91,7 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     cce.wait.intra.blocki.mode pipe = <PIPE_S> syncid = %3
     %61 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
     %62 = llvm.inttoptr %3 : i64 to !llvm.ptr<2>
-    cce.intr.mov.l1.to.ub.v310(%61, %62, %16) : (!llvm.ptr<6>, !llvm.ptr<2>, i64) -> ()
+    cce.intr.mov.l1.to.ub.v310(%61, %62, %15) : (!llvm.ptr<6>, !llvm.ptr<2>, i64) -> ()
     cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %25
     cce.wait.intra.blocki.mode pipe = <PIPE_MTE1> syncid = %26
     cce.wait_flag pipe = <PIPE_M> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID1>
