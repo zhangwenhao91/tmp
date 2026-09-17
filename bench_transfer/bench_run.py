@@ -100,9 +100,9 @@ def _load_rt():
     if env_path:
         candidates.append(env_path)
     for home in (os.path.expanduser('~'), '/home/zwh', '/home/z30086261'):
-        candidates.append(
-            os.path.join(home, 'tilelang-ascend-private/OpenTileAS/tools/kernel_runner')
-        )
+        for sub in ('tilelang-ascend-private/OpenTileAS/tools/kernel_runner',
+                    'OpenTileAS/tools/kernel_runner'):
+            candidates.append(os.path.join(home, sub))
     seen = set()
     for p in candidates:
         p = os.path.abspath(p)
@@ -116,6 +116,12 @@ def _load_rt():
         except ModuleNotFoundError:
             sys.path.pop(0)
             continue
+    # fallback: pip install -e . 装到全局 site-packages 的包
+    try:
+        from kernel_runner import _ascend_runtime as rt
+        return rt
+    except ModuleNotFoundError:
+        pass
     print('ERROR: kernel_runner not found or not compiled.', file=sys.stderr)
     print('On NPU machine, run:', file=sys.stderr)
     print('  cd ~/tilelang-ascend-private/OpenTileAS/tools/kernel_runner', file=sys.stderr)
