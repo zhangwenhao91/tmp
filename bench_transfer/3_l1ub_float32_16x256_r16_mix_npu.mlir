@@ -83,7 +83,7 @@ module attributes {npu.module_core_type = #npu.module_core_type<MIX>} {
       npu.mad ins(%17, %18 : memref<16x256xf32, #npu.address_space<ca>>, memref<256x16xf32, #npu.address_space<cb>>) outs(%6 : memref<16x16xf32, #npu.address_space<cc>>) {lhs_trans = false, rhs_trans = false, tcore_type = #npu.tcore_type<CUBE>, zero_init = true}
       npu.set_flag[<PIPE_M>, <PIPE_MTE1>, <EVENT_ID1>]
       npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_V>] flag = 3
-      npu.sync_block_wait[<CUBE>, <PIPE_MTE3>, <PIPE_MTE1>] flag = 3
+      npu.sync_block_wait[<CUBE>, <PIPE_MTE3>, <PIPE_MTE1>] flag = 11
     } {tilelang.loop_kind = "serial"}
     npu.set_flag[<PIPE_M>, <PIPE_FIX>, <EVENT_ID0>]
     npu.wait_flag[<PIPE_M>, <PIPE_MTE1>, <EVENT_ID1>]
@@ -161,7 +161,7 @@ module attributes {npu.module_core_type = #npu.module_core_type<MIX>} {
       npu.set_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID1>]
       npu.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_MTE1>] flag = 2
       npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_V>] flag = 3
-      npu.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_MTE1>] flag = 3
+      npu.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_MTE1>] flag = 11
     } {tilelang.loop_kind = "serial"}
     npu.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID1>]
     npu.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID0>]

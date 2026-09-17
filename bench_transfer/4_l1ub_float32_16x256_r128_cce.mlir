@@ -28,106 +28,107 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %25 = llvm.mlir.constant(8 : i64) : i64
     %26 = llvm.mlir.constant(2 : i64) : i64
     %27 = llvm.mlir.constant(3 : i64) : i64
-    %28 = llvm.mlir.constant(68720525568 : i64) : i64
-    %29 = llvm.mlir.constant(8796093022224 : i64) : i64
-    %30 = llvm.mlir.constant(9 : i64) : i64
-    %31 = llvm.mlir.constant(10 : i64) : i64
-    %32 = llvm.mlir.constant(4 : i64) : i64
-    %33 = llvm.mlir.constant(4503599627386880 : i64) : i64
-    %34 = llvm.mlir.constant(256 : i64) : i64
-    %35 = llvm.mlir.constant(72057594037928960 : i64) : i64
-    %36 = llvm.mlir.constant(16 : i64) : i64
-    %37 = cce.get.ctrl -> i64
-    %38 = cce.sbitset0(%37, %1) : (i64, i64) -> i64
-    cce.set.ctrl(%38) : i64
-    %39 = cce.get.ctrl -> i64
-    %40 = cce.sbitset1(%39, %0) : (i64, i64) -> i64
-    cce.set.ctrl(%40) : i64
+    %28 = llvm.mlir.constant(11 : i64) : i64
+    %29 = llvm.mlir.constant(68720525568 : i64) : i64
+    %30 = llvm.mlir.constant(8796093022224 : i64) : i64
+    %31 = llvm.mlir.constant(9 : i64) : i64
+    %32 = llvm.mlir.constant(10 : i64) : i64
+    %33 = llvm.mlir.constant(4 : i64) : i64
+    %34 = llvm.mlir.constant(4503599627386880 : i64) : i64
+    %35 = llvm.mlir.constant(256 : i64) : i64
+    %36 = llvm.mlir.constant(72057594037928960 : i64) : i64
+    %37 = llvm.mlir.constant(16 : i64) : i64
+    %38 = cce.get.ctrl -> i64
+    %39 = cce.sbitset0(%38, %1) : (i64, i64) -> i64
+    cce.set.ctrl(%39) : i64
+    %40 = cce.get.ctrl -> i64
+    %41 = cce.sbitset1(%40, %0) : (i64, i64) -> i64
+    cce.set.ctrl(%41) : i64
     cce.set.mte2.nz.para(%13) : i64
-    %41 = llvm.inttoptr %2 : i64 to !llvm.ptr<2>
-    %42 = llvm.ptrtoint %arg0 : !llvm.ptr<1> to i64
-    %43 = llvm.inttoptr %42 : i64 to !llvm.ptr<1>
-    cce.intr.mov.out.to.l1.multi.nd2nz.f32.v310(%41, %43, %33, %34) : (<2>, <1>, i64, i64)
+    %42 = llvm.inttoptr %2 : i64 to !llvm.ptr<2>
+    %43 = llvm.ptrtoint %arg0 : !llvm.ptr<1> to i64
+    %44 = llvm.inttoptr %43 : i64 to !llvm.ptr<1>
+    cce.intr.mov.out.to.l1.multi.nd2nz.f32.v310(%42, %44, %34, %35) : (<2>, <1>, i64, i64)
     cce.set.mte2.nz.para(%14) : i64
-    %44 = llvm.inttoptr %5 : i64 to !llvm.ptr<2>
-    %45 = llvm.ptrtoint %arg1 : !llvm.ptr<1> to i64
-    %46 = llvm.inttoptr %45 : i64 to !llvm.ptr<1>
-    cce.intr.mov.out.to.l1.multi.nd2nz.f32.v310(%44, %46, %35, %36) : (<2>, <1>, i64, i64)
+    %45 = llvm.inttoptr %5 : i64 to !llvm.ptr<2>
+    %46 = llvm.ptrtoint %arg1 : !llvm.ptr<1> to i64
+    %47 = llvm.inttoptr %46 : i64 to !llvm.ptr<1>
+    cce.intr.mov.out.to.l1.multi.nd2nz.f32.v310(%45, %47, %36, %37) : (<2>, <1>, i64, i64)
     cce.set.mte2.nz.para(%14) : i64
-    %47 = llvm.inttoptr %6 : i64 to !llvm.ptr<2>
-    %48 = llvm.ptrtoint %arg2 : !llvm.ptr<1> to i64
-    %49 = llvm.inttoptr %48 : i64 to !llvm.ptr<1>
-    cce.intr.mov.out.to.l1.multi.nd2nz.f32.v310(%47, %49, %35, %36) : (<2>, <1>, i64, i64)
+    %48 = llvm.inttoptr %6 : i64 to !llvm.ptr<2>
+    %49 = llvm.ptrtoint %arg2 : !llvm.ptr<1> to i64
+    %50 = llvm.inttoptr %49 : i64 to !llvm.ptr<1>
+    cce.intr.mov.out.to.l1.multi.nd2nz.f32.v310(%48, %50, %36, %37) : (<2>, <1>, i64, i64)
     cce.set_flag pipe = <PIPE_MTE2> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID0>
     cce.wait_flag pipe = <PIPE_MTE2> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID0>
     cce.set_flag pipe = <PIPE_M> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID0>
     cce.set_flag pipe = <PIPE_M> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID1>
     llvm.br ^bb1(%11 : i64)
-  ^bb1(%50: i64):  // 2 preds: ^bb0, ^bb2
-    %51 = llvm.icmp "slt" %50, %10 : i64
-    llvm.cond_br %51, ^bb2, ^bb3
+  ^bb1(%51: i64):  // 2 preds: ^bb0, ^bb2
+    %52 = llvm.icmp "slt" %51, %10 : i64
+    llvm.cond_br %52, ^bb2, ^bb3
   ^bb2:  // pred: ^bb1
-    %52 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
-    %53 = llvm.inttoptr %2 : i64 to !llvm.ptr<2>
-    cce.intr.mov.l1.to.ub.v310(%52, %53, %15) : (!llvm.ptr<6>, !llvm.ptr<2>, i64) -> ()
+    %53 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
+    %54 = llvm.inttoptr %2 : i64 to !llvm.ptr<2>
+    cce.intr.mov.l1.to.ub.v310(%53, %54, %15) : (!llvm.ptr<6>, !llvm.ptr<2>, i64) -> ()
     cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %16
     cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %17
     cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %18
     cce.wait.intra.blocki.mode pipe = <PIPE_MTE1> syncid = %19
     cce.wait_flag pipe = <PIPE_M> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID0>
-    %54 = llvm.inttoptr %5 : i64 to !llvm.ptr<3>
-    %55 = llvm.inttoptr %3 : i64 to !llvm.ptr<2>
-    cce.intr.load.l1.to.l0a.2dv2.f32(%54, %55, %20, %21, %3) : (<3>, <2>, i64, i64, i64)
-    %56 = llvm.inttoptr %5 : i64 to !llvm.ptr<4>
-    %57 = llvm.inttoptr %5 : i64 to !llvm.ptr<2>
-    cce.intr.load.l1.to.l0b.2dv2.f32(%56, %57, %22, %23, %19) : (<4>, <2>, i64, i64, i64)
+    %55 = llvm.inttoptr %5 : i64 to !llvm.ptr<3>
+    %56 = llvm.inttoptr %3 : i64 to !llvm.ptr<2>
+    cce.intr.load.l1.to.l0a.2dv2.f32(%55, %56, %20, %21, %3) : (<3>, <2>, i64, i64, i64)
+    %57 = llvm.inttoptr %5 : i64 to !llvm.ptr<4>
+    %58 = llvm.inttoptr %5 : i64 to !llvm.ptr<2>
+    cce.intr.load.l1.to.l0b.2dv2.f32(%57, %58, %22, %23, %19) : (<4>, <2>, i64, i64, i64)
     cce.set_flag pipe = <PIPE_MTE1> tpipe = <PIPE_M> pipeID = <EVENT_ID0>
     cce.wait_flag pipe = <PIPE_MTE1> tpipe = <PIPE_M> pipeID = <EVENT_ID0>
-    %58 = llvm.inttoptr %3 : i64 to !llvm.ptr<5>
-    %59 = llvm.inttoptr %5 : i64 to !llvm.ptr<3>
-    %60 = llvm.inttoptr %5 : i64 to !llvm.ptr<4>
-    cce.intr.mad.f322f32(%58, %59, %60, %24) : (<5>, <3>, <4>, i64)
+    %59 = llvm.inttoptr %3 : i64 to !llvm.ptr<5>
+    %60 = llvm.inttoptr %5 : i64 to !llvm.ptr<3>
+    %61 = llvm.inttoptr %5 : i64 to !llvm.ptr<4>
+    cce.intr.mad.f322f32(%59, %60, %61, %24) : (<5>, <3>, <4>, i64)
     cce.set_flag pipe = <PIPE_M> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID0>
     cce.wait.intra.blocki.mode pipe = <PIPE_S> syncid = %3
-    %61 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
-    %62 = llvm.inttoptr %3 : i64 to !llvm.ptr<2>
-    cce.intr.mov.l1.to.ub.v310(%61, %62, %15) : (!llvm.ptr<6>, !llvm.ptr<2>, i64) -> ()
+    %62 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
+    %63 = llvm.inttoptr %3 : i64 to !llvm.ptr<2>
+    cce.intr.mov.l1.to.ub.v310(%62, %63, %15) : (!llvm.ptr<6>, !llvm.ptr<2>, i64) -> ()
     cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %25
     cce.wait.intra.blocki.mode pipe = <PIPE_MTE1> syncid = %26
     cce.wait_flag pipe = <PIPE_M> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID1>
-    %63 = llvm.inttoptr %6 : i64 to !llvm.ptr<3>
-    %64 = llvm.inttoptr %2 : i64 to !llvm.ptr<2>
-    cce.intr.load.l1.to.l0a.2dv2.f32(%63, %64, %20, %21, %3) : (<3>, <2>, i64, i64, i64)
-    %65 = llvm.inttoptr %6 : i64 to !llvm.ptr<4>
-    %66 = llvm.inttoptr %6 : i64 to !llvm.ptr<2>
-    cce.intr.load.l1.to.l0b.2dv2.f32(%65, %66, %22, %23, %19) : (<4>, <2>, i64, i64, i64)
+    %64 = llvm.inttoptr %6 : i64 to !llvm.ptr<3>
+    %65 = llvm.inttoptr %2 : i64 to !llvm.ptr<2>
+    cce.intr.load.l1.to.l0a.2dv2.f32(%64, %65, %20, %21, %3) : (<3>, <2>, i64, i64, i64)
+    %66 = llvm.inttoptr %6 : i64 to !llvm.ptr<4>
+    %67 = llvm.inttoptr %6 : i64 to !llvm.ptr<2>
+    cce.intr.load.l1.to.l0b.2dv2.f32(%66, %67, %22, %23, %19) : (<4>, <2>, i64, i64, i64)
     cce.set_flag pipe = <PIPE_MTE1> tpipe = <PIPE_M> pipeID = <EVENT_ID0>
     cce.wait_flag pipe = <PIPE_MTE1> tpipe = <PIPE_M> pipeID = <EVENT_ID0>
-    %67 = llvm.inttoptr %7 : i64 to !llvm.ptr<5>
-    %68 = llvm.inttoptr %6 : i64 to !llvm.ptr<3>
-    %69 = llvm.inttoptr %6 : i64 to !llvm.ptr<4>
-    cce.intr.mad.f322f32(%67, %68, %69, %24) : (<5>, <3>, <4>, i64)
+    %68 = llvm.inttoptr %7 : i64 to !llvm.ptr<5>
+    %69 = llvm.inttoptr %6 : i64 to !llvm.ptr<3>
+    %70 = llvm.inttoptr %6 : i64 to !llvm.ptr<4>
+    cce.intr.mad.f322f32(%68, %69, %70, %24) : (<5>, <3>, <4>, i64)
     cce.set_flag pipe = <PIPE_M> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID1>
     cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %27
-    cce.wait.intra.blocki.mode pipe = <PIPE_MTE1> syncid = %27
-    %70 = llvm.add %50, %12 : i64
-    llvm.br ^bb1(%70 : i64)
+    cce.wait.intra.blocki.mode pipe = <PIPE_MTE1> syncid = %28
+    %71 = llvm.add %51, %12 : i64
+    llvm.br ^bb1(%71 : i64)
   ^bb3:  // pred: ^bb1
     cce.set_flag pipe = <PIPE_M> tpipe = <PIPE_FIX> pipeID = <EVENT_ID0>
     cce.wait_flag pipe = <PIPE_M> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID1>
     cce.wait_flag pipe = <PIPE_M> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID0>
     cce.wait_flag pipe = <PIPE_M> tpipe = <PIPE_FIX> pipeID = <EVENT_ID0>
     cce.set.loop3.para(%19) : i64
-    %71 = llvm.inttoptr %8 : i64 to !llvm.ptr<6>
-    %72 = llvm.inttoptr %3 : i64 to !llvm.ptr<5>
-    cce.intr.fix.l0c.to.ub.f32.ext(%71, %72, %28, %29) : (<6>, <5>, i64, i64)
-    cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %30
-    cce.set.loop3.para(%19) : i64
-    %73 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
-    %74 = llvm.inttoptr %7 : i64 to !llvm.ptr<5>
-    cce.intr.fix.l0c.to.ub.f32.ext(%73, %74, %28, %29) : (<6>, <5>, i64, i64)
+    %72 = llvm.inttoptr %8 : i64 to !llvm.ptr<6>
+    %73 = llvm.inttoptr %3 : i64 to !llvm.ptr<5>
+    cce.intr.fix.l0c.to.ub.f32.ext(%72, %73, %29, %30) : (<6>, <5>, i64, i64)
     cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %31
-    cce.wait.intra.blocki.mode pipe = <PIPE_FIX> syncid = %32
+    cce.set.loop3.para(%19) : i64
+    %74 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
+    %75 = llvm.inttoptr %7 : i64 to !llvm.ptr<5>
+    cce.intr.fix.l0c.to.ub.f32.ext(%74, %75, %29, %30) : (<6>, <5>, i64, i64)
+    cce.set.intra.blocki.mode pipe = <PIPE_FIX> syncid = %32
+    cce.wait.intra.blocki.mode pipe = <PIPE_FIX> syncid = %33
     cce.barrier pipe = <PIPE_ALL>
     llvm.return
   }
@@ -160,27 +161,28 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %25 = llvm.mlir.constant(6 : i64) : i64
     %26 = llvm.mlir.constant(2 : i64) : i64
     %27 = llvm.mlir.constant(3 : i64) : i64
-    %28 = llvm.mlir.constant(9 : i64) : i64
-    %29 = llvm.mlir.constant(288230377225454080 : i64) : i64
-    %30 = llvm.mlir.constant(35184372088864 : i64) : i64
-    %31 = llvm.mlir.constant(10 : i64) : i64
-    %32 = llvm.mlir.constant(4 : i64) : i64
-    %33 = cce.get.ctrl -> i64
-    %34 = cce.sbitset0(%33, %3) : (i64, i64) -> i64
-    cce.set.ctrl(%34) : i64
-    %35 = cce.get.ctrl -> i64
-    %36 = cce.sbitset1(%35, %2) : (i64, i64) -> i64
-    cce.set.ctrl(%36) : i64
-    %37 = cce.get_sub_block_idx -> i64
-    %38 = llvm.icmp "eq" %37, %4 : i64
-    llvm.cond_br %38, ^bb1, ^bb5
+    %28 = llvm.mlir.constant(11 : i64) : i64
+    %29 = llvm.mlir.constant(9 : i64) : i64
+    %30 = llvm.mlir.constant(288230377225454080 : i64) : i64
+    %31 = llvm.mlir.constant(35184372088864 : i64) : i64
+    %32 = llvm.mlir.constant(10 : i64) : i64
+    %33 = llvm.mlir.constant(4 : i64) : i64
+    %34 = cce.get.ctrl -> i64
+    %35 = cce.sbitset0(%34, %3) : (i64, i64) -> i64
+    cce.set.ctrl(%35) : i64
+    %36 = cce.get.ctrl -> i64
+    %37 = cce.sbitset1(%36, %2) : (i64, i64) -> i64
+    cce.set.ctrl(%37) : i64
+    %38 = cce.get_sub_block_idx -> i64
+    %39 = llvm.icmp "eq" %38, %4 : i64
+    llvm.cond_br %39, ^bb1, ^bb5
   ^bb1:  // pred: ^bb0
     cce.set_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID0>
     cce.set_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID1>
     llvm.br ^bb2(%11 : i64)
-  ^bb2(%39: i64):  // 2 preds: ^bb1, ^bb25
-    %40 = llvm.icmp "slt" %39, %10 : i64
-    llvm.cond_br %40, ^bb3, ^bb4
+  ^bb2(%40: i64):  // 2 preds: ^bb1, ^bb25
+    %41 = llvm.icmp "slt" %40, %10 : i64
+    llvm.cond_br %41, ^bb3, ^bb4
   ^bb3:  // pred: ^bb2
     cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %13
     cce.wait_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID0>
@@ -188,125 +190,125 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
   ^bb4:  // pred: ^bb2
     cce.wait_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID1>
     cce.wait_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID0>
-    cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %28
-    %41 = llvm.ptrtoint %arg3 : !llvm.ptr<1> to i64
-    %42 = llvm.inttoptr %41 : i64 to !llvm.ptr<1>
-    %43 = llvm.inttoptr %7 : i64 to !llvm.ptr<6>
-    cce.intr.mov.ub.to.out.align.v2.dv(%42, %43, %29, %30) : (<1>, <6>, i64, i64)
-    cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %31
-    %44 = llvm.ptrtoint %arg4 : !llvm.ptr<1> to i64
-    %45 = llvm.inttoptr %44 : i64 to !llvm.ptr<1>
-    %46 = llvm.inttoptr %8 : i64 to !llvm.ptr<6>
-    cce.intr.mov.ub.to.out.align.v2.dv(%45, %46, %29, %30) : (<1>, <6>, i64, i64)
-    cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %32
+    cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %29
+    %42 = llvm.ptrtoint %arg3 : !llvm.ptr<1> to i64
+    %43 = llvm.inttoptr %42 : i64 to !llvm.ptr<1>
+    %44 = llvm.inttoptr %7 : i64 to !llvm.ptr<6>
+    cce.intr.mov.ub.to.out.align.v2.dv(%43, %44, %30, %31) : (<1>, <6>, i64, i64)
+    cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %32
+    %45 = llvm.ptrtoint %arg4 : !llvm.ptr<1> to i64
+    %46 = llvm.inttoptr %45 : i64 to !llvm.ptr<1>
+    %47 = llvm.inttoptr %8 : i64 to !llvm.ptr<6>
+    cce.intr.mov.ub.to.out.align.v2.dv(%46, %47, %30, %31) : (<1>, <6>, i64, i64)
+    cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %33
     cce.barrier pipe = <PIPE_ALL>
     llvm.br ^bb5
   ^bb5:  // 2 preds: ^bb0, ^bb4
     llvm.return
-  ^bb6(%47: i32):  // 2 preds: ^bb3, ^bb14
-    %48 = llvm.icmp "sle" %47, %1 : i32
-    llvm.cond_br %48, ^bb7, ^bb15
+  ^bb6(%48: i32):  // 2 preds: ^bb3, ^bb14
+    %49 = llvm.icmp "sle" %48, %1 : i32
+    llvm.cond_br %49, ^bb7, ^bb15
   ^bb7:  // pred: ^bb6
-    %49 = cce.pset(%1) {mask_bitwidth = 32 : i32} : (i32) -> vector<256xi1>
+    %50 = cce.pset(%1) {mask_bitwidth = 32 : i32} : (i32) -> vector<256xi1>
     llvm.br ^bb8(%11 : i64)
-  ^bb8(%50: i64):  // 2 preds: ^bb7, ^bb12
-    %51 = llvm.icmp "slt" %50, %15 : i64
-    llvm.cond_br %51, ^bb9, ^bb13
+  ^bb8(%51: i64):  // 2 preds: ^bb7, ^bb12
+    %52 = llvm.icmp "slt" %51, %15 : i64
+    llvm.cond_br %52, ^bb9, ^bb13
   ^bb9:  // pred: ^bb8
     llvm.br ^bb10(%11 : i64)
-  ^bb10(%52: i64):  // 2 preds: ^bb9, ^bb11
-    %53 = llvm.icmp "slt" %52, %16 : i64
-    llvm.cond_br %53, ^bb11, ^bb12
+  ^bb10(%53: i64):  // 2 preds: ^bb9, ^bb11
+    %54 = llvm.icmp "slt" %53, %16 : i64
+    llvm.cond_br %54, ^bb11, ^bb12
   ^bb11:  // pred: ^bb10
-    %54 = llvm.mul %52, %17 : i64
-    %55 = llvm.mul %50, %18 : i64
-    %56 = llvm.add %54, %55 : i64
-    %57 = llvm.inttoptr %6 : i64 to !llvm.ptr<6>
-    %58 = llvm.mul %56, %32 : i64
-    %59 = llvm.getelementptr %57[%58] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
-    %60 = cce.intr.vldsx1.f32(%59, %1, %1, %1) : (!llvm.ptr<6>, i32, i32, i32) -> vector<64xf32>
-    %61 = llvm.mul %50, %19 : i64
-    %62 = llvm.mul %52, %20 : i64
-    %63 = llvm.add %61, %62 : i64
-    %64 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
-    %65 = llvm.mul %63, %32 : i64
-    %66 = llvm.getelementptr %64[%65] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
-    cce.intr.vsstb.f32(%60, %66, %14, %1, %49) : (vector<64xf32>, <6>, i32, i32, vector<256xi1>)
-    %67 = llvm.add %52, %12 : i64
-    llvm.br ^bb10(%67 : i64)
+    %55 = llvm.mul %53, %17 : i64
+    %56 = llvm.mul %51, %18 : i64
+    %57 = llvm.add %55, %56 : i64
+    %58 = llvm.inttoptr %6 : i64 to !llvm.ptr<6>
+    %59 = llvm.mul %57, %33 : i64
+    %60 = llvm.getelementptr %58[%59] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
+    %61 = cce.intr.vldsx1.f32(%60, %1, %1, %1) : (!llvm.ptr<6>, i32, i32, i32) -> vector<64xf32>
+    %62 = llvm.mul %51, %19 : i64
+    %63 = llvm.mul %53, %20 : i64
+    %64 = llvm.add %62, %63 : i64
+    %65 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
+    %66 = llvm.mul %64, %33 : i64
+    %67 = llvm.getelementptr %65[%66] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
+    cce.intr.vsstb.f32(%61, %67, %14, %1, %50) : (vector<64xf32>, <6>, i32, i32, vector<256xi1>)
+    %68 = llvm.add %53, %12 : i64
+    llvm.br ^bb10(%68 : i64)
   ^bb12:  // pred: ^bb10
-    %68 = llvm.add %50, %12 : i64
-    llvm.br ^bb8(%68 : i64)
+    %69 = llvm.add %51, %12 : i64
+    llvm.br ^bb8(%69 : i64)
   ^bb13:  // pred: ^bb8
     llvm.br ^bb14
   ^bb14:  // pred: ^bb13
-    %69 = llvm.add %47, %0 : i32
-    llvm.br ^bb6(%69 : i32) {cce.vec_scope = #cce.vec_scope}
+    %70 = llvm.add %48, %0 : i32
+    llvm.br ^bb6(%70 : i32) {cce.vec_scope = #cce.vec_scope}
   ^bb15:  // pred: ^bb6
     cce.set_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
     cce.set.intra.blocki.mode pipe = <PIPE_MTE2> syncid = %4
     cce.wait_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
-    %70 = llvm.inttoptr %4 : i64 to !llvm.ptr<2>
-    %71 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
-    cce.intr.mov.ub.to.l1.v310(%70, %71, %21) : (<2>, <6>, i64)
+    %71 = llvm.inttoptr %4 : i64 to !llvm.ptr<2>
+    %72 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
+    cce.intr.mov.ub.to.l1.v310(%71, %72, %21) : (<2>, <6>, i64)
     cce.set_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID0>
     cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %22
     cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %23
     cce.wait_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID1>
     llvm.br ^bb16(%1 : i32)
-  ^bb16(%72: i32):  // 2 preds: ^bb15, ^bb24
-    %73 = llvm.icmp "sle" %72, %1 : i32
-    llvm.cond_br %73, ^bb17, ^bb25
+  ^bb16(%73: i32):  // 2 preds: ^bb15, ^bb24
+    %74 = llvm.icmp "sle" %73, %1 : i32
+    llvm.cond_br %74, ^bb17, ^bb25
   ^bb17:  // pred: ^bb16
-    %74 = cce.pset(%1) {mask_bitwidth = 32 : i32} : (i32) -> vector<256xi1>
+    %75 = cce.pset(%1) {mask_bitwidth = 32 : i32} : (i32) -> vector<256xi1>
     llvm.br ^bb18(%11 : i64)
-  ^bb18(%75: i64):  // 2 preds: ^bb17, ^bb22
-    %76 = llvm.icmp "slt" %75, %15 : i64
-    llvm.cond_br %76, ^bb19, ^bb23
+  ^bb18(%76: i64):  // 2 preds: ^bb17, ^bb22
+    %77 = llvm.icmp "slt" %76, %15 : i64
+    llvm.cond_br %77, ^bb19, ^bb23
   ^bb19:  // pred: ^bb18
     llvm.br ^bb20(%11 : i64)
-  ^bb20(%77: i64):  // 2 preds: ^bb19, ^bb21
-    %78 = llvm.icmp "slt" %77, %16 : i64
-    llvm.cond_br %78, ^bb21, ^bb22
+  ^bb20(%78: i64):  // 2 preds: ^bb19, ^bb21
+    %79 = llvm.icmp "slt" %78, %16 : i64
+    llvm.cond_br %79, ^bb21, ^bb22
   ^bb21:  // pred: ^bb20
-    %79 = llvm.mul %77, %17 : i64
-    %80 = llvm.mul %75, %18 : i64
-    %81 = llvm.add %79, %80 : i64
-    %82 = llvm.inttoptr %6 : i64 to !llvm.ptr<6>
-    %83 = llvm.mul %81, %32 : i64
-    %84 = llvm.getelementptr %82[%83] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
-    %85 = cce.intr.vldsx1.f32(%84, %1, %1, %1) : (!llvm.ptr<6>, i32, i32, i32) -> vector<64xf32>
-    %86 = llvm.mul %75, %19 : i64
-    %87 = llvm.mul %77, %20 : i64
-    %88 = llvm.add %86, %87 : i64
-    %89 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
-    %90 = llvm.mul %88, %32 : i64
-    %91 = llvm.getelementptr %89[%90] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
-    cce.intr.vsstb.f32(%85, %91, %14, %1, %74) : (vector<64xf32>, <6>, i32, i32, vector<256xi1>)
-    %92 = llvm.add %77, %12 : i64
-    llvm.br ^bb20(%92 : i64)
+    %80 = llvm.mul %78, %17 : i64
+    %81 = llvm.mul %76, %18 : i64
+    %82 = llvm.add %80, %81 : i64
+    %83 = llvm.inttoptr %6 : i64 to !llvm.ptr<6>
+    %84 = llvm.mul %82, %33 : i64
+    %85 = llvm.getelementptr %83[%84] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
+    %86 = cce.intr.vldsx1.f32(%85, %1, %1, %1) : (!llvm.ptr<6>, i32, i32, i32) -> vector<64xf32>
+    %87 = llvm.mul %76, %19 : i64
+    %88 = llvm.mul %78, %20 : i64
+    %89 = llvm.add %87, %88 : i64
+    %90 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
+    %91 = llvm.mul %89, %33 : i64
+    %92 = llvm.getelementptr %90[%91] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
+    cce.intr.vsstb.f32(%86, %92, %14, %1, %75) : (vector<64xf32>, <6>, i32, i32, vector<256xi1>)
+    %93 = llvm.add %78, %12 : i64
+    llvm.br ^bb20(%93 : i64)
   ^bb22:  // pred: ^bb20
-    %93 = llvm.add %75, %12 : i64
-    llvm.br ^bb18(%93 : i64)
+    %94 = llvm.add %76, %12 : i64
+    llvm.br ^bb18(%94 : i64)
   ^bb23:  // pred: ^bb18
     llvm.br ^bb24
   ^bb24:  // pred: ^bb23
-    %94 = llvm.add %72, %0 : i32
-    llvm.br ^bb16(%94 : i32) {cce.vec_scope = #cce.vec_scope}
+    %95 = llvm.add %73, %0 : i32
+    llvm.br ^bb16(%95 : i32) {cce.vec_scope = #cce.vec_scope}
   ^bb25:  // pred: ^bb16
     cce.set_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
     cce.wait.intra.blocki.mode pipe = <PIPE_S> syncid = %24
     cce.wait.intra.blocki.mode pipe = <PIPE_S> syncid = %25
     cce.wait_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
-    %95 = llvm.inttoptr %5 : i64 to !llvm.ptr<2>
-    %96 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
-    cce.intr.mov.ub.to.l1.v310(%95, %96, %21) : (<2>, <6>, i64)
+    %96 = llvm.inttoptr %5 : i64 to !llvm.ptr<2>
+    %97 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
+    cce.intr.mov.ub.to.l1.v310(%96, %97, %21) : (<2>, <6>, i64)
     cce.set_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID1>
     cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %26
     cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %27
-    cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %27
-    %97 = llvm.add %39, %12 : i64
-    llvm.br ^bb2(%97 : i64)
+    cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %28
+    %98 = llvm.add %40, %12 : i64
+    llvm.br ^bb2(%98 : i64)
   }
 }
 
