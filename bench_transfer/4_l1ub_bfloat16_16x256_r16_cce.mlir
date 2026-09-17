@@ -244,8 +244,8 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     llvm.br ^bb6(%68 : i32) {cce.vec_scope = #cce.vec_scope}
   ^bb15:  // pred: ^bb6
     cce.set_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
-    cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %4
     cce.wait_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
+    cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %4
     %69 = llvm.inttoptr %4 : i64 to !llvm.ptr<2>
     %70 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
     cce.intr.mov.ub.to.l1.v310(%69, %70, %19) : (<2>, <6>, i64)
