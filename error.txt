@@ -1,13 +1,14 @@
 root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py all
 [prep] inputs saved
-Traceback (most recent call last):
-  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 323, in <module>
-    main()
-  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 316, in main
-    do_run()
-  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 118, in do_run
-    rt = _load_rt()
-         ^^^^^^^^^^
-  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 101, in _load_rt
-    from kernel_runner import _ascend_runtime as rt
-ModuleNotFoundError: No module named 'kernel_runner'
+[skip] missing /home/zwh/tmp/bench_transfer/6_ub2ub_bfloat16_16x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_ub2ub_bfloat16_64x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_ub2ub_bfloat16_128x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_ub2ub_float32_16x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_ub2ub_float32_64x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_16x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_64x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_float32_16x256_r16.o
+
+===== 差分法汇总（t_round 消除 launch/GM/gemm 常数）=====
+variant  dtype           shape     KB  t_r16us  t_r128us  round_us  dma_us  GB/s(mv)  GB/s(tr)
+root@localhost:/home/zwh/tmp/bench_transfer# 
