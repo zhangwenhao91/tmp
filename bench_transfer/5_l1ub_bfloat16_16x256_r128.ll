@@ -232,8 +232,8 @@ define dso_local ptc_kernel void @l1ub_kernel_mix_aiv(ptr addrspace(1) %0, ptr a
 
 85:                                               ; preds = %55
   call void @llvm.hivm.SET.FLAG.IMM(i64 1, i64 5, i64 0)
-  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 0, i64 5)
-  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 0, i64 6)
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 5)
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 6)
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 1, i64 5, i64 0)
   call void @llvm.hivm.MOV.UB.TO.L1.v310(ptr addrspace(2) inttoptr (i64 8192 to ptr addrspace(2)), ptr addrspace(6) inttoptr (i64 8704 to ptr addrspace(6)), i64 4296016128)
   call void @llvm.hivm.SET.FLAG.IMM(i64 5, i64 1, i64 1)

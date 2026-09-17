@@ -154,8 +154,8 @@ module attributes {npu.module_core_type = #npu.module_core_type<MIX>} {
       npu.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID1>]
       npu.nd2nz_scatter ins(%view_8 : memref<16x256xbf16, #npu.address_space<ub>>) outs(%12 : memref<4352xbf16, #npu.address_space<ub>>) {tcore_type = #npu.tcore_type<VECTOR>}
       npu.set_flag[<PIPE_V>, <PIPE_MTE3>, <EVENT_ID0>]
-      npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_S>] flag = 5
-      npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_S>] flag = 6
+      npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_V>] flag = 5
+      npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_V>] flag = 6
       npu.wait_flag[<PIPE_V>, <PIPE_MTE3>, <EVENT_ID0>]
       npu.copy ins(%12 : memref<4352xbf16, #npu.address_space<ub>>) outs(%view : memref<16x256xbf16, #npu.address_space<cbuf>>) {linear_transfer, tcore_type = #npu.tcore_type<VECTOR>}
       npu.set_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID1>]
