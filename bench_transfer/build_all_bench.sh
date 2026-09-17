@@ -32,7 +32,11 @@ build_one() { # $1=variant $2=M $3=dtype $4=REPEAT
     -o "2_${tag}_npu.mlir" 2>/tmp/bench_s2.err || { echo "[FAIL-s2] $tag"; cat /tmp/bench_s2.err | head -3; fail=$((fail+1)); return; }
   grep -qE '(^| )error' /tmp/bench_s2.err && { echo "[DIAG-ERR-s2] $tag"; head -3 /tmp/bench_s2.err; fail=$((fail+1)); return; }
 
-  "$OPT" "2_${tag}_npu.mlir" --npu-split-scope --npu-plan-memory \
+  # "$OPT" "2_${tag}_npu.mlir" --npu-split-scope --npu-plan-memory \
+  #   --npu-split-mix-kernel --npu-sync-pipeline -o "3_${tag}_mix_npu.mlir" 2>/tmp/bench_s3.err || {
+  # fix 0x7bc87: expand UB->L1 ND copy into nd2nz_scatter (padded mem_unique
+  # scratch in UB) + linear transfer; must run before --npu-split-scope.
+  "$OPT" "2_${tag}_npu.mlir" --npu-expand-ub-to-l1-nd2nz --npu-split-scope --npu-plan-memory \
     --npu-split-mix-kernel --npu-sync-pipeline -o "3_${tag}_mix_npu.mlir" 2>/tmp/bench_s3.err || {
     echo "[FAIL-s3] $tag"; head -3 /tmp/bench_s3.err; fail=$((fail+1)); return; }
   grep -qE '(^| )error' /tmp/bench_s3.err && { echo "[DIAG-ERR-s3] $tag"; head -3 /tmp/bench_s3.err; fail=$((fail+1)); return; }
