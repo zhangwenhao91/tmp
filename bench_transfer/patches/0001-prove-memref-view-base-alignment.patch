@@ -1,0 +1,24 @@
+diff --git a/lib/Conversion/NpuToCCE/Common/LoweringUtils.cpp b/lib/Conversion/NpuToCCE/Common/LoweringUtils.cpp
+index bdeaf356..6582f8c9 100644
+--- a/lib/Conversion/NpuToCCE/Common/LoweringUtils.cpp
++++ b/lib/Conversion/NpuToCCE/Common/LoweringUtils.cpp
+@@ -907,6 +907,19 @@ bool hasKnownAlignedMemrefBase(Value buffer, int64_t alignment) {
+            positiveModulo(*offset, alignment) * elementBytes % alignment == 0;
+   }
+ 
++  // memref.view re-expresses an existing buffer at a constant byte shift,
++  // possibly with a different element type.  Tilelang's T.alloc_shared
++  // lowering produces exactly this shape (npu.alloc i8 root + memref.view
++  // to the logical dtype), so without this branch every such buffer fails
++  // the alignment proof and dense UB->UB copies degrade to point transfers.
++  if (auto view = buffer.getDefiningOp<memref::ViewOp>()) {
++    if (!hasKnownAlignedMemrefBase(view.getSource(), alignment))
++      return false;
++    std::optional<int64_t> byteShift =
++        getConstantMemrefOffset(view.getByteShift());
++    return byteShift && positiveModulo(*byteShift, alignment) == 0;
++  }
++
+   return buffer.getDefiningOp<npu::AllocOp>() &&
+          hasKnownAlignedNpuAllocBase(buffer, alignment);
+ }
