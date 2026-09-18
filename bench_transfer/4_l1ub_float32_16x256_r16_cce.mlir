@@ -88,7 +88,7 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %60 = llvm.inttoptr %5 : i64 to !llvm.ptr<4>
     cce.intr.mad.f322f32(%58, %59, %60, %24) : (<5>, <3>, <4>, i64)
     cce.set_flag pipe = <PIPE_M> tpipe = <PIPE_MTE1> pipeID = <EVENT_ID0>
-    cce.wait.intra.blocki.mode pipe = <PIPE_S> syncid = %3
+    cce.wait.intra.blocki.mode pipe = <PIPE_MTE1> syncid = %3
     %61 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
     %62 = llvm.inttoptr %3 : i64 to !llvm.ptr<2>
     cce.intr.mov.l1.to.ub.v310(%61, %62, %16) : (!llvm.ptr<6>, !llvm.ptr<2>, i64) -> ()
@@ -145,17 +145,17 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %10 = llvm.mlir.constant(16 : index) : i64
     %11 = llvm.mlir.constant(0 : index) : i64
     %12 = llvm.mlir.constant(1 : index) : i64
-    %13 = llvm.mlir.constant(7 : i64) : i64
-    %14 = llvm.mlir.constant(1114112 : i32) : i32
-    %15 = llvm.mlir.constant(4 : index) : i64
-    %16 = llvm.mlir.constant(256 : index) : i64
-    %17 = llvm.mlir.constant(64 : index) : i64
-    %18 = llvm.mlir.constant(1088 : index) : i64
-    %19 = llvm.mlir.constant(8 : index) : i64
-    %20 = llvm.mlir.constant(4296016384 : i64) : i64
-    %21 = llvm.mlir.constant(1 : i64) : i64
-    %22 = llvm.mlir.constant(8 : i64) : i64
-    %23 = llvm.mlir.constant(5 : i64) : i64
+    %13 = llvm.mlir.constant(5 : i64) : i64
+    %14 = llvm.mlir.constant(7 : i64) : i64
+    %15 = llvm.mlir.constant(1114112 : i32) : i32
+    %16 = llvm.mlir.constant(4 : index) : i64
+    %17 = llvm.mlir.constant(256 : index) : i64
+    %18 = llvm.mlir.constant(64 : index) : i64
+    %19 = llvm.mlir.constant(1088 : index) : i64
+    %20 = llvm.mlir.constant(8 : index) : i64
+    %21 = llvm.mlir.constant(4296016384 : i64) : i64
+    %22 = llvm.mlir.constant(1 : i64) : i64
+    %23 = llvm.mlir.constant(8 : i64) : i64
     %24 = llvm.mlir.constant(6 : i64) : i64
     %25 = llvm.mlir.constant(2 : i64) : i64
     %26 = llvm.mlir.constant(3 : i64) : i64
@@ -174,6 +174,7 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %37 = llvm.icmp "eq" %36, %4 : i64
     llvm.cond_br %37, ^bb1, ^bb5
   ^bb1:  // pred: ^bb0
+    cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %13
     cce.set_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID0>
     cce.set_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID1>
     llvm.br ^bb2(%11 : i64)
@@ -181,7 +182,7 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %39 = llvm.icmp "slt" %38, %10 : i64
     llvm.cond_br %39, ^bb3, ^bb4
   ^bb3:  // pred: ^bb2
-    cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %13
+    cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %14
     cce.wait_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID0>
     llvm.br ^bb6(%1 : i32)
   ^bb4:  // pred: ^bb2
@@ -209,7 +210,7 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %48 = cce.pset(%1) {mask_bitwidth = 32 : i32} : (i32) -> vector<256xi1>
     llvm.br ^bb8(%11 : i64)
   ^bb8(%49: i64):  // 2 preds: ^bb7, ^bb12
-    %50 = llvm.icmp "slt" %49, %15 : i64
+    %50 = llvm.icmp "slt" %49, %16 : i64
     llvm.cond_br %50, ^bb9, ^bb13
   ^bb9:  // pred: ^bb8
     llvm.br ^bb10(%11 : i64)
@@ -217,20 +218,20 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %52 = llvm.icmp "slt" %51, %10 : i64
     llvm.cond_br %52, ^bb11, ^bb12
   ^bb11:  // pred: ^bb10
-    %53 = llvm.mul %51, %16 : i64
-    %54 = llvm.mul %49, %17 : i64
+    %53 = llvm.mul %51, %17 : i64
+    %54 = llvm.mul %49, %18 : i64
     %55 = llvm.add %53, %54 : i64
     %56 = llvm.inttoptr %6 : i64 to !llvm.ptr<6>
     %57 = llvm.mul %55, %31 : i64
     %58 = llvm.getelementptr %56[%57] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
     %59 = cce.intr.vldsx1.f32(%58, %1, %1, %1) : (!llvm.ptr<6>, i32, i32, i32) -> vector<64xf32>
-    %60 = llvm.mul %49, %18 : i64
-    %61 = llvm.mul %51, %19 : i64
+    %60 = llvm.mul %49, %19 : i64
+    %61 = llvm.mul %51, %20 : i64
     %62 = llvm.add %60, %61 : i64
     %63 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
     %64 = llvm.mul %62, %31 : i64
     %65 = llvm.getelementptr %63[%64] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
-    cce.intr.vsstb.f32(%59, %65, %14, %1, %48) : (vector<64xf32>, <6>, i32, i32, vector<256xi1>)
+    cce.intr.vsstb.f32(%59, %65, %15, %1, %48) : (vector<64xf32>, <6>, i32, i32, vector<256xi1>)
     %66 = llvm.add %51, %12 : i64
     llvm.br ^bb10(%66 : i64)
   ^bb12:  // pred: ^bb10
@@ -243,14 +244,14 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     llvm.br ^bb6(%68 : i32) {cce.vec_scope = #cce.vec_scope}
   ^bb15:  // pred: ^bb6
     cce.set_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
-    cce.set.intra.blocki.mode pipe = <PIPE_MTE2> syncid = %4
+    cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %4
     cce.wait_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
     %69 = llvm.inttoptr %4 : i64 to !llvm.ptr<2>
     %70 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
-    cce.intr.mov.ub.to.l1.v310(%69, %70, %20) : (<2>, <6>, i64)
+    cce.intr.mov.ub.to.l1.v310(%69, %70, %21) : (<2>, <6>, i64)
     cce.set_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID0>
-    cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %21
-    cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %22
+    cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %22
+    cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %23
     cce.wait_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID1>
     llvm.br ^bb16(%1 : i32)
   ^bb16(%71: i32):  // 2 preds: ^bb15, ^bb24
@@ -260,7 +261,7 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %73 = cce.pset(%1) {mask_bitwidth = 32 : i32} : (i32) -> vector<256xi1>
     llvm.br ^bb18(%11 : i64)
   ^bb18(%74: i64):  // 2 preds: ^bb17, ^bb22
-    %75 = llvm.icmp "slt" %74, %15 : i64
+    %75 = llvm.icmp "slt" %74, %16 : i64
     llvm.cond_br %75, ^bb19, ^bb23
   ^bb19:  // pred: ^bb18
     llvm.br ^bb20(%11 : i64)
@@ -268,20 +269,20 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %77 = llvm.icmp "slt" %76, %10 : i64
     llvm.cond_br %77, ^bb21, ^bb22
   ^bb21:  // pred: ^bb20
-    %78 = llvm.mul %76, %16 : i64
-    %79 = llvm.mul %74, %17 : i64
+    %78 = llvm.mul %76, %17 : i64
+    %79 = llvm.mul %74, %18 : i64
     %80 = llvm.add %78, %79 : i64
     %81 = llvm.inttoptr %6 : i64 to !llvm.ptr<6>
     %82 = llvm.mul %80, %31 : i64
     %83 = llvm.getelementptr %81[%82] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
     %84 = cce.intr.vldsx1.f32(%83, %1, %1, %1) : (!llvm.ptr<6>, i32, i32, i32) -> vector<64xf32>
-    %85 = llvm.mul %74, %18 : i64
-    %86 = llvm.mul %76, %19 : i64
+    %85 = llvm.mul %74, %19 : i64
+    %86 = llvm.mul %76, %20 : i64
     %87 = llvm.add %85, %86 : i64
     %88 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
     %89 = llvm.mul %87, %31 : i64
     %90 = llvm.getelementptr %88[%89] : (!llvm.ptr<6>, i64) -> !llvm.ptr<6>, i8
-    cce.intr.vsstb.f32(%84, %90, %14, %1, %73) : (vector<64xf32>, <6>, i32, i32, vector<256xi1>)
+    cce.intr.vsstb.f32(%84, %90, %15, %1, %73) : (vector<64xf32>, <6>, i32, i32, vector<256xi1>)
     %91 = llvm.add %76, %12 : i64
     llvm.br ^bb20(%91 : i64)
   ^bb22:  // pred: ^bb20
@@ -294,12 +295,11 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     llvm.br ^bb16(%93 : i32) {cce.vec_scope = #cce.vec_scope}
   ^bb25:  // pred: ^bb16
     cce.set_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
-    cce.wait.intra.blocki.mode pipe = <PIPE_S> syncid = %23
-    cce.wait.intra.blocki.mode pipe = <PIPE_S> syncid = %24
+    cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %24
     cce.wait_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
     %94 = llvm.inttoptr %5 : i64 to !llvm.ptr<2>
     %95 = llvm.inttoptr %9 : i64 to !llvm.ptr<6>
-    cce.intr.mov.ub.to.l1.v310(%94, %95, %20) : (<2>, <6>, i64)
+    cce.intr.mov.ub.to.l1.v310(%94, %95, %21) : (<2>, <6>, i64)
     cce.set_flag pipe = <PIPE_MTE3> tpipe = <PIPE_V> pipeID = <EVENT_ID1>
     cce.set.intra.blocki.mode pipe = <PIPE_MTE3> syncid = %25
     cce.wait.intra.blocki.mode pipe = <PIPE_V> syncid = %26

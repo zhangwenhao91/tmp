@@ -1,0 +1,54 @@
+diff --git a/lib/Dialect/Npu/Transforms/SplitDataflow/CrossCoreCopyAndSync.cpp b/lib/Dialect/Npu/Transforms/SplitDataflow/CrossCoreCopyAndSync.cpp
+index fb221a19..23930bfb 100644
+--- a/lib/Dialect/Npu/Transforms/SplitDataflow/CrossCoreCopyAndSync.cpp
++++ b/lib/Dialect/Npu/Transforms/SplitDataflow/CrossCoreCopyAndSync.cpp
+@@ -452,16 +452,46 @@ void SplitDataflowPass::insertMemoryOrderSync(Operation *producer,
+   int flagId = nextFlagId_++;
+   OpBuilder builder(producer->getContext());
+   Location loc = consumer->getLoc();
++  // PIPE srcPipe =
++  //     producerCore == CoreKind::Cube ? PIPE::PIPE_FIX : PIPE::PIPE_MTE2;
++  // PIPE dstPipe = PIPE::PIPE_S;
++  // Hardware contract (validated on device): the vector core has no MTE2
++  // pipeline, so a SET with PIPE_MTE2 mode is silently ignored; a Cube
++  // WAIT with PIPE_S mode cannot synchronize with vector operations.
++  // Mirror the validated insertCrossCoreSync pipe pairs instead.
+   PIPE srcPipe =
+-      producerCore == CoreKind::Cube ? PIPE::PIPE_FIX : PIPE::PIPE_MTE2;
+-  PIPE dstPipe = PIPE::PIPE_S;
++      producerCore == CoreKind::Cube ? PIPE::PIPE_FIX : PIPE::PIPE_MTE3;
++  PIPE dstPipe =
++      consumerCore == CoreKind::Cube ? PIPE::PIPE_MTE1 : PIPE::PIPE_V;
+   auto flagAttr = IntegerAttr::get(
+       IntegerType::get(producer->getContext(), kFlagIdBitWidth), flagId);
+ 
+   builder.setInsertionPointAfter(syncProducer);
+   createSyncSet(builder, loc, producerCore, srcPipe, dstPipe, flagAttr);
+ 
+-  builder.setInsertionPoint(consumer);
++  // builder.setInsertionPoint(consumer);
++  // createSyncWait(builder, loc, consumerCore, srcPipe, dstPipe, flagAttr);
++  // When the producer lies outside a loop that contains the consumer, the
++  // memory-order dependency is loop-invariant: the flag is set only once
++  // and hardware waits consume the flag, so an in-loop wait would block
++  // the second iteration on an already-consumed signal (AIC/AIV mutual
++  // deadlock). Hoist the wait out of every consumer loop that does not
++  // enclose the producer, placing it just before the outermost such loop.
++  Operation *waitPoint = consumer;
++  SmallVector<Operation *> consumerLoops;
++  for (Operation *loop = consumer->getParentOp(); loop;
++       loop = loop->getParentOp()) {
++    if (isa<scf::ForOp, scf::WhileOp>(loop)) {
++      consumerLoops.push_back(loop);
++    }
++  }
++  for (Operation *loop : llvm::reverse(consumerLoops)) {
++    if (!loop->isAncestor(syncProducer)) {
++      waitPoint = loop;
++      break;
++    }
++  }
++  builder.setInsertionPoint(waitPoint);
+   createSyncWait(builder, loc, consumerCore, srcPipe, dstPipe, flagAttr);
+ }
+ 
