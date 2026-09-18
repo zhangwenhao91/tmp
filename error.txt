@@ -1,50 +1,48 @@
-root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 46, done.
-remote: Counting objects: 100% (46/46), done.
-remote: Compressing objects: 100% (6/6), done.
-remote: Total 32 (delta 28), reused 29 (delta 26), pack-reused 0 (from 0)
-Unpacking objects: 100% (32/32), 17.14 KiB | 449.00 KiB/s, done.
+root@localhost:/home/zwh/tmp# git pull
+remote: Enumerating objects: 42, done.
+remote: Counting objects: 100% (42/42), done.
+remote: Compressing objects: 100% (10/10), done.
+remote: Total 32 (delta 26), reused 26 (delta 22), pack-reused 0 (from 0)
+Unpacking objects: 100% (32/32), 7.38 KiB | 1.48 MiB/s, done.
 From https://github.com/zhangwenhao91/tmp
-   027347d..e5b1601  main       -> origin/main
-Updating 027347d..e5b1601
+   e5b1601..4490a8d  main       -> origin/main
+Updating e5b1601..4490a8d
 Fast-forward
- bench_transfer/3_l1ub_bfloat16_16x256_r128_mix_npu.mlir |  44 +++++++++---------
- bench_transfer/3_l1ub_bfloat16_16x256_r16_mix_npu.mlir  |  44 +++++++++---------
- bench_transfer/3_l1ub_bfloat16_64x256_r128_mix_npu.mlir |  44 +++++++++---------
- bench_transfer/3_l1ub_bfloat16_64x256_r16_mix_npu.mlir  |  44 +++++++++---------
- bench_transfer/3_l1ub_float32_16x256_r128_mix_npu.mlir  |  44 +++++++++---------
- bench_transfer/3_l1ub_float32_16x256_r16_mix_npu.mlir   |  44 +++++++++---------
- bench_transfer/4_l1ub_bfloat16_16x256_r128_cce.mlir     | 377 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------------------------------------
- bench_transfer/4_l1ub_bfloat16_16x256_r16_cce.mlir      | 375 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------------------------------------
- bench_transfer/4_l1ub_bfloat16_64x256_r128_cce.mlir     | 385 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------------------------------------------------------
- bench_transfer/4_l1ub_bfloat16_64x256_r16_cce.mlir      | 385 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------------------------------------------------------
- bench_transfer/4_l1ub_float32_16x256_r128_cce.mlir      | 387 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------------------------------------------------------
- bench_transfer/4_l1ub_float32_16x256_r16_cce.mlir       | 383 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------------------------------------------------------------------------
- bench_transfer/5_l1ub_bfloat16_16x256_r128.ll           |  56 +++++++++++-----------
- bench_transfer/5_l1ub_bfloat16_16x256_r16.ll            |  56 +++++++++++-----------
- bench_transfer/5_l1ub_bfloat16_64x256_r128.ll           |  56 +++++++++++-----------
- bench_transfer/5_l1ub_bfloat16_64x256_r16.ll            |  56 +++++++++++-----------
- bench_transfer/5_l1ub_float32_16x256_r128.ll            |  56 +++++++++++-----------
- bench_transfer/5_l1ub_float32_16x256_r16.ll             |  56 +++++++++++-----------
- bench_transfer/6_l1ub_bfloat16_16x256_r128.o            | Bin 3696 -> 3696 bytes
- bench_transfer/6_l1ub_bfloat16_16x256_r16.o             | Bin 3696 -> 3696 bytes
- bench_transfer/6_l1ub_bfloat16_64x256_r128.o            | Bin 3704 -> 3704 bytes
- bench_transfer/6_l1ub_bfloat16_64x256_r16.o             | Bin 3704 -> 3704 bytes
- bench_transfer/6_l1ub_float32_16x256_r128.o             | Bin 3720 -> 3720 bytes
- bench_transfer/6_l1ub_float32_16x256_r16.o              | Bin 3720 -> 3720 bytes
- bench_transfer/fix_move_l1ub_to_aiv.py                  | 223 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/rebuild_l1ub_s456.sh                     |  50 ++++++++++++++++++++
- error.txt                                               |  54 ++++++++++-----------
- 27 files changed, 1707 insertions(+), 1512 deletions(-)
- create mode 100644 bench_transfer/fix_move_l1ub_to_aiv.py
- create mode 100755 bench_transfer/rebuild_l1ub_s456.sh
+ bench_transfer/4_ub2ub_bfloat16_128x256_r128_cce.mlir              |  91 +++++++++++++++++++++++++++++++++++++++++++++----------------------------------------------
+ bench_transfer/4_ub2ub_bfloat16_128x256_r16_cce.mlir               |  91 +++++++++++++++++++++++++++++++++++++++++++++----------------------------------------------
+ bench_transfer/4_ub2ub_bfloat16_16x256_r128_cce.mlir               |  91 +++++++++++++++++++++++++++++++++++++++++++++----------------------------------------------
+ bench_transfer/4_ub2ub_bfloat16_16x256_r16_cce.mlir                |  91 +++++++++++++++++++++++++++++++++++++++++++++----------------------------------------------
+ bench_transfer/4_ub2ub_bfloat16_64x256_r128_cce.mlir               |  86 ++++++++++++++++++++++++++++++++++++++++++--------------------------------------------
+ bench_transfer/4_ub2ub_bfloat16_64x256_r16_cce.mlir                |  91 +++++++++++++++++++++++++++++++++++++++++++++----------------------------------------------
+ bench_transfer/4_ub2ub_float32_16x256_r128_cce.mlir                |  88 +++++++++++++++++++++++++++++++++++++++++++---------------------------------------------
+ bench_transfer/4_ub2ub_float32_16x256_r16_cce.mlir                 |  88 +++++++++++++++++++++++++++++++++++++++++++---------------------------------------------
+ bench_transfer/4_ub2ub_float32_64x256_r128_cce.mlir                |  88 +++++++++++++++++++++++++++++++++++++++++++---------------------------------------------
+ bench_transfer/4_ub2ub_float32_64x256_r16_cce.mlir                 |  88 +++++++++++++++++++++++++++++++++++++++++++---------------------------------------------
+ bench_transfer/6_ub2ub_bfloat16_128x256_r128.o                     | Bin 1864 -> 1864 bytes
+ bench_transfer/6_ub2ub_bfloat16_128x256_r16.o                      | Bin 1864 -> 1864 bytes
+ bench_transfer/6_ub2ub_bfloat16_16x256_r128.o                      | Bin 1856 -> 1856 bytes
+ bench_transfer/6_ub2ub_bfloat16_16x256_r16.o                       | Bin 1856 -> 1856 bytes
+ bench_transfer/6_ub2ub_bfloat16_64x256_r128.o                      | Bin 1856 -> 1856 bytes
+ bench_transfer/6_ub2ub_bfloat16_64x256_r16.o                       | Bin 1856 -> 1856 bytes
+ bench_transfer/6_ub2ub_float32_16x256_r128.o                       | Bin 1856 -> 1856 bytes
+ bench_transfer/6_ub2ub_float32_16x256_r16.o                        | Bin 1856 -> 1856 bytes
+ bench_transfer/6_ub2ub_float32_64x256_r128.o                       | Bin 1864 -> 1864 bytes
+ bench_transfer/6_ub2ub_float32_64x256_r16.o                        | Bin 1864 -> 1864 bytes
+ bench_transfer/patches/0001-prove-memref-view-base-alignment.patch |  24 ++++++++++++++++++++++++
+ bench_transfer/rebuild_ub2ub.sh                                    |  39 +++++++++++++++++++++++++++++++++++++++
+ error.txt                                                          |  69 ++++++++++++++++++++++++++++++++++++---------------------------------
+ process.txt                                                        |   2 ++
+ 24 files changed, 540 insertions(+), 487 deletions(-)
+ create mode 100644 bench_transfer/patches/0001-prove-memref-view-base-alignment.patch
+ create mode 100755 bench_transfer/rebuild_ub2ub.sh
+root@localhost:/home/zwh/tmp# cd bench_transfer/
 root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py all
 [prep] inputs saved
-[ub2ub bfloat16 16x256] T(r16)=240.2us T(r128)=1909.4us round=14.90us dma=14.90us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
-[ub2ub bfloat16 64x256] T(r16)=956.3us T(r128)=7632.3us round=59.61us dma=59.61us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
-[ub2ub bfloat16 128x256] T(r16)=1909.2us T(r128)=15262.1us round=119.22us dma=119.22us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
-[ub2ub float32 16x256] T(r16)=213.9us T(r128)=321.9us round=0.96us dma=0.96us bw(move)=17.00GB/s bw(traffic)=34.01GB/s
-[ub2ub float32 64x256] T(r16)=160.8us T(r128)=1292.6us round=10.11us dma=10.11us bw(move)=6.49GB/s bw(traffic)=12.97GB/s
+[ub2ub bfloat16 16x256] T(r16)=2.1us T(r128)=6.1us round=0.04us dma=0.04us bw(move)=230.51GB/s bw(traffic)=461.01GB/s
+[ub2ub bfloat16 64x256] T(r16)=2.8us T(r128)=13.7us round=0.10us dma=0.10us bw(move)=335.41GB/s bw(traffic)=670.81GB/s
+[ub2ub bfloat16 128x256] T(r16)=4.3us T(r128)=24.0us round=0.18us dma=0.18us bw(move)=371.53GB/s bw(traffic)=743.05GB/s
+[ub2ub float32 16x256] T(r16)=2.2us T(r128)=8.8us round=0.06us dma=0.06us bw(move)=278.74GB/s bw(traffic)=557.48GB/s
+[ub2ub float32 64x256] T(r16)=4.3us T(r128)=24.0us round=0.18us dma=0.18us bw(move)=371.74GB/s bw(traffic)=743.48GB/s
 Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/bench_run.py", line 348, in <module>
     main()
@@ -56,3 +54,4 @@ Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/bench_run.py", line 135, in _bench_once
     rt.synchronize_stream(stream)
 RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
+root@localhost:/home/zwh/tmp/bench_transfer# 
