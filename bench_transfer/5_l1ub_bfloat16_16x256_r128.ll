@@ -13,6 +13,7 @@ define dso_local ptc_kernel void @l1ub_kernel_mix_aic(ptr addrspace(1) %0, ptr a
   %11 = ptrtoint ptr addrspace(1) %0 to i64
   %12 = inttoptr i64 %11 to ptr addrspace(1)
   call void @llvm.hivm.MOV.OUT.TO.L1.MULTI.ND2NZ.U16.V310(ptr addrspace(2) inttoptr (i64 8192 to ptr addrspace(2)), ptr addrspace(1) %12, i64 4503599627378688, i64 256)
+  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 5)
   call void @llvm.hivm.SET.MTE2.NZ.PARA(i64 1099511693313)
   %13 = ptrtoint ptr addrspace(1) %1 to i64
   %14 = inttoptr i64 %13 to ptr addrspace(1)
@@ -23,9 +24,6 @@ define dso_local ptc_kernel void @l1ub_kernel_mix_aic(ptr addrspace(1) %0, ptr a
   call void @llvm.hivm.MOV.OUT.TO.L1.MULTI.ND2NZ.U16.V310(ptr addrspace(2) inttoptr (i64 24576 to ptr addrspace(2)), ptr addrspace(1) %16, i64 72057594037928448, i64 16)
   call void @llvm.hivm.SET.FLAG.IMM(i64 4, i64 3, i64 0)
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 4, i64 3, i64 0)
-  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 4, i64 7)
-  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 6)
-  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 3)
   call void @llvm.hivm.SET.FLAG.IMM(i64 2, i64 3, i64 0)
   call void @llvm.hivm.SET.FLAG.IMM(i64 2, i64 3, i64 1)
   br label %17
@@ -36,6 +34,9 @@ define dso_local ptc_kernel void @l1ub_kernel_mix_aic(ptr addrspace(1) %0, ptr a
   br i1 %19, label %20, label %22
 
 20:                                               ; preds = %17
+  call void @llvm.hivm.MOV.L1.TO.UB.v310(ptr addrspace(6) inttoptr (i64 17408 to ptr addrspace(6)), ptr addrspace(2) inttoptr (i64 8192 to ptr addrspace(2)), i64 16777232)
+  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 6)
+  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 7)
   call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 3, i64 1)
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 2, i64 3, i64 0)
   call void @llvm.hivm.LOAD.L1.TO.L0A.2Dv2.bf16(ptr addrspace(3) inttoptr (i64 16384 to ptr addrspace(3)), ptr addrspace(2) null, i64 17596481011712, i64 65537, i64 0)
@@ -44,9 +45,9 @@ define dso_local ptc_kernel void @l1ub_kernel_mix_aic(ptr addrspace(1) %0, ptr a
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 3, i64 2, i64 0)
   call void @llvm.hivm.MAD.bf162f32.c310(ptr addrspace(5) null, ptr addrspace(3) inttoptr (i64 16384 to ptr addrspace(3)), ptr addrspace(4) inttoptr (i64 16384 to ptr addrspace(4)), i64 -6917529027371597808)
   call void @llvm.hivm.SET.FLAG.IMM(i64 2, i64 3, i64 0)
-  call void @llvm.hivm.SET.FLAG.IMM(i64 2, i64 10, i64 0)
-  call void @llvm.hivm.WAIT.FLAG.IMM(i64 10, i64 2, i64 0)
-  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 6)
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 0, i64 0)
+  call void @llvm.hivm.MOV.L1.TO.UB.v310(ptr addrspace(6) inttoptr (i64 17408 to ptr addrspace(6)), ptr addrspace(2) null, i64 16777232)
+  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 8)
   call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 3, i64 2)
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 2, i64 3, i64 1)
   call void @llvm.hivm.LOAD.L1.TO.L0A.2Dv2.bf16(ptr addrspace(3) inttoptr (i64 24576 to ptr addrspace(3)), ptr addrspace(2) inttoptr (i64 8192 to ptr addrspace(2)), i64 17596481011712, i64 65537, i64 0)
@@ -55,9 +56,8 @@ define dso_local ptc_kernel void @l1ub_kernel_mix_aic(ptr addrspace(1) %0, ptr a
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 3, i64 2, i64 0)
   call void @llvm.hivm.MAD.bf162f32.c310(ptr addrspace(5) inttoptr (i64 1024 to ptr addrspace(5)), ptr addrspace(3) inttoptr (i64 24576 to ptr addrspace(3)), ptr addrspace(4) inttoptr (i64 24576 to ptr addrspace(4)), i64 -6917529027371597808)
   call void @llvm.hivm.SET.FLAG.IMM(i64 2, i64 3, i64 1)
-  call void @llvm.hivm.SET.FLAG.IMM(i64 2, i64 10, i64 1)
-  call void @llvm.hivm.WAIT.FLAG.IMM(i64 10, i64 2, i64 1)
   call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 10, i64 3)
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 3, i64 3)
   %21 = add i64 %18, 1
   br label %17
 
@@ -89,7 +89,8 @@ define dso_local ptc_kernel void @l1ub_kernel_mix_aiv(ptr addrspace(1) %0, ptr a
   br i1 %12, label %13, label %23
 
 13:                                               ; preds = %6
-  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 7)
+  call void @llvm.hivm.SET.FLAG.IMM(i64 5, i64 1, i64 0)
+  call void @llvm.hivm.SET.FLAG.IMM(i64 5, i64 1, i64 1)
   br label %14
 
 14:                                               ; preds = %85, %13
@@ -98,10 +99,8 @@ define dso_local ptc_kernel void @l1ub_kernel_mix_aiv(ptr addrspace(1) %0, ptr a
   br i1 %16, label %17, label %18
 
 17:                                               ; preds = %14
-  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 6)
-  call void @llvm.hivm.MOV.L1.TO.UB.v310(ptr addrspace(6) inttoptr (i64 17408 to ptr addrspace(6)), ptr addrspace(2) inttoptr (i64 8192 to ptr addrspace(2)), i64 16777232)
-  call void @llvm.hivm.SET.FLAG.IMM(i64 5, i64 1, i64 0)
-  call void @llvm.hivm.WAIT.FLAG.IMM(i64 1, i64 5, i64 0)
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 7)
+  call void @llvm.hivm.WAIT.FLAG.IMM(i64 5, i64 1, i64 0)
   br label %24
 
 18:                                               ; preds = %14
@@ -173,13 +172,13 @@ define dso_local ptc_kernel void @l1ub_kernel_mix_aiv(ptr addrspace(1) %0, ptr a
 
 54:                                               ; preds = %24
   call void @llvm.hivm.SET.FLAG.IMM(i64 1, i64 5, i64 0)
-  call void @llvm.hivm.WAIT.FLAG.IMM(i64 5, i64 1, i64 0)
+  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 4, i64 0)
+  call void @llvm.hivm.WAIT.FLAG.IMM(i64 1, i64 5, i64 0)
   call void @llvm.hivm.MOV.UB.TO.L1.v310(ptr addrspace(2) null, ptr addrspace(6) null, i64 4296016128)
   call void @llvm.hivm.SET.FLAG.IMM(i64 5, i64 1, i64 0)
   call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 5, i64 1)
-  call void @llvm.hivm.MOV.L1.TO.UB.v310(ptr addrspace(6) inttoptr (i64 17408 to ptr addrspace(6)), ptr addrspace(2) null, i64 16777232)
-  call void @llvm.hivm.SET.FLAG.IMM(i64 5, i64 1, i64 1)
-  call void @llvm.hivm.WAIT.FLAG.IMM(i64 1, i64 5, i64 1)
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 8)
+  call void @llvm.hivm.WAIT.FLAG.IMM(i64 5, i64 1, i64 1)
   br label %55
 
 55:                                               ; preds = %83, %54
@@ -232,12 +231,15 @@ define dso_local ptc_kernel void @l1ub_kernel_mix_aiv(ptr addrspace(1) %0, ptr a
   br label %55, !llvm.loop !5
 
 85:                                               ; preds = %55
-  call void @llvm.hivm.SET.FLAG.IMM(i64 1, i64 5, i64 1)
-  call void @llvm.hivm.WAIT.FLAG.IMM(i64 5, i64 1, i64 1)
-  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 3)
+  call void @llvm.hivm.SET.FLAG.IMM(i64 1, i64 5, i64 0)
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 0, i64 5)
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 0, i64 6)
+  call void @llvm.hivm.WAIT.FLAG.IMM(i64 1, i64 5, i64 0)
   call void @llvm.hivm.MOV.UB.TO.L1.v310(ptr addrspace(2) inttoptr (i64 8192 to ptr addrspace(2)), ptr addrspace(6) inttoptr (i64 8704 to ptr addrspace(6)), i64 4296016128)
   call void @llvm.hivm.SET.FLAG.IMM(i64 5, i64 1, i64 1)
   call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 5, i64 2)
+  call void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64 1, i64 3)
+  call void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64 5, i64 3)
   %86 = add i64 %15, 1
   br label %14
 }
@@ -261,13 +263,13 @@ declare void @llvm.hivm.SET.MTE2.NZ.PARA(i64)
 declare void @llvm.hivm.MOV.OUT.TO.L1.MULTI.ND2NZ.U16.V310(ptr addrspace(2), ptr addrspace(1), i64, i64)
 
 ; Unknown intrinsic
+declare void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64, i64)
+
+; Unknown intrinsic
 declare void @llvm.hivm.SET.FLAG.IMM(i64, i64, i64)
 
 ; Unknown intrinsic
 declare void @llvm.hivm.WAIT.FLAG.IMM(i64, i64, i64)
-
-; Unknown intrinsic
-declare void @llvm.hivm.SET.INTRA.BLOCKI.mode(i64, i64)
 
 ; Unknown intrinsic
 declare void @llvm.hivm.SET.LOOP3.PARA(i64)
@@ -280,6 +282,9 @@ declare void @llvm.hivm.WAIT.INTRA.BLOCKI.mode(i64, i64)
 
 ; Unknown intrinsic
 declare void @llvm.hivm.BARRIER(i64)
+
+; Unknown intrinsic
+declare void @llvm.hivm.MOV.L1.TO.UB.v310(ptr addrspace(6), ptr addrspace(2), i64)
 
 ; Unknown intrinsic
 declare void @llvm.hivm.LOAD.L1.TO.L0A.2Dv2.bf16(ptr addrspace(3), ptr addrspace(2), i64, i64, i64)
@@ -295,9 +300,6 @@ declare i64 @llvm.hivm.GET.SUBBLOCKID()
 
 ; Unknown intrinsic
 declare void @llvm.hivm.MOV.UB.TO.OUT.ALIGN.V2.DV(ptr addrspace(1), ptr addrspace(6), i64, i64)
-
-; Unknown intrinsic
-declare void @llvm.hivm.MOV.L1.TO.UB.v310(ptr addrspace(6), ptr addrspace(2), i64)
 
 ; Unknown intrinsic
 declare void @llvm.hivm.MOV.UB.TO.L1.v310(ptr addrspace(2), ptr addrspace(6), i64)
