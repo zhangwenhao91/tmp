@@ -1,25 +1,26 @@
 root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 11, done.
-remote: Counting objects: 100% (11/11), done.
+remote: Enumerating objects: 18, done.
+remote: Counting objects: 100% (18/18), done.
 remote: Compressing objects: 100% (6/6), done.
-remote: Total 8 (delta 3), reused 5 (delta 2), pack-reused 0 (from 0)
-Unpacking objects: 100% (8/8), 3.67 KiB | 3.67 MiB/s, done.
+remote: Total 11 (delta 7), reused 8 (delta 5), pack-reused 0 (from 0)
+Unpacking objects: 100% (11/11), 6.21 KiB | 6.21 MiB/s, done.
 From https://github.com/zhangwenhao91/tmp
-   2f57aae..dddbc89  main       -> origin/main
-Updating 2f57aae..dddbc89
+   dddbc89..a6b5c70  main       -> origin/main
+Updating dddbc89..a6b5c70
 Fast-forward
- bench_transfer/6_l1_scalar.o | Bin 0 -> 2096 bytes
- bench_transfer/6_ub_scalar.o | Bin 0 -> 1448 bytes
- error.txt                    |  75 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------
- 3 files changed, 63 insertions(+), 12 deletions(-)
- create mode 100644 bench_transfer/6_l1_scalar.o
- create mode 100644 bench_transfer/6_ub_scalar.o
+ bench_transfer/3_l1_scalar_mix_npu.mlir | 162 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------------
+ bench_transfer/4_l1_scalar_cce.mlir     | 277 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------------------------------------------------------------------------
+ bench_transfer/6_l1_scalar.o            | Bin 2096 -> 3264 bytes
+ bench_transfer/build_scalar_mix.sh      |  25 +++++++++++++++
+ bench_transfer/scalar_verify.py         |   8 +++--
+ error.txt                               |  74 +++++++++++----------------------------------
+ 6 files changed, 303 insertions(+), 243 deletions(-)
+ create mode 100644 bench_transfer/build_scalar_mix.sh
 root@localhost:/home/zwh/tmp/bench_transfer# python scalar_verify.py 
-[scalar] ub_scalar (UB->scalar->UB, AIV): PASS (恒等, 1 / 4096 元素)
+[scalar] ub_scalar (UB->scalar->UB, AIV): PASS (恒等, 全 4096 元素比对)
 Traceback (most recent call last):
-  File "/home/zwh/tmp/bench_transfer/scalar_verify.py", line 142, in <module>
+  File "/home/zwh/tmp/bench_transfer/scalar_verify.py", line 144, in <module>
     main()
-  File "/home/zwh/tmp/bench_transfer/scalar_verify.py", line 115, in main
+  File "/home/zwh/tmp/bench_transfer/scalar_verify.py", line 117, in main
     rt.synchronize_stream(stream)
 RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
-root@localhost:/home/zwh/tmp/bench_transfer# 
