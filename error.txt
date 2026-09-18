@@ -1,9 +1,47 @@
-root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run                              
-[ub2ub bfloat16 16x256] T(r16)=3.0us T(r128)=6.2us round=0.03us dma=0.03us bw(move)=283.95GB/s bw(traffic)=567.90GB/s
-[ub2ub bfloat16 64x256] T(r16)=4.0us T(r128)=14.1us round=0.09us dma=0.09us bw(move)=363.74GB/s bw(traffic)=727.47GB/s
-[ub2ub bfloat16 128x256] T(r16)=4.5us T(r128)=24.2us round=0.18us dma=0.18us bw(move)=372.69GB/s bw(traffic)=745.37GB/s
-[ub2ub float32 16x256] T(r16)=2.8us T(r128)=8.7us round=0.05us dma=0.05us bw(move)=311.04GB/s bw(traffic)=622.07GB/s
-[ub2ub float32 64x256] T(r16)=4.4us T(r128)=24.1us round=0.18us dma=0.18us bw(move)=372.77GB/s bw(traffic)=745.54GB/s
+root@localhost:/home/zwh/tmp/bench_transfer# git pull
+remote: Enumerating objects: 48, done.
+remote: Counting objects: 100% (48/48), done.
+remote: Compressing objects: 100% (5/5), done.
+remote: Total 33 (delta 30), reused 30 (delta 28), pack-reused 0 (from 0)
+Unpacking objects: 100% (33/33), 14.77 KiB | 2.95 MiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   ea8af09..baa2fbb  main       -> origin/main
+Updating ea8af09..baa2fbb
+Fast-forward
+ bench_transfer/3_l1ub_bfloat16_16x256_r128_mix_npu.mlir                    |  28 ++++++++++++-------------
+ bench_transfer/3_l1ub_bfloat16_16x256_r16_mix_npu.mlir                     |  28 ++++++++++++-------------
+ bench_transfer/3_l1ub_bfloat16_64x256_r128_mix_npu.mlir                    |  28 ++++++++++++-------------
+ bench_transfer/3_l1ub_bfloat16_64x256_r16_mix_npu.mlir                     |  28 ++++++++++++-------------
+ bench_transfer/3_l1ub_float32_16x256_r128_mix_npu.mlir                     |  28 ++++++++++++-------------
+ bench_transfer/3_l1ub_float32_16x256_r16_mix_npu.mlir                      |  28 ++++++++++++-------------
+ bench_transfer/4_l1ub_bfloat16_16x256_r128_cce.mlir                        |  18 ++++++++--------
+ bench_transfer/4_l1ub_bfloat16_16x256_r16_cce.mlir                         |  18 ++++++++--------
+ bench_transfer/4_l1ub_bfloat16_64x256_r128_cce.mlir                        |  18 ++++++++--------
+ bench_transfer/4_l1ub_bfloat16_64x256_r16_cce.mlir                         |  18 ++++++++--------
+ bench_transfer/4_l1ub_float32_16x256_r128_cce.mlir                         |  18 ++++++++--------
+ bench_transfer/4_l1ub_float32_16x256_r16_cce.mlir                          |  18 ++++++++--------
+ bench_transfer/5_l1ub_bfloat16_16x256_r128.ll                              |  18 ++++++++--------
+ bench_transfer/5_l1ub_bfloat16_16x256_r16.ll                               |  18 ++++++++--------
+ bench_transfer/5_l1ub_bfloat16_64x256_r128.ll                              |  18 ++++++++--------
+ bench_transfer/5_l1ub_bfloat16_64x256_r16.ll                               |  18 ++++++++--------
+ bench_transfer/5_l1ub_float32_16x256_r128.ll                               |  18 ++++++++--------
+ bench_transfer/5_l1ub_float32_16x256_r16.ll                                |  18 ++++++++--------
+ bench_transfer/6_l1ub_bfloat16_16x256_r128.o                               | Bin 3696 -> 3696 bytes
+ bench_transfer/6_l1ub_bfloat16_16x256_r16.o                                | Bin 3696 -> 3696 bytes
+ bench_transfer/6_l1ub_bfloat16_64x256_r128.o                               | Bin 3704 -> 3704 bytes
+ bench_transfer/6_l1ub_bfloat16_64x256_r16.o                                | Bin 3704 -> 3704 bytes
+ bench_transfer/6_l1ub_float32_16x256_r128.o                                | Bin 3720 -> 3720 bytes
+ bench_transfer/6_l1ub_float32_16x256_r16.o                                 | Bin 3720 -> 3720 bytes
+ bench_transfer/patches/0003-bind-intra-blocki-pipes-to-op-exec-pipes.patch | 148 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ error.txt                                                                  |  74 +++++++++++++++++++++++++++---------------------------------------
+ 26 files changed, 370 insertions(+), 236 deletions(-)
+ create mode 100644 bench_transfer/patches/0003-bind-intra-blocki-pipes-to-op-exec-pipes.patch
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run     
+[ub2ub bfloat16 16x256] T(r16)=2.0us T(r128)=6.1us round=0.04us dma=0.04us bw(move)=222.98GB/s bw(traffic)=445.96GB/s
+[ub2ub bfloat16 64x256] T(r16)=2.7us T(r128)=13.7us round=0.10us dma=0.10us bw(move)=330.96GB/s bw(traffic)=661.92GB/s
+[ub2ub bfloat16 128x256] T(r16)=4.3us T(r128)=24.1us round=0.18us dma=0.18us bw(move)=370.20GB/s bw(traffic)=740.40GB/s
+[ub2ub float32 16x256] T(r16)=1.9us T(r128)=8.6us round=0.06us dma=0.06us bw(move)=274.71GB/s bw(traffic)=549.42GB/s
+[ub2ub float32 64x256] T(r16)=4.3us T(r128)=24.0us round=0.18us dma=0.18us bw(move)=371.78GB/s bw(traffic)=743.56GB/s
 Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/bench_run.py", line 348, in <module>
     main()
@@ -29,27 +67,4 @@ Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/bench_run.py", line 296, in do_verify
     rt.synchronize_stream(stream)
 RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
-
-===================== 第三轮修复（2026-09-18） =====================
-[根因] INTRA.BLOCKI SET/WAIT 的 mode 管线绑定错误（编译器 CrossCoreCopyAndSync.cpp）。
-insertCrossCoreSync / insertMemoryOrderSync 原先按『核类型』给 SET/WAIT 绑定默认管线
-（AIC 侧默认 FIX，AIV 侧默认 MTE3/V），与被同步 op 的实际执行管线错配：
-  - SET 绑到生产者不占用的空闲管线队列 → set 立即生效 → 对端提前消费旧数据
-  - L1→UB 实际走 MTE1、GM→L1 实际走 MTE2、nd2nz_scatter 实际走 V
-  - 第二轮仍报 0x7bc87 即由此跨核并发读写 L1 引发。
-[修复] 新增 getOperationExecPipe()（基于 NpuOpPipeInterface 查询 op 真实执行管线），
-insertMemoryOrderSync / insertCrossCoreSync 中 SET 绑生产 op 实际管线、WAIT 绑消费 op
-实际管线，核级默认仅作回退。重编 tile-opt 后 6 个 l1ub 规格全部重编。
-[验证 IR 对比（旧 → 新）]
-  npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_MTE3>] flag=5
-    → npu.sync_block_set[<CUBE>, <PIPE_MTE2>, <PIPE_MTE3>] flag=5
-  npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_V>] flag=7
-    → npu.sync_block_set[<CUBE>, <PIPE_MTE1>, <PIPE_V>] flag=7
-  npu.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_MTE1>] flag=0
-    → npu.sync_block_set[<VECTOR>, <PIPE_V>, <PIPE_MTE1>] flag=0
-[补丁] bench_transfer/patches/0003-bind-intra-blocki-pipes-to-op-exec-pipes.patch
-[产物] 3/4/5/6_l1ub_{bfloat16, float32}_*.mlir/.ll/.o 全部重编（15:53 时间戳）
-[待验证] 上板执行：
-  cd /home/zwh/tmp/bench_transfer && python bench_run.py run && python bench_run.py verify
-  预期 l1ub 各规格不再报 0x7bc87，跑通后回填带宽与恒等校验结果。
-====================================================================
+root@localhost:/home/zwh/tmp/bench_transfer# 
