@@ -6,7 +6,7 @@
 验证：
   ub_scalar (bf16 16x256, REPEAT=2, AIV):
       OUT == X 恒等
-  l1_scalar (bf16 16x256x16, REPEAT=2, AIC):
+  l1_scalar (bf16 16x256x16, REPEAT=2, MIX 双核 AIC+AIV):
       OUT1 ≈ X@W1, OUT2 ≈ X@W2（标量搬运无损）
 编译层已全部验证通过（5_ub_scalar.ll addrspace(6) 标量指令 + vec arch；
 5_l1_scalar.ll addrspace(2) 标量指令 + cube arch，含 gemm）。
@@ -86,7 +86,7 @@ def main():
         ).view(ml_dtypes.bfloat16).reshape(M, K)
         ok = np.array_equal(out, x)
         print(f"[scalar] ub_scalar (UB->scalar->UB, AIV): "
-              f"{'PASS' if ok else 'FAIL'} (恒等, {int(ok)} / {out.size} 元素)")
+              f"{'PASS' if ok else 'FAIL'} (恒等, 全 {out.size} 元素比对)")
         rt.free_device(xptr)
         rt.free_device(optr)
         rt.unregister_kernel(module)
@@ -96,7 +96,9 @@ def main():
         with open(path, "rb") as f:
             obytes = f.read()
         # cube arch .o -> 普通 ELF magic（mode 非 "aiv"）
-        module, func = rt.load_kernel("l1_scalar_kernel", obytes, 0, "aic")
+        # module, func = rt.load_kernel("l1_scalar_kernel", obytes, 0, "aic")
+        # mix 双函数 .o：注册 _mix_aic 入口（mode="mix"），runtime 自动配对 _mix_aiv
+        module, func = rt.load_kernel("l1_scalar_kernel_mix_aic", obytes, 0, "mix")
         xptr = rt.malloc_device(x.nbytes)
         w1ptr = rt.malloc_device(w1b.nbytes)
         w2ptr = rt.malloc_device(w2b.nbytes)
