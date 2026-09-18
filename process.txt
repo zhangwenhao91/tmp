@@ -1,4 +1,6 @@
 # step 0
+docker start zhangwenhao
+docker exec -it zhangwenhao bash
 source /data/setenv.bash
 which ccec
 export PATH=/home/zwh/OpenTileAS/build/bin:$PATH
