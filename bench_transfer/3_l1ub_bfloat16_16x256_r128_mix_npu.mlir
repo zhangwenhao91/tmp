@@ -52,7 +52,7 @@ module attributes {npu.module_core_type = #npu.module_core_type<MIX>} {
     %view_16 = memref.view %7[%c0][] : memref<1024xi8, #npu.address_space<ub>> to memref<16x16xf32, #npu.address_space<ub>>
     %view_17 = memref.view %8[%c0][] : memref<1024xi8, #npu.address_space<ub>> to memref<16x16xf32, #npu.address_space<ub>>
     npu.copy ins(%reinterpret_cast : memref<16x256xbf16, strided<[256, 1]>, #npu.address_space<gm>>) outs(%view : memref<16x256xbf16, #npu.address_space<cbuf>>) {tcore_type = #npu.tcore_type<CUBE>}
-    npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_V>] flag = 5
+    npu.sync_block_set[<CUBE>, <PIPE_MTE2>, <PIPE_MTE3>] flag = 5
     npu.copy ins(%reinterpret_cast_10 : memref<256x16xbf16, strided<[16, 1]>, #npu.address_space<gm>>) outs(%view_14 : memref<256x16xbf16, #npu.address_space<cbuf>>) {tcore_type = #npu.tcore_type<CUBE>}
     npu.copy ins(%reinterpret_cast_11 : memref<256x16xbf16, strided<[16, 1]>, #npu.address_space<gm>>) outs(%view_15 : memref<256x16xbf16, #npu.address_space<cbuf>>) {tcore_type = #npu.tcore_type<CUBE>}
     npu.set_flag[<PIPE_MTE2>, <PIPE_MTE1>, <EVENT_ID0>]
@@ -61,8 +61,8 @@ module attributes {npu.module_core_type = #npu.module_core_type<MIX>} {
     npu.set_flag[<PIPE_M>, <PIPE_MTE1>, <EVENT_ID1>]
     scf.for %arg6 = %c0 to %c128 step %c1 {
       npu.copy ins(%view : memref<16x256xbf16, #npu.address_space<cbuf>>) outs(%view_13 : memref<16x256xbf16, #npu.address_space<ub>>) {tcore_type = #npu.tcore_type<CUBE>}
-      npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_V>] flag = 6
-      npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_V>] flag = 7
+      npu.sync_block_set[<CUBE>, <PIPE_MTE1>, <PIPE_MTE3>] flag = 6
+      npu.sync_block_set[<CUBE>, <PIPE_MTE1>, <PIPE_V>] flag = 7
       npu.sync_block_wait[<CUBE>, <PIPE_MTE3>, <PIPE_MTE1>] flag = 1
       npu.wait_flag[<PIPE_M>, <PIPE_MTE1>, <EVENT_ID0>]
       npu.copy ins(%view_12 : memref<16x256xbf16, #npu.address_space<cbuf>>) outs(%15 : memref<16x256xbf16, #npu.address_space<ca>>) {tcore_type = #npu.tcore_type<CUBE>}
@@ -71,9 +71,9 @@ module attributes {npu.module_core_type = #npu.module_core_type<MIX>} {
       npu.wait_flag[<PIPE_MTE1>, <PIPE_M>, <EVENT_ID0>]
       npu.mad ins(%15, %16 : memref<16x256xbf16, #npu.address_space<ca>>, memref<256x16xbf16, #npu.address_space<cb>>) outs(%5 : memref<16x16xf32, #npu.address_space<cc>>) {lhs_trans = false, rhs_trans = false, tcore_type = #npu.tcore_type<CUBE>, zero_init = true}
       npu.set_flag[<PIPE_M>, <PIPE_MTE1>, <EVENT_ID0>]
-      npu.sync_block_wait[<CUBE>, <PIPE_MTE3>, <PIPE_MTE1>] flag = 0
+      npu.sync_block_wait[<CUBE>, <PIPE_V>, <PIPE_MTE1>] flag = 0
       npu.copy ins(%view_12 : memref<16x256xbf16, #npu.address_space<cbuf>>) outs(%view_13 : memref<16x256xbf16, #npu.address_space<ub>>) {tcore_type = #npu.tcore_type<CUBE>}
-      npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_V>] flag = 8
+      npu.sync_block_set[<CUBE>, <PIPE_MTE1>, <PIPE_V>] flag = 8
       npu.sync_block_wait[<CUBE>, <PIPE_MTE3>, <PIPE_MTE1>] flag = 2
       npu.wait_flag[<PIPE_M>, <PIPE_MTE1>, <EVENT_ID1>]
       npu.copy ins(%view : memref<16x256xbf16, #npu.address_space<cbuf>>) outs(%17 : memref<16x256xbf16, #npu.address_space<ca>>) {tcore_type = #npu.tcore_type<CUBE>}
@@ -90,9 +90,9 @@ module attributes {npu.module_core_type = #npu.module_core_type<MIX>} {
     npu.wait_flag[<PIPE_M>, <PIPE_MTE1>, <EVENT_ID0>]
     npu.wait_flag[<PIPE_M>, <PIPE_FIX>, <EVENT_ID0>]
     npu.copy ins(%5 : memref<16x16xf32, #npu.address_space<cc>>) outs(%view_16 : memref<16x16xf32, #npu.address_space<ub>>) {tcore_type = #npu.tcore_type<CUBE>}
-    npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_V>] flag = 9
+    npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_MTE3>] flag = 9
     npu.copy ins(%6 : memref<16x16xf32, #npu.address_space<cc>>) outs(%view_17 : memref<16x16xf32, #npu.address_space<ub>>) {tcore_type = #npu.tcore_type<CUBE>}
-    npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_V>] flag = 10
+    npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_MTE3>] flag = 10
     npu.sync_block_wait[<CUBE>, <PIPE_MTE3>, <PIPE_FIX>] flag = 4
     npu.pipe_barrier[<PIPE_ALL>]
     return
@@ -138,24 +138,24 @@ module attributes {npu.module_core_type = #npu.module_core_type<MIX>} {
     %view_8 = memref.view %2[%c0][] : memref<8192xi8, #npu.address_space<ub>> to memref<16x256xbf16, #npu.address_space<ub>>
     %view_9 = memref.view %7[%c0][] : memref<1024xi8, #npu.address_space<ub>> to memref<16x16xf32, #npu.address_space<ub>>
     %view_10 = memref.view %8[%c0][] : memref<1024xi8, #npu.address_space<ub>> to memref<16x16xf32, #npu.address_space<ub>>
-    npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_V>] flag = 5
+    npu.sync_block_wait[<VECTOR>, <PIPE_MTE2>, <PIPE_MTE3>] flag = 5
     npu.set_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID0>]
     npu.set_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID1>]
     scf.for %arg6 = %c0 to %c128 step %c1 {
-      npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_V>] flag = 7
+      npu.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_V>] flag = 7
       npu.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID0>]
       npu.nd2nz_scatter ins(%view_8 : memref<16x256xbf16, #npu.address_space<ub>>) outs(%9 : memref<4352xbf16, #npu.address_space<ub>>) {tcore_type = #npu.tcore_type<VECTOR>}
       npu.set_flag[<PIPE_V>, <PIPE_MTE3>, <EVENT_ID0>]
-      npu.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_MTE1>] flag = 0
+      npu.sync_block_set[<VECTOR>, <PIPE_V>, <PIPE_MTE1>] flag = 0
       npu.wait_flag[<PIPE_V>, <PIPE_MTE3>, <EVENT_ID0>]
       npu.copy ins(%9 : memref<4352xbf16, #npu.address_space<ub>>) outs(%view_7 : memref<16x256xbf16, #npu.address_space<cbuf>>) {linear_transfer, tcore_type = #npu.tcore_type<VECTOR>}
       npu.set_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID0>]
       npu.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_MTE1>] flag = 1
-      npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_V>] flag = 8
+      npu.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_V>] flag = 8
       npu.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID1>]
       npu.nd2nz_scatter ins(%view_8 : memref<16x256xbf16, #npu.address_space<ub>>) outs(%12 : memref<4352xbf16, #npu.address_space<ub>>) {tcore_type = #npu.tcore_type<VECTOR>}
       npu.set_flag[<PIPE_V>, <PIPE_MTE3>, <EVENT_ID0>]
-      npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_V>] flag = 6
+      npu.sync_block_wait[<VECTOR>, <PIPE_MTE1>, <PIPE_MTE3>] flag = 6
       npu.wait_flag[<PIPE_V>, <PIPE_MTE3>, <EVENT_ID0>]
       npu.copy ins(%12 : memref<4352xbf16, #npu.address_space<ub>>) outs(%view : memref<16x256xbf16, #npu.address_space<cbuf>>) {linear_transfer, tcore_type = #npu.tcore_type<VECTOR>}
       npu.set_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID1>]
@@ -165,9 +165,9 @@ module attributes {npu.module_core_type = #npu.module_core_type<MIX>} {
     } {tilelang.loop_kind = "serial"}
     npu.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID1>]
     npu.wait_flag[<PIPE_MTE3>, <PIPE_V>, <EVENT_ID0>]
-    npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_V>] flag = 9
+    npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_MTE3>] flag = 9
     npu.copy ins(%view_9 : memref<16x16xf32, #npu.address_space<ub>>) outs(%reinterpret_cast : memref<16x16xf32, strided<[16, 1]>, #npu.address_space<gm>>) {tcore_type = #npu.tcore_type<VECTOR>}
-    npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_V>] flag = 10
+    npu.sync_block_wait[<VECTOR>, <PIPE_FIX>, <PIPE_MTE3>] flag = 10
     npu.copy ins(%view_10 : memref<16x16xf32, #npu.address_space<ub>>) outs(%reinterpret_cast_6 : memref<16x16xf32, strided<[16, 1]>, #npu.address_space<gm>>) {tcore_type = #npu.tcore_type<VECTOR>}
     npu.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_FIX>] flag = 4
     %c16384_i64_11 = arith.constant 16384 : i64

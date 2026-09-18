@@ -1,0 +1,148 @@
+diff --git a/lib/Dialect/Npu/Transforms/SplitDataflow/CrossCoreCopyAndSync.cpp b/lib/Dialect/Npu/Transforms/SplitDataflow/CrossCoreCopyAndSync.cpp
+index fb221a19..7bd5ec3b 100644
+--- a/lib/Dialect/Npu/Transforms/SplitDataflow/CrossCoreCopyAndSync.cpp
++++ b/lib/Dialect/Npu/Transforms/SplitDataflow/CrossCoreCopyAndSync.cpp
+@@ -21,6 +21,27 @@ namespace mlir {
+ namespace npu {
+ namespace detail {
+ 
++/// Return the hardware pipe an operation executes on, or PIPE_UNASSIGNED
++/// when the operation has no single-pipe assignment or its pipe cannot host
++/// INTRA.BLOCKI synchronization.
++static PIPE getOperationExecPipe(Operation *op) {
++  auto pipeIf = dyn_cast<NpuOpPipeInterface>(op);
++  if (!pipeIf || !pipeIf.isSinglePipeOp()) {
++    return PIPE::PIPE_UNASSIGNED;
++  }
++  PIPE pipe = pipeIf.getPipe();
++  switch (pipe) {
++  case PIPE::PIPE_MTE1:
++  case PIPE::PIPE_MTE2:
++  case PIPE::PIPE_MTE3:
++  case PIPE::PIPE_V:
++  case PIPE::PIPE_FIX:
++    return pipe;
++  default:
++    return PIPE::PIPE_UNASSIGNED;
++  }
++}
++
+ /// Summarize copies that reuse a loop-local hand-off buffer. A loop with
+ /// both V->C and C->V traffic needs an iteration barrier to avoid opposing
+ /// ownership protocols blocking before either core reaches its wait.
+@@ -452,16 +473,64 @@ void SplitDataflowPass::insertMemoryOrderSync(Operation *producer,
+   int flagId = nextFlagId_++;
+   OpBuilder builder(producer->getContext());
+   Location loc = consumer->getLoc();
++  // PIPE srcPipe =
++  //     producerCore == CoreKind::Cube ? PIPE::PIPE_FIX : PIPE::PIPE_MTE2;
++  // PIPE dstPipe = PIPE::PIPE_S;
++  // Hardware contract (validated on device): the vector core has no MTE2
++  // pipeline, so a SET with PIPE_MTE2 mode is silently ignored; a Cube
++  // WAIT with PIPE_S mode cannot synchronize with vector operations.
++  // Mirror the validated insertCrossCoreSync pipe pairs instead.
++  // PIPE srcPipe =
++  //     producerCore == CoreKind::Cube ? PIPE::PIPE_FIX : PIPE::PIPE_MTE3;
++  // PIPE dstPipe =
++  //     consumerCore == CoreKind::Cube ? PIPE::PIPE_MTE1 : PIPE::PIPE_V;
+   PIPE srcPipe =
+-      producerCore == CoreKind::Cube ? PIPE::PIPE_FIX : PIPE::PIPE_MTE2;
+-  PIPE dstPipe = PIPE::PIPE_S;
++      producerCore == CoreKind::Cube ? PIPE::PIPE_FIX : PIPE::PIPE_MTE3;
++  PIPE dstPipe =
++      consumerCore == CoreKind::Cube ? PIPE::PIPE_MTE1 : PIPE::PIPE_V;
++  // Hardware contract: SET/WAIT.INTRA.BLOCKI execute inside the queue of
++  // the pipe passed as their mode operand, so both endpoints must be bound
++  // to the real execution pipes of the ordered operations. Core-level
++  // defaults fire a set immediately when its pipe queue is idle (e.g. a
++  // FIX-mode set while the producer actually runs on V), letting the peer
++  // core access stale data and degenerating into a cross-core race.
++  if (PIPE producerExec = getOperationExecPipe(producer);
++      producerExec != PIPE::PIPE_UNASSIGNED) {
++    srcPipe = producerExec;
++  }
++  if (PIPE consumerExec = getOperationExecPipe(consumer);
++      consumerExec != PIPE::PIPE_UNASSIGNED) {
++    dstPipe = consumerExec;
++  }
+   auto flagAttr = IntegerAttr::get(
+       IntegerType::get(producer->getContext(), kFlagIdBitWidth), flagId);
+ 
+   builder.setInsertionPointAfter(syncProducer);
+   createSyncSet(builder, loc, producerCore, srcPipe, dstPipe, flagAttr);
+ 
+-  builder.setInsertionPoint(consumer);
++  // builder.setInsertionPoint(consumer);
++  // createSyncWait(builder, loc, consumerCore, srcPipe, dstPipe, flagAttr);
++  // When the producer lies outside a loop that contains the consumer, the
++  // memory-order dependency is loop-invariant: the flag is set only once
++  // and hardware waits consume the flag, so an in-loop wait would block
++  // the second iteration on an already-consumed signal (AIC/AIV mutual
++  // deadlock). Hoist the wait out of every consumer loop that does not
++  // enclose the producer, placing it just before the outermost such loop.
++  Operation *waitPoint = consumer;
++  SmallVector<Operation *> consumerLoops;
++  for (Operation *loop = consumer->getParentOp(); loop;
++       loop = loop->getParentOp()) {
++    if (isa<scf::ForOp, scf::WhileOp>(loop)) {
++      consumerLoops.push_back(loop);
++    }
++  }
++  for (Operation *loop : llvm::reverse(consumerLoops)) {
++    if (!loop->isAncestor(syncProducer)) {
++      waitPoint = loop;
++      break;
++    }
++  }
++  builder.setInsertionPoint(waitPoint);
+   createSyncWait(builder, loc, consumerCore, srcPipe, dstPipe, flagAttr);
+ }
+ 
+@@ -865,13 +934,41 @@ CrossCoreSyncResult SplitDataflowPass::insertCrossCoreSync(
+   if (useScalarPipes) {
+     srcPipe = PIPE::PIPE_S;
+     dstPipe = PIPE::PIPE_S;
+-  } else if (producerCore == CoreKind::Cube &&
+-             consumerCore == CoreKind::Vector) {
+-    srcPipe = PIPE::PIPE_FIX;
+-    dstPipe = consumerPipe.value_or(PIPE::PIPE_V);
+   } else {
+-    srcPipe = PIPE::PIPE_MTE3;
+-    dstPipe = PIPE::PIPE_MTE1;
++    // if (producerCore == CoreKind::Cube &&
++    //     consumerCore == CoreKind::Vector) {
++    //   srcPipe = PIPE::PIPE_FIX;
++    //   dstPipe = consumerPipe.value_or(PIPE::PIPE_V);
++    // } else {
++    //   srcPipe = PIPE::PIPE_MTE3;
++    //   dstPipe = PIPE::PIPE_MTE1;
++    // }
++    if (producerCore == CoreKind::Cube &&
++        consumerCore == CoreKind::Vector) {
++      srcPipe = PIPE::PIPE_FIX;
++      dstPipe = consumerPipe.value_or(PIPE::PIPE_V);
++    } else {
++      srcPipe = PIPE::PIPE_MTE3;
++      dstPipe = PIPE::PIPE_MTE1;
++    }
++    // Hardware contract (validated against device traces): SET/WAIT
++    // INTRA.BLOCKI execute inside the queue of the pipe passed as their
++    // mode operand. Core-level defaults fire a set immediately when its
++    // pipe queue is idle - e.g. a FIX-mode set for a producer that
++    // actually runs on MTE1/MTE2/V - so the peer core consumes stale data
++    // and the handshake degenerates into a cross-core data race. Bind both
++    // endpoints to the real execution pipes of the producer and consumer
++    // operations instead.
++    if (PIPE producerExec = getOperationExecPipe(producer);
++        producerExec != PIPE::PIPE_UNASSIGNED) {
++      srcPipe = producerExec;
++    }
++    if (!consumerPipe) {
++      PIPE consumerExec = getOperationExecPipe(consumer);
++      if (consumerExec != PIPE::PIPE_UNASSIGNED) {
++        dstPipe = consumerExec;
++      }
++    }
+   }
+ 
+   auto flagAttr = IntegerAttr::get(

@@ -29,3 +29,27 @@ Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/bench_run.py", line 296, in do_verify
     rt.synchronize_stream(stream)
 RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
+
+===================== 第三轮修复（2026-09-18） =====================
+[根因] INTRA.BLOCKI SET/WAIT 的 mode 管线绑定错误（编译器 CrossCoreCopyAndSync.cpp）。
+insertCrossCoreSync / insertMemoryOrderSync 原先按『核类型』给 SET/WAIT 绑定默认管线
+（AIC 侧默认 FIX，AIV 侧默认 MTE3/V），与被同步 op 的实际执行管线错配：
+  - SET 绑到生产者不占用的空闲管线队列 → set 立即生效 → 对端提前消费旧数据
+  - L1→UB 实际走 MTE1、GM→L1 实际走 MTE2、nd2nz_scatter 实际走 V
+  - 第二轮仍报 0x7bc87 即由此跨核并发读写 L1 引发。
+[修复] 新增 getOperationExecPipe()（基于 NpuOpPipeInterface 查询 op 真实执行管线），
+insertMemoryOrderSync / insertCrossCoreSync 中 SET 绑生产 op 实际管线、WAIT 绑消费 op
+实际管线，核级默认仅作回退。重编 tile-opt 后 6 个 l1ub 规格全部重编。
+[验证 IR 对比（旧 → 新）]
+  npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_MTE3>] flag=5
+    → npu.sync_block_set[<CUBE>, <PIPE_MTE2>, <PIPE_MTE3>] flag=5
+  npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_V>] flag=7
+    → npu.sync_block_set[<CUBE>, <PIPE_MTE1>, <PIPE_V>] flag=7
+  npu.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_MTE1>] flag=0
+    → npu.sync_block_set[<VECTOR>, <PIPE_V>, <PIPE_MTE1>] flag=0
+[补丁] bench_transfer/patches/0003-bind-intra-blocki-pipes-to-op-exec-pipes.patch
+[产物] 3/4/5/6_l1ub_{bfloat16, float32}_*.mlir/.ll/.o 全部重编（15:53 时间戳）
+[待验证] 上板执行：
+  cd /home/zwh/tmp/bench_transfer && python bench_run.py run && python bench_run.py verify
+  预期 l1ub 各规格不再报 0x7bc87，跑通后回填带宽与恒等校验结果。
+====================================================================
