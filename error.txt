@@ -1,65 +1,25 @@
 root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 34, done.
-remote: Counting objects: 100% (34/34), done.
-remote: Compressing objects: 100% (23/23), done.
-remote: Total 31 (delta 11), reused 25 (delta 7), pack-reused 0 (from 0)
-Unpacking objects: 100% (31/31), 18.61 KiB | 6.20 MiB/s, done.
+remote: Enumerating objects: 11, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 8 (delta 3), reused 5 (delta 2), pack-reused 0 (from 0)
+Unpacking objects: 100% (8/8), 3.67 KiB | 3.67 MiB/s, done.
 From https://github.com/zhangwenhao91/tmp
-   4490a8d..2f57aae  main       -> origin/main
-Updating 4490a8d..2f57aae
+   2f57aae..dddbc89  main       -> origin/main
+Updating 2f57aae..dddbc89
 Fast-forward
- bench_transfer/.commit_msg.txt             |   0
- bench_transfer/1_l1_scalar_tilelangir.mlir |  83 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/1_ub_scalar_tilelangir.mlir |  41 ++++++++++++++++++++++++++++++++++++
- bench_transfer/2_l1_scalar_npu.mlir        |  62 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/2_ub_scalar_npu.mlir        |  28 +++++++++++++++++++++++++
- bench_transfer/3_l1_scalar_mix_npu.mlir    | 109 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/3_ub_scalar_mix_npu.mlir    |  37 +++++++++++++++++++++++++++++++++
- bench_transfer/4_l1_scalar_cce.mlir        | 186 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/4_ub_scalar_cce.mlir        |  77 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/diag2.sh                    |  11 ++++++++++
- bench_transfer/diag3.sh                    |  13 ++++++++++++
- bench_transfer/diag4.sh                    |  12 +++++++++++
- bench_transfer/diag5.sh                    |  10 +++++++++
- bench_transfer/diag6.sh                    |  11 ++++++++++
- bench_transfer/diag_mix.sh                 |  33 +++++++++++++++++++++++++++++
- bench_transfer/scalar_s23.sh               |  33 +++++++++++++++++++++++++++++
- bench_transfer/scalar_s456.sh              |  33 +++++++++++++++++++++++++++++
- bench_transfer/scalar_transfer.py          | 141 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/scalar_verify.py            | 142 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/scalar_xarch.sh             |  27 ++++++++++++++++++++++++
- error.txt                                  |  62 ++++++++-----------------------------------------------
- scalar_l1_test.ll                          |  37 +++++++++++++++++++++++++++++++++
- scalar_ub_test.ll                          |  37 +++++++++++++++++++++++++++++++++
- 23 files changed, 1172 insertions(+), 53 deletions(-)
- create mode 100644 bench_transfer/.commit_msg.txt
- create mode 100644 bench_transfer/1_l1_scalar_tilelangir.mlir
- create mode 100644 bench_transfer/1_ub_scalar_tilelangir.mlir
- create mode 100644 bench_transfer/2_l1_scalar_npu.mlir
- create mode 100644 bench_transfer/2_ub_scalar_npu.mlir
- create mode 100644 bench_transfer/3_l1_scalar_mix_npu.mlir
- create mode 100644 bench_transfer/3_ub_scalar_mix_npu.mlir
- create mode 100644 bench_transfer/4_l1_scalar_cce.mlir
- create mode 100644 bench_transfer/4_ub_scalar_cce.mlir
- create mode 100644 bench_transfer/diag2.sh
- create mode 100644 bench_transfer/diag3.sh
- create mode 100644 bench_transfer/diag4.sh
- create mode 100644 bench_transfer/diag5.sh
- create mode 100644 bench_transfer/diag6.sh
- create mode 100644 bench_transfer/diag_mix.sh
- create mode 100644 bench_transfer/scalar_s23.sh
- create mode 100644 bench_transfer/scalar_s456.sh
- create mode 100644 bench_transfer/scalar_transfer.py
- create mode 100644 bench_transfer/scalar_verify.py
- create mode 100644 bench_transfer/scalar_xarch.sh
- create mode 100644 scalar_l1_test.ll
- create mode 100644 scalar_ub_test.ll
+ bench_transfer/6_l1_scalar.o | Bin 0 -> 2096 bytes
+ bench_transfer/6_ub_scalar.o | Bin 0 -> 1448 bytes
+ error.txt                    |  75 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------
+ 3 files changed, 63 insertions(+), 12 deletions(-)
+ create mode 100644 bench_transfer/6_l1_scalar.o
+ create mode 100644 bench_transfer/6_ub_scalar.o
 root@localhost:/home/zwh/tmp/bench_transfer# python scalar_verify.py 
+[scalar] ub_scalar (UB->scalar->UB, AIV): PASS (恒等, 1 / 4096 元素)
 Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/scalar_verify.py", line 142, in <module>
     main()
-  File "/home/zwh/tmp/bench_transfer/scalar_verify.py", line 73, in main
-    with open(path, "rb") as f:
-         ^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: '/home/zwh/tmp/bench_transfer/6_ub_scalar.o'
+  File "/home/zwh/tmp/bench_transfer/scalar_verify.py", line 115, in main
+    rt.synchronize_stream(stream)
+RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
 root@localhost:/home/zwh/tmp/bench_transfer# 
