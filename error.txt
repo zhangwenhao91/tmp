@@ -1,7 +1,158 @@
-cd ~/tmp && git pull
-cd bench_transfer
-# ub_scalar 的 .o 已在 6_ub_scalar_*.o（无 new_env 子目录）
-# bench_run.py 已含 ub_scalar 的 SPECS/mode/kname，直接跑
-python bench_run.py prep   # 会生成 ub_scalar 的 X 输入
-python bench_run.py run    # 差分法计时（ub2ub + ub_scalar）
-python bench_run.py verify # 恒等校验
+root@localhost:/home/zwh/tmp/bench_transfer# git pull
+remote: Enumerating objects: 81, done.
+remote: Counting objects: 100% (81/81), done.
+remote: Compressing objects: 100% (24/24), done.
+remote: Total 75 (delta 62), reused 57 (delta 51), pack-reused 0 (from 0)
+Unpacking objects: 100% (75/75), 18.75 KiB | 518.00 KiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   b722765..c8e8a8c  main       -> origin/main
+Updating b722765..c8e8a8c
+Fast-forward
+ bench_transfer/0_bench_transfer.py                            |  25 +++++++++++-
+ bench_transfer/2_ub_scalar_bfloat16_128x256_r128_npu.mlir     |  27 +++++++++++++
+ bench_transfer/2_ub_scalar_bfloat16_128x256_r16_npu.mlir      |  28 ++++++++++++++
+ bench_transfer/2_ub_scalar_bfloat16_16x256_r128_npu.mlir      |  28 ++++++++++++++
+ bench_transfer/2_ub_scalar_bfloat16_16x256_r16_npu.mlir       |  27 +++++++++++++
+ bench_transfer/2_ub_scalar_bfloat16_64x256_r128_npu.mlir      |  28 ++++++++++++++
+ bench_transfer/2_ub_scalar_bfloat16_64x256_r16_npu.mlir       |  28 ++++++++++++++
+ bench_transfer/2_ub_scalar_float32_16x256_r128_npu.mlir       |  28 ++++++++++++++
+ bench_transfer/2_ub_scalar_float32_16x256_r16_npu.mlir        |  27 +++++++++++++
+ bench_transfer/2_ub_scalar_float32_64x256_r128_npu.mlir       |  28 ++++++++++++++
+ bench_transfer/2_ub_scalar_float32_64x256_r16_npu.mlir        |  28 ++++++++++++++
+ bench_transfer/3_ub_scalar_bfloat16_128x256_r128_mix_npu.mlir |  34 +++++++++++++++++
+ bench_transfer/3_ub_scalar_bfloat16_128x256_r16_mix_npu.mlir  |  35 +++++++++++++++++
+ bench_transfer/3_ub_scalar_bfloat16_16x256_r128_mix_npu.mlir  |  35 +++++++++++++++++
+ bench_transfer/3_ub_scalar_bfloat16_16x256_r16_mix_npu.mlir   |  34 +++++++++++++++++
+ bench_transfer/3_ub_scalar_bfloat16_64x256_r128_mix_npu.mlir  |  35 +++++++++++++++++
+ bench_transfer/3_ub_scalar_bfloat16_64x256_r16_mix_npu.mlir   |  35 +++++++++++++++++
+ bench_transfer/3_ub_scalar_float32_16x256_r128_mix_npu.mlir   |  35 +++++++++++++++++
+ bench_transfer/3_ub_scalar_float32_16x256_r16_mix_npu.mlir    |  34 +++++++++++++++++
+ bench_transfer/3_ub_scalar_float32_64x256_r128_mix_npu.mlir   |  35 +++++++++++++++++
+ bench_transfer/3_ub_scalar_float32_64x256_r16_mix_npu.mlir    |  35 +++++++++++++++++
+ bench_transfer/4_ub_scalar_bfloat16_128x256_r128_cce.mlir     |  76 ++++++++++++++++++++++++++++++++++++
+ bench_transfer/4_ub_scalar_bfloat16_128x256_r16_cce.mlir      |  77 +++++++++++++++++++++++++++++++++++++
+ bench_transfer/4_ub_scalar_bfloat16_16x256_r128_cce.mlir      |  77 +++++++++++++++++++++++++++++++++++++
+ bench_transfer/4_ub_scalar_bfloat16_16x256_r16_cce.mlir       |  76 ++++++++++++++++++++++++++++++++++++
+ bench_transfer/4_ub_scalar_bfloat16_64x256_r128_cce.mlir      |  77 +++++++++++++++++++++++++++++++++++++
+ bench_transfer/4_ub_scalar_bfloat16_64x256_r16_cce.mlir       |  77 +++++++++++++++++++++++++++++++++++++
+ bench_transfer/4_ub_scalar_float32_16x256_r128_cce.mlir       |  77 +++++++++++++++++++++++++++++++++++++
+ bench_transfer/4_ub_scalar_float32_16x256_r16_cce.mlir        |  76 ++++++++++++++++++++++++++++++++++++
+ bench_transfer/4_ub_scalar_float32_64x256_r128_cce.mlir       |  77 +++++++++++++++++++++++++++++++++++++
+ bench_transfer/4_ub_scalar_float32_64x256_r16_cce.mlir        |  77 +++++++++++++++++++++++++++++++++++++
+ bench_transfer/5_ub_scalar_bfloat16_128x256_r128.ll           | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/5_ub_scalar_bfloat16_128x256_r16.ll            | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/5_ub_scalar_bfloat16_16x256_r128.ll            | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/5_ub_scalar_bfloat16_16x256_r16.ll             | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/5_ub_scalar_bfloat16_64x256_r128.ll            | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/5_ub_scalar_bfloat16_64x256_r16.ll             | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/5_ub_scalar_float32_16x256_r128.ll             | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/5_ub_scalar_float32_16x256_r16.ll              | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/5_ub_scalar_float32_64x256_r128.ll             | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/5_ub_scalar_float32_64x256_r16.ll              | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/6_ub_scalar_bfloat16_128x256_r128.o            | Bin 0 -> 1408 bytes
+ bench_transfer/6_ub_scalar_bfloat16_128x256_r16.o             | Bin 0 -> 1408 bytes
+ bench_transfer/6_ub_scalar_bfloat16_16x256_r128.o             | Bin 0 -> 1400 bytes
+ bench_transfer/6_ub_scalar_bfloat16_16x256_r16.o              | Bin 0 -> 1400 bytes
+ bench_transfer/6_ub_scalar_bfloat16_64x256_r128.o             | Bin 0 -> 1400 bytes
+ bench_transfer/6_ub_scalar_bfloat16_64x256_r16.o              | Bin 0 -> 1400 bytes
+ bench_transfer/6_ub_scalar_float32_16x256_r128.o              | Bin 0 -> 1408 bytes
+ bench_transfer/6_ub_scalar_float32_16x256_r16.o               | Bin 0 -> 1408 bytes
+ bench_transfer/6_ub_scalar_float32_64x256_r128.o              | Bin 0 -> 1416 bytes
+ bench_transfer/6_ub_scalar_float32_64x256_r16.o               | Bin 0 -> 1416 bytes
+ bench_transfer/bench_run.py                                   |  16 +++++---
+ bench_transfer/build_all_bench.sh                             |   2 +-
+ bench_transfer/build_ub_scalar.sh                             |  65 +++++++++++++++++++++++++++++++
+ error.txt                                                     | 306 ++++---------------------------------------------------------------------------------------------------------------------------------------------
+ 55 files changed, 2658 insertions(+), 307 deletions(-)
+ create mode 100644 bench_transfer/2_ub_scalar_bfloat16_128x256_r128_npu.mlir
+ create mode 100644 bench_transfer/2_ub_scalar_bfloat16_128x256_r16_npu.mlir
+ create mode 100644 bench_transfer/2_ub_scalar_bfloat16_16x256_r128_npu.mlir
+ create mode 100644 bench_transfer/2_ub_scalar_bfloat16_16x256_r16_npu.mlir
+ create mode 100644 bench_transfer/2_ub_scalar_bfloat16_64x256_r128_npu.mlir
+ create mode 100644 bench_transfer/2_ub_scalar_bfloat16_64x256_r16_npu.mlir
+ create mode 100644 bench_transfer/2_ub_scalar_float32_16x256_r128_npu.mlir
+ create mode 100644 bench_transfer/2_ub_scalar_float32_16x256_r16_npu.mlir
+ create mode 100644 bench_transfer/2_ub_scalar_float32_64x256_r128_npu.mlir
+ create mode 100644 bench_transfer/2_ub_scalar_float32_64x256_r16_npu.mlir
+ create mode 100644 bench_transfer/3_ub_scalar_bfloat16_128x256_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/3_ub_scalar_bfloat16_128x256_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/3_ub_scalar_bfloat16_16x256_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/3_ub_scalar_bfloat16_16x256_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/3_ub_scalar_bfloat16_64x256_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/3_ub_scalar_bfloat16_64x256_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/3_ub_scalar_float32_16x256_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/3_ub_scalar_float32_16x256_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/3_ub_scalar_float32_64x256_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/3_ub_scalar_float32_64x256_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/4_ub_scalar_bfloat16_128x256_r128_cce.mlir
+ create mode 100644 bench_transfer/4_ub_scalar_bfloat16_128x256_r16_cce.mlir
+ create mode 100644 bench_transfer/4_ub_scalar_bfloat16_16x256_r128_cce.mlir
+ create mode 100644 bench_transfer/4_ub_scalar_bfloat16_16x256_r16_cce.mlir
+ create mode 100644 bench_transfer/4_ub_scalar_bfloat16_64x256_r128_cce.mlir
+ create mode 100644 bench_transfer/4_ub_scalar_bfloat16_64x256_r16_cce.mlir
+ create mode 100644 bench_transfer/4_ub_scalar_float32_16x256_r128_cce.mlir
+ create mode 100644 bench_transfer/4_ub_scalar_float32_16x256_r16_cce.mlir
+ create mode 100644 bench_transfer/4_ub_scalar_float32_64x256_r128_cce.mlir
+ create mode 100644 bench_transfer/4_ub_scalar_float32_64x256_r16_cce.mlir
+ create mode 100644 bench_transfer/5_ub_scalar_bfloat16_128x256_r128.ll
+ create mode 100644 bench_transfer/5_ub_scalar_bfloat16_128x256_r16.ll
+ create mode 100644 bench_transfer/5_ub_scalar_bfloat16_16x256_r128.ll
+ create mode 100644 bench_transfer/5_ub_scalar_bfloat16_16x256_r16.ll
+ create mode 100644 bench_transfer/5_ub_scalar_bfloat16_64x256_r128.ll
+ create mode 100644 bench_transfer/5_ub_scalar_bfloat16_64x256_r16.ll
+ create mode 100644 bench_transfer/5_ub_scalar_float32_16x256_r128.ll
+ create mode 100644 bench_transfer/5_ub_scalar_float32_16x256_r16.ll
+ create mode 100644 bench_transfer/5_ub_scalar_float32_64x256_r128.ll
+ create mode 100644 bench_transfer/5_ub_scalar_float32_64x256_r16.ll
+ create mode 100644 bench_transfer/6_ub_scalar_bfloat16_128x256_r128.o
+ create mode 100644 bench_transfer/6_ub_scalar_bfloat16_128x256_r16.o
+ create mode 100644 bench_transfer/6_ub_scalar_bfloat16_16x256_r128.o
+ create mode 100644 bench_transfer/6_ub_scalar_bfloat16_16x256_r16.o
+ create mode 100644 bench_transfer/6_ub_scalar_bfloat16_64x256_r128.o
+ create mode 100644 bench_transfer/6_ub_scalar_bfloat16_64x256_r16.o
+ create mode 100644 bench_transfer/6_ub_scalar_float32_16x256_r128.o
+ create mode 100644 bench_transfer/6_ub_scalar_float32_16x256_r16.o
+ create mode 100644 bench_transfer/6_ub_scalar_float32_64x256_r128.o
+ create mode 100644 bench_transfer/6_ub_scalar_float32_64x256_r16.o
+ create mode 100755 bench_transfer/build_ub_scalar.sh
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py prep
+[prep] inputs saved
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run
+[ub2ub bfloat16 16x256] T(r16)=2.0us T(r128)=6.0us round=0.04us dma=0.04us bw(move)=225.65GB/s bw(traffic)=451.29GB/s
+[ub_scalar bfloat16 16x256] T(r16)=849.0us T(r128)=6786.5us round=53.01us dma=53.01us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 64x256] T(r16)=2.6us T(r128)=13.7us round=0.10us dma=0.10us bw(move)=331.46GB/s bw(traffic)=662.91GB/s
+[ub_scalar bfloat16 64x256] T(r16)=3393.8us T(r128)=27142.1us round=212.04us dma=212.04us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 128x256] T(r16)=4.2us T(r128)=24.1us round=0.18us dma=0.18us bw(move)=370.13GB/s bw(traffic)=740.26GB/s
+[ub_scalar bfloat16 128x256] T(r16)=6788.0us T(r128)=54282.2us round=424.06us dma=424.06us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x256] T(r16)=2.5us T(r128)=8.5us round=0.05us dma=0.05us bw(move)=301.37GB/s bw(traffic)=602.73GB/s
+[ub_scalar float32 16x256] T(r16)=841.9us T(r128)=6727.7us round=52.55us dma=52.55us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub float32 64x256] T(r16)=4.7us T(r128)=24.0us round=0.17us dma=0.17us bw(move)=379.15GB/s bw(traffic)=758.31GB/s
+[ub_scalar float32 64x256] T(r16)=3365.1us T(r128)=26904.5us round=210.17us dma=210.17us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_16x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_64x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_float32_16x256_r16.o
+
+===== 差分法汇总（t_round 消除 launch/GM/gemm 常数）=====
+variant  dtype           shape     KB  t_r16us  t_r128us  round_us  dma_us  GB/s(mv)  GB/s(tr)
+ub2ub    bfloat16       16x256      8      2.0       6.0      0.04    0.04    225.65    451.29
+ub_scalar bfloat16       16x256      8    849.0    6786.5     53.01   53.01      0.15      0.31
+ub2ub    bfloat16       64x256     32      2.6      13.7      0.10    0.10    331.46    662.91
+ub_scalar bfloat16       64x256     32   3393.8   27142.1    212.04  212.04      0.15      0.31
+ub2ub    bfloat16      128x256     64      4.2      24.1      0.18    0.18    370.13    740.26
+ub_scalar bfloat16      128x256     64   6788.0   54282.2    424.06  424.06      0.15      0.31
+ub2ub    float32        16x256     16      2.5       8.5      0.05    0.05    301.37    602.73
+ub_scalar float32        16x256     16    841.9    6727.7     52.55   52.55      0.31      0.62
+ub2ub    float32        64x256     64      4.7      24.0      0.17    0.17    379.15    758.31
+ub_scalar float32        64x256     64   3365.1   26904.5    210.17  210.17      0.31      0.62
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py verify
+[verify] ub2ub bfloat16 16x256: PASS (恒等)
+[verify] ub2ub bfloat16 16x256: PASS (恒等)
+[verify] ub2ub bfloat16 64x256: PASS (恒等)
+[verify] ub2ub bfloat16 64x256: PASS (恒等)
+[verify] ub2ub bfloat16 128x256: PASS (恒等)
+[verify] ub2ub bfloat16 128x256: PASS (恒等)
+[verify] ub2ub float32 16x256: PASS (恒等)
+[verify] ub2ub float32 16x256: PASS (恒等)
+[verify] ub2ub float32 64x256: PASS (恒等)
+[verify] ub2ub float32 64x256: PASS (恒等)
+root@localhost:/home/zwh/tmp/bench_transfer# 
