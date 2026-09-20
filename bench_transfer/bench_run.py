@@ -278,7 +278,7 @@ def do_verify():
                     rt.memcpy_d2h(optr, x.nbytes), dtype=x.dtype
                 ).reshape(x.shape)
                 ok = np.array_equal(out, x)
-                print(f"[verify] ub2ub {dtype} {M}x{K}: {'PASS' if ok else 'FAIL'} (恒等)")
+                print(f"[verify] {variant} {dtype} {M}x{K}: {'PASS' if ok else 'FAIL'} (恒等)")
                 rt.free_device(xptr)
                 rt.free_device(optr)
             else:
