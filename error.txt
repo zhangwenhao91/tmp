@@ -17,3 +17,34 @@ Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/bench_run.py", line 135, in _bench_once
     rt.synchronize_stream(stream)
 RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
+
+====================================================================
+[2026-09-20 补] new_env 的 .o/.ll 已补推（上次被 .gitignore 静默吞掉）
+====================================================================
+原因：bench_transfer/.gitignore 忽略 *.ll / *.o，目录级 git add 静默跳过，
+上次 NPU 机 pull 后 new_env/ 只有 46 个 .mlir，cp 报 No such file。
+本次已 git add -f 强推 44 个文件（22 .o + 22 .ll）：
+  - n6_ub2ub_*.o x10      （新环境编译，.ll 与旧版指令级一致）→ 本次验证
+  - n6_l1ub_*_single.o x10（单核 AIC 版，绕开 mix 同步）→ 已推，先不验证
+  - n5_*.ll x22           （对应 .ll）
+  - n6_ub_scalar.o / n6_baseline_single.o
+
+[NPU 机验证步骤 — 只验证 ub2ub]
+  cd ~/tmp && git pull
+  cd bench_transfer
+  # 1) 挪开旧 l1ub .o（已知 0x7bc87，避免 run 中途崩；bench_run.py 会 [skip] missing）
+  mkdir -p old_l1ub_backup && mv 6_l1ub_*.o old_l1ub_backup/
+  # 2) 新环境 ub2ub .o 覆盖旧命名
+  for f in new_env/n6_ub2ub_*.o; do cp "$f" "$(echo "$f" | sed "s|new_env/n6_|6_|")"; done
+  # 3) 跑
+  python bench_run.py run && python bench_run.py verify
+预期：ub2ub 5 规格 bw(move) 270~374 GB/s、恒等 PASS。
+  （新 .o 与旧版指令级一致，带宽应与 9-20 早间结果同水平；
+   若 PASS 即确认官方 ed2beb55 已含等效 0001 修复，旧补丁可永久退役）
+注意：run 输出中 l1ub 各规格应显示 [skip] missing（属预期，本轮不验证）。
+
+[l1ub 状态备忘]
+  - mix 双核版：新环境编译不过（L0A→L1 回搬被 plan-memory 拒绝）；
+    旧 round-3 .o 已挪 old_l1ub_backup，三轮补丁均未修复 0x7bc87，暂搁置
+  - 单核版 n6_l1ub_*_single.o：已推未验证；后续需适配 bench_run.py
+    （kname 无 _mix_aic 后缀、mode 用单核而非 mix）才能上板
