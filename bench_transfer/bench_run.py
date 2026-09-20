@@ -9,6 +9,16 @@
 差分法：每个规格编译 REPEAT=16/128 两份 .o，
     t_round = (T(R128) - T(R16)) / (128 - 16)
 消去 launch / GM 载入 / gemm / 输出回写等所有与 REPEAT 无关的常数。
+
+variant 说明：
+  ub2ub      : UB->UB，AIV，.o 在根目录 6_*.o
+  ub_scalar  : UB->标量->UB，AIV，根目录 6_*.o
+  l1ub       : L1->UB->L1 mix 双核，AIC 入口带 _mix_aic 后缀，根目录 6_*.o
+  l1ub_single: L1->UB->L1 单核 AIC（绕开 mix 跨核同步 0x7bc87），
+               .o 在 new_env/n6_l1ub_*_single.o（官方 OpenTileAS ed2beb55 +
+               CANN 9.2.0-beta.2 编译，stage3 仅 --npu-plan-memory，
+               见 build_l1ub_single.sh），入口名 l1ub_kernel（无后缀，
+               AIC ELF 加载，mode="aic"）
 l12l1（L1->L1 直连）不参与：编译器无 lowering 支持（stage4
 mov.ub.to.l1 类型检查拒绝），仅保留证据 IR。
 """
@@ -29,7 +39,7 @@ WARMUP = 5
 
 NP_DTYPES = {"bfloat16": "uint16", "float32": "float32"}
 
-# (variant, dtype, M) —— 与 build_all_bench.sh 的成功矩阵一致
+# (variant, dtype, M) —— 与 build_all_bench.sh / build_l1ub_single.sh 的成功矩阵一致
 SPECS = [
     ("ub2ub", "bfloat16", 16),
     ("ub_scalar", "bfloat16", 16),
@@ -44,6 +54,12 @@ SPECS = [
     ("l1ub", "bfloat16", 16),
     ("l1ub", "bfloat16", 64),
     ("l1ub", "float32", 16),
+    # l1ub 单核版：新环境产物 new_env/n6_l1ub_*_single.o（5 规格 x r16/r128）
+    ("l1ub_single", "bfloat16", 16),
+    ("l1ub_single", "bfloat16", 64),
+    ("l1ub_single", "bfloat16", 128),
+    ("l1ub_single", "float32", 16),
+    ("l1ub_single", "float32", 64),
 ]
 
 # 每 REPEAT 轮的被测搬运块数与 DMA 条数
@@ -51,6 +67,8 @@ TRANSFERS = {
     "ub2ub": {"blocks_per_round": 1, "dma_per_round": 1},
     "ub_scalar": {"blocks_per_round": 1, "dma_per_round": 1},
     "l1ub": {"blocks_per_round": 2, "dma_per_round": 4},  # 2x(L1->UB) + 2x(UB->L1)
+    # 单核版与 mix 版相同链路：每轮 2x(L1->UB) + 2x(UB->L1)
+    "l1ub_single": {"blocks_per_round": 2, "dma_per_round": 4},
 }
 
 
@@ -59,6 +77,11 @@ def tag_of(variant, dtype, M, R):
 
 
 def o_path(variant, dtype, M, R):
+    # return os.path.join(HERE, f"6_{tag_of(variant, dtype, M, R)}.o")
+    # l1ub_single 产物在新环境目录：new_env/n6_l1ub_{dtype}_{M}x{K}_r{R}_single.o
+    if variant == "l1ub_single":
+        return os.path.join(
+            HERE, "new_env", f"n6_{tag_of('l1ub', dtype, M, R)}_single.o")
     return os.path.join(HERE, f"6_{tag_of(variant, dtype, M, R)}.o")
 
 
@@ -83,7 +106,8 @@ def do_prep():
 
             x = x.astype(ml_dtypes.bfloat16).view(np.uint16)
         np.save(npy_path(f"X_{variant}_{dtype}_{M}"), x)
-        if variant == "l1ub":
+        # if variant == "l1ub":
+        if variant in ("l1ub", "l1ub_single"):
             for wname in ("W1", "W2"):
                 w = (rng.standard_normal((K, N)) * 0.05).astype(np.float32)
                 if dtype == "bfloat16":
@@ -158,7 +182,8 @@ def do_run():
         ptr = rt.malloc_device(x.nbytes)
         rt.memcpy_h2d(ptr, x.tobytes(order="C"))
         entry = {"X": (ptr, x)}
-        if variant == "l1ub":
+        # if variant == "l1ub":
+        if variant in ("l1ub", "l1ub_single"):
             for wname in ("W1", "W2"):
                 w = np.load(npy_path(f"{wname}_{variant}_{dtype}_{M}"))
                 wptr = rt.malloc_device(w.nbytes)
@@ -177,9 +202,20 @@ def do_run():
     try:
         for variant, dtype, M in SPECS:
             entry = uploads[(variant, dtype, M)]
-            mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
+            # mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
+            if variant in ("ub2ub", "ub_scalar"):
+                mode = "aiv"  # AIV 向量核 ELF
+            elif variant == "l1ub":
+                mode = "mix"  # AIC ELF，runtime 自动配对 _mix_aiv 半核
+            else:  # l1ub_single
+                mode = "aic"  # 单核 AIC ELF（registerKernel 非 "aiv" 均走 AIC magic）
             # mix 双函数 .o 的入口符号带 _mix_aic 后缀（runtime 自动配对 _mix_aiv）
-            kname = f"{variant}_kernel" if variant in ("ub2ub", "ub_scalar") else f"{variant}_kernel_mix_aic"
+            # kname = f"{variant}_kernel" if variant in ("ub2ub", "ub_scalar") else f"{variant}_kernel_mix_aic"
+            if variant == "l1ub":
+                kname = "l1ub_kernel_mix_aic"
+            else:
+                # l1ub_single 复用原 l1ub DSL，单核 .o 入口名无后缀
+                kname = f"{variant}_kernel"
             times = {}
             for R in (R_LOW, R_HIGH):
                 path = o_path(variant, dtype, M, R)
@@ -190,7 +226,8 @@ def do_run():
                 with open(path, "rb") as f:
                     obytes = f.read()
                 module, func = rt.load_kernel(kname, obytes, 0, mode)
-                if variant == "l1ub":
+                # if variant == "l1ub":
+                if variant in ("l1ub", "l1ub_single"):
                     args = [
                         ("ptr", entry["X"][0]),
                         ("ptr", entry["W1"][0]),
@@ -226,11 +263,11 @@ def do_run():
             )
 
         print("\n===== 差分法汇总（t_round 消除 launch/GM/gemm 常数）=====")
-        print(f"{'variant':8} {'dtype':10} {'shape':>10} {'KB':>6} "
+        print(f"{'variant':12} {'dtype':10} {'shape':>10} {'KB':>6} "
               f"{'t_r16us':>8} {'t_r128us':>9} {'round_us':>9} {'dma_us':>7} "
               f"{'GB/s(mv)':>9} {'GB/s(tr)':>9}")
         for r in results:
-            print(f"{r[0]:8} {r[1]:10} {str(r[2])+'x'+str(K):>10} {r[3]/1024:>6.0f} "
+            print(f"{r[0]:12} {r[1]:10} {str(r[2])+'x'+str(K):>10} {r[3]/1024:>6.0f} "
                   f"{r[4]:>8.1f} {r[5]:>9.1f} {r[6]:>9.2f} {r[7]:>7.2f} "
                   f"{r[8]:>9.2f} {r[9]:>9.2f}")
     finally:
@@ -260,8 +297,18 @@ def do_verify():
             if not os.path.exists(path):
                 continue
             x = np.load(npy_path(f"X_{variant}_{dtype}_{M}"))
-            mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
-            kname = "ub2ub_kernel" if variant == "ub2ub" else ("ub_scalar_kernel" if variant == "ub_scalar" else "l1ub_kernel_mix_aic")
+            # mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
+            if variant in ("ub2ub", "ub_scalar"):
+                mode = "aiv"
+            elif variant == "l1ub":
+                mode = "mix"
+            else:  # l1ub_single
+                mode = "aic"
+            # kname = "ub2ub_kernel" if variant == "ub2ub" else ("ub_scalar_kernel" if variant == "ub_scalar" else "l1ub_kernel_mix_aic")
+            if variant == "l1ub":
+                kname = "l1ub_kernel_mix_aic"
+            else:
+                kname = f"{variant}_kernel"
             with open(path, "rb") as f:
                 obytes = f.read()
             module, func = rt.load_kernel(kname, obytes, 0, mode)
@@ -322,7 +369,8 @@ def do_verify():
                 e1 = float(np.abs(o1 - g1).max())
                 e2 = float(np.abs(o2 - g2).max())
                 print(
-                    f"[verify] l1ub {dtype} {M}x{K}: "
+                    # f"[verify] l1ub {dtype} {M}x{K}: "
+                    f"[verify] {variant} {dtype} {M}x{K}: "
                     f"{'PASS' if e1 < 0.5 and e2 < 0.5 else 'FAIL'} "
                     f"(max_err O1={e1:.4f} O2={e2:.4f})"
                 )
@@ -352,3 +400,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

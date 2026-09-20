@@ -44,3 +44,45 @@ bench_run.py verify 标签 bug 已修：print 硬编码 "ub2ub" 改为 {variant}
 6_ub_scalar_*.o x 10（5规格 x r16/r128，ccec 9.2.0-beta.2，dav-c310-vec arch
 标量模式）。.ll 证据：标量 load/store addrspace(6)，零向量指令，三层循环
 128x64x256 逐元素。
+
+
+[l1ub_single 待上板验证 2026-09-20] L1->UB->L1 单核 AIC 版（绕开 mix 0x7bc87）
+
+一、方案
+
+mix 双核版多轮修复均报 0x7bc87（跨核同步问题域）。单核方案让全部指令
+（MOV.L1.TO.UB / MOV.UB.TO.L1 / LOAD.L1.TO.L0A / MAD 本就是 AIC 专属）留在
+单个 AIC 核执行，从根上消除跨核同步。
+
+单核化由编译流水线完成，不改 DSL（复用原 l1ub 函数，带 gemm 消费）。
+关键差异在 stage3 仅 --npu-plan-memory：
+  - 无 --npu-split-scope：会给 op 打 crossCoreDeps，plan-memory 对 cbuf->ca
+    的 L1->L0A 装载 copy 报 "failed to recognize single-pipe op"
+  - 无 split-mix-kernel / sync-pipeline / split-dataflow：不拆核、不插
+    INTRA.BLOCKI 跨核同步
+  - 无 --npu-expand-ub-to-l1-nd2nz：线性 UB->L1 copy 由 cce-pipeline 直接
+    lower 为 MOV.UB.TO.L1 行循环，expand 反而引入 pset.b16 谓词循环（退化）
+  - stage6 ccec 不加 -cce-enable-mix
+
+编译脚本 build_l1ub_single.sh 已重建并全量复现：10 个 .o 与已推送产物
+逐字节一致（git 验证 0 个已跟踪文件被修改）。
+
+二、NPU 机验证步骤
+
+  cd ~/tmp && git pull
+  cd bench_transfer
+  python bench_run.py prep     # 生成 l1ub_single 输入（X/W1/W2）
+  python bench_run.py run      # 差分法计时（含 l1ub_single 5 规格）
+  python bench_run.py verify   # OUT1=X@W1, OUT2=X@W2 golden 校验
+
+要点：
+  - l1ub_single .o 在 new_env/n6_l1ub_*_single.o（bench_run.py 自动定位）
+  - mode="aic"（AIC ELF 加载），入口名 l1ub_kernel（无后缀）
+  - 关注是否复现 0x7bc87：单核无跨核同步，预期不出现
+  - 对比 ub2ub 带宽：两跳中转理论低于 UB 内向量搬运
+
+三、产物
+
+new_env/n6_l1ub_{bf16 16/64/128, f32 16/64}x256_{r16,r128}_single.o x 10
+（官方 OpenTileAS ed2beb55 + CANN 9.2.0-beta.2，dav-c310-cube 单核）
+
