@@ -1,2 +1,23 @@
-for f in new_env/p6_ub2ub_*.o; do cp "$f" "$(echo "$f" | sed 's|new_env/p6_|6_|')"; done
+root@localhost:/home/zwh/tmp/bench_transfer# for f in new_env/p6_ub2ub_*.o; do cp "$f" "$(echo "$f" | sed 's|new_env/p6_|6_|')"; done
 python bench_run.py run && python bench_run.py verify
+[ub2ub bfloat16 16x256] T(r16)=2.1us T(r128)=6.0us round=0.04us dma=0.04us bw(move)=230.45GB/s bw(traffic)=460.90GB/s
+[ub2ub bfloat16 64x256] T(r16)=2.7us T(r128)=13.8us round=0.10us dma=0.10us bw(move)=331.60GB/s bw(traffic)=663.20GB/s
+[ub2ub bfloat16 128x256] T(r16)=4.3us T(r128)=24.1us round=0.18us dma=0.18us bw(move)=370.22GB/s bw(traffic)=740.43GB/s
+[ub2ub float32 16x256] T(r16)=2.2us T(r128)=8.6us round=0.06us dma=0.06us bw(move)=284.81GB/s bw(traffic)=569.62GB/s
+[ub2ub float32 64x256] T(r16)=4.3us T(r128)=24.0us round=0.18us dma=0.18us bw(move)=371.09GB/s bw(traffic)=742.18GB/s
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_16x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_64x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_float32_16x256_r16.o
+
+===== 差分法汇总（t_round 消除 launch/GM/gemm 常数）=====
+variant  dtype           shape     KB  t_r16us  t_r128us  round_us  dma_us  GB/s(mv)  GB/s(tr)
+ub2ub    bfloat16       16x256      8      2.1       6.0      0.04    0.04    230.45    460.90
+ub2ub    bfloat16       64x256     32      2.7      13.8      0.10    0.10    331.60    663.20
+ub2ub    bfloat16      128x256     64      4.3      24.1      0.18    0.18    370.22    740.43
+ub2ub    float32        16x256     16      2.2       8.6      0.06    0.06    284.81    569.62
+ub2ub    float32        64x256     64      4.3      24.0      0.18    0.18    371.09    742.18
+[verify] ub2ub bfloat16 16x256: PASS (恒等)
+[verify] ub2ub bfloat16 64x256: PASS (恒等)
+[verify] ub2ub bfloat16 128x256: PASS (恒等)
+[verify] ub2ub float32 16x256: PASS (恒等)
+[verify] ub2ub float32 64x256: PASS (恒等)
