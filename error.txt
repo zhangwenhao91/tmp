@@ -68,3 +68,74 @@ Traceback (most recent call last):
     rt.synchronize_stream(stream)
 RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
 root@localhost:/home/zwh/tmp/bench_transfer# 
+
+===================== 第三轮修复（2026-09-18） =====================
+[根因] INTRA.BLOCKI SET/WAIT 的 mode 管线绑定错误（编译器 CrossCoreCopyAndSync.cpp）。
+insertCrossCoreSync / insertMemoryOrderSync 原先按『核类型』给 SET/WAIT 绑定默认管线
+（AIC 侧默认 FIX，AIV 侧默认 MTE3/V），与被同步 op 的实际执行管线错配：
+  - SET 绑到生产者不占用的空闲管线队列 → set 立即生效 → 对端提前消费旧数据
+  - L1→UB 实际走 MTE1、GM→L1 实际走 MTE2、nd2nz_scatter 实际走 V
+  - 第二轮仍报 0x7bc87 即由此跨核并发读写 L1 引发。
+[修复] 新增 getOperationExecPipe()（基于 NpuOpPipeInterface 查询 op 真实执行管线），
+insertMemoryOrderSync / insertCrossCoreSync 中 SET 绑生产 op 实际管线、WAIT 绑消费 op
+实际管线，核级默认仅作回退。重编 tile-opt 后 6 个 l1ub 规格全部重编。
+[验证 IR 对比（旧 → 新）]
+  npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_MTE3>] flag=5
+    → npu.sync_block_set[<CUBE>, <PIPE_MTE2>, <PIPE_MTE3>] flag=5
+  npu.sync_block_set[<CUBE>, <PIPE_FIX>, <PIPE_V>] flag=7
+    → npu.sync_block_set[<CUBE>, <PIPE_MTE1>, <PIPE_V>] flag=7
+  npu.sync_block_set[<VECTOR>, <PIPE_MTE3>, <PIPE_MTE1>] flag=0
+    → npu.sync_block_set[<VECTOR>, <PIPE_V>, <PIPE_MTE1>] flag=0
+[补丁] bench_transfer/patches/0003-bind-intra-blocki-pipes-to-op-exec-pipes.patch
+[产物] 3/4/5/6_l1ub_{bfloat16, float32}_*.mlir/.ll/.o 全部重编（15:53 时间戳）
+[待验证] 上板执行：
+  cd /home/zwh/tmp/bench_transfer && python bench_run.py run && python bench_run.py verify
+  预期 l1ub 各规格不再报 0x7bc87，跑通后回填带宽与恒等校验结果。
+====================================================================
+
+====================================================================
+[2026-09-20] 新环境（无补丁）全量重编译验证 — WSL Ubuntu-26.04
+====================================================================
+环境：官方 OpenTileAS ed2beb55（零本地补丁）+ CANN 9.2.0-beta.2 ccec
+     （替代旧环境：OpenTileAS+0001/0002/0003 补丁 + CANN 9.1.0）
+产物：bench_transfer/new_env/（前缀 n2_/n3_/n4_/n5_/n6_）
+脚本：bench_transfer/build_all_new.sh（规格矩阵）、build_special_new.sh（特殊路径）
+
+[结果 1] ub2ub（5 规格 x r16/r128）：10/10 编译通过
+  - .o 大小与旧版逐字节一致（1856/1864B）
+  - .ll 指令级与旧版完全一致：MOV.{OUT,UB}.TO.{UB,OUT}.ALIGN + FLAG 同步，
+    标量 load/store = 0（无 point 循环退化）
+  - 结论：官方 ed2beb55 已含等效 0001（memref.view 对齐证明）修复，
+    上板带宽 283~372 GB/s 预期可直接复现
+
+[结果 2] l1ub（mix 双核版）：10/10 编译失败（stage3 npu-plan-memory）
+  报错：npu-plan-memory failed to recognize single-pipe op
+  根因：官方版 --npu-split-scope 对所有含 gemm 的 kernel 产生
+        L0A/L0B -> L1 回搬 copy（crossCoreDeps）；
+        CopyOp::getPipe() 映射表无 L0A/L0B 源条目（L0 只进不出，
+        与硬件一致）→ PIPE_UNASSIGNED → plan-memory 拒绝
+  同挂：baseline / l12l1 / l1_scalar（全部含 gemm）
+  说明：旧环境 mix 版靠已放弃的 CoreTypeClassifyAndProducerAnalysis.cpp
+        本地修改绕过该回搬；官方版对「DSL 生成 gemm + mix 拆分」路径
+        存在支持缺口（源码 NpuDmaPipeAnalysis.cpp 有 pipe-stage2 TODO）
+  尝试过的替代序列均失败：--npu-pipeline 整体管线 / 无 expand 4-pass
+
+[结果 3] l1ub（单核 AIC 版，无 mix 拆分）：10/10 编译通过
+  - n6_l1ub_*_single.o（1512~1896B），管线仅 --npu-plan-memory + cce
+  - .ll 指令形态标准：MOV.L1.TO.UB x3（第一跳）+ MOV.UB.TO.L1 x3（第二跳）
+    + MOV.OUT.TO.L1.MULTI.ND2NZ（载入）+ MOV.UB.TO.OUT.ALIGN（输出）
+  - 单核版全指令在 AIC 核执行（MOV.L1.TO.UB 本就是 AIC 专属），
+    无需 AIC/AIV 协同同步，绕开 0x7bc87 的整个同步问题域
+
+[结果 4] 其他：ub_scalar 编译通过（1448B）；
+  baseline 单核版通过（1368B）；l12l1 依旧无 lowering（不变）
+
+[上板清单 - NPU 机执行]
+  1. git pull 后：cd bench_transfer/new_env
+  2. ub2ub 复现验证：cp n6_ub2ub_*.o ../6_ub2ub_*.o
+     （注意去掉 n6_ 前缀对应 6_ 命名）后 python bench_run.py run && verify
+     预期：带宽 283~372 GB/s 复现 + 恒等校验 PASS（确认官方版含等效修复）
+  3. l1ub 单核版：bench_run.py 加载逻辑需适配单核入口
+     （kernel 名无 _mix_aic 后缀，mode 用普通单核）后 run/verify
+  4. mix 版 l1ub 新环境暂不可编译，若需继续 0x7bc87 修复验证，
+     需重新引入 0001~0003 补丁或改用旧 .o（6_l1ub_* 已是 round-3 版）
