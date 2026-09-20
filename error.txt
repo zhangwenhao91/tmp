@@ -1,2 +1,19 @@
-for f in new_env/n6_ub2ub_*.o; do cp "$f" "$(echo $f | sed 's/new_env\/n6_/6_/')"; done
+root@localhost:/home/zwh/tmp/bench_transfer# for f in new_env/n6_ub2ub_*.o; do cp "$f" "$(echo $f | sed 's/new_env\/n6_/6_/')"; done
 python bench_run.py run && python bench_run.py verify
+cp: cannot stat 'new_env/n6_ub2ub_*.o': No such file or directory
+[ub2ub bfloat16 16x256] T(r16)=2.7us T(r128)=6.0us round=0.03us dma=0.03us bw(move)=274.42GB/s bw(traffic)=548.84GB/s
+[ub2ub bfloat16 64x256] T(r16)=2.8us T(r128)=13.8us round=0.10us dma=0.10us bw(move)=331.99GB/s bw(traffic)=663.98GB/s
+[ub2ub bfloat16 128x256] T(r16)=4.4us T(r128)=24.0us round=0.18us dma=0.18us bw(move)=373.67GB/s bw(traffic)=747.35GB/s
+[ub2ub float32 16x256] T(r16)=2.5us T(r128)=8.6us round=0.05us dma=0.05us bw(move)=300.47GB/s bw(traffic)=600.94GB/s
+[ub2ub float32 64x256] T(r16)=4.3us T(r128)=24.1us round=0.18us dma=0.18us bw(move)=370.58GB/s bw(traffic)=741.16GB/s
+Traceback (most recent call last):
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 348, in <module>
+    main()
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 336, in main
+    do_run()
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 198, in do_run
+    times[R] = _bench_once(rt, func, stream, args)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 135, in _bench_once
+    rt.synchronize_stream(stream)
+RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
