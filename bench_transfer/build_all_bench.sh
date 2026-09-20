@@ -61,7 +61,7 @@ build_one() { # $1=variant $2=M $3=dtype $4=REPEAT
 for dt in bfloat16 float32; do
   if [ "$dt" = "bfloat16" ]; then MS="16 64 128"; else MS="16 64"; fi
   for M in $MS; do
-    for v in ub2ub l1ub; do
+    for v in ub2ub ub_scalar l1ub; do
       for R in $REPEATS; do
         build_one "$v" "$M" "$dt" "$R"
       done

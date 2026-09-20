@@ -52,6 +52,26 @@ def ub2ub(M, K, REPEAT, dtype="bfloat16"):
 
 
 # --------------------------------------------------------------------------
+# 1b) UB -> scalar -> UB: pure AIV kernel, no gemm, no L1.
+#     Scalar load/store (memref.load/store -> PIPE_S scalar pipeline),
+#     counterpart to ub2ub's vector DMA path.
+# --------------------------------------------------------------------------
+def ub_scalar(M, K, REPEAT, dtype="bfloat16"):
+    @T.prim_func
+    def ub_scalar_kernel(X: T.Buffer((M, K), dtype), OUT: T.Buffer((M, K), dtype)):
+        with T.Kernel(1) as bx:
+            src = T.alloc_shared((M, K), dtype)  # no gemm -> UB
+            dst = T.alloc_shared((M, K), dtype)  # no gemm -> UB
+            T.copy(X[0:M, 0:K], src)  # GM -> UB
+            for r in T.serial(REPEAT):
+                for i in T.serial(M):
+                    for j in T.serial(K):
+                        dst[i, j] = src[i, j]  # scalar read UB + scalar write UB (under test)
+            T.copy(dst, OUT[0:M, 0:K])  # UB -> GM (prevent DCE)
+
+    return ub_scalar_kernel
+
+# --------------------------------------------------------------------------
 # 2) L1 -> L1：AIC kernel，交替 gemm + 双 W 结构。
 #    v1 教训：x_src 不被 gemm 读 -> 推断为 UB；writer 在循环内 reader 在
 #    循环外 -> 违反支配契约。
@@ -199,6 +219,7 @@ def baseline(M, K, N, dtype="bfloat16"):
 
 VARIANTS = {
     "ub2ub": ub2ub,
+    "ub_scalar": ub_scalar,
     "l12l1": l12l1,
     "l1ub": l1ub,
     "baseline": baseline,
@@ -214,7 +235,7 @@ def main():
         variant, M, K, N, REPEAT = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])
         dtype = sys.argv[6] if len(sys.argv) > 6 else "bfloat16"
         fn = VARIANTS[variant]
-        if variant == "ub2ub":
+        if variant in ("ub2ub", "ub_scalar"):
             program = fn(M, K, REPEAT, dtype=dtype)
         elif variant == "baseline":
             program = fn(M, K, N, dtype=dtype)
@@ -228,7 +249,7 @@ def main():
     # 冒烟规格：bf16 (64, 256)，N=16，REPEAT=64
     M, K, N, REPEAT = 64, 256, 16, 64
     for name, fn in VARIANTS.items():
-        if name == "ub2ub":
+        if name in ("ub2ub", "ub_scalar"):
             program = fn(M, K, REPEAT)
         elif name == "baseline":
             program = fn(M, K, N)

@@ -32,10 +32,15 @@ NP_DTYPES = {"bfloat16": "uint16", "float32": "float32"}
 # (variant, dtype, M) —— 与 build_all_bench.sh 的成功矩阵一致
 SPECS = [
     ("ub2ub", "bfloat16", 16),
+    ("ub_scalar", "bfloat16", 16),
     ("ub2ub", "bfloat16", 64),
+    ("ub_scalar", "bfloat16", 64),
     ("ub2ub", "bfloat16", 128),
+    ("ub_scalar", "bfloat16", 128),
     ("ub2ub", "float32", 16),
+    ("ub_scalar", "float32", 16),
     ("ub2ub", "float32", 64),
+    ("ub_scalar", "float32", 64),
     ("l1ub", "bfloat16", 16),
     ("l1ub", "bfloat16", 64),
     ("l1ub", "float32", 16),
@@ -44,6 +49,7 @@ SPECS = [
 # 每 REPEAT 轮的被测搬运块数与 DMA 条数
 TRANSFERS = {
     "ub2ub": {"blocks_per_round": 1, "dma_per_round": 1},
+    "ub_scalar": {"blocks_per_round": 1, "dma_per_round": 1},
     "l1ub": {"blocks_per_round": 2, "dma_per_round": 4},  # 2x(L1->UB) + 2x(UB->L1)
 }
 
@@ -171,9 +177,9 @@ def do_run():
     try:
         for variant, dtype, M in SPECS:
             entry = uploads[(variant, dtype, M)]
-            mode = "aiv" if variant == "ub2ub" else "mix"
+            mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
             # mix 双函数 .o 的入口符号带 _mix_aic 后缀（runtime 自动配对 _mix_aiv）
-            kname = f"{variant}_kernel" if variant == "ub2ub" else f"{variant}_kernel_mix_aic"
+            kname = f"{variant}_kernel" if variant in ("ub2ub", "ub_scalar") else f"{variant}_kernel_mix_aic"
             times = {}
             for R in (R_LOW, R_HIGH):
                 path = o_path(variant, dtype, M, R)
@@ -254,12 +260,12 @@ def do_verify():
             if not os.path.exists(path):
                 continue
             x = np.load(npy_path(f"X_{variant}_{dtype}_{M}"))
-            mode = "aiv" if variant == "ub2ub" else "mix"
-            kname = "ub2ub_kernel" if variant == "ub2ub" else "l1ub_kernel_mix_aic"
+            mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
+            kname = "ub2ub_kernel" if variant == "ub2ub" else ("ub_scalar_kernel" if variant == "ub_scalar" else "l1ub_kernel_mix_aic")
             with open(path, "rb") as f:
                 obytes = f.read()
             module, func = rt.load_kernel(kname, obytes, 0, mode)
-            if variant == "ub2ub":
+            if variant in ("ub2ub", "ub_scalar"):
                 xptr = rt.malloc_device(x.nbytes)
                 rt.memcpy_h2d(xptr, x.tobytes(order="C"))
                 optr = rt.malloc_device(x.nbytes)
