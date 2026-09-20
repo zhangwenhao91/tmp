@@ -264,3 +264,36 @@ ub2ub    float32        64x256     64    160.7    1275.7      9.96    9.96      
 [verify] ub2ub float32 16x256: PASS (恒等)
 [verify] ub2ub float32 64x256: PASS (恒等)
 root@localhost:/home/zwh/tmp/bench_transfer# 
+
+====================================================================
+[2026-09-20 补2] 0001 补丁已应用到新环境并重编 ub2ub（10/10）
+====================================================================
+背景：新环境（官方 ed2beb55 无补丁）的 ub2ub .o 上板恒等 PASS 但带宽退化
+  （bf16 0.55 / f32 6.5 GB/s = 0001 修复前症状）。
+  .ll 全文 diff 证实退化：循环 128→16384 次、步进 256 元素→2 字节、
+  寻址/谓词模式参数变化（逐元素 Point 循环）。
+  （此前"指令直方图一致"的判断有误——指令名相同但参数不同。）
+
+修复动作：
+  1) git apply patches/0001-prove-memref-view-base-alignment.patch
+     → OpenTileAS/LoweringUtils.cpp +13 行（hasKnownAlignedMemrefBase 补 ViewOp 分支）
+  2) make -j8 tile-opt tile-translate 增量重编（EXIT=0）
+  3) 全管线重编 10 个 ub2ub（新前缀 p5_/p6_）：
+     新编译器(ed2beb55+0001) + ccec 9.2.0-beta.2
+  4) 验证：p5_*.ll 与旧带补丁版 5_*.ll 逐字节 10/10 完全一致
+     （整块搬运形态恢复：循环 16384→128、步进 2B→256 元素）
+  5) p6_*.o 与旧 6_*.o 二进制不同（ccec 9.2 vs 9.1 编码差异，语义等价，
+     历史已知 md5 随 ccec 版本变化）
+
+[NPU 机验证步骤 — 用 p6_ 版重跑 ub2ub]
+  cd ~/tmp && git pull
+  cd bench_transfer
+  for f in new_env/p6_ub2ub_*.o; do cp "$f" "$(echo "$f" | sed "s|new_env\/p6_/6_/")"; done
+  python bench_run.py run && python bench_run.py verify
+预期：bw(move) 恢复 270~374 GB/s（与 9-20 早间旧 .o 复跑同水平）+ 恒等 PASS。
+  若 PASS：确认 0001 在新环境有效，官方上游未含此修复，
+  建议后续向 OpenTileAS 上游提 PR（memref::ViewOp 对齐证明分支）。
+
+[结论修正]
+  - 官方 ed2beb55 不含 0001 等效修复（上板数据证实）
+  - 0001 补丁在新环境（ed2beb55 + CANN 9.2）仍然有效且必要
