@@ -98,3 +98,34 @@ Traceback (most recent call last):
                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 RuntimeError: rtFunctionRegister failed, error code: 0x7bc78
 root@localhost:/home/zwh/tmp/bench_transfer# 
+
+========================================
+[2026-09-20 分析] 0x7bc78（ACL_ERROR_RT_INTERNAL_ERROR，rtFunctionRegister 阶段）根因分析
+
+两个候选变量（均已定位）：
+
+1) kname 符号不匹配（已修复 bench_run.py）：
+   单核 .o 入口符号是 l1ub_kernel（.ll: define ... @l1ub_kernel；nm: T l1ub_kernel），
+   原 bench_run.py 用 f"{variant}_kernel" 拼成 l1ub_single_kernel，
+   .o 中无此符号 -> rtFunctionRegister 报 0x7bc78。
+   修复：do_run / do_verify 两处均改为 kname = "l1ub_kernel"。
+
+2) .text 段对齐（第二个候选变量，待 NPU 机验证）：
+   纯 AIC(cube) .o 默认 .text Al=4；此前 AIC(ELF magic) 路径注册成功的 .o 均为 Al=256。
+   已在 build_l1ub_single.sh 打 align 256 补丁（.ll 级 sed + readelf 校验），
+   10 个 n6_l1ub_*_single.o 全部 Al=256。
+
+诊断产物（new_env/ 下）：
+   diag_l1ub_bf16_16x256_r16_align4_ccec920.o  Al=4，ccec 9.2.0-beta.2，即 4962977 报错原物
+   diag_l1ub_bf16_16x256_r16_align4_ccec910.o  Al=4，ccec 9.1.0 编译（区分 ccec 版本变量）
+   两者符号均为 T l1ub_kernel，与 fix 版一致，只差对齐/编译器版本。
+
+NPU 机验证步骤：
+   cd ~/tmp && git pull
+   cd bench_transfer
+   python diag_register.py
+   # 四项：sanity-aiv / fix-align256 / align4-910 / align4-920（自动给出结论）
+   # 若 fix-align256 PASS（无论 align4 结果如何）：
+   python bench_run.py prep
+   python bench_run.py run
+   python bench_run.py verify

@@ -2,7 +2,7 @@
 source_filename = "LLVMDialectModule"
 target triple = "hiipu64-hisilicon-cce"
 
-define dso_local ptc_kernel void @l1ub_kernel(ptr addrspace(1) %0, ptr addrspace(1) %1, ptr addrspace(1) %2, ptr addrspace(1) %3, ptr addrspace(1) %4, i32 %5) #0 {
+define dso_local ptc_kernel void @l1ub_kernel(ptr addrspace(1) %0, ptr addrspace(1) %1, ptr addrspace(1) %2, ptr addrspace(1) %3, ptr addrspace(1) %4, i32 %5) align 256 #0 {
   %7 = call i64 @llvm.hivm.GET.CTRL()
   %8 = call i64 @llvm.hivm.SBITSET0(i64 %7, i64 60)
   call void @llvm.hivm.SET.CTRL(i64 %8)

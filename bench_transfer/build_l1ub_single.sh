@@ -13,11 +13,17 @@
 #     pset.b16 向量谓词循环（形态退化）
 #   - stage6 ccec 不加 -cce-enable-mix；产物单入口 l1ub_kernel（AIC ELF）
 #
+# fix 0x7bc78（2026-09-20 NPU 机验证发现）：纯 AIC(cube) .o 的 .text 段对齐
+# 默认为 4，rtFunctionRegister（RT_DEV_BINARY_MAGIC_ELF 路径）注册时报
+# 507000（ACL_ERROR_RT_INTERNAL_ERROR）内部错误。修复：给 kernel 函数定义加
+# align 256，使 ccec 输出 Al=256 的 .text（offset 0x100），与 mix / AIV .o
+# （实测可注册）结构一致。
+# 注：-falign-functions=256 对 ptc_kernel 函数无效，只能改 .ll。
+#
 # DSL 复用 0_bench_transfer.py 原版 l1ub（带 gemm 消费，5 ptr 签名），
 # 单核化全部由编译流水线完成，不改 DSL。
 #
 # 产物：new_env/n6_l1ub_{dtype}_{M}x256_r{R}_single.o（5 规格 x r16/r128）
-# 已验证与 2026-09-20 推送产物逐字节一致（md5 复现）。
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -64,11 +70,25 @@ build_one() { # $1=M $2=dtype $3=REPEAT
     -o "$NEWD/n5_${tag}_single.ll" 2>/tmp/bl1_s5.err || {
     echo "[FAIL-s5] $tag"; fail=$((fail+1)); return; }
 
+  # fix 0x7bc78: 纯 cube .o 默认 .text Al=4，AIC(ELF magic) 注册路径拒绝；
+  # 给 kernel 函数加 align 256 -> ccec 输出 Al=256 的 .text
+  sed -i 's/^\(define dso_local ptc_kernel void @l1ub_kernel(.*)\) #0 {$/\1 align 256 #0 {/' \
+    "$NEWD/n5_${tag}_single.ll"
+  grep -q 'align 256' "$NEWD/n5_${tag}_single.ll" || {
+    echo "[FAIL-s5p] $tag: align 256 not inserted"; fail=$((fail+1)); return; }
+
   "$CCEC" --cce-aicore-arch=dav-c310-cube --cce-aicore-only -O2 \
     -cce-bitcode-is-aicore -c "$NEWD/n5_${tag}_single.ll" \
     -o "$NEWD/n6_${tag}_single.o" 2>/tmp/bl1_s6.err || {
     echo "[FAIL-s6] $tag"; head -3 /tmp/bl1_s6.err; fail=$((fail+1)); return; }
-  echo "[OK] n6_${tag}_single.o ($(stat -c%s "$NEWD/n6_${tag}_single.o") bytes)"
+
+  # 对齐校验：必须是 256，否则注册会复现 0x7bc78
+  local al
+  al=$(readelf -SW "$NEWD/n6_${tag}_single.o" | awk '$3==".text" {print $NF}')
+  if [ "$al" != "256" ]; then
+    echo "[FAIL-align] $tag .text Al=$al (expect 256)"; fail=$((fail+1)); return
+  fi
+  echo "[OK] n6_${tag}_single.o ($(stat -c%s "$NEWD/n6_${tag}_single.o") bytes, .text Al=256)"
 }
 
 for dt in bfloat16 float32; do
@@ -84,4 +104,3 @@ echo "=============================="
 echo "total=$total fail=$fail"
 ls -la "$NEWD"/n6_l1ub_*_single.o 2>/dev/null
 exit $fail
-

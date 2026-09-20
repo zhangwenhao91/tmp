@@ -213,8 +213,11 @@ def do_run():
             # kname = f"{variant}_kernel" if variant in ("ub2ub", "ub_scalar") else f"{variant}_kernel_mix_aic"
             if variant == "l1ub":
                 kname = "l1ub_kernel_mix_aic"
+            elif variant == "l1ub_single":
+                # l1ub_single 复用原 l1ub DSL，单核 .o 入口符号就是 l1ub_kernel（.ll: @l1ub_kernel）
+                # kname = f"{variant}_kernel"  # 错误：拼成 l1ub_single_kernel，.o 中无此符号 -> rtFunctionRegister 0x7bc78
+                kname = "l1ub_kernel"
             else:
-                # l1ub_single 复用原 l1ub DSL，单核 .o 入口名无后缀
                 kname = f"{variant}_kernel"
             times = {}
             for R in (R_LOW, R_HIGH):
@@ -307,6 +310,9 @@ def do_verify():
             # kname = "ub2ub_kernel" if variant == "ub2ub" else ("ub_scalar_kernel" if variant == "ub_scalar" else "l1ub_kernel_mix_aic")
             if variant == "l1ub":
                 kname = "l1ub_kernel_mix_aic"
+            elif variant == "l1ub_single":
+                # kname = f"{variant}_kernel"  # 错误：拼成 l1ub_single_kernel，.o 中无此符号 -> 0x7bc78
+                kname = "l1ub_kernel"  # 单核 .o 入口符号（.ll: @l1ub_kernel）
             else:
                 kname = f"{variant}_kernel"
             with open(path, "rb") as f:
