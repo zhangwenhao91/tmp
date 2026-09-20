@@ -1,88 +1,100 @@
-[ub_scalar 测试完成 2026-09-20] UB->scalar->UB 标量中转路径性能测试结果与分析
-
-一、测试结果（差分法，5规格 x r16/r128，恒等校验 5/5 PASS）
-
-variant    dtype      shape      bw(move)   bw(traffic)   每元素耗时
-ub2ub      bfloat16   16x256     225.65GB/s  451.29GB/s   ~0.02ns
-ub_scalar  bfloat16   16x256       0.15GB/s    0.31GB/s   12.94ns
-ub2ub      bfloat16   64x256     331.46GB/s  662.91GB/s
-ub_scalar  bfloat16   64x256       0.15GB/s    0.31GB/s   12.94ns
-ub2ub      bfloat16   128x256    370.13GB/s  740.26GB/s
-ub_scalar  bfloat16   128x256      0.15GB/s    0.31GB/s   12.94ns
-ub2ub      float32    16x256     301.37GB/s  602.73GB/s
-ub_scalar  float32    16x256       0.31GB/s    0.62GB/s   12.83ns
-ub2ub      float32    64x256     379.15GB/s  758.31GB/s
-ub_scalar  float32    64x256       0.31GB/s    0.62GB/s   12.83ns
-
-标量/向量路径差距：bf16 1504~2468 倍，f32 972~1223 倍。
-
-二、瓶颈定位：标量指令发射率（issue rate），非内存带宽
-
-证据1：每元素耗时与形状无关（16x256 和 128x256 均为 12.94ns）——纯发射率瓶颈，
-      不像 DMA 随块尺寸扩展。
-证据2：f32 带宽恰为 bf16 的 2 倍（0.31 vs 0.15），但元素速率相同——按
-      "每元素一次 load + 一次 store" 计价，与位宽无关。
-12.9ns/元素 ≈ 20 cycles（~1.6GHz），覆盖标量 load + store + 地址计算 +
-三层循环控制开销。标量 ALU 无向量化、无流水重叠，为裸标量代码天花板。
-
-三、结论
-
-1. UB->scalar->UB 功能可行（AIV 标量 ALU 可访问 UB，恒等 PASS），但性能上
-   仅适合控制流/零散数据操作；批量搬运必须走向量路径。
-2. 从数据上坐实此前判断：即使 L1 标量路径在硬件上允许（实际不允许，AIC 无
-   标量 ALU），~2000 倍的带宽差距也没有工程价值。标量路径彻底排除出搬运
-   候选。
-3. NPU 上 UB 内批量搬运唯一合理路径：向量 DMA（vld/vst，230~370GB/s）。
-
-四、修复
-
-bench_run.py verify 标签 bug 已修：print 硬编码 "ub2ub" 改为 {variant}。
-上轮输出中每对重复 "ub2ub" 行的第二行实为 ub_scalar 的 PASS。
-
-五、产物
-
-6_ub_scalar_*.o x 10（5规格 x r16/r128，ccec 9.2.0-beta.2，dav-c310-vec arch
-标量模式）。.ll 证据：标量 load/store addrspace(6)，零向量指令，三层循环
-128x64x256 逐元素。
-
-
-[l1ub_single 待上板验证 2026-09-20] L1->UB->L1 单核 AIC 版（绕开 mix 0x7bc87）
-
-一、方案
-
-mix 双核版多轮修复均报 0x7bc87（跨核同步问题域）。单核方案让全部指令
-（MOV.L1.TO.UB / MOV.UB.TO.L1 / LOAD.L1.TO.L0A / MAD 本就是 AIC 专属）留在
-单个 AIC 核执行，从根上消除跨核同步。
-
-单核化由编译流水线完成，不改 DSL（复用原 l1ub 函数，带 gemm 消费）。
-关键差异在 stage3 仅 --npu-plan-memory：
-  - 无 --npu-split-scope：会给 op 打 crossCoreDeps，plan-memory 对 cbuf->ca
-    的 L1->L0A 装载 copy 报 "failed to recognize single-pipe op"
-  - 无 split-mix-kernel / sync-pipeline / split-dataflow：不拆核、不插
-    INTRA.BLOCKI 跨核同步
-  - 无 --npu-expand-ub-to-l1-nd2nz：线性 UB->L1 copy 由 cce-pipeline 直接
-    lower 为 MOV.UB.TO.L1 行循环，expand 反而引入 pset.b16 谓词循环（退化）
-  - stage6 ccec 不加 -cce-enable-mix
-
-编译脚本 build_l1ub_single.sh 已重建并全量复现：10 个 .o 与已推送产物
-逐字节一致（git 验证 0 个已跟踪文件被修改）。
-
-二、NPU 机验证步骤
-
-  cd ~/tmp && git pull
-  cd bench_transfer
-  python bench_run.py prep     # 生成 l1ub_single 输入（X/W1/W2）
-  python bench_run.py run      # 差分法计时（含 l1ub_single 5 规格）
-  python bench_run.py verify   # OUT1=X@W1, OUT2=X@W2 golden 校验
-
-要点：
-  - l1ub_single .o 在 new_env/n6_l1ub_*_single.o（bench_run.py 自动定位）
-  - mode="aic"（AIC ELF 加载），入口名 l1ub_kernel（无后缀）
-  - 关注是否复现 0x7bc87：单核无跨核同步，预期不出现
-  - 对比 ub2ub 带宽：两跳中转理论低于 UB 内向量搬运
-
-三、产物
-
-new_env/n6_l1ub_{bf16 16/64/128, f32 16/64}x256_{r16,r128}_single.o x 10
-（官方 OpenTileAS ed2beb55 + CANN 9.2.0-beta.2，dav-c310-cube 单核）
-
+root@localhost:/home/zwh/tmp/bench_transfer# git pull
+remote: Enumerating objects: 35, done.
+remote: Counting objects: 100% (22/22), done.
+remote: Total 35 (delta 22), reused 22 (delta 22), pack-reused 13 (from 1)
+Unpacking objects: 100% (35/35), 29.64 KiB | 892.00 KiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   c8e8a8c..4962977  main       -> origin/main
+Updating c8e8a8c..4962977
+Fast-forward
+ bench_transfer/bench_run.py                                          |  73 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------
+ bench_transfer/build_l1ub_single.sh                                  |  87 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_l1ub_bfloat16_128x256_r128_single_npu.mlir |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_l1ub_bfloat16_128x256_r16_single_npu.mlir  |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_l1ub_bfloat16_16x256_r128_single_npu.mlir  |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_l1ub_bfloat16_16x256_r16_single_npu.mlir   |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_l1ub_bfloat16_64x256_r128_single_npu.mlir  |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_l1ub_bfloat16_64x256_r16_single_npu.mlir   |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_l1ub_float32_16x256_r128_single_npu.mlir   |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_l1ub_float32_16x256_r16_single_npu.mlir    |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_l1ub_float32_64x256_r128_single_npu.mlir   |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_l1ub_float32_64x256_r16_single_npu.mlir    |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_l1ub_bfloat16_128x256_r128_single_cce.mlir | 143 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_l1ub_bfloat16_128x256_r16_single_cce.mlir  | 142 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_l1ub_bfloat16_16x256_r128_single_cce.mlir  | 143 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_l1ub_bfloat16_16x256_r16_single_cce.mlir   | 142 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_l1ub_bfloat16_64x256_r128_single_cce.mlir  | 144 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_l1ub_bfloat16_64x256_r16_single_cce.mlir   | 143 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_l1ub_float32_16x256_r128_single_cce.mlir   | 143 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_l1ub_float32_16x256_r16_single_cce.mlir    | 144 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_l1ub_float32_64x256_r128_single_cce.mlir   | 145 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_l1ub_float32_64x256_r16_single_cce.mlir    | 145 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ error.txt                                                            |  95 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------
+ 23 files changed, 2340 insertions(+), 19 deletions(-)
+ create mode 100755 bench_transfer/build_l1ub_single.sh
+ create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_128x256_r128_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_128x256_r16_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_16x256_r128_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_16x256_r16_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_64x256_r128_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_64x256_r16_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_l1ub_float32_16x256_r128_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_l1ub_float32_16x256_r16_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_l1ub_float32_64x256_r128_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_l1ub_float32_64x256_r16_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_128x256_r128_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_128x256_r16_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_16x256_r128_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_16x256_r16_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_64x256_r128_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_64x256_r16_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n4_l1ub_float32_16x256_r128_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n4_l1ub_float32_16x256_r16_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n4_l1ub_float32_64x256_r128_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n4_l1ub_float32_64x256_r16_single_cce.mlir
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py prep
+[prep] inputs saved
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run 
+[ub2ub bfloat16 16x256] T(r16)=2.6us T(r128)=6.1us round=0.03us dma=0.03us bw(move)=261.92GB/s bw(traffic)=523.83GB/s
+[ub_scalar bfloat16 16x256] T(r16)=849.7us T(r128)=6789.0us round=53.03us dma=53.03us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 64x256] T(r16)=2.8us T(r128)=226.1us round=1.99us dma=1.99us bw(move)=16.44GB/s bw(traffic)=32.88GB/s
+[ub_scalar bfloat16 64x256] T(r16)=3395.6us T(r128)=27145.9us round=212.06us dma=212.06us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 128x256] T(r16)=4.3us T(r128)=24.2us round=0.18us dma=0.18us bw(move)=368.54GB/s bw(traffic)=737.07GB/s
+[ub_scalar bfloat16 128x256] T(r16)=6792.1us T(r128)=54277.8us round=423.98us dma=423.98us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x256] T(r16)=3.2us T(r128)=8.6us round=0.05us dma=0.05us bw(move)=342.02GB/s bw(traffic)=684.04GB/s
+[ub_scalar float32 16x256] T(r16)=842.1us T(r128)=6729.1us round=52.56us dma=52.56us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub float32 64x256] T(r16)=4.3us T(r128)=24.2us round=0.18us dma=0.18us bw(move)=368.89GB/s bw(traffic)=737.78GB/s
+[ub_scalar float32 64x256] T(r16)=3365.8us T(r128)=26906.4us round=210.18us dma=210.18us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_16x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_64x256_r16.o
+[skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_float32_16x256_r16.o
+Traceback (most recent call last):
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 402, in <module>
+    main()
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 390, in main
+    do_run()
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 228, in do_run
+    module, func = rt.load_kernel(kname, obytes, 0, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: rtFunctionRegister failed, error code: 0x7bc78
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py verify
+[verify] ub2ub bfloat16 16x256: PASS (恒等)
+[verify] ub_scalar bfloat16 16x256: PASS (恒等)
+[verify] ub2ub bfloat16 64x256: PASS (恒等)
+[verify] ub_scalar bfloat16 64x256: PASS (恒等)
+[verify] ub2ub bfloat16 128x256: PASS (恒等)
+[verify] ub_scalar bfloat16 128x256: PASS (恒等)
+[verify] ub2ub float32 16x256: PASS (恒等)
+[verify] ub_scalar float32 16x256: PASS (恒等)
+[verify] ub2ub float32 64x256: PASS (恒等)
+[verify] ub_scalar float32 64x256: PASS (恒等)
+Traceback (most recent call last):
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 402, in <module>
+    main()
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 392, in main
+    do_verify()
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 314, in do_verify
+    module, func = rt.load_kernel(kname, obytes, 0, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: rtFunctionRegister failed, error code: 0x7bc78
+root@localhost:/home/zwh/tmp/bench_transfer# 
