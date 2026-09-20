@@ -1,299 +1,85 @@
-root@localhost:/home/zwh/tmp/bench_transfer# cd ~/tmp && git pull
-  cd bench_transfer
-bash: cd: /root/tmp: No such file or directory
-bash: cd: bench_transfer: No such file or directory
-root@localhost:/home/zwh/tmp/bench_transfer# cd /home/zwh/tmp/ && git pull
-remote: Enumerating objects: 59, done.
-remote: Counting objects: 100% (59/59), done.
-remote: Compressing objects: 100% (13/13), done.
-remote: Total 55 (delta 46), reused 49 (delta 42), pack-reused 0 (from 0)
-Unpacking objects: 100% (55/55), 16.90 KiB | 230.00 KiB/s, done.
+root@localhost:/home/zwh/tmp/bench_transfer# git pull
+remote: Enumerating objects: 32, done.
+remote: Counting objects: 100% (32/32), done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 28 (delta 23), reused 26 (delta 22), pack-reused 0 (from 0)
+Unpacking objects: 100% (28/28), 9.10 KiB | 2.27 MiB/s, done.
 From https://github.com/zhangwenhao91/tmp
-   67cc427..8a97832  main       -> origin/main
-Updating 67cc427..8a97832
+   8a97832..b722765  main       -> origin/main
+Updating 8a97832..b722765
 Fast-forward
- bench_transfer/new_env/n5_baseline_single.ll                   |  75 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_bfloat16_128x256_r128_single.ll | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_bfloat16_128x256_r16_single.ll  | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_bfloat16_16x256_r128_single.ll  | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_bfloat16_16x256_r16_single.ll   | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_bfloat16_64x256_r128_single.ll  | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_bfloat16_64x256_r16_single.ll   | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_float32_16x256_r128_single.ll   | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_float32_16x256_r16_single.ll    | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_float32_64x256_r128_single.ll   | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_float32_64x256_r16_single.ll    | 145 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub2ub_bfloat16_128x256_r128.ll       | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub2ub_bfloat16_128x256_r16.ll        | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub2ub_bfloat16_16x256_r128.ll        | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub2ub_bfloat16_16x256_r16.ll         | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub2ub_bfloat16_64x256_r128.ll        | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub2ub_bfloat16_64x256_r16.ll         | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub2ub_float32_16x256_r128.ll         | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub2ub_float32_16x256_r16.ll          | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub2ub_float32_64x256_r128.ll         | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub2ub_float32_64x256_r16.ll          | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_ub_scalar.ll                         | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n6_baseline_single.o                    | Bin 0 -> 1368 bytes
- bench_transfer/new_env/n6_l1ub_bfloat16_128x256_r128_single.o  | Bin 0 -> 1896 bytes
- bench_transfer/new_env/n6_l1ub_bfloat16_128x256_r16_single.o   | Bin 0 -> 1896 bytes
- bench_transfer/new_env/n6_l1ub_bfloat16_16x256_r128_single.o   | Bin 0 -> 1808 bytes
- bench_transfer/new_env/n6_l1ub_bfloat16_16x256_r16_single.o    | Bin 0 -> 1808 bytes
- bench_transfer/new_env/n6_l1ub_bfloat16_64x256_r128_single.o   | Bin 0 -> 1824 bytes
- bench_transfer/new_env/n6_l1ub_bfloat16_64x256_r16_single.o    | Bin 0 -> 1824 bytes
- bench_transfer/new_env/n6_l1ub_float32_16x256_r128_single.o    | Bin 0 -> 1520 bytes
- bench_transfer/new_env/n6_l1ub_float32_16x256_r16_single.o     | Bin 0 -> 1512 bytes
- bench_transfer/new_env/n6_l1ub_float32_64x256_r128_single.o    | Bin 0 -> 1552 bytes
- bench_transfer/new_env/n6_l1ub_float32_64x256_r16_single.o     | Bin 0 -> 1544 bytes
- bench_transfer/new_env/n6_ub2ub_bfloat16_128x256_r128.o        | Bin 0 -> 1864 bytes
- bench_transfer/new_env/n6_ub2ub_bfloat16_128x256_r16.o         | Bin 0 -> 1864 bytes
- bench_transfer/new_env/n6_ub2ub_bfloat16_16x256_r128.o         | Bin 0 -> 1856 bytes
- bench_transfer/new_env/n6_ub2ub_bfloat16_16x256_r16.o          | Bin 0 -> 1856 bytes
- bench_transfer/new_env/n6_ub2ub_bfloat16_64x256_r128.o         | Bin 0 -> 1856 bytes
- bench_transfer/new_env/n6_ub2ub_bfloat16_64x256_r16.o          | Bin 0 -> 1856 bytes
- bench_transfer/new_env/n6_ub2ub_float32_16x256_r128.o          | Bin 0 -> 1856 bytes
- bench_transfer/new_env/n6_ub2ub_float32_16x256_r16.o           | Bin 0 -> 1856 bytes
- bench_transfer/new_env/n6_ub2ub_float32_64x256_r128.o          | Bin 0 -> 1864 bytes
- bench_transfer/new_env/n6_ub2ub_float32_64x256_r16.o           | Bin 0 -> 1864 bytes
- bench_transfer/new_env/n6_ub_scalar.o                          | Bin 0 -> 1448 bytes
- error.txt                                                      | 159 +++++++++++++++++++++++++++++++-----------------------------------------------------------------------------------------------------------------
- 45 files changed, 2985 insertions(+), 125 deletions(-)
- create mode 100644 bench_transfer/new_env/n5_baseline_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_bfloat16_128x256_r128_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_bfloat16_128x256_r16_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_bfloat16_16x256_r128_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_bfloat16_16x256_r16_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_bfloat16_64x256_r128_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_bfloat16_64x256_r16_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_float32_16x256_r128_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_float32_16x256_r16_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_float32_64x256_r128_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_float32_64x256_r16_single.ll
- create mode 100644 bench_transfer/new_env/n5_ub2ub_bfloat16_128x256_r128.ll
- create mode 100644 bench_transfer/new_env/n5_ub2ub_bfloat16_128x256_r16.ll
- create mode 100644 bench_transfer/new_env/n5_ub2ub_bfloat16_16x256_r128.ll
- create mode 100644 bench_transfer/new_env/n5_ub2ub_bfloat16_16x256_r16.ll
- create mode 100644 bench_transfer/new_env/n5_ub2ub_bfloat16_64x256_r128.ll
- create mode 100644 bench_transfer/new_env/n5_ub2ub_bfloat16_64x256_r16.ll
- create mode 100644 bench_transfer/new_env/n5_ub2ub_float32_16x256_r128.ll
- create mode 100644 bench_transfer/new_env/n5_ub2ub_float32_16x256_r16.ll
- create mode 100644 bench_transfer/new_env/n5_ub2ub_float32_64x256_r128.ll
- create mode 100644 bench_transfer/new_env/n5_ub2ub_float32_64x256_r16.ll
- create mode 100644 bench_transfer/new_env/n5_ub_scalar.ll
- create mode 100644 bench_transfer/new_env/n6_baseline_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_bfloat16_128x256_r128_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_bfloat16_128x256_r16_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_bfloat16_16x256_r128_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_bfloat16_16x256_r16_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_bfloat16_64x256_r128_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_bfloat16_64x256_r16_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_float32_16x256_r128_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_float32_16x256_r16_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_float32_64x256_r128_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_float32_64x256_r16_single.o
- create mode 100644 bench_transfer/new_env/n6_ub2ub_bfloat16_128x256_r128.o
- create mode 100644 bench_transfer/new_env/n6_ub2ub_bfloat16_128x256_r16.o
- create mode 100644 bench_transfer/new_env/n6_ub2ub_bfloat16_16x256_r128.o
- create mode 100644 bench_transfer/new_env/n6_ub2ub_bfloat16_16x256_r16.o
- create mode 100644 bench_transfer/new_env/n6_ub2ub_bfloat16_64x256_r128.o
- create mode 100644 bench_transfer/new_env/n6_ub2ub_bfloat16_64x256_r16.o
- create mode 100644 bench_transfer/new_env/n6_ub2ub_float32_16x256_r128.o
- create mode 100644 bench_transfer/new_env/n6_ub2ub_float32_16x256_r16.o
- create mode 100644 bench_transfer/new_env/n6_ub2ub_float32_64x256_r128.o
- create mode 100644 bench_transfer/new_env/n6_ub2ub_float32_64x256_r16.o
- create mode 100644 bench_transfer/new_env/n6_ub_scalar.o
-root@localhost:/home/zwh/tmp# cd bench_transfer/
-root@localhost:/home/zwh/tmp/bench_transfer# mkdir -p old_l1ub_backup && mv 6_l1ub_*.o old_l1ub_backup/
-root@localhost:/home/zwh/tmp/bench_transfer# ll
-total 1216
--rw-r--r-- 1 root root  9115 Sep 17 11:33 0_bench_transfer.py
--rw-r--r-- 1 root root  1830 Sep 17 11:33 1_baseline_tilelangir.mlir
--rw-r--r-- 1 root root  4161 Sep 17 11:33 1_bench_tilelangir.mlir
--rw-r--r-- 1 root root  3805 Sep 17 11:33 1_l12l1_tilelangir.mlir
--rw-r--r-- 1 root root  5364 Sep 18 10:20 1_l1_scalar_tilelangir.mlir
--rw-r--r-- 1 root root  4186 Sep 17 11:33 1_l1ub_tilelangir.mlir
--rw-r--r-- 1 root root  1488 Sep 17 11:33 1_ub2ub_tilelangir.mlir
--rw-r--r-- 1 root root  2249 Sep 18 10:20 1_ub_scalar_tilelangir.mlir
--rw-r--r-- 1 root root  2879 Sep 17 11:33 2_baseline_npu.mlir
--rw-r--r-- 1 root root  5675 Sep 17 11:33 2_l12l1_npu.mlir
--rw-r--r-- 1 root root  6210 Sep 18 10:20 2_l1_scalar_npu.mlir
--rw-r--r-- 1 root root  6196 Sep 17 11:33 2_l1ub_bfloat16_128x256_r128_npu.mlir
--rw-r--r-- 1 root root  6193 Sep 17 11:33 2_l1ub_bfloat16_128x256_r16_npu.mlir
--rw-r--r-- 1 root root  6149 Sep 17 11:33 2_l1ub_bfloat16_16x256_r128_npu.mlir
--rw-r--r-- 1 root root  6146 Sep 17 11:33 2_l1ub_bfloat16_16x256_r16_npu.mlir
--rw-r--r-- 1 root root  6155 Sep 17 11:33 2_l1ub_bfloat16_64x256_r128_npu.mlir
--rw-r--r-- 1 root root  6152 Sep 17 11:33 2_l1ub_bfloat16_64x256_r16_npu.mlir
--rw-r--r-- 1 root root  6115 Sep 17 11:33 2_l1ub_float32_16x256_r128_npu.mlir
--rw-r--r-- 1 root root  6112 Sep 17 11:33 2_l1ub_float32_16x256_r16_npu.mlir
--rw-r--r-- 1 root root  6115 Sep 17 11:33 2_l1ub_float32_64x256_r128_npu.mlir
--rw-r--r-- 1 root root  6112 Sep 17 11:33 2_l1ub_float32_64x256_r16_npu.mlir
--rw-r--r-- 1 root root  6152 Sep 17 11:33 2_l1ub_npu.mlir
--rw-r--r-- 1 root root  1685 Sep 17 11:33 2_ub2ub_bfloat16_128x256_r128_npu.mlir
--rw-r--r-- 1 root root  1682 Sep 17 11:33 2_ub2ub_bfloat16_128x256_r16_npu.mlir
--rw-r--r-- 1 root root  1669 Sep 17 11:33 2_ub2ub_bfloat16_16x256_r128_npu.mlir
--rw-r--r-- 1 root root  1666 Sep 17 11:33 2_ub2ub_bfloat16_16x256_r16_npu.mlir
--rw-r--r-- 1 root root  1673 Sep 17 11:33 2_ub2ub_bfloat16_64x256_r128_npu.mlir
--rw-r--r-- 1 root root  1670 Sep 17 11:33 2_ub2ub_bfloat16_64x256_r16_npu.mlir
--rw-r--r-- 1 root root  1659 Sep 17 11:33 2_ub2ub_float32_16x256_r128_npu.mlir
--rw-r--r-- 1 root root  1656 Sep 17 11:33 2_ub2ub_float32_16x256_r16_npu.mlir
--rw-r--r-- 1 root root  1659 Sep 17 11:33 2_ub2ub_float32_64x256_r128_npu.mlir
--rw-r--r-- 1 root root  1656 Sep 17 11:33 2_ub2ub_float32_64x256_r16_npu.mlir
--rw-r--r-- 1 root root  1670 Sep 17 11:33 2_ub2ub_npu.mlir
--rw-r--r-- 1 root root  1974 Sep 18 10:20 2_ub_scalar_npu.mlir
--rw-r--r-- 1 root root  6282 Sep 17 11:33 3_baseline_mix_npu.mlir
--rw-r--r-- 1 root root  7922 Sep 17 11:33 3_l12l1_mix_npu.mlir
--rw-r--r-- 1 root root  6090 Sep 17 11:33 3_l12l1_npu.mlir
--rw-r--r-- 1 root root 12562 Sep 18 14:08 3_l1_scalar_mix_npu.mlir
--rw-r--r-- 1 root root 15156 Sep 18 16:02 3_l1ub_bfloat16_16x256_r128_mix_npu.mlir
--rw-r--r-- 1 root root 15150 Sep 18 16:02 3_l1ub_bfloat16_16x256_r16_mix_npu.mlir
--rw-r--r-- 1 root root 15115 Sep 18 16:02 3_l1ub_bfloat16_64x256_r128_mix_npu.mlir
--rw-r--r-- 1 root root 15109 Sep 18 16:02 3_l1ub_bfloat16_64x256_r16_mix_npu.mlir
--rw-r--r-- 1 root root 15128 Sep 18 16:02 3_l1ub_float32_16x256_r128_mix_npu.mlir
--rw-r--r-- 1 root root 15122 Sep 18 16:02 3_l1ub_float32_16x256_r16_mix_npu.mlir
--rw-r--r-- 1 root root 13560 Sep 17 11:33 3_l1ub_mix_npu.mlir
--rw-r--r-- 1 root root  2241 Sep 17 11:33 3_ub2ub_bfloat16_128x256_r128_mix_npu.mlir
--rw-r--r-- 1 root root  2238 Sep 17 11:33 3_ub2ub_bfloat16_128x256_r16_mix_npu.mlir
--rw-r--r-- 1 root root  2222 Sep 17 11:33 3_ub2ub_bfloat16_16x256_r128_mix_npu.mlir
--rw-r--r-- 1 root root  2219 Sep 17 11:33 3_ub2ub_bfloat16_16x256_r16_mix_npu.mlir
--rw-r--r-- 1 root root  2229 Sep 17 11:33 3_ub2ub_bfloat16_64x256_r128_mix_npu.mlir
--rw-r--r-- 1 root root  2226 Sep 17 11:33 3_ub2ub_bfloat16_64x256_r16_mix_npu.mlir
--rw-r--r-- 1 root root  2215 Sep 17 11:33 3_ub2ub_float32_16x256_r128_mix_npu.mlir
--rw-r--r-- 1 root root  2212 Sep 17 11:33 3_ub2ub_float32_16x256_r16_mix_npu.mlir
--rw-r--r-- 1 root root  2215 Sep 17 11:33 3_ub2ub_float32_64x256_r128_mix_npu.mlir
--rw-r--r-- 1 root root  2212 Sep 17 11:33 3_ub2ub_float32_64x256_r16_mix_npu.mlir
--rw-r--r-- 1 root root  2226 Sep 17 11:33 3_ub2ub_mix_npu.mlir
--rw-r--r-- 1 root root  2676 Sep 18 10:20 3_ub_scalar_mix_npu.mlir
--rw-r--r-- 1 root root  4882 Sep 17 11:33 4_baseline_cce.mlir
--rw-r--r-- 1 root root 10802 Sep 18 14:08 4_l1_scalar_cce.mlir
--rw-r--r-- 1 root root 15555 Sep 18 16:02 4_l1ub_bfloat16_16x256_r128_cce.mlir
--rw-r--r-- 1 root root 15554 Sep 18 16:02 4_l1ub_bfloat16_16x256_r16_cce.mlir
--rw-r--r-- 1 root root 15710 Sep 18 16:02 4_l1ub_bfloat16_64x256_r128_cce.mlir
--rw-r--r-- 1 root root 15709 Sep 18 16:02 4_l1ub_bfloat16_64x256_r16_cce.mlir
--rw-r--r-- 1 root root 15633 Sep 18 16:02 4_l1ub_float32_16x256_r128_cce.mlir
--rw-r--r-- 1 root root 15584 Sep 18 16:02 4_l1ub_float32_16x256_r16_cce.mlir
--rw-r--r-- 1 root root 12046 Sep 17 11:33 4_l1ub_mix_npu_cce.mlir
--rw-r--r-- 1 root root  3613 Sep 18 09:57 4_ub2ub_bfloat16_128x256_r128_cce.mlir
--rw-r--r-- 1 root root  3612 Sep 18 09:57 4_ub2ub_bfloat16_128x256_r16_cce.mlir
--rw-r--r-- 1 root root  3611 Sep 18 09:57 4_ub2ub_bfloat16_16x256_r128_cce.mlir
--rw-r--r-- 1 root root  3610 Sep 18 09:57 4_ub2ub_bfloat16_16x256_r16_cce.mlir
--rw-r--r-- 1 root root  3564 Sep 18 09:57 4_ub2ub_bfloat16_64x256_r128_cce.mlir
--rw-r--r-- 1 root root  3612 Sep 18 09:57 4_ub2ub_bfloat16_64x256_r16_cce.mlir
--rw-r--r-- 1 root root  3659 Sep 17 11:33 4_ub2ub_cce.mlir
--rw-r--r-- 1 root root  3651 Sep 18 09:57 4_ub2ub_float32_16x256_r128_cce.mlir
--rw-r--r-- 1 root root  3650 Sep 18 09:57 4_ub2ub_float32_16x256_r16_cce.mlir
--rw-r--r-- 1 root root  3652 Sep 18 09:57 4_ub2ub_float32_64x256_r128_cce.mlir
--rw-r--r-- 1 root root  3651 Sep 18 09:57 4_ub2ub_float32_64x256_r16_cce.mlir
--rw-r--r-- 1 root root  3297 Sep 18 10:20 4_ub_scalar_cce.mlir
--rw-r--r-- 1 root root 14839 Sep 18 16:02 5_l1ub_bfloat16_16x256_r128.ll
--rw-r--r-- 1 root root 14837 Sep 18 16:02 5_l1ub_bfloat16_16x256_r16.ll
--rw-r--r-- 1 root root 14779 Sep 18 16:02 5_l1ub_bfloat16_64x256_r128.ll
--rw-r--r-- 1 root root 14777 Sep 18 16:02 5_l1ub_bfloat16_64x256_r16.ll
--rw-r--r-- 1 root root 14808 Sep 18 16:02 5_l1ub_float32_16x256_r128.ll
--rw-r--r-- 1 root root 14806 Sep 18 16:02 5_l1ub_float32_16x256_r16.ll
--rw-r--r-- 1 root root  3264 Sep 18 14:08 6_l1_scalar.o
--rw-r--r-- 1 root root  1864 Sep 18 09:57 6_ub2ub_bfloat16_128x256_r128.o
--rw-r--r-- 1 root root  1864 Sep 18 09:57 6_ub2ub_bfloat16_128x256_r16.o
--rw-r--r-- 1 root root  1856 Sep 18 09:57 6_ub2ub_bfloat16_16x256_r128.o
--rw-r--r-- 1 root root  1856 Sep 18 09:57 6_ub2ub_bfloat16_16x256_r16.o
--rw-r--r-- 1 root root  1856 Sep 18 09:57 6_ub2ub_bfloat16_64x256_r128.o
--rw-r--r-- 1 root root  1856 Sep 18 09:57 6_ub2ub_bfloat16_64x256_r16.o
--rw-r--r-- 1 root root  1856 Sep 18 09:57 6_ub2ub_float32_16x256_r128.o
--rw-r--r-- 1 root root  1856 Sep 18 09:57 6_ub2ub_float32_16x256_r16.o
--rw-r--r-- 1 root root  1864 Sep 18 09:57 6_ub2ub_float32_64x256_r128.o
--rw-r--r-- 1 root root  1864 Sep 18 09:57 6_ub2ub_float32_64x256_r16.o
--rw-r--r-- 1 root root  1448 Sep 18 10:28 6_ub_scalar.o
--rw-r--r-- 1 root root  8320 Sep 18 14:32 bench_W1_l1ub_bfloat16_16.npy
--rw-r--r-- 1 root root  8320 Sep 18 14:32 bench_W1_l1ub_bfloat16_64.npy
--rw-r--r-- 1 root root 16512 Sep 18 14:32 bench_W1_l1ub_float32_16.npy
--rw-r--r-- 1 root root  8320 Sep 18 14:32 bench_W2_l1ub_bfloat16_16.npy
--rw-r--r-- 1 root root  8320 Sep 18 14:32 bench_W2_l1ub_bfloat16_64.npy
--rw-r--r-- 1 root root 16512 Sep 18 14:32 bench_W2_l1ub_float32_16.npy
--rw-r--r-- 1 root root  8320 Sep 18 14:32 bench_X_l1ub_bfloat16_16.npy
--rw-r--r-- 1 root root 32896 Sep 18 14:32 bench_X_l1ub_bfloat16_64.npy
--rw-r--r-- 1 root root 16512 Sep 18 14:32 bench_X_l1ub_float32_16.npy
--rw-r--r-- 1 root root 65664 Sep 18 14:32 bench_X_ub2ub_bfloat16_128.npy
--rw-r--r-- 1 root root  8320 Sep 18 14:32 bench_X_ub2ub_bfloat16_16.npy
--rw-r--r-- 1 root root 32896 Sep 18 14:32 bench_X_ub2ub_bfloat16_64.npy
--rw-r--r-- 1 root root 16512 Sep 18 14:32 bench_X_ub2ub_float32_16.npy
--rw-r--r-- 1 root root 65664 Sep 18 14:32 bench_X_ub2ub_float32_64.npy
--rwxr-xr-x 1 root root 13347 Sep 17 14:45 bench_run.py
--rwxr-xr-x 1 root root  3467 Sep 17 15:15 build_all_bench.sh
--rwxr-xr-x 1 root root  4121 Sep 20 10:18 build_all_new.sh
--rwxr-xr-x 1 root root  2039 Sep 17 11:33 build_bench.sh
--rw-r--r-- 1 root root  1373 Sep 18 14:08 build_scalar_mix.sh
--rwxr-xr-x 1 root root  3340 Sep 20 10:18 build_special_new.sh
--rw-r--r-- 1 root root   487 Sep 18 10:20 diag2.sh
--rw-r--r-- 1 root root   859 Sep 18 10:20 diag3.sh
--rw-r--r-- 1 root root   573 Sep 18 10:20 diag4.sh
--rw-r--r-- 1 root root   445 Sep 18 10:20 diag5.sh
--rw-r--r-- 1 root root   648 Sep 18 10:20 diag6.sh
--rw-r--r-- 1 root root  1533 Sep 18 10:20 diag_mix.sh
--rw-r--r-- 1 root root  8667 Sep 17 19:36 fix_move_l1ub_to_aiv.py
--rwxr-xr-x 1 root root  2918 Sep 17 15:34 fix_sync_flag5.py
-drwxr-xr-x 2 root root  4096 Sep 20 10:34 new_env
-drwxr-xr-x 2 root root  4096 Sep 20 10:36 old_l1ub_backup
-drwxr-xr-x 2 root root  4096 Sep 18 16:02 patches
--rwxr-xr-x 1 root root  2403 Sep 17 19:36 rebuild_l1ub_s456.sh
--rwxr-xr-x 1 root root  1838 Sep 18 09:57 rebuild_ub2ub.sh
--rw-r--r-- 1 root root  1718 Sep 18 10:20 scalar_s23.sh
--rw-r--r-- 1 root root  1557 Sep 18 10:20 scalar_s456.sh
--rw-r--r-- 1 root root  5285 Sep 18 10:20 scalar_transfer.py
--rw-r--r-- 1 root root  5330 Sep 18 14:08 scalar_verify.py
--rw-r--r-- 1 root root  1056 Sep 18 10:20 scalar_xarch.sh
-root@localhost:/home/zwh/tmp/bench_transfer# for f in new_env/n6_ub2ub_*.o; do cp "$f" "$(echo "$f" | sed "s|new_env/n6_|6_|")"; done
+ bench_transfer/new_env/p5_ub2ub_bfloat16_128x256_r128.ll | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/p5_ub2ub_bfloat16_128x256_r16.ll  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/p5_ub2ub_bfloat16_16x256_r128.ll  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/p5_ub2ub_bfloat16_16x256_r16.ll   | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/p5_ub2ub_bfloat16_64x256_r128.ll  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/p5_ub2ub_bfloat16_64x256_r16.ll   | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/p5_ub2ub_float32_16x256_r128.ll   | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/p5_ub2ub_float32_16x256_r16.ll    | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/p5_ub2ub_float32_64x256_r128.ll   | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/p5_ub2ub_float32_64x256_r16.ll    | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/p6_ub2ub_bfloat16_128x256_r128.o  | Bin 0 -> 1864 bytes
+ bench_transfer/new_env/p6_ub2ub_bfloat16_128x256_r16.o   | Bin 0 -> 1864 bytes
+ bench_transfer/new_env/p6_ub2ub_bfloat16_16x256_r128.o   | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/p6_ub2ub_bfloat16_16x256_r16.o    | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/p6_ub2ub_bfloat16_64x256_r128.o   | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/p6_ub2ub_bfloat16_64x256_r16.o    | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/p6_ub2ub_float32_16x256_r128.o    | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/p6_ub2ub_float32_16x256_r16.o     | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/p6_ub2ub_float32_64x256_r128.o    | Bin 0 -> 1864 bytes
+ bench_transfer/new_env/p6_ub2ub_float32_64x256_r16.o     | Bin 0 -> 1864 bytes
+ error.txt                                                | 333 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------
+ 21 files changed, 1601 insertions(+), 42 deletions(-)
+ create mode 100644 bench_transfer/new_env/p5_ub2ub_bfloat16_128x256_r128.ll
+ create mode 100644 bench_transfer/new_env/p5_ub2ub_bfloat16_128x256_r16.ll
+ create mode 100644 bench_transfer/new_env/p5_ub2ub_bfloat16_16x256_r128.ll
+ create mode 100644 bench_transfer/new_env/p5_ub2ub_bfloat16_16x256_r16.ll
+ create mode 100644 bench_transfer/new_env/p5_ub2ub_bfloat16_64x256_r128.ll
+ create mode 100644 bench_transfer/new_env/p5_ub2ub_bfloat16_64x256_r16.ll
+ create mode 100644 bench_transfer/new_env/p5_ub2ub_float32_16x256_r128.ll
+ create mode 100644 bench_transfer/new_env/p5_ub2ub_float32_16x256_r16.ll
+ create mode 100644 bench_transfer/new_env/p5_ub2ub_float32_64x256_r128.ll
+ create mode 100644 bench_transfer/new_env/p5_ub2ub_float32_64x256_r16.ll
+ create mode 100644 bench_transfer/new_env/p6_ub2ub_bfloat16_128x256_r128.o
+ create mode 100644 bench_transfer/new_env/p6_ub2ub_bfloat16_128x256_r16.o
+ create mode 100644 bench_transfer/new_env/p6_ub2ub_bfloat16_16x256_r128.o
+ create mode 100644 bench_transfer/new_env/p6_ub2ub_bfloat16_16x256_r16.o
+ create mode 100644 bench_transfer/new_env/p6_ub2ub_bfloat16_64x256_r128.o
+ create mode 100644 bench_transfer/new_env/p6_ub2ub_bfloat16_64x256_r16.o
+ create mode 100644 bench_transfer/new_env/p6_ub2ub_float32_16x256_r128.o
+ create mode 100644 bench_transfer/new_env/p6_ub2ub_float32_16x256_r16.o
+ create mode 100644 bench_transfer/new_env/p6_ub2ub_float32_64x256_r128.o
+ create mode 100644 bench_transfer/new_env/p6_ub2ub_float32_64x256_r16.o
+root@localhost:/home/zwh/tmp/bench_transfer# for f in new_env/n6_ub2ub_*.o; do cp "$f" "$(echo "$f" | sed "s|new_env/p6_|6_|")"; done
+cp: 'new_env/n6_ub2ub_bfloat16_128x256_r128.o' and 'new_env/n6_ub2ub_bfloat16_128x256_r128.o' are the same file
+cp: 'new_env/n6_ub2ub_bfloat16_128x256_r16.o' and 'new_env/n6_ub2ub_bfloat16_128x256_r16.o' are the same file
+cp: 'new_env/n6_ub2ub_bfloat16_16x256_r128.o' and 'new_env/n6_ub2ub_bfloat16_16x256_r128.o' are the same file
+cp: 'new_env/n6_ub2ub_bfloat16_16x256_r16.o' and 'new_env/n6_ub2ub_bfloat16_16x256_r16.o' are the same file
+cp: 'new_env/n6_ub2ub_bfloat16_64x256_r128.o' and 'new_env/n6_ub2ub_bfloat16_64x256_r128.o' are the same file
+cp: 'new_env/n6_ub2ub_bfloat16_64x256_r16.o' and 'new_env/n6_ub2ub_bfloat16_64x256_r16.o' are the same file
+cp: 'new_env/n6_ub2ub_float32_16x256_r128.o' and 'new_env/n6_ub2ub_float32_16x256_r128.o' are the same file
+cp: 'new_env/n6_ub2ub_float32_16x256_r16.o' and 'new_env/n6_ub2ub_float32_16x256_r16.o' are the same file
+cp: 'new_env/n6_ub2ub_float32_64x256_r128.o' and 'new_env/n6_ub2ub_float32_64x256_r128.o' are the same file
+cp: 'new_env/n6_ub2ub_float32_64x256_r16.o' and 'new_env/n6_ub2ub_float32_64x256_r16.o' are the same file
 root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run && python bench_run.py verify
-[ub2ub bfloat16 16x256] T(r16)=239.3us T(r128)=1908.9us round=14.91us dma=14.91us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
-[ub2ub bfloat16 64x256] T(r16)=954.9us T(r128)=7630.8us round=59.61us dma=59.61us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
-[ub2ub bfloat16 128x256] T(r16)=1909.1us T(r128)=15258.4us round=119.19us dma=119.19us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
-[ub2ub float32 16x256] T(r16)=41.0us T(r128)=321.4us round=2.50us dma=2.50us bw(move)=6.54GB/s bw(traffic)=13.09GB/s
-[ub2ub float32 64x256] T(r16)=160.7us T(r128)=1275.7us round=9.96us dma=9.96us bw(move)=6.58GB/s bw(traffic)=13.17GB/s
+[ub2ub bfloat16 16x256] T(r16)=239.7us T(r128)=1909.1us round=14.91us dma=14.91us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
+[ub2ub bfloat16 64x256] T(r16)=954.9us T(r128)=7629.9us round=59.60us dma=59.60us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
+[ub2ub bfloat16 128x256] T(r16)=1908.7us T(r128)=15258.4us round=119.19us dma=119.19us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
+[ub2ub float32 16x256] T(r16)=41.1us T(r128)=321.6us round=2.50us dma=2.50us bw(move)=6.54GB/s bw(traffic)=13.09GB/s
+[ub2ub float32 64x256] T(r16)=160.8us T(r128)=1275.5us round=9.95us dma=9.95us bw(move)=6.59GB/s bw(traffic)=13.17GB/s
 [skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_16x256_r16.o
 [skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_64x256_r16.o
 [skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_float32_16x256_r16.o
 
 ===== 差分法汇总（t_round 消除 launch/GM/gemm 常数）=====
 variant  dtype           shape     KB  t_r16us  t_r128us  round_us  dma_us  GB/s(mv)  GB/s(tr)
-ub2ub    bfloat16       16x256      8    239.3    1908.9     14.91   14.91      0.55      1.10
-ub2ub    bfloat16       64x256     32    954.9    7630.8     59.61   59.61      0.55      1.10
-ub2ub    bfloat16      128x256     64   1909.1   15258.4    119.19  119.19      0.55      1.10
-ub2ub    float32        16x256     16     41.0     321.4      2.50    2.50      6.54     13.09
-ub2ub    float32        64x256     64    160.7    1275.7      9.96    9.96      6.58     13.17
+ub2ub    bfloat16       16x256      8    239.7    1909.1     14.91   14.91      0.55      1.10
+ub2ub    bfloat16       64x256     32    954.9    7629.9     59.60   59.60      0.55      1.10
+ub2ub    bfloat16      128x256     64   1908.7   15258.4    119.19  119.19      0.55      1.10
+ub2ub    float32        16x256     16     41.1     321.6      2.50    2.50      6.54     13.09
+ub2ub    float32        64x256     64    160.8    1275.5      9.95    9.95      6.59     13.17
 [verify] ub2ub bfloat16 16x256: PASS (恒等)
 [verify] ub2ub bfloat16 64x256: PASS (恒等)
 [verify] ub2ub bfloat16 128x256: PASS (恒等)
 [verify] ub2ub float32 16x256: PASS (恒等)
 [verify] ub2ub float32 64x256: PASS (恒等)
-root@localhost:/home/zwh/tmp/bench_transfer# 
-
-====================================================================
-[2026-09-20 补2] 0001 补丁已应用到新环境并重编 ub2ub（10/10）
-====================================================================
-背景：新环境（官方 ed2beb55 无补丁）的 ub2ub .o 上板恒等 PASS 但带宽退化
-  （bf16 0.55 / f32 6.5 GB/s = 0001 修复前症状）。
-  .ll 全文 diff 证实退化：循环 128→16384 次、步进 256 元素→2 字节、
-  寻址/谓词模式参数变化（逐元素 Point 循环）。
-  （此前"指令直方图一致"的判断有误——指令名相同但参数不同。）
-
-修复动作：
-  1) git apply patches/0001-prove-memref-view-base-alignment.patch
-     → OpenTileAS/LoweringUtils.cpp +13 行（hasKnownAlignedMemrefBase 补 ViewOp 分支）
-  2) make -j8 tile-opt tile-translate 增量重编（EXIT=0）
-  3) 全管线重编 10 个 ub2ub（新前缀 p5_/p6_）：
-     新编译器(ed2beb55+0001) + ccec 9.2.0-beta.2
-  4) 验证：p5_*.ll 与旧带补丁版 5_*.ll 逐字节 10/10 完全一致
-     （整块搬运形态恢复：循环 16384→128、步进 2B→256 元素）
-  5) p6_*.o 与旧 6_*.o 二进制不同（ccec 9.2 vs 9.1 编码差异，语义等价，
-     历史已知 md5 随 ccec 版本变化）
-
-[NPU 机验证步骤 — 用 p6_ 版重跑 ub2ub]
-  cd ~/tmp && git pull
-  cd bench_transfer
-  for f in new_env/p6_ub2ub_*.o; do cp "$f" "$(echo "$f" | sed "s|new_env\/p6_/6_/")"; done
-  python bench_run.py run && python bench_run.py verify
-预期：bw(move) 恢复 270~374 GB/s（与 9-20 早间旧 .o 复跑同水平）+ 恒等 PASS。
-  若 PASS：确认 0001 在新环境有效，官方上游未含此修复，
-  建议后续向 OpenTileAS 上游提 PR（memref::ViewOp 对齐证明分支）。
-
-[结论修正]
-  - 官方 ed2beb55 不含 0001 等效修复（上板数据证实）
-  - 0001 补丁在新环境（ed2beb55 + CANN 9.2）仍然有效且必要
