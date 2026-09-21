@@ -1,82 +1,785 @@
 root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 35, done.
-remote: Counting objects: 100% (22/22), done.
-remote: Total 35 (delta 22), reused 22 (delta 22), pack-reused 13 (from 1)
-Unpacking objects: 100% (35/35), 29.64 KiB | 892.00 KiB/s, done.
+remote: Enumerating objects: 359, done.
+remote: Counting objects: 100% (359/359), done.
+remote: Compressing objects: 100% (24/24), done.
+remote: Total 359 (delta 335), reused 358 (delta 335), pack-reused 0 (from 0)
+Receiving objects: 100% (359/359), 82.57 KiB | 890.00 KiB/s, done.
+Resolving deltas: 100% (335/335), completed with 7 local objects.
 From https://github.com/zhangwenhao91/tmp
-   c8e8a8c..4962977  main       -> origin/main
-Updating c8e8a8c..4962977
+   4962977..0150a21  main       -> origin/main
+Updating 4962977..0150a21
 Fast-forward
- bench_transfer/bench_run.py                                          |  73 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------
- bench_transfer/build_l1ub_single.sh                                  |  87 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_l1ub_bfloat16_128x256_r128_single_npu.mlir |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_l1ub_bfloat16_128x256_r16_single_npu.mlir  |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_l1ub_bfloat16_16x256_r128_single_npu.mlir  |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_l1ub_bfloat16_16x256_r16_single_npu.mlir   |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_l1ub_bfloat16_64x256_r128_single_npu.mlir  |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_l1ub_bfloat16_64x256_r16_single_npu.mlir   |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_l1ub_float32_16x256_r128_single_npu.mlir   |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_l1ub_float32_16x256_r16_single_npu.mlir    |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_l1ub_float32_64x256_r128_single_npu.mlir   |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_l1ub_float32_64x256_r16_single_npu.mlir    |  67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_bfloat16_128x256_r128_single_cce.mlir | 143 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_bfloat16_128x256_r16_single_cce.mlir  | 142 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_bfloat16_16x256_r128_single_cce.mlir  | 143 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_bfloat16_16x256_r16_single_cce.mlir   | 142 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_bfloat16_64x256_r128_single_cce.mlir  | 144 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_bfloat16_64x256_r16_single_cce.mlir   | 143 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_float32_16x256_r128_single_cce.mlir   | 143 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_float32_16x256_r16_single_cce.mlir    | 144 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_float32_64x256_r128_single_cce.mlir   | 145 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_float32_64x256_r16_single_cce.mlir    | 145 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- error.txt                                                            |  95 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------
- 23 files changed, 2340 insertions(+), 19 deletions(-)
- create mode 100755 bench_transfer/build_l1ub_single.sh
- create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_128x256_r128_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_128x256_r16_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_16x256_r128_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_16x256_r16_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_64x256_r128_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_bfloat16_64x256_r16_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_float32_16x256_r128_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_float32_16x256_r16_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_float32_64x256_r128_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_float32_64x256_r16_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_128x256_r128_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_128x256_r16_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_16x256_r128_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_16x256_r16_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_64x256_r128_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_bfloat16_64x256_r16_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_float32_16x256_r128_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_float32_16x256_r16_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_float32_64x256_r128_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_float32_64x256_r16_single_cce.mlir
+ bench_transfer/.gitignore                                                  |   7 +++++
+ bench_transfer/bench_run.py                                                | 119 ++++++++++++++++++++++++++++++++++++++++--------------------------------
+ bench_transfer/build_l1ub_single.sh                                        |  25 +++++++++++++--
+ bench_transfer/build_small.sh                                              |  89 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/diag_register.py                                            |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/diag_l1ub_bf16_16x256_r16_align4_ccec910.o          | Bin 0 -> 1808 bytes
+ bench_transfer/new_env/diag_l1ub_bf16_16x256_r16_align4_ccec920.o          | Bin 0 -> 1808 bytes
+ bench_transfer/new_env/n5_l1ub_bfloat16_128x256_r128_single.ll             |   2 +-
+ bench_transfer/new_env/n5_l1ub_bfloat16_128x256_r16_single.ll              |   2 +-
+ bench_transfer/new_env/n5_l1ub_bfloat16_16x256_r128_single.ll              |   2 +-
+ bench_transfer/new_env/n5_l1ub_bfloat16_16x256_r16_single.ll               |   2 +-
+ bench_transfer/new_env/n5_l1ub_bfloat16_64x256_r128_single.ll              |   2 +-
+ bench_transfer/new_env/n5_l1ub_bfloat16_64x256_r16_single.ll               |   2 +-
+ bench_transfer/new_env/n5_l1ub_float32_16x256_r128_single.ll               |   2 +-
+ bench_transfer/new_env/n5_l1ub_float32_16x256_r16_single.ll                |   2 +-
+ bench_transfer/new_env/n5_l1ub_float32_64x256_r128_single.ll               |   2 +-
+ bench_transfer/new_env/n5_l1ub_float32_64x256_r16_single.ll                |   2 +-
+ bench_transfer/new_env/n6_l1ub_bfloat16_128x256_r128_single.o              | Bin 1896 -> 2088 bytes
+ bench_transfer/new_env/n6_l1ub_bfloat16_128x256_r16_single.o               | Bin 1896 -> 2088 bytes
+ bench_transfer/new_env/n6_l1ub_bfloat16_16x256_r128_single.o               | Bin 1808 -> 2000 bytes
+ bench_transfer/new_env/n6_l1ub_bfloat16_16x256_r16_single.o                | Bin 1808 -> 2000 bytes
+ bench_transfer/new_env/n6_l1ub_bfloat16_64x256_r128_single.o               | Bin 1824 -> 2016 bytes
+ bench_transfer/new_env/n6_l1ub_bfloat16_64x256_r16_single.o                | Bin 1824 -> 2016 bytes
+ bench_transfer/new_env/n6_l1ub_float32_16x256_r128_single.o                | Bin 1520 -> 1712 bytes
+ bench_transfer/new_env/n6_l1ub_float32_16x256_r16_single.o                 | Bin 1512 -> 1704 bytes
+ bench_transfer/new_env/n6_l1ub_float32_64x256_r128_single.o                | Bin 1552 -> 1744 bytes
+ bench_transfer/new_env/n6_l1ub_float32_64x256_r16_single.o                 | Bin 1544 -> 1736 bytes
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x16_r128_npu.mlir         |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x16_r16_npu.mlir          |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x32_r128_npu.mlir         |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x32_r16_npu.mlir          |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x64_r128_npu.mlir         |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x64_r16_npu.mlir          |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_1x8_r128_npu.mlir           |  25 +++++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_1x8_r16_npu.mlir            |  25 +++++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_2x8_r128_npu.mlir           |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_2x8_r16_npu.mlir            |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_4x8_r128_npu.mlir           |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_4x8_r16_npu.mlir            |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_8x16_r128_npu.mlir          |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_8x16_r16_npu.mlir           |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_8x8_r128_npu.mlir           |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_bfloat16_8x8_r16_npu.mlir            |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_16x16_r128_npu.mlir          |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_16x16_r16_npu.mlir           |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_16x32_r128_npu.mlir          |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_16x32_r16_npu.mlir           |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_16x64_r128_npu.mlir          |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_16x64_r16_npu.mlir           |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_1x8_r128_npu.mlir            |  25 +++++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_1x8_r16_npu.mlir             |  25 +++++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_2x8_r128_npu.mlir            |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_2x8_r16_npu.mlir             |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_4x8_r128_npu.mlir            |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_4x8_r16_npu.mlir             |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_8x16_r128_npu.mlir           |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_8x16_r16_npu.mlir            |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_8x8_r128_npu.mlir            |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub2ub_float32_8x8_r16_npu.mlir             |  21 +++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x16_r128_npu.mlir     |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x16_r16_npu.mlir      |  26 ++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x32_r128_npu.mlir     |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x32_r16_npu.mlir      |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x64_r128_npu.mlir     |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x64_r16_npu.mlir      |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_1x8_r128_npu.mlir       |  29 ++++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_1x8_r16_npu.mlir        |  29 ++++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_2x8_r128_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_2x8_r16_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_4x8_r128_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_4x8_r16_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_8x16_r128_npu.mlir      |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_8x16_r16_npu.mlir       |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_8x8_r128_npu.mlir       |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_bfloat16_8x8_r16_npu.mlir        |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_16x16_r128_npu.mlir      |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_16x16_r16_npu.mlir       |  26 ++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_16x32_r128_npu.mlir      |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_16x32_r16_npu.mlir       |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_16x64_r128_npu.mlir      |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_16x64_r16_npu.mlir       |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_1x8_r128_npu.mlir        |  29 ++++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_1x8_r16_npu.mlir         |  29 ++++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_2x8_r128_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_2x8_r16_npu.mlir         |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_4x8_r128_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_4x8_r16_npu.mlir         |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_8x16_r128_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_8x16_r16_npu.mlir        |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_8x8_r128_npu.mlir        |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n2_ub_scalar_float32_8x8_r16_npu.mlir         |  27 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x16_r128_mix_npu.mlir     |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x16_r16_mix_npu.mlir      |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x32_r128_mix_npu.mlir     |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x32_r16_mix_npu.mlir      |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x64_r128_mix_npu.mlir     |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x64_r16_mix_npu.mlir      |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_1x8_r128_mix_npu.mlir       |  32 ++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_1x8_r16_mix_npu.mlir        |  32 ++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_2x8_r128_mix_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_2x8_r16_mix_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_4x8_r128_mix_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_4x8_r16_mix_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_8x16_r128_mix_npu.mlir      |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_8x16_r16_mix_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_8x8_r128_mix_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_bfloat16_8x8_r16_mix_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_16x16_r128_mix_npu.mlir      |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_16x16_r16_mix_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_16x32_r128_mix_npu.mlir      |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_16x32_r16_mix_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_16x64_r128_mix_npu.mlir      |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_16x64_r16_mix_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_1x8_r128_mix_npu.mlir        |  32 ++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_1x8_r16_mix_npu.mlir         |  32 ++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_2x8_r128_mix_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_2x8_r16_mix_npu.mlir         |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_4x8_r128_mix_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_4x8_r16_mix_npu.mlir         |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_8x16_r128_mix_npu.mlir       |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_8x16_r16_mix_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_8x8_r128_mix_npu.mlir        |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub2ub_float32_8x8_r16_mix_npu.mlir         |  28 +++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x16_r128_mix_npu.mlir |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x16_r16_mix_npu.mlir  |  33 ++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x32_r128_mix_npu.mlir |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x32_r16_mix_npu.mlir  |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x64_r128_mix_npu.mlir |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x64_r16_mix_npu.mlir  |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_1x8_r128_mix_npu.mlir   |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_1x8_r16_mix_npu.mlir    |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_2x8_r128_mix_npu.mlir   |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_2x8_r16_mix_npu.mlir    |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_4x8_r128_mix_npu.mlir   |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_4x8_r16_mix_npu.mlir    |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_8x16_r128_mix_npu.mlir  |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_8x16_r16_mix_npu.mlir   |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_8x8_r128_mix_npu.mlir   |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_bfloat16_8x8_r16_mix_npu.mlir    |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_16x16_r128_mix_npu.mlir  |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_16x16_r16_mix_npu.mlir   |  33 ++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_16x32_r128_mix_npu.mlir  |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_16x32_r16_mix_npu.mlir   |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_16x64_r128_mix_npu.mlir  |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_16x64_r16_mix_npu.mlir   |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_1x8_r128_mix_npu.mlir    |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_1x8_r16_mix_npu.mlir     |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_2x8_r128_mix_npu.mlir    |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_2x8_r16_mix_npu.mlir     |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_4x8_r128_mix_npu.mlir    |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_4x8_r16_mix_npu.mlir     |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_8x16_r128_mix_npu.mlir   |  35 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_8x16_r16_mix_npu.mlir    |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_8x8_r128_mix_npu.mlir    |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n3_ub_scalar_float32_8x8_r16_mix_npu.mlir     |  34 +++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x16_r128_cce.mlir         |  81 +++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x16_r16_cce.mlir          |  81 +++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x32_r128_cce.mlir         |  81 +++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x32_r16_cce.mlir          |  81 +++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x64_r128_cce.mlir         |  81 +++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x64_r16_cce.mlir          |  81 +++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_1x8_r128_cce.mlir           |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_1x8_r16_cce.mlir            |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_2x8_r128_cce.mlir           |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_2x8_r16_cce.mlir            |  81 +++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_4x8_r128_cce.mlir           |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_4x8_r16_cce.mlir            |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_8x16_r128_cce.mlir          |  65 +++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_8x16_r16_cce.mlir           |  65 +++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_8x8_r128_cce.mlir           |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_bfloat16_8x8_r16_cce.mlir            |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_16x16_r128_cce.mlir          |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_16x16_r16_cce.mlir           |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_16x32_r128_cce.mlir          |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_16x32_r16_cce.mlir           |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_16x64_r128_cce.mlir          |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_16x64_r16_cce.mlir           |  81 +++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_1x8_r128_cce.mlir            |  84 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_1x8_r16_cce.mlir             |  84 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_2x8_r128_cce.mlir            |  84 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_2x8_r16_cce.mlir             |  83 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_4x8_r128_cce.mlir            |  84 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_4x8_r16_cce.mlir             |  84 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_8x16_r128_cce.mlir           |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_8x16_r16_cce.mlir            |  82 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_8x8_r128_cce.mlir            |  66 ++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub2ub_float32_8x8_r16_cce.mlir             |  66 ++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x16_r128_cce.mlir     |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x16_r16_cce.mlir      |  75 +++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x32_r128_cce.mlir     |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x32_r16_cce.mlir      |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x64_r128_cce.mlir     |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x64_r16_cce.mlir      |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_1x8_r128_cce.mlir       |  63 ++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_1x8_r16_cce.mlir        |  63 ++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_2x8_r128_cce.mlir       |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_2x8_r16_cce.mlir        |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_4x8_r128_cce.mlir       |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_4x8_r16_cce.mlir        |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_8x16_r128_cce.mlir      |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_8x16_r16_cce.mlir       |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_8x8_r128_cce.mlir       |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_bfloat16_8x8_r16_cce.mlir        |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_16x16_r128_cce.mlir      |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_16x16_r16_cce.mlir       |  75 +++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_16x32_r128_cce.mlir      |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_16x32_r16_cce.mlir       |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_16x64_r128_cce.mlir      |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_16x64_r16_cce.mlir       |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_1x8_r128_cce.mlir        |  63 ++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_1x8_r16_cce.mlir         |  63 ++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_2x8_r128_cce.mlir        |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_2x8_r16_cce.mlir         |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_4x8_r128_cce.mlir        |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_4x8_r16_cce.mlir         |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_8x16_r128_cce.mlir       |  77 +++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_8x16_r16_cce.mlir        |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_8x8_r128_cce.mlir        |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n4_ub_scalar_float32_8x8_r16_cce.mlir         |  76 ++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x16_r128.ll               | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x16_r16.ll                | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x32_r128.ll               | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x32_r16.ll                | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x64_r128.ll               | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x64_r16.ll                | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_1x8_r128.ll                 | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_1x8_r16.ll                  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_2x8_r128.ll                 | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_2x8_r16.ll                  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_4x8_r128.ll                 | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_4x8_r16.ll                  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_8x16_r128.ll                | 113 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_8x16_r16.ll                 | 113 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_8x8_r128.ll                 | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_bfloat16_8x8_r16.ll                  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_16x16_r128.ll                | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_16x16_r16.ll                 | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_16x32_r128.ll                | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_16x32_r16.ll                 | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_16x64_r128.ll                | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_16x64_r16.ll                 | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_1x8_r128.ll                  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_1x8_r16.ll                   | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_2x8_r128.ll                  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_2x8_r16.ll                   | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_4x8_r128.ll                  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_4x8_r16.ll                   | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_8x16_r128.ll                 | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_8x16_r16.ll                  | 131 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_8x8_r128.ll                  | 113 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub2ub_float32_8x8_r16.ll                   | 113 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x16_r128.ll           | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x16_r16.ll            | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x32_r128.ll           | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x32_r16.ll            | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x64_r128.ll           | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x64_r16.ll            | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_1x8_r128.ll             | 100 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_1x8_r16.ll              | 100 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_2x8_r128.ll             | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_2x8_r16.ll              | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_4x8_r128.ll             | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_4x8_r16.ll              | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_8x16_r128.ll            | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_8x16_r16.ll             | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_8x8_r128.ll             | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_bfloat16_8x8_r16.ll              | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_16x16_r128.ll            | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_16x16_r16.ll             | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_16x32_r128.ll            | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_16x32_r16.ll             | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_16x64_r128.ll            | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_16x64_r16.ll             | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_1x8_r128.ll              | 100 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_1x8_r16.ll               | 100 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_2x8_r128.ll              | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_2x8_r16.ll               | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_4x8_r128.ll              | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_4x8_r16.ll               | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_8x16_r128.ll             | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_8x16_r16.ll              | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_8x8_r128.ll              | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n5_ub_scalar_float32_8x8_r16.ll               | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x16_r128.o                | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x16_r16.o                 | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x32_r128.o                | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x32_r16.o                 | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x64_r128.o                | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x64_r16.o                 | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_1x8_r128.o                  | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_1x8_r16.o                   | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_2x8_r128.o                  | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_2x8_r16.o                   | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_4x8_r128.o                  | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_4x8_r16.o                   | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_8x16_r128.o                 | Bin 0 -> 1848 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_8x16_r16.o                  | Bin 0 -> 1848 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_8x8_r128.o                  | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_bfloat16_8x8_r16.o                   | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_16x16_r128.o                 | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_16x16_r16.o                  | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_16x32_r128.o                 | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_16x32_r16.o                  | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_16x64_r128.o                 | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_16x64_r16.o                  | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_1x8_r128.o                   | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_1x8_r16.o                    | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_2x8_r128.o                   | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_2x8_r16.o                    | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_4x8_r128.o                   | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_4x8_r16.o                    | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_8x16_r128.o                  | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_8x16_r16.o                   | Bin 0 -> 1856 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_8x8_r128.o                   | Bin 0 -> 1848 bytes
+ bench_transfer/new_env/small/n6_ub2ub_float32_8x8_r16.o                    | Bin 0 -> 1848 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x16_r128.o            | Bin 0 -> 1488 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x16_r16.o             | Bin 0 -> 1488 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x32_r128.o            | Bin 0 -> 1400 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x32_r16.o             | Bin 0 -> 1392 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x64_r128.o            | Bin 0 -> 1392 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x64_r16.o             | Bin 0 -> 1392 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_1x8_r128.o              | Bin 0 -> 1392 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_1x8_r16.o               | Bin 0 -> 1392 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_2x8_r128.o              | Bin 0 -> 1456 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_2x8_r16.o               | Bin 0 -> 1456 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_4x8_r128.o              | Bin 0 -> 1584 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_4x8_r16.o               | Bin 0 -> 1584 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_8x16_r128.o             | Bin 0 -> 1488 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_8x16_r16.o              | Bin 0 -> 1488 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_8x8_r128.o              | Bin 0 -> 1416 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_bfloat16_8x8_r16.o               | Bin 0 -> 1416 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_16x16_r128.o             | Bin 0 -> 1496 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_16x16_r16.o              | Bin 0 -> 1496 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_16x32_r128.o             | Bin 0 -> 1400 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_16x32_r16.o              | Bin 0 -> 1400 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_16x64_r128.o             | Bin 0 -> 1408 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_16x64_r16.o              | Bin 0 -> 1408 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_1x8_r128.o               | Bin 0 -> 1400 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_1x8_r16.o                | Bin 0 -> 1400 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_2x8_r128.o               | Bin 0 -> 1464 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_2x8_r16.o                | Bin 0 -> 1464 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_4x8_r128.o               | Bin 0 -> 1592 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_4x8_r16.o                | Bin 0 -> 1592 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_8x16_r128.o              | Bin 0 -> 1496 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_8x16_r16.o               | Bin 0 -> 1496 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_8x8_r128.o               | Bin 0 -> 1424 bytes
+ bench_transfer/new_env/small/n6_ub_scalar_float32_8x8_r16.o                | Bin 0 -> 1424 bytes
+ error.txt                                                                  | 219 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------------------------------
+ 348 files changed, 16713 insertions(+), 153 deletions(-)
+ create mode 100755 bench_transfer/build_small.sh
+ create mode 100644 bench_transfer/diag_register.py
+ create mode 100644 bench_transfer/new_env/diag_l1ub_bf16_16x256_r16_align4_ccec910.o
+ create mode 100644 bench_transfer/new_env/diag_l1ub_bf16_16x256_r16_align4_ccec920.o
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x16_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x16_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x32_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x32_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x64_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_16x64_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_1x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_1x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_2x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_2x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_4x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_4x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_8x16_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_8x16_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_8x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_bfloat16_8x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_16x16_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_16x16_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_16x32_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_16x32_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_16x64_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_16x64_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_1x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_1x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_2x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_2x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_4x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_4x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_8x16_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_8x16_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_8x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub2ub_float32_8x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x16_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x16_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x32_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x32_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x64_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_16x64_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_1x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_1x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_2x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_2x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_4x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_4x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_8x16_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_8x16_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_8x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_bfloat16_8x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_16x16_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_16x16_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_16x32_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_16x32_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_16x64_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_16x64_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_1x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_1x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_2x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_2x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_4x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_4x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_8x16_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_8x16_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_8x8_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n2_ub_scalar_float32_8x8_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x16_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x16_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x32_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x32_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x64_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_16x64_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_1x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_1x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_2x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_2x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_4x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_4x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_8x16_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_8x16_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_8x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_bfloat16_8x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_16x16_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_16x16_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_16x32_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_16x32_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_16x64_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_16x64_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_1x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_1x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_2x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_2x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_4x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_4x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_8x16_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_8x16_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_8x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub2ub_float32_8x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x16_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x16_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x32_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x32_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x64_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_16x64_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_1x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_1x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_2x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_2x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_4x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_4x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_8x16_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_8x16_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_8x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_bfloat16_8x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_16x16_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_16x16_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_16x32_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_16x32_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_16x64_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_16x64_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_1x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_1x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_2x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_2x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_4x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_4x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_8x16_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_8x16_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_8x8_r128_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n3_ub_scalar_float32_8x8_r16_mix_npu.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x16_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x16_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x32_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x32_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x64_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_16x64_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_1x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_1x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_2x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_2x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_4x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_4x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_8x16_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_8x16_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_8x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_bfloat16_8x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_16x16_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_16x16_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_16x32_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_16x32_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_16x64_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_16x64_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_1x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_1x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_2x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_2x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_4x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_4x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_8x16_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_8x16_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_8x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub2ub_float32_8x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x16_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x16_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x32_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x32_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x64_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_16x64_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_1x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_1x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_2x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_2x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_4x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_4x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_8x16_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_8x16_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_8x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_bfloat16_8x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_16x16_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_16x16_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_16x32_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_16x32_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_16x64_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_16x64_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_1x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_1x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_2x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_2x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_4x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_4x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_8x16_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_8x16_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_8x8_r128_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n4_ub_scalar_float32_8x8_r16_cce.mlir
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x16_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x16_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x32_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x32_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x64_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_16x64_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_1x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_1x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_2x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_2x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_4x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_4x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_8x16_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_8x16_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_8x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_bfloat16_8x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_16x16_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_16x16_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_16x32_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_16x32_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_16x64_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_16x64_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_1x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_1x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_2x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_2x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_4x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_4x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_8x16_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_8x16_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_8x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub2ub_float32_8x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x16_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x16_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x32_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x32_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x64_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_16x64_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_1x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_1x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_2x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_2x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_4x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_4x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_8x16_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_8x16_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_8x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_bfloat16_8x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_16x16_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_16x16_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_16x32_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_16x32_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_16x64_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_16x64_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_1x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_1x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_2x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_2x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_4x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_4x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_8x16_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_8x16_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_8x8_r128.ll
+ create mode 100644 bench_transfer/new_env/small/n5_ub_scalar_float32_8x8_r16.ll
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x16_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x16_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x32_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x32_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x64_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_16x64_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_1x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_1x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_2x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_2x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_4x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_4x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_8x16_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_8x16_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_8x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_bfloat16_8x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_16x16_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_16x16_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_16x32_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_16x32_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_16x64_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_16x64_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_1x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_1x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_2x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_2x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_4x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_4x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_8x16_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_8x16_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_8x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub2ub_float32_8x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x16_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x16_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x32_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x32_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x64_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_16x64_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_1x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_1x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_2x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_2x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_4x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_4x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_8x16_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_8x16_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_8x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_bfloat16_8x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_16x16_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_16x16_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_16x32_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_16x32_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_16x64_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_16x64_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_1x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_1x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_2x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_2x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_4x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_4x8_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_8x16_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_8x16_r16.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_8x8_r128.o
+ create mode 100644 bench_transfer/new_env/small/n6_ub_scalar_float32_8x8_r16.o
 root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py prep
 [prep] inputs saved
 root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run 
-[ub2ub bfloat16 16x256] T(r16)=2.6us T(r128)=6.1us round=0.03us dma=0.03us bw(move)=261.92GB/s bw(traffic)=523.83GB/s
-[ub_scalar bfloat16 16x256] T(r16)=849.7us T(r128)=6789.0us round=53.03us dma=53.03us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
-[ub2ub bfloat16 64x256] T(r16)=2.8us T(r128)=226.1us round=1.99us dma=1.99us bw(move)=16.44GB/s bw(traffic)=32.88GB/s
-[ub_scalar bfloat16 64x256] T(r16)=3395.6us T(r128)=27145.9us round=212.06us dma=212.06us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
-[ub2ub bfloat16 128x256] T(r16)=4.3us T(r128)=24.2us round=0.18us dma=0.18us bw(move)=368.54GB/s bw(traffic)=737.07GB/s
-[ub_scalar bfloat16 128x256] T(r16)=6792.1us T(r128)=54277.8us round=423.98us dma=423.98us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
-[ub2ub float32 16x256] T(r16)=3.2us T(r128)=8.6us round=0.05us dma=0.05us bw(move)=342.02GB/s bw(traffic)=684.04GB/s
-[ub_scalar float32 16x256] T(r16)=842.1us T(r128)=6729.1us round=52.56us dma=52.56us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
-[ub2ub float32 64x256] T(r16)=4.3us T(r128)=24.2us round=0.18us dma=0.18us bw(move)=368.89GB/s bw(traffic)=737.78GB/s
-[ub_scalar float32 64x256] T(r16)=3365.8us T(r128)=26906.4us round=210.18us dma=210.18us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub bfloat16 16x256] T(r16)=1.9us T(r128)=6.1us round=0.04us dma=0.04us bw(move)=220.04GB/s bw(traffic)=440.09GB/s
+[ub_scalar bfloat16 16x256] T(r16)=848.9us T(r128)=6785.2us round=53.00us dma=53.00us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 64x256] T(r16)=2.6us T(r128)=13.7us round=0.10us dma=0.10us bw(move)=332.42GB/s bw(traffic)=664.84GB/s
+[ub_scalar bfloat16 64x256] T(r16)=3393.1us T(r128)=27137.0us round=212.00us dma=212.00us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 128x256] T(r16)=4.2us T(r128)=24.0us round=0.18us dma=0.18us bw(move)=371.07GB/s bw(traffic)=742.14GB/s
+[ub_scalar bfloat16 128x256] T(r16)=6786.9us T(r128)=54274.4us round=424.00us dma=424.00us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x256] T(r16)=1.9us T(r128)=8.7us round=0.06us dma=0.06us bw(move)=270.61GB/s bw(traffic)=541.22GB/s
+[ub_scalar float32 16x256] T(r16)=841.8us T(r128)=6726.2us round=52.54us dma=52.54us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub float32 64x256] T(r16)=4.2us T(r128)=24.0us round=0.18us dma=0.18us bw(move)=371.61GB/s bw(traffic)=743.22GB/s
+[ub_scalar float32 64x256] T(r16)=3363.8us T(r128)=26901.0us round=210.15us dma=210.15us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
 [skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_16x256_r16.o
 [skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_64x256_r16.o
 [skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_float32_16x256_r16.o
-Traceback (most recent call last):
-  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 402, in <module>
-    main()
-  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 390, in main
-    do_run()
-  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 228, in do_run
-    module, func = rt.load_kernel(kname, obytes, 0, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-RuntimeError: rtFunctionRegister failed, error code: 0x7bc78
+[skip] missing /home/zwh/tmp/bench_transfer/new_env/n6_l1ub_single_bfloat16_16x256_r16_single.o
+[skip] missing /home/zwh/tmp/bench_transfer/new_env/n6_l1ub_single_bfloat16_64x256_r16_single.o
+[skip] missing /home/zwh/tmp/bench_transfer/new_env/n6_l1ub_single_bfloat16_128x256_r16_single.o
+[skip] missing /home/zwh/tmp/bench_transfer/new_env/n6_l1ub_single_float32_16x256_r16_single.o
+[skip] missing /home/zwh/tmp/bench_transfer/new_env/n6_l1ub_single_float32_64x256_r16_single.o
+[ub2ub bfloat16 1x8] T(r16)=1.8us T(r128)=5.4us round=0.03us dma=0.03us bw(move)=0.50GB/s bw(traffic)=1.00GB/s
+[ub_scalar bfloat16 1x8] T(r16)=2.9us T(r128)=18.1us round=0.14us dma=0.14us bw(move)=0.12GB/s bw(traffic)=0.24GB/s
+[ub2ub float32 1x8] T(r16)=1.8us T(r128)=3.9us round=0.02us dma=0.02us bw(move)=1.73GB/s bw(traffic)=3.45GB/s
+[ub_scalar float32 1x8] T(r16)=2.4us T(r128)=14.4us round=0.11us dma=0.11us bw(move)=0.30GB/s bw(traffic)=0.60GB/s
+[ub2ub bfloat16 2x8] T(r16)=1.8us T(r128)=8.7us round=0.06us dma=0.06us bw(move)=0.52GB/s bw(traffic)=1.04GB/s
+[ub_scalar bfloat16 2x8] T(r16)=5.1us T(r128)=35.5us round=0.27us dma=0.27us bw(move)=0.12GB/s bw(traffic)=0.24GB/s
+[ub2ub float32 2x8] T(r16)=1.8us T(r128)=4.5us round=0.02us dma=0.02us bw(move)=2.68GB/s bw(traffic)=5.36GB/s
+[ub_scalar float32 2x8] T(r16)=3.2us T(r128)=20.7us round=0.16us dma=0.16us bw(move)=0.41GB/s bw(traffic)=0.82GB/s
+[ub2ub bfloat16 4x8] T(r16)=2.6us T(r128)=16.1us round=0.12us dma=0.12us bw(move)=0.53GB/s bw(traffic)=1.06GB/s
+[ub_scalar bfloat16 4x8] T(r16)=5.9us T(r128)=40.4us round=0.31us dma=0.31us bw(move)=0.21GB/s bw(traffic)=0.42GB/s
+[ub2ub float32 4x8] T(r16)=1.8us T(r128)=6.5us round=0.04us dma=0.04us bw(move)=3.07GB/s bw(traffic)=6.13GB/s
+[ub_scalar float32 4x8] T(r16)=6.4us T(r128)=40.5us round=0.30us dma=0.30us bw(move)=0.42GB/s bw(traffic)=0.84GB/s
+[ub2ub bfloat16 8x8] T(r16)=4.5us T(r128)=31.1us round=0.24us dma=0.24us bw(move)=0.54GB/s bw(traffic)=1.08GB/s
+[ub_scalar bfloat16 8x8] T(r16)=11.5us T(r128)=86.1us round=0.67us dma=0.67us bw(move)=0.19GB/s bw(traffic)=0.38GB/s
+[ub2ub float32 8x8] T(r16)=1.8us T(r128)=3.3us round=0.01us dma=0.01us bw(move)=18.23GB/s bw(traffic)=36.47GB/s
+[ub_scalar float32 8x8] T(r16)=11.3us T(r128)=85.0us round=0.66us dma=0.66us bw(move)=0.39GB/s bw(traffic)=0.78GB/s
+[ub2ub bfloat16 8x16] T(r16)=1.8us T(r128)=3.3us round=0.01us dma=0.01us bw(move)=19.26GB/s bw(traffic)=38.51GB/s
+[ub_scalar bfloat16 8x16] T(r16)=21.5us T(r128)=166.6us round=1.30us dma=1.30us bw(move)=0.20GB/s bw(traffic)=0.40GB/s
+[ub2ub float32 8x16] T(r16)=1.8us T(r128)=3.4us round=0.01us dma=0.01us bw(move)=34.64GB/s bw(traffic)=69.29GB/s
+[ub_scalar float32 8x16] T(r16)=21.0us T(r128)=162.3us round=1.26us dma=1.26us bw(move)=0.41GB/s bw(traffic)=0.81GB/s
+[ub2ub bfloat16 16x16] T(r16)=1.7us T(r128)=3.4us round=0.02us dma=0.02us bw(move)=33.14GB/s bw(traffic)=66.29GB/s
+[ub_scalar bfloat16 16x16] T(r16)=42.2us T(r128)=332.9us round=2.59us dma=2.59us bw(move)=0.20GB/s bw(traffic)=0.39GB/s
+[ub2ub float32 16x16] T(r16)=1.6us T(r128)=3.6us round=0.02us dma=0.02us bw(move)=58.16GB/s bw(traffic)=116.33GB/s
+[ub_scalar float32 16x16] T(r16)=41.2us T(r128)=324.3us round=2.53us dma=2.53us bw(move)=0.41GB/s bw(traffic)=0.81GB/s
+[ub2ub bfloat16 16x32] T(r16)=1.6us T(r128)=3.6us round=0.02us dma=0.02us bw(move)=58.11GB/s bw(traffic)=116.21GB/s
+[ub_scalar bfloat16 16x32] T(r16)=108.1us T(r128)=859.4us round=6.71us dma=6.71us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x32] T(r16)=1.7us T(r128)=3.9us round=0.02us dma=0.02us bw(move)=102.40GB/s bw(traffic)=204.80GB/s
+[ub_scalar float32 16x32] T(r16)=107.2us T(r128)=851.9us round=6.65us dma=6.65us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub bfloat16 16x64] T(r16)=1.7us T(r128)=3.9us round=0.02us dma=0.02us bw(move)=100.94GB/s bw(traffic)=201.88GB/s
+[ub_scalar bfloat16 16x64] T(r16)=213.9us T(r128)=1705.9us round=13.32us dma=13.32us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x64] T(r16)=1.7us T(r128)=4.6us round=0.03us dma=0.03us bw(move)=159.49GB/s bw(traffic)=318.99GB/s
+[ub_scalar float32 16x64] T(r16)=212.2us T(r128)=1691.0us round=13.20us dma=13.20us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+
+===== 差分法汇总（t_round 消除 launch/GM/gemm 常数）=====
+variant      dtype           shape     KB  t_r16us  t_r128us  round_us  dma_us  GB/s(mv)  GB/s(tr)
+ub2ub        bfloat16       16x256   8.00      1.9       6.1      0.04    0.04    220.04    440.09
+ub_scalar    bfloat16       16x256   8.00    848.9    6785.2     53.00   53.00      0.15      0.31
+ub2ub        bfloat16       64x256  32.00      2.6      13.7      0.10    0.10    332.42    664.84
+ub_scalar    bfloat16       64x256  32.00   3393.1   27137.0    212.00  212.00      0.15      0.31
+ub2ub        bfloat16      128x256  64.00      4.2      24.0      0.18    0.18    371.07    742.14
+ub_scalar    bfloat16      128x256  64.00   6786.9   54274.4    424.00  424.00      0.15      0.31
+ub2ub        float32        16x256  16.00      1.9       8.7      0.06    0.06    270.61    541.22
+ub_scalar    float32        16x256  16.00    841.8    6726.2     52.54   52.54      0.31      0.62
+ub2ub        float32        64x256  64.00      4.2      24.0      0.18    0.18    371.61    743.22
+ub_scalar    float32        64x256  64.00   3363.8   26901.0    210.15  210.15      0.31      0.62
+ub2ub        bfloat16          1x8   0.02      1.8       5.4      0.03    0.03      0.50      1.00
+ub_scalar    bfloat16          1x8   0.02      2.9      18.1      0.14    0.14      0.12      0.24
+ub2ub        float32           1x8   0.03      1.8       3.9      0.02    0.02      1.73      3.45
+ub_scalar    float32           1x8   0.03      2.4      14.4      0.11    0.11      0.30      0.60
+ub2ub        bfloat16          2x8   0.03      1.8       8.7      0.06    0.06      0.52      1.04
+ub_scalar    bfloat16          2x8   0.03      5.1      35.5      0.27    0.27      0.12      0.24
+ub2ub        float32           2x8   0.06      1.8       4.5      0.02    0.02      2.68      5.36
+ub_scalar    float32           2x8   0.06      3.2      20.7      0.16    0.16      0.41      0.82
+ub2ub        bfloat16          4x8   0.06      2.6      16.1      0.12    0.12      0.53      1.06
+ub_scalar    bfloat16          4x8   0.06      5.9      40.4      0.31    0.31      0.21      0.42
+ub2ub        float32           4x8   0.12      1.8       6.5      0.04    0.04      3.07      6.13
+ub_scalar    float32           4x8   0.12      6.4      40.5      0.30    0.30      0.42      0.84
+ub2ub        bfloat16          8x8   0.12      4.5      31.1      0.24    0.24      0.54      1.08
+ub_scalar    bfloat16          8x8   0.12     11.5      86.1      0.67    0.67      0.19      0.38
+ub2ub        float32           8x8   0.25      1.8       3.3      0.01    0.01     18.23     36.47
+ub_scalar    float32           8x8   0.25     11.3      85.0      0.66    0.66      0.39      0.78
+ub2ub        bfloat16         8x16   0.25      1.8       3.3      0.01    0.01     19.26     38.51
+ub_scalar    bfloat16         8x16   0.25     21.5     166.6      1.30    1.30      0.20      0.40
+ub2ub        float32          8x16   0.50      1.8       3.4      0.01    0.01     34.64     69.29
+ub_scalar    float32          8x16   0.50     21.0     162.3      1.26    1.26      0.41      0.81
+ub2ub        bfloat16        16x16   0.50      1.7       3.4      0.02    0.02     33.14     66.29
+ub_scalar    bfloat16        16x16   0.50     42.2     332.9      2.59    2.59      0.20      0.39
+ub2ub        float32         16x16   1.00      1.6       3.6      0.02    0.02     58.16    116.33
+ub_scalar    float32         16x16   1.00     41.2     324.3      2.53    2.53      0.41      0.81
+ub2ub        bfloat16        16x32   1.00      1.6       3.6      0.02    0.02     58.11    116.21
+ub_scalar    bfloat16        16x32   1.00    108.1     859.4      6.71    6.71      0.15      0.31
+ub2ub        float32         16x32   2.00      1.7       3.9      0.02    0.02    102.40    204.80
+ub_scalar    float32         16x32   2.00    107.2     851.9      6.65    6.65      0.31      0.62
+ub2ub        bfloat16        16x64   2.00      1.7       3.9      0.02    0.02    100.94    201.88
+ub_scalar    bfloat16        16x64   2.00    213.9    1705.9     13.32   13.32      0.15      0.31
+ub2ub        float32         16x64   4.00      1.7       4.6      0.03    0.03    159.49    318.99
+ub_scalar    float32         16x64   4.00    212.2    1691.0     13.20   13.20      0.31      0.62
 root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py verify
 [verify] ub2ub bfloat16 16x256: PASS (恒等)
 [verify] ub_scalar bfloat16 16x256: PASS (恒等)
@@ -88,44 +791,36 @@ root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py verify
 [verify] ub_scalar float32 16x256: PASS (恒等)
 [verify] ub2ub float32 64x256: PASS (恒等)
 [verify] ub_scalar float32 64x256: PASS (恒等)
-Traceback (most recent call last):
-  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 402, in <module>
-    main()
-  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 392, in main
-    do_verify()
-  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 314, in do_verify
-    module, func = rt.load_kernel(kname, obytes, 0, mode)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-RuntimeError: rtFunctionRegister failed, error code: 0x7bc78
+[verify] ub2ub bfloat16 1x8: PASS (恒等)
+[verify] ub_scalar bfloat16 1x8: PASS (恒等)
+[verify] ub2ub float32 1x8: PASS (恒等)
+[verify] ub_scalar float32 1x8: PASS (恒等)
+[verify] ub2ub bfloat16 2x8: PASS (恒等)
+[verify] ub_scalar bfloat16 2x8: PASS (恒等)
+[verify] ub2ub float32 2x8: PASS (恒等)
+[verify] ub_scalar float32 2x8: PASS (恒等)
+[verify] ub2ub bfloat16 4x8: PASS (恒等)
+[verify] ub_scalar bfloat16 4x8: PASS (恒等)
+[verify] ub2ub float32 4x8: PASS (恒等)
+[verify] ub_scalar float32 4x8: PASS (恒等)
+[verify] ub2ub bfloat16 8x8: PASS (恒等)
+[verify] ub_scalar bfloat16 8x8: PASS (恒等)
+[verify] ub2ub float32 8x8: PASS (恒等)
+[verify] ub_scalar float32 8x8: PASS (恒等)
+[verify] ub2ub bfloat16 8x16: PASS (恒等)
+[verify] ub_scalar bfloat16 8x16: PASS (恒等)
+[verify] ub2ub float32 8x16: PASS (恒等)
+[verify] ub_scalar float32 8x16: PASS (恒等)
+[verify] ub2ub bfloat16 16x16: PASS (恒等)
+[verify] ub_scalar bfloat16 16x16: PASS (恒等)
+[verify] ub2ub float32 16x16: PASS (恒等)
+[verify] ub_scalar float32 16x16: PASS (恒等)
+[verify] ub2ub bfloat16 16x32: PASS (恒等)
+[verify] ub_scalar bfloat16 16x32: PASS (恒等)
+[verify] ub2ub float32 16x32: PASS (恒等)
+[verify] ub_scalar float32 16x32: PASS (恒等)
+[verify] ub2ub bfloat16 16x64: PASS (恒等)
+[verify] ub_scalar bfloat16 16x64: PASS (恒等)
+[verify] ub2ub float32 16x64: PASS (恒等)
+[verify] ub_scalar float32 16x64: PASS (恒等)
 root@localhost:/home/zwh/tmp/bench_transfer# 
-
-========================================
-[2026-09-20 分析] 0x7bc78（ACL_ERROR_RT_INTERNAL_ERROR，rtFunctionRegister 阶段）根因分析
-
-两个候选变量（均已定位）：
-
-1) kname 符号不匹配（已修复 bench_run.py）：
-   单核 .o 入口符号是 l1ub_kernel（.ll: define ... @l1ub_kernel；nm: T l1ub_kernel），
-   原 bench_run.py 用 f"{variant}_kernel" 拼成 l1ub_single_kernel，
-   .o 中无此符号 -> rtFunctionRegister 报 0x7bc78。
-   修复：do_run / do_verify 两处均改为 kname = "l1ub_kernel"。
-
-2) .text 段对齐（第二个候选变量，待 NPU 机验证）：
-   纯 AIC(cube) .o 默认 .text Al=4；此前 AIC(ELF magic) 路径注册成功的 .o 均为 Al=256。
-   已在 build_l1ub_single.sh 打 align 256 补丁（.ll 级 sed + readelf 校验），
-   10 个 n6_l1ub_*_single.o 全部 Al=256。
-
-诊断产物（new_env/ 下）：
-   diag_l1ub_bf16_16x256_r16_align4_ccec920.o  Al=4，ccec 9.2.0-beta.2，即 4962977 报错原物
-   diag_l1ub_bf16_16x256_r16_align4_ccec910.o  Al=4，ccec 9.1.0 编译（区分 ccec 版本变量）
-   两者符号均为 T l1ub_kernel，与 fix 版一致，只差对齐/编译器版本。
-
-NPU 机验证步骤：
-   cd ~/tmp && git pull
-   cd bench_transfer
-   python diag_register.py
-   # 四项：sanity-aiv / fix-align256 / align4-910 / align4-920（自动给出结论）
-   # 若 fix-align256 PASS（无论 align4 结果如何）：
-   python bench_run.py prep
-   python bench_run.py run
-   python bench_run.py verify
