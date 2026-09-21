@@ -1,2 +1,5 @@
-git checkout -- .
-git pull
+cd bench_transfer
+bash scripts/bisheng_probe.sh
+python scripts/bisheng_probe_run.py
+python diag_register.py
+python bench_run.py prep && python bench_run.py run && python bench_run.py verify
