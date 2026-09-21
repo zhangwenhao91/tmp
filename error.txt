@@ -1,170 +1,22 @@
 root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 51, done.
-remote: Counting objects: 100% (51/51), done.
-remote: Compressing objects: 100% (45/45), done.
-remote: Total 48 (delta 23), reused 8 (delta 3), pack-reused 0 (from 0)
-Unpacking objects: 100% (48/48), 27.21 KiB | 995.00 KiB/s, done.
+remote: Enumerating objects: 27, done.
+remote: Counting objects: 100% (27/27), done.
+remote: Compressing objects: 100% (15/15), done.
+remote: Total 22 (delta 8), reused 17 (delta 6), pack-reused 0 (from 0)
+Unpacking objects: 100% (22/22), 9.33 KiB | 4.67 MiB/s, done.
 From https://github.com/zhangwenhao91/tmp
-   8819b0d..41fdb8e  main       -> origin/main
-Updating 8819b0d..41fdb8e
-Fast-forward
- bench_transfer/arch_probe.sh        |  79 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/bisheng_probe.sh     |  67 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/bisheng_probe_run.py | 123 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- error.txt                           |  60 +++++++++++++++++++++++++++++++++++++++++++++++-------------
- 4 files changed, 316 insertions(+), 13 deletions(-)
- create mode 100755 bench_transfer/arch_probe.sh
- create mode 100644 bench_transfer/bisheng_probe.sh
- create mode 100644 bench_transfer/bisheng_probe_run.py
-root@localhost:/home/zwh/tmp/bench_transfer# chmod +x bisheng_probe.sh 
-root@localhost:/home/zwh/tmp/bench_transfer# ./bisheng_probe.sh 
-bisheng: 2026-09-20 20:01:11 +0000 Baize clang version 15.0.5 (clang-89559c4cf870 flang-89559c4cf870)
-ccec: 2026-09-20 20:01:11 +0000 Baize clang version 15.0.5 (clang-89559c4cf870 flang-89559c4cf870)
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-Ascend950PR_9589] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-Ascend950PR_9589] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-Ascend950PR_9579] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-Ascend950PR_9579] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-Ascend950PR_959b] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-Ascend950PR_959b] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-Ascend950PR_95A2] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-Ascend950PR_95A2] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-ascend950] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-ascend950] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-310-simt] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-310-simt] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-310-simd] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-310-simd] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-m200] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-m200] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-m300] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-m300] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-510r] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-510r] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-516r] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-516r] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-920r] baseline: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-920r] baseline: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-Ascend950PR_9589] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-Ascend950PR_9589] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-Ascend950PR_9579] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-Ascend950PR_9579] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-Ascend950PR_959b] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-Ascend950PR_959b] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-Ascend950PR_95A2] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-Ascend950PR_95A2] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-ascend950] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-ascend950] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-310-simt] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-310-simt] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-310-simd] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-310-simd] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-m200] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-m200] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-m300] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-m300] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-510r] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-510r] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-516r] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-516r] l1ub: 
-./bisheng_probe.sh: line 47: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-bisheng-dav-920r] l1ub: 
-./bisheng_probe.sh: line 54: /tmp/bp2.err: No such file or directory
-head: cannot open '/tmp/bp2.err' for reading: No such file or directory
-[FAIL-ccec-dav-920r] l1ub: 
-==============================
-case 清单:
-(无成功产物)
-root@localhost:/home/zwh/tmp/bench_transfer# 
+   4a7e401..994d028  main       -> origin/main
+Updating 4a7e401..994d028
+error: Your local changes to the following files would be overwritten by merge:
+        bench_transfer/6_ub2ub_bfloat16_128x256_r128.o
+        bench_transfer/6_ub2ub_bfloat16_128x256_r16.o
+        bench_transfer/6_ub2ub_bfloat16_16x256_r128.o
+        bench_transfer/6_ub2ub_bfloat16_16x256_r16.o
+        bench_transfer/6_ub2ub_bfloat16_64x256_r128.o
+        bench_transfer/6_ub2ub_bfloat16_64x256_r16.o
+        bench_transfer/6_ub2ub_float32_16x256_r128.o
+        bench_transfer/6_ub2ub_float32_16x256_r16.o
+        bench_transfer/6_ub2ub_float32_64x256_r128.o
+        bench_transfer/6_ub2ub_float32_64x256_r16.o
+Please commit your changes or stash them before you merge.
+Aborting
