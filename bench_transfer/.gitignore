@@ -15,3 +15,7 @@
 !new_env/small/n6_*.o
 new_env/small/*.err
 small_build.log
+
+# 2026-09-21 补充：ub_scalar 大尺寸差分对（c917c7f 恢复）+ 单核 l1ub .o
+!6_ub_scalar_*_r*.o
+!new_env/n6_l1ub_*_single.o
