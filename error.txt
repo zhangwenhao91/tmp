@@ -1,5 +1,57 @@
-cd bench_transfer
-bash scripts/bisheng_probe.sh
-python scripts/bisheng_probe_run.py
-python diag_register.py
-python bench_run.py prep && python bench_run.py run && python bench_run.py verify
+root@localhost:/home/zwh/tmp/bench_transfer# bash scripts/bisheng_probe.sh
+bisheng: 2026-09-20 20:01:11 +0000 Baize clang version 15.0.5 (clang-89559c4cf870 flang-89559c4cf870)
+ccec: 2026-09-20 20:01:11 +0000 Baize clang version 15.0.5 (clang-89559c4cf870 flang-89559c4cf870)
+[FAIL-bisheng-Ascend950PR_9589] baseline: bisheng: error: Unsupported CCE architecture: Ascend950PR_9589 
+[FAIL-ccec-Ascend950PR_9589] baseline: bisheng: error: Unsupported CCE architecture: Ascend950PR_9589 
+[FAIL-bisheng-Ascend950PR_9579] baseline: bisheng: error: Unsupported CCE architecture: Ascend950PR_9579 
+[FAIL-ccec-Ascend950PR_9579] baseline: bisheng: error: Unsupported CCE architecture: Ascend950PR_9579 
+[FAIL-bisheng-Ascend950PR_959b] baseline: bisheng: error: Unsupported CCE architecture: Ascend950PR_959b 
+[FAIL-ccec-Ascend950PR_959b] baseline: bisheng: error: Unsupported CCE architecture: Ascend950PR_959b 
+[FAIL-bisheng-Ascend950PR_95A2] baseline: bisheng: error: Unsupported CCE architecture: Ascend950PR_95A2 
+[FAIL-ccec-Ascend950PR_95A2] baseline: bisheng: error: Unsupported CCE architecture: Ascend950PR_95A2 
+[FAIL-bisheng-ascend950] baseline: bisheng: error: Unsupported CCE architecture: ascend950 
+[FAIL-ccec-ascend950] baseline: bisheng: error: Unsupported CCE architecture: ascend950 
+[FAIL-bisheng-dav-310-simt] baseline: bisheng: error: Unsupported CCE architecture: dav-310-simt 
+[FAIL-ccec-dav-310-simt] baseline: bisheng: error: Unsupported CCE architecture: dav-310-simt 
+[FAIL-bisheng-dav-310-simd] baseline: bisheng: error: Unsupported CCE architecture: dav-310-simd 
+[FAIL-ccec-dav-310-simd] baseline: bisheng: error: Unsupported CCE architecture: dav-310-simd 
+[FAIL-bisheng-dav-m200] baseline: fatal error: error in backend: Cannot select: intrinsic %llvm.hivm.FIX.L0C.TO.UB.f32.EXT bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation) 
+[FAIL-ccec-dav-m200] baseline: fatal error: error in backend: Cannot select: intrinsic %llvm.hivm.FIX.L0C.TO.UB.f32.EXT bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation) 
+[FAIL-bisheng-dav-m300] baseline: fatal error: error in backend: Cannot select: intrinsic %llvm.hivm.FIX.L0C.TO.UB.f32.EXT bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation) 
+[FAIL-ccec-dav-m300] baseline: fatal error: error in backend: Cannot select: intrinsic %llvm.hivm.FIX.L0C.TO.UB.f32.EXT bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation) 
+[FAIL-bisheng-dav-510r] baseline: bisheng: error: Unsupported CCE architecture: dav-510r 
+[FAIL-ccec-dav-510r] baseline: bisheng: error: Unsupported CCE architecture: dav-510r 
+[FAIL-bisheng-dav-516r] baseline: bisheng: error: Unsupported CCE architecture: dav-516r 
+[FAIL-ccec-dav-516r] baseline: bisheng: error: Unsupported CCE architecture: dav-516r 
+[FAIL-bisheng-dav-920r] baseline: bisheng: error: Unsupported CCE architecture: dav-920r 
+[FAIL-ccec-dav-920r] baseline: bisheng: error: Unsupported CCE architecture: dav-920r 
+[FAIL-bisheng-Ascend950PR_9589] l1ub: bisheng: error: Unsupported CCE architecture: Ascend950PR_9589 
+[FAIL-ccec-Ascend950PR_9589] l1ub: bisheng: error: Unsupported CCE architecture: Ascend950PR_9589 
+[FAIL-bisheng-Ascend950PR_9579] l1ub: bisheng: error: Unsupported CCE architecture: Ascend950PR_9579 
+[FAIL-ccec-Ascend950PR_9579] l1ub: bisheng: error: Unsupported CCE architecture: Ascend950PR_9579 
+[FAIL-bisheng-Ascend950PR_959b] l1ub: bisheng: error: Unsupported CCE architecture: Ascend950PR_959b 
+[FAIL-ccec-Ascend950PR_959b] l1ub: bisheng: error: Unsupported CCE architecture: Ascend950PR_959b 
+[FAIL-bisheng-Ascend950PR_95A2] l1ub: bisheng: error: Unsupported CCE architecture: Ascend950PR_95A2 
+[FAIL-ccec-Ascend950PR_95A2] l1ub: bisheng: error: Unsupported CCE architecture: Ascend950PR_95A2 
+[FAIL-bisheng-ascend950] l1ub: bisheng: error: Unsupported CCE architecture: ascend950 
+[FAIL-ccec-ascend950] l1ub: bisheng: error: Unsupported CCE architecture: ascend950 
+[FAIL-bisheng-dav-310-simt] l1ub: bisheng: error: Unsupported CCE architecture: dav-310-simt 
+[FAIL-ccec-dav-310-simt] l1ub: bisheng: error: Unsupported CCE architecture: dav-310-simt 
+[FAIL-bisheng-dav-310-simd] l1ub: bisheng: error: Unsupported CCE architecture: dav-310-simd 
+[FAIL-ccec-dav-310-simd] l1ub: bisheng: error: Unsupported CCE architecture: dav-310-simd 
+[FAIL-bisheng-dav-m200] l1ub: fatal error: error in backend: Cannot select: intrinsic %llvm.hivm.MOV.OUT.TO.L1.MULTI.ND2NZ.U16.V310 bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation) 
+[FAIL-ccec-dav-m200] l1ub: fatal error: error in backend: Cannot select: intrinsic %llvm.hivm.MOV.OUT.TO.L1.MULTI.ND2NZ.U16.V310 bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation) 
+[FAIL-bisheng-dav-m300] l1ub: fatal error: error in backend: Cannot select: intrinsic %llvm.hivm.MOV.OUT.TO.L1.MULTI.ND2NZ.U16.V310 bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation) 
+[FAIL-ccec-dav-m300] l1ub: fatal error: error in backend: Cannot select: intrinsic %llvm.hivm.MOV.OUT.TO.L1.MULTI.ND2NZ.U16.V310 bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation) 
+[FAIL-bisheng-dav-510r] l1ub: bisheng: error: Unsupported CCE architecture: dav-510r 
+[FAIL-ccec-dav-510r] l1ub: bisheng: error: Unsupported CCE architecture: dav-510r 
+[FAIL-bisheng-dav-516r] l1ub: bisheng: error: Unsupported CCE architecture: dav-516r 
+[FAIL-ccec-dav-516r] l1ub: bisheng: error: Unsupported CCE architecture: dav-516r 
+[FAIL-bisheng-dav-920r] l1ub: bisheng: error: Unsupported CCE architecture: dav-920r 
+[FAIL-ccec-dav-920r] l1ub: bisheng: error: Unsupported CCE architecture: dav-920r 
+==============================
+case 清单:
+(无成功产物)
+root@localhost:/home/zwh/tmp/bench_transfer# python scripts/bisheng_probe_run.py
+=== bisheng/新ccec arch 探测（Ascend950 cube）===
+=== 0/0 PASS ===
