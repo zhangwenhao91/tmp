@@ -1,122 +1,15 @@
-root@localhost:/home/zwh/tmp/bench_transfer# ASCEND_GLOBAL_LOG_LEVEL=1 ASCEND_SLOG_PRINT_TO_STDOUT=1 python3 ablation_run.py 2>&1 | tail -60
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.554 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.561 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.563 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.564 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.566 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.568 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.569 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.571 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.572 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.574 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.576 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.578 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.579 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.581 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.582 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.584 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.585 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.587 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.589 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.590 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.592 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.594 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.595 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.597 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.598 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.600 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.602 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.603 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] HCCL(1674,python3):2026-09-21-11:15:01.381.605 [tbe_vector_reduce.cc:102] [1674]TbeVectorReduce Deinit
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:01.439.518 [osal.cc:338] 1674 ThreadExit: ThreadExit start.
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:01.439.534 [global_state_manager.cc:96] 1674 ForceUnlocked: already in RUNNING state, no action needed
-[INFO] TDT(1674,python3):2026-09-21-11:15:01.939.260 [client_manager.cpp:398][ChangeUserDeviceIdToLogicDeviceId][tid:1743] [TsdClient] change userDevId [0] to logicDevId [7]
-[INFO] TDT(1674,python3):2026-09-21-11:15:01.939.290 [client_manager.cpp:398][ChangeUserDeviceIdToLogicDeviceId][tid:1743] [TsdClient] change userDevId [0] to logicDevId [7]
-[INFO] TDT(1674,python3):2026-09-21-11:15:01.939.298 [client_manager.cpp:398][ChangeUserDeviceIdToLogicDeviceId][tid:1743] [TsdClient] change userDevId [0] to logicDevId [7]
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:01.939.398 [global_state_manager.cc:130] 1743 DecBackgroundThreadCount: MonitoringRun thread does not need to be locked. Total:1
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:01.939.405 [stars_engine.cc:1932] 1743 MonitoringRun: Stars Monitor thread has finished, ts_id=0.
-[INFO] IDEDD(1674,python3):2026-09-21-11:15:01.941.361 [kernel_dfx_dumper.cpp:148][tid:1674] Begin to stop the dfx dump task.
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:01.941.528 [runtime_keeper.cc:250] 1674 PrepareRuntimeProcessExitImpl: Runtime process exit prepare start.
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:01.941.534 [global_state_manager.cc:96] 1674 ForceUnlocked: already in RUNNING state, no action needed
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:02.081.655 [global_state_manager.cc:130] 1744 DecBackgroundThreadCount: ReportRasRun thread does not need to be locked. Total:0
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:02.081.673 [runtime.cc:5586] 1744 ReportRasRun: Report ras thread exits normally!
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:02.081.725 [runtime.cc:5556] 1674 DestroyReportRasThread: Join report ras thread OK.
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:02.081.734 [runtime.cc:1635] 1674 WaitMonitorExit: wait monitor success, used count=0.
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:02.136.535 [stars_engine.cc:223] 1745 RecycleThreadRun: RecycleThreadRun thread leave.
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:02.136.662 [stars_engine.cc:199] 1674 DestroyRecycleThread: Stars engine joined recycle thread OK.
-[WARNING] RUNTIME(1674,python3):2026-09-21-11:15:02.136.669 [osal.cc:246] 1674 Join: mmJoinTask failed, thread=140093795890880 does not exist!
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:02.136.671 [stars_engine.cc:158] 1674 Stop: StarsEngine joined monitor thread OK.
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:02.136.695 [xpu_task_fail_callback_data_manager.cc:64] 1674 ~XpuTaskFailCallBackManager: XpuTaskFailCallBackManager Destructor.
-[INFO] RUNTIME(1674,python3):2026-09-21-11:15:02.136.698 [task_fail_callback_data_manager.cc:91] 1674 ~TaskFailCallBackManager: Destructor.
-[INFO] ATRACE(1674,python3):2026-09-21-11:15:02.140.034 [stacktrace_signal.c:229](tid:1674) unregister all signal handlers, can not capture signal.
-[INFO] DRV(1674,python3):2026-09-21-11:15:02.269.917 [hdc_client.c:434][ascend][curpid:1674,1741][drv][hdc][drv_hdc_client_session_close]Destroy client session. (sock=6214)
-[INFO] ATRACE(1674,python3):2026-09-21-11:15:02.270.065 [atrace_client_core.c:127](tid:1741) atrace receive thread exited, devId=7.
-[INFO] DRV(1674,python3):2026-09-21-11:15:02.276.501 [svm_vmm.c:466][ascend][curpid:1674,1674][drv][devmm][vmm_svmm_release]Force release success. (va=0xdffedc000000; size=0x400000; recyle_num=1)
-[INFO] DRV(1674,python3):2026-09-21-11:15:02.276.713 [svm_register.c:169][ascend][curpid:1674,1674][drv][devmm][svm_register_svmm_inst_release]Release success. (va=0x12004be00000; size=0x400000; devid=1; recyle_num=3136906128)
-[INFO] DRV(1674,python3):2026-09-21-11:15:02.309.601 [svm_register.c:169][ascend][curpid:1674,1674][drv][devmm][svm_register_svmm_inst_release]Release success. (va=0x120000400000; size=0x200000; devid=1; recyle_num=631655456)
-[WARNING] DRV(1674,python3):2026-09-21-11:15:02.320.489 [normal_malloc.c:116][ascend][curpid:1674,1674][drv][devmm][normal_mem_depopulate]Mpl client depopulate not succ. (ret=13; devid=7; va=0x120000400000; size=2097152)
-[INFO] DRV(1674,python3):2026-09-21-11:15:02.320.602 [svm_register.c:169][ascend][curpid:1674,1674][drv][devmm][svm_register_svmm_inst_release]Release success. (va=0x120000200000; size=0x100000; devid=1; recyle_num=1674)
-[INFO] DRV(1674,python3):2026-09-21-11:15:02.320.623 [malloc_mng.c:738][ascend][curpid:1674,1674][drv][devmm][svm_recycle_mem_by_dev]Recycle success. (devid=66; recyle_num=25)
-[INFO] DRV(1674,python3):2026-09-21-11:15:02.320.681 [uda_user_kernel_api.c:149][ascend][curpid:1674,1674][drv][devmng][uda_char_dev_open]The fd and pid info: (fd=4; pid=1674)
-[INFO] DRV(1674,python3):2026-09-21-11:15:02.321.132 [uda_user_kernel_api.c:319][ascend][curpid:1674,1674][drv][devmng][_uda_init]User info. (admin_flag=1; local_flag=0; max_dev_num=100; max_udev_num=1140; uda_dev_num_davinci=8; uda_dev_num_kunpeng=0)
-root@localhost:/home/zwh/tmp/bench_transfer# ls -la ~/ascend 2>/dev/null
-find / -maxdepth 7 -type d \( -name slog -o -name plog \) 2>/dev/null | head
-total 28
-drwxr-x--- 1 root root 4096 Sep 10  2025 .
-drwx------ 1 root root 4096 Sep 17 11:39 ..
-drwxr-x--- 1 root root 4096 Sep 21 11:14 atrace
-drwxr-x--- 1 root root 4096 Sep 10  2025 log
-/root/ascend/log/debug/plog
-/root/ascend/log/run/plog
-/home/s00958582/ascend/log/debug/plog
-/home/s00958582/ascend/log/run/plog
-/home/y00953696/dsa/plog
-/home/y00953696/dsa/plog/debug/plog
-/home/y00953696/dsa/plog/run/plog
-/home/y00953696/megablock_test/plog
-/home/y00953696/megablock_test/plog/debug/plog
-/home/y00953696/megablock_test/plog/run/plog
-root@localhost:/home/zwh/tmp/bench_transfer# npu-smi info -t exception 2>&1 | head -40
-bash: npu-smi: command not found
-root@localhost:/home/zwh/tmp/bench_transfer# dmesg 2>/dev/null | tail -40
-[58438.418962] hdcdrv_recv_peek_wait: 26 callbacks suppressed
-[58546.340314] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[58546.340327] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[58801.530938] hdcdrv_recv_peek_wait: 2 callbacks suppressed
-[58801.530943] hdcdrv_recv_peek_wait: 2 callbacks suppressed
-[58844.545742] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[58844.545745] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[58876.912626] hdcdrv_recv_peek_wait: 2 callbacks suppressed
-[58876.912630] hdcdrv_recv_peek_wait: 2 callbacks suppressed
-[59049.700730] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[59049.700733] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[59222.517274] hdcdrv_wakeup_record_resq_time: 2 callbacks suppressed
-[59242.255682] log_to_printk_and_ringbuf: 59 callbacks suppressed
-[59242.255685] [ascend] [ERROR] [svm] [_svm_mmap 347] <python3.11:4020977:4020977:22> Register failed. (vm_start=0x40000000000; vm_end=0x80000000000; ret=-4)
-[59259.427141] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[59259.427150] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[59385.238307] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[59385.238311] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[59423.571889] hdcdrv_recv_peek_wait: 5 callbacks suppressed
-[59423.571893] hdcdrv_recv_peek_wait: 5 callbacks suppressed
-[59475.698352] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[59475.698357] hdcdrv_recv_peek_wait: 1 callbacks suppressed
-[59572.762308] hdcdrv_recv_peek_wait: 4 callbacks suppressed
-[59572.762322] hdcdrv_recv_peek_wait: 4 callbacks suppressed
-[59605.430021] hdcdrv_recv_peek_wait: 7 callbacks suppressed
-[59605.430027] hdcdrv_recv_peek_wait: 7 callbacks suppressed
-[59620.526945] hdcdrv_wakeup_record_resq_time: 2 callbacks suppressed
-[59710.461606] hdcdrv_wakeup_record_resq_time: 5 callbacks suppressed
-[59710.461614] hdcdrv_recv_peek_wait: 8 callbacks suppressed
-[59710.461617] hdcdrv_recv_peek_wait: 8 callbacks suppressed
-[72091.589565] docker0: port 2(vethb3e8e3d) entered blocking state
-[72091.589568] docker0: port 2(vethb3e8e3d) entered disabled state
-[72091.589626] device vethb3e8e3d entered promiscuous mode
-[72091.589694] docker0: port 2(vethb3e8e3d) entered blocking state
-[72091.589696] docker0: port 2(vethb3e8e3d) entered forwarding state
-[72091.590001] docker0: port 2(vethb3e8e3d) entered disabled state
-[72094.249871] eth0: renamed from vethd60641c
-[72094.288112] IPv6: ADDRCONF(NETDEV_CHANGE): vethb3e8e3d: link becomes ready
-[72094.288151] docker0: port 2(vethb3e8e3d) entered blocking state
-[72094.288152] docker0: port 2(vethb3e8e3d) entered forwarding state
-root@localhost:/home/zwh/tmp/bench_transfer# 
+# --- A) 真机 SOC 架构 ---
+cat /usr/local/Ascend/driver/version.info 2>/dev/null | grep -iE "soc|product|chip|version"
+ls /usr/local/Ascend/driver/tools/ 2>/dev/null
+/usr/local/Ascend/driver/tools/npu-smi info 2>&1 | head -25
+
+# --- B) 本次运行新建的 plog：先看 SOC 名，再看 aicore 异常细节 ---
+ls -lt /root/ascend/log/run/plog/*.log 2>/dev/null | head -3
+P=$(ls -t /root/ascend/log/run/plog/*.log 2>/dev/null | head -1)
+echo "=== newest plog: $P"
+grep -iE "soc|chip|product" "$P" 2>/dev/null | tail -8
+echo "=== aicore/exception ==="
+grep -iE "aicore|excep|fault|0x7bc87|0x507015|task" "$P" 2>/dev/null | grep -viE "INFO" | tail -40
+ls -lt /root/ascend/log/debug/plog/*.log 2>/dev/null | head -3
+D=$(ls -t /root/ascend/log/debug/plog/*.log 2>/dev/null | head -1)
+grep -iE "aicore|0x7bc87|0x507015|pc=|addr" "$D" 2>/dev/null | grep -viE "INFO" | tail -40
