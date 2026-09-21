@@ -1,37 +1,16 @@
 root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 20, done.
-remote: Counting objects: 100% (20/20), done.
-remote: Compressing objects: 100% (8/8), done.
-remote: Total 14 (delta 7), reused 11 (delta 6), pack-reused 0 (from 0)
-Unpacking objects: 100% (14/14), 7.14 KiB | 7.14 MiB/s, done.
+remote: Enumerating objects: 11, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 7 (delta 5), reused 4 (delta 3), pack-reused 0 (from 0)
+Unpacking objects: 100% (7/7), 2.64 KiB | 2.64 MiB/s, done.
 From https://github.com/zhangwenhao91/tmp
-   001bb87..74fdee2  main       -> origin/main
-Updating 001bb87..74fdee2
+   74fdee2..8690004  main       -> origin/main
+Updating 74fdee2..8690004
 Fast-forward
- bench_transfer/ablation_run.py                                          |  49 ++++++++++++++++++++++++++++++++-----------------
- bench_transfer/build_l1ub_ablation.sh                                   |  16 ++++++++++------
- bench_transfer/new_env/n2_baseline_bfloat16_16x256_r128_npu.mlir        |  27 +++++++++++++++++++++++++++
- bench_transfer/new_env/n2_baseline_bfloat16_16x256_r16_npu.mlir         |  27 +++++++++++++++++++++++++++
- bench_transfer/new_env/n3_baseline_bfloat16_16x256_r128_single_npu.mlir |  33 +++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n3_baseline_bfloat16_16x256_r16_single_npu.mlir  |  33 +++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_baseline_bfloat16_16x256_r128_single_cce.mlir |  60 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n4_baseline_bfloat16_16x256_r16_single_cce.mlir  |  60 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_baseline_bfloat16_16x256_r128_single.ll       |  75 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n5_baseline_bfloat16_16x256_r16_single.ll        |  75 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bench_transfer/new_env/n6_baseline_bfloat16_16x256_r128_single.o        | Bin 0 -> 1560 bytes
- bench_transfer/new_env/n6_baseline_bfloat16_16x256_r16_single.o         | Bin 0 -> 1560 bytes
- error.txt                                                               | 124 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------------------------------------------------------
- 13 files changed, 494 insertions(+), 85 deletions(-)
- create mode 100644 bench_transfer/new_env/n2_baseline_bfloat16_16x256_r128_npu.mlir
- create mode 100644 bench_transfer/new_env/n2_baseline_bfloat16_16x256_r16_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_baseline_bfloat16_16x256_r128_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_baseline_bfloat16_16x256_r16_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n4_baseline_bfloat16_16x256_r128_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_baseline_bfloat16_16x256_r16_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n5_baseline_bfloat16_16x256_r128_single.ll
- create mode 100644 bench_transfer/new_env/n5_baseline_bfloat16_16x256_r16_single.ll
- create mode 100644 bench_transfer/new_env/n6_baseline_bfloat16_16x256_r128_single.o
- create mode 100644 bench_transfer/new_env/n6_baseline_bfloat16_16x256_r16_single.o
+ bench_transfer/ablation_run.py | 16 ++++++++++++----
+ error.txt                      | 88 +++++++++++++++++++++++++++++++++-------------------------------------------------------
+ 2 files changed, 45 insertions(+), 59 deletions(-)
 root@localhost:/home/zwh/tmp/bench_transfer# python3 ablation_run.py 
 === l1ub 消融（0x7bc87 定位）===
 [control-l1ub,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
@@ -41,4 +20,6 @@ root@localhost:/home/zwh/tmp/bench_transfer# python3 ablation_run.py
 [B-roundtrip,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
 [base-A0,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
 [base-A0,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
+[diag-c910,l1ub,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
+[diag-c920,l1ub,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
 root@localhost:/home/zwh/tmp/bench_transfer# 
