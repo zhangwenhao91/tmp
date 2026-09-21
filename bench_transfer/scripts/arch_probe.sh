@@ -12,7 +12,7 @@
 # 产物：new_env/arch_probe/probe_<tag>.o（tag = opt_target_ccec_arch）
 set -uo pipefail
 
-HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$HERE"
 
 PY="$HOME/tilelang-ascend-private/tilelang-tileir-ascend/.venv/bin/python"

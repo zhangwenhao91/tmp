@@ -14,7 +14,7 @@
 # 输出：new_env/arch_probe/bisheng_<arch>_<kernel>.o （编译成功即登记）
 # 之后跑 bisheng_probe_run.py。
 set -uo pipefail
-HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$HERE"
 
 BISHENG="${BISHENG:-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler/bin/bisheng}"
