@@ -1,15 +1,47 @@
-# 1) bisheng 的 arch/目标接口 + 它认识的 950 串
-timeout 20 /data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler/bin/bisheng --version 2>&1 | head -5
+root@localhost:/home/zwh/tmp/bench_transfer# timeout 20 /data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler/bin/bisheng --version 2>&1 | head -5
 timeout 20 /data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler/bin/bisheng --help 2>&1 | grep -iE "arch|aicore|cce|target|soc|depth" | head -30
 strings /data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler/bin/bisheng 2>/dev/null | grep -iE "ascend950|950" | sort -u | head -20
-
-# 2) 官方 950 cube 预编译算子的 ELF 长相（它就是我们在复刻的对象）
-K=/data/pri/Ascend/9.2.0.B060/cann-9.2.0/opp/built-in/op_impl/ai_core/tbe/kernel/ascend950
+2026-09-20 20:01:11 +0000 Baize clang version 15.0.5 (clang-89559c4cf870 flang-89559c4cf870)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler/bin
+  --aicore-only           alias of --cce-aicore-only
+  --amdgpu-arch-tool=<value>
+                          Tool used for detecting AMD GPU arch in the system.
+  --asc-aicore-lang       Treat subsequent input files as asc language
+  -B <prefix>             Search $prefix$file for executables, libraries, and data files. If $prefix is a directory, search $prefix/$file
+  --cce-add-annotation-array-subscript
+  --cce-aicore-bin=<value>
+                          Linked aicore binary
+  --cce-aicore-block-local-init
+                          aicore insert block local variable init proc.
+  --cce-aicore-copy-value Mov data from gm to stack by compiler, rather than user.
+  --cce-aicore-enable-dynamic-aa
+  --cce-aicore-enable-tl  Enable compiling CCE tensor codes.
+  --cce-aicore-input-parameter-size=<value>
+  --cce-aicore-jit        Compile CCE IR for aicore.
+  --cce-aicore-lang       Treat subsequent input files as cce language
+  --cce-aicore-only       Compile CCE code for aicore only.
+  --cce-aicpu-arch=<value>
+                          --cce-aicpu-arch=X is equivalent to '--cce-aicpu-triple=aarch64 --cce-aicpu-cpu=X'. DEPRECATED.
+  --cce-aicpu-bin=<value> Linked aicpu binary
+  --cce-aicpu-cpu=<value> Target a specific CCE AICpu type (e.g. cortex-a55)
+  --cce-aicpu-fstack-protector-all<value>
+  --cce-aicpu-fstack-protector-strong<value>
+                          Enable stack-protect function in aicpu os deployment mode, Security level is lower than 'cce_aicpu_fstack_protect_all'
+  --cce-aicpu-I <value>   AICpu Device Include Path
+  --cce-aicpu-launch-with-interface
+  --cce-aicpu-linker-noexecstack
+  --cce-aicpu-linker-now  Pass -z now option to aicpu linker
+  --cce-aicpu-linker-pie  Pass -pie option to aicpu linker
+  --cce-aicpu-linker-relro
+Ascend950PR_9589
+root@localhost:/home/zwh/tmp/bench_transfer# K=/data/pri/Ascend/9.2.0.B060/cann-9.2.0/opp/built-in/op_impl/ai_core/tbe/kernel/ascend950
 ls $K/*.o 2>/dev/null | head
 O=$(ls $K/*.o 2>/dev/null | head -1); echo "[$O]"
 readelf -h "$O" 2>/dev/null | head -14
 readelf -S "$O" 2>/dev/null | grep -iE "text|hacc|aicore|\.hc$" | head
 strings "$O" 2>/dev/null | grep -iE "dav-|magic|aicore|kernel_type|high_perf" | head -15
-
-# 3) 设备核数量（决定是不是 m 系 8+7 布局）
-grep -aiE "aic_cnt|vector.*cnt|ai_core_cnt|core_num|cube_core|vector_core" /data/pri/Ascend/9.2.0.B060/*/conf/*.ini /usr/local/Ascend/ascend-toolkit/8.3.RC1/*/conf/*.ini 2>/dev/null | head
+[]
+root@localhost:/home/zwh/tmp/bench_transfer# grep -aiE "aic_cnt|vector.*cnt|ai_core_cnt|core_num|cube_core|vector_core" /data/pri/Ascend/9.2.0.B060/*/conf/*.ini /usr/local/Ascend/ascend-toolkit/8.3.RC1/*/conf/*.ini 2>/dev/null | head
+root@localhost:/home/zwh/tmp/bench_transfer# 
