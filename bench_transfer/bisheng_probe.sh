@@ -21,6 +21,8 @@ BISHENG="${BISHENG:-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compile
 CCEC="${CCEC:-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/x86_64-linux/bin/ccec}"
 OUT="$HERE/new_env/arch_probe"
 mkdir -p "$OUT"
+BP_ERR="$OUT/bp2.err"
+: > "$BP_ERR"
 
 [ -x "$BISHENG" ] || { echo "[FATAL] bisheng not found: $BISHENG"; exit 1; }
 echo "bisheng: $($BISHENG --version 2>&1 | head -1)"
@@ -45,17 +47,17 @@ while IFS=: read -r ktag fll kname nptrs; do
       if [ "$c" = bisheng ]; then
         out="$OUT/$tag.o"
         "$C" --cce-aicore-arch="$A" --cce-aicore-only -O2 -cce-bitcode-is-aicore \
-          -c "$HERE/new_env/$fll" -o "$out" 2>/tmp/bp2.err \
+          -c "$HERE/new_env/$fll" -o "$out" 2>"$BP_ERR" \
           && echo "$tag:$kname:$nptrs" >> "$OUT/bisheng_probe_cases.txt" \
           && { echo "[OK]  $out ($(stat -c%s "$out") B)"; continue; }
-        echo "[FAIL-$c-$A] $ktag: $(head -1 /tmp/bp2.err)"
+        echo "[FAIL-$c-$A] $ktag: $(head -2 "$BP_ERR" | tr '\n' ' ')"
       else
         out="$OUT/$tag.o"
         "$C" --cce-aicore-arch="$A" --cce-aicore-only -O2 -cce-bitcode-is-aicore \
-          -c "$HERE/new_env/$fll" -o "$out" 2>/tmp/bp2.err \
+          -c "$HERE/new_env/$fll" -o "$out" 2>"$BP_ERR" \
           && echo "$tag:$kname:$nptrs" >> "$OUT/bisheng_probe_cases.txt" \
           && { echo "[OK]  $out ($(stat -c%s "$out") B)"; continue; }
-        echo "[FAIL-$c-$A] $ktag: $(head -1 /tmp/bp2.err)"
+        echo "[FAIL-$c-$A] $ktag: $(head -2 "$BP_ERR" | tr '\n' ' ')"
       fi
     done
   done
