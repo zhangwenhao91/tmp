@@ -824,3 +824,40 @@ root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py verify
 [verify] ub2ub float32 16x64: PASS (恒等)
 [verify] ub_scalar float32 16x64: PASS (恒等)
 root@localhost:/home/zwh/tmp/bench_transfer# 
+
+========================================
+[2026-09-21 小尺寸搬运测速-补充] dev 机离线编译矩阵 + 静态观察
+
+（上文已含 NPU 机实跑结果 64 项 + 全 PASS verify；本节补 dev 机编译侧记录）
+
+编译命令（与 build_all_new.sh 同 6 级 pipeline；官方 OpenTileAS ed2beb55 + CANN 9.2.0-beta.2）：
+   cd ~/tmp/bench_transfer && ./build_small.sh
+   # SMALL_SHAPES="1x8 2x8 4x8 8x8 8x16 16x16 16x32 16x64"
+   # SMALL_DTYPES="bfloat16 float32" REPEATS="16 128"（环境变量可覆盖）
+
+   ==============================
+   total=64 fail=0
+   OK: ub2ub/ub_scalar x bf16/f32 x 8 shapes x r16/r128 全部编译通过
+   FAIL:
+
+产物：new_env/small/n6_{variant}_{dtype}_{M}x{K}_r{R}.o（含 n2..n4 mlir、n5 ll）
+入口符号：ub2ub_kernel / ub_scalar_kernel（readelf 均 GLOBAL FUNC，AIV）
+
+.o 大小（r128, bytes）：ub2ub 恒 ≈1856（与数据大小基本无关）；ub_scalar 1392~1592
+   1x8:   ub2ub=1856 ub_scalar=1392    16x16: ub2ub=1856 ub_scalar=1488
+   2x8:   ub2ub=1856 ub_scalar=1456    16x32: ub2ub=1856 ub_scalar=1400
+   4x8:   ub2ub=1856 ub_scalar=1584    16x64: ub2ub=1856 ub_scalar=1392
+   8x8:   ub2ub=1856 ub_scalar=1416    8x16:  ub2ub=1848 ub_scalar=1488
+
+静态观察（n5_*_1x8.ll）：ub2ub 即使 1x8（16B）也生成整条 <128 x bf16>
+   vldsx1.v128bf16 + pset b16 mask（<256 xi1>），搬运指令固定宽 128 lane，
+   不随数据变小变窄 -> 每轮固定搬运开销不变。
+   与上表印证：尺寸越小按字节带宽越低（固定浪费占比越大）——
+   ub2ub 1x8 仅 ~0.5~1.7 GB/s，16x64 爬到 ~100~160 GB/s。
+
+bench_run.py 注意：SPECS 已用 (variant,dtype,M,K,outdir,.o前缀,.o后缀)，
+   输入 npy 命名 X_{variant}_{dtype}_{M}x{K}；旧 npy（不带 K）作废，
+   换旧产物必须重新 prep（本次 NPU 机已重新 prep，故 64 项数据齐全）。
+
+上表两个跳变行注意：8x8 f32(18.23) / 8x16 bf16(19.26) GB/s 是微秒级
+   计时噪声（round=0.01~0.02us，T(r16)≈T(r128)≈3.3us），非真实带宽。 
