@@ -81,8 +81,15 @@ TRANSFERS = {
 }
 
 
+# .o 文件名里 variant 的 tag（npy 命名仍用原 variant）。
+# build_l1ub_single.sh 产物叫 n6_l1ub_{dtype}_{M}x{K}_r{R}_single.o（tag 为 l1ub），
+# 若直接拿 variant="l1ub_single" 拼，会得到 n6_l1ub_single_..._single.o -> 永远 skip。
+_O_TAG = {"l1ub_single": "l1ub"}
+
+
 def tag_of(variant, dtype, M, K, R):
-    return f"{variant}_{dtype}_{M}x{K}_r{R}"
+    v = _O_TAG.get(variant, variant)
+    return f"{v}_{dtype}_{M}x{K}_r{R}"
 
 
 def o_path(variant, dtype, M, K, R, outdir, oprefix, osuffix):
