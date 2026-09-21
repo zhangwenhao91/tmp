@@ -1,20 +1,15 @@
-root@localhost:/home/zwh/tmp/bench_transfer# ASCEND_GLOBAL_LOG_LEVEL=1 ASCEND_SLOG_PRINT_TO_STDOUT=0 python3 ablation_run.py
-=== l1ub 消融（0x7bc87 定位）===
-[control-l1ub,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[A-l1ub-only,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[A-l1ub-only,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[B-roundtrip,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[B-roundtrip,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[base-A0,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[base-A0,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[diag-c910,l1ub,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[diag-c920,l1ub,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-root@localhost:/home/zwh/tmp/bench_transfer# ls -lt ~/ascend/log/plog/*.log 2>/dev/null | head
-ls -lt ~/ascend/log/slog/*/* 2>/dev/null | head
-ls -lt /var/log/npu/{slog,plog}/*/* 2>/dev/null | head
-root@localhost:/home/zwh/tmp/bench_transfer# ls -lt ~/ascend/log/plog/*.log 2>/dev/null | head
-root@localhost:/home/zwh/tmp/bench_transfer# ls -lt ~/ascend/log/slog/*/* 2>/dev/null | head
-root@localhost:/home/zwh/tmp/bench_transfer# ls -lt /var/log/npu/{slog,plog}/*/* 2>/dev/null | head
-root@localhost:/home/zwh/tmp/bench_transfer# grep -rniE "aicore|exception|0x7bc87|fault|task.*(sched|fail)|daughter" \
-  ~/ascend/log/plog/ ~/ascend/log/slog/ /var/log/npu/ 2>/dev/null | tail -80
-root@localhost:/home/zwh/tmp/bench_transfer# 
+日志文件一个都没找到——~/ascend/log、/var/log/npu 下都没有，说明这台机的日志在别处或没启用。换一组能直接定位的探测命令（一次粘贴）：
+cd ~/tmp/bench_transfer
+# 1) slog 打印到 stdout，让 AI Core 异常现场直接打到屏幕
+ASCEND_GLOBAL_LOG_LEVEL=1 ASCEND_SLOG_PRINT_TO_STDOUT=1 python3 ablation_run.py 2>&1 | tail -60
+
+# 2) 找日志目录到底在哪
+ls -la ~/ascend 2>/dev/null
+find / -maxdepth 7 -type d \( -name slog -o -name plog \) 2>/dev/null | head
+
+# 3) 设备侧异常寄存器（如果驱动支持这个命令）
+npu-smi info -t exception 2>&1 | head -40
+
+# 4) 内核态 dmesg（有的平台 cube 异常会打在这里）
+dmesg 2>/dev/null | tail -40
+ASCEND_SLOG_PRINT_TO_STDOUT=1 最关键——能把 AICORE_EXCEPTION 的核号/任务号/故障 PC 直接打到终端，绕开找日志文件这一步。把这几条输出的关键行发我。
