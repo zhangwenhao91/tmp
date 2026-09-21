@@ -1,61 +1,37 @@
 root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 37, done.
-remote: Counting objects: 100% (37/37), done.
-remote: Compressing objects: 100% (10/10), done.
-remote: Total 31 (delta 23), reused 28 (delta 21), pack-reused 0 (from 0)
-Unpacking objects: 100% (31/31), 15.82 KiB | 415.00 KiB/s, done.
+remote: Enumerating objects: 20, done.
+remote: Counting objects: 100% (20/20), done.
+remote: Compressing objects: 100% (8/8), done.
+remote: Total 14 (delta 7), reused 11 (delta 6), pack-reused 0 (from 0)
+Unpacking objects: 100% (14/14), 7.14 KiB | 7.14 MiB/s, done.
 From https://github.com/zhangwenhao91/tmp
-   91c4cf5..001bb87  main       -> origin/main
-Updating 91c4cf5..001bb87
+   001bb87..74fdee2  main       -> origin/main
+Updating 001bb87..74fdee2
 Fast-forward
- bench_transfer/0_bench_transfer.py                                    | 118 ++++++++++++++++++
- bench_transfer/1_bench_tilelangir.mlir                                |  68 ++++++-----
- bench_transfer/ablation_run.py                                        | 131 ++++++++++++++++++++
- bench_transfer/build_l1ub_ablation.sh                                 |  91 ++++++++++++++
- bench_transfer/new_env/n2_l1ub_a_bfloat16_16x256_r128_npu.mlir        |  52 ++++++++
- bench_transfer/new_env/n2_l1ub_a_bfloat16_16x256_r16_npu.mlir         |  52 ++++++++
- bench_transfer/new_env/n2_l1ub_b_bfloat16_16x256_r128_npu.mlir        |  52 ++++++++
- bench_transfer/new_env/n2_l1ub_b_bfloat16_16x256_r16_npu.mlir         |  52 ++++++++
- bench_transfer/new_env/n3_l1ub_a_bfloat16_16x256_r128_single_npu.mlir |  65 ++++++++++
- bench_transfer/new_env/n3_l1ub_a_bfloat16_16x256_r16_single_npu.mlir  |  65 ++++++++++
- bench_transfer/new_env/n3_l1ub_b_bfloat16_16x256_r128_single_npu.mlir |  65 ++++++++++
- bench_transfer/new_env/n3_l1ub_b_bfloat16_16x256_r16_single_npu.mlir  |  65 ++++++++++
- bench_transfer/new_env/n4_l1ub_a_bfloat16_16x256_r128_single_cce.mlir | 123 +++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_a_bfloat16_16x256_r16_single_cce.mlir  | 122 +++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_b_bfloat16_16x256_r128_single_cce.mlir | 123 +++++++++++++++++++
- bench_transfer/new_env/n4_l1ub_b_bfloat16_16x256_r16_single_cce.mlir  | 122 +++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_a_bfloat16_16x256_r128_single.ll       | 125 +++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_a_bfloat16_16x256_r16_single.ll        | 125 +++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_b_bfloat16_16x256_r128_single.ll       | 125 +++++++++++++++++++
- bench_transfer/new_env/n5_l1ub_b_bfloat16_16x256_r16_single.ll        | 125 +++++++++++++++++++
- bench_transfer/new_env/n6_l1ub_a_bfloat16_16x256_r128_single.o        | Bin 0 -> 1832 bytes
- bench_transfer/new_env/n6_l1ub_a_bfloat16_16x256_r16_single.o         | Bin 0 -> 1856 bytes
- bench_transfer/new_env/n6_l1ub_b_bfloat16_16x256_r128_single.o        | Bin 0 -> 1880 bytes
- bench_transfer/new_env/n6_l1ub_b_bfloat16_16x256_r16_single.o         | Bin 0 -> 1880 bytes
- error.txt                                                             | 895 ++++++++---------------------------------------------------------------------------------------------------------------------------------
- 25 files changed, 1880 insertions(+), 881 deletions(-)
- create mode 100644 bench_transfer/ablation_run.py
- create mode 100755 bench_transfer/build_l1ub_ablation.sh
- create mode 100644 bench_transfer/new_env/n2_l1ub_a_bfloat16_16x256_r128_npu.mlir
- create mode 100644 bench_transfer/new_env/n2_l1ub_a_bfloat16_16x256_r16_npu.mlir
- create mode 100644 bench_transfer/new_env/n2_l1ub_b_bfloat16_16x256_r128_npu.mlir
- create mode 100644 bench_transfer/new_env/n2_l1ub_b_bfloat16_16x256_r16_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_a_bfloat16_16x256_r128_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_a_bfloat16_16x256_r16_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_b_bfloat16_16x256_r128_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n3_l1ub_b_bfloat16_16x256_r16_single_npu.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_a_bfloat16_16x256_r128_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_a_bfloat16_16x256_r16_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_b_bfloat16_16x256_r128_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n4_l1ub_b_bfloat16_16x256_r16_single_cce.mlir
- create mode 100644 bench_transfer/new_env/n5_l1ub_a_bfloat16_16x256_r128_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_a_bfloat16_16x256_r16_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_b_bfloat16_16x256_r128_single.ll
- create mode 100644 bench_transfer/new_env/n5_l1ub_b_bfloat16_16x256_r16_single.ll
- create mode 100644 bench_transfer/new_env/n6_l1ub_a_bfloat16_16x256_r128_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_a_bfloat16_16x256_r16_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_b_bfloat16_16x256_r128_single.o
- create mode 100644 bench_transfer/new_env/n6_l1ub_b_bfloat16_16x256_r16_single.o
+ bench_transfer/ablation_run.py                                          |  49 ++++++++++++++++++++++++++++++++-----------------
+ bench_transfer/build_l1ub_ablation.sh                                   |  16 ++++++++++------
+ bench_transfer/new_env/n2_baseline_bfloat16_16x256_r128_npu.mlir        |  27 +++++++++++++++++++++++++++
+ bench_transfer/new_env/n2_baseline_bfloat16_16x256_r16_npu.mlir         |  27 +++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_baseline_bfloat16_16x256_r128_single_npu.mlir |  33 +++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n3_baseline_bfloat16_16x256_r16_single_npu.mlir  |  33 +++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_baseline_bfloat16_16x256_r128_single_cce.mlir |  60 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n4_baseline_bfloat16_16x256_r16_single_cce.mlir  |  60 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n5_baseline_bfloat16_16x256_r128_single.ll       |  75 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n5_baseline_bfloat16_16x256_r16_single.ll        |  75 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/new_env/n6_baseline_bfloat16_16x256_r128_single.o        | Bin 0 -> 1560 bytes
+ bench_transfer/new_env/n6_baseline_bfloat16_16x256_r16_single.o         | Bin 0 -> 1560 bytes
+ error.txt                                                               | 124 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------------------------------------------------------
+ 13 files changed, 494 insertions(+), 85 deletions(-)
+ create mode 100644 bench_transfer/new_env/n2_baseline_bfloat16_16x256_r128_npu.mlir
+ create mode 100644 bench_transfer/new_env/n2_baseline_bfloat16_16x256_r16_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_baseline_bfloat16_16x256_r128_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n3_baseline_bfloat16_16x256_r16_single_npu.mlir
+ create mode 100644 bench_transfer/new_env/n4_baseline_bfloat16_16x256_r128_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n4_baseline_bfloat16_16x256_r16_single_cce.mlir
+ create mode 100644 bench_transfer/new_env/n5_baseline_bfloat16_16x256_r128_single.ll
+ create mode 100644 bench_transfer/new_env/n5_baseline_bfloat16_16x256_r16_single.ll
+ create mode 100644 bench_transfer/new_env/n6_baseline_bfloat16_16x256_r128_single.o
+ create mode 100644 bench_transfer/new_env/n6_baseline_bfloat16_16x256_r16_single.o
 root@localhost:/home/zwh/tmp/bench_transfer# python3 ablation_run.py 
 === l1ub 消融（0x7bc87 定位）===
 [control-l1ub,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
@@ -63,4 +39,6 @@ root@localhost:/home/zwh/tmp/bench_transfer# python3 ablation_run.py
 [A-l1ub-only,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
 [B-roundtrip,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
 [B-roundtrip,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
+[base-A0,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
+[base-A0,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
 root@localhost:/home/zwh/tmp/bench_transfer# 
