@@ -31,7 +31,6 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-K = 256
 N = 16
 R_LOW, R_HIGH = 16, 128
 N_LAUNCH = 50
@@ -39,28 +38,38 @@ WARMUP = 5
 
 NP_DTYPES = {"bfloat16": "uint16", "float32": "float32"}
 
-# (variant, dtype, M) —— 与 build_all_bench.sh / build_l1ub_single.sh 的成功矩阵一致
+SMALL_DIR = os.path.join(HERE, "new_env", "small")
+NEW_ENV_DIR = os.path.join(HERE, "new_env")
+
+# SPECS 条目: (variant, dtype, M, K, 输出目录, .o 前缀, .o 后缀)
 SPECS = [
-    ("ub2ub", "bfloat16", 16),
-    ("ub_scalar", "bfloat16", 16),
-    ("ub2ub", "bfloat16", 64),
-    ("ub_scalar", "bfloat16", 64),
-    ("ub2ub", "bfloat16", 128),
-    ("ub_scalar", "bfloat16", 128),
-    ("ub2ub", "float32", 16),
-    ("ub_scalar", "float32", 16),
-    ("ub2ub", "float32", 64),
-    ("ub_scalar", "float32", 64),
-    ("l1ub", "bfloat16", 16),
-    ("l1ub", "bfloat16", 64),
-    ("l1ub", "float32", 16),
-    # l1ub 单核版：新环境产物 new_env/n6_l1ub_*_single.o（5 规格 x r16/r128）
-    ("l1ub_single", "bfloat16", 16),
-    ("l1ub_single", "bfloat16", 64),
-    ("l1ub_single", "bfloat16", 128),
-    ("l1ub_single", "float32", 16),
-    ("l1ub_single", "float32", 64),
+    # 已测规格（K=256，根目录 6_*.o；l1ub_single 在 new_env/n6_*_single.o）
+    ("ub2ub", "bfloat16", 16, 256, HERE, "6_", ".o"),
+    ("ub_scalar", "bfloat16", 16, 256, HERE, "6_", ".o"),
+    ("ub2ub", "bfloat16", 64, 256, HERE, "6_", ".o"),
+    ("ub_scalar", "bfloat16", 64, 256, HERE, "6_", ".o"),
+    ("ub2ub", "bfloat16", 128, 256, HERE, "6_", ".o"),
+    ("ub_scalar", "bfloat16", 128, 256, HERE, "6_", ".o"),
+    ("ub2ub", "float32", 16, 256, HERE, "6_", ".o"),
+    ("ub_scalar", "float32", 16, 256, HERE, "6_", ".o"),
+    ("ub2ub", "float32", 64, 256, HERE, "6_", ".o"),
+    ("ub_scalar", "float32", 64, 256, HERE, "6_", ".o"),
+    ("l1ub", "bfloat16", 16, 256, HERE, "6_", ".o"),
+    ("l1ub", "bfloat16", 64, 256, HERE, "6_", ".o"),
+    ("l1ub", "float32", 16, 256, HERE, "6_", ".o"),
+    ("l1ub_single", "bfloat16", 16, 256, NEW_ENV_DIR, "n6_", "_single.o"),
+    ("l1ub_single", "bfloat16", 64, 256, NEW_ENV_DIR, "n6_", "_single.o"),
+    ("l1ub_single", "bfloat16", 128, 256, NEW_ENV_DIR, "n6_", "_single.o"),
+    ("l1ub_single", "float32", 16, 256, NEW_ENV_DIR, "n6_", "_single.o"),
+    ("l1ub_single", "float32", 64, 256, NEW_ENV_DIR, "n6_", "_single.o"),
 ]
+
+# 小尺寸（纯 AIV 两路径，new_env/small/n6_*.o，build_small.sh 产物）
+_SMALL_SHAPES = [(1, 8), (2, 8), (4, 8), (8, 8), (8, 16), (16, 16), (16, 32), (16, 64)]
+for _sm, _sk in _SMALL_SHAPES:
+    for _sdt in ("bfloat16", "float32"):
+        for _svar in ("ub2ub", "ub_scalar"):
+            SPECS.append((_svar, _sdt, _sm, _sk, SMALL_DIR, "n6_", ".o"))
 
 # 每 REPEAT 轮的被测搬运块数与 DMA 条数
 TRANSFERS = {
@@ -72,17 +81,20 @@ TRANSFERS = {
 }
 
 
-def tag_of(variant, dtype, M, R):
+def tag_of(variant, dtype, M, K, R):
     return f"{variant}_{dtype}_{M}x{K}_r{R}"
 
 
-def o_path(variant, dtype, M, R):
-    # return os.path.join(HERE, f"6_{tag_of(variant, dtype, M, R)}.o")
-    # l1ub_single 产物在新环境目录：new_env/n6_l1ub_{dtype}_{M}x{K}_r{R}_single.o
-    if variant == "l1ub_single":
-        return os.path.join(
-            HERE, "new_env", f"n6_{tag_of('l1ub', dtype, M, R)}_single.o")
-    return os.path.join(HERE, f"6_{tag_of(variant, dtype, M, R)}.o")
+def o_path(variant, dtype, M, K, R, outdir, oprefix, osuffix):
+    return os.path.join(outdir, f"{oprefix}{tag_of(variant, dtype, M, K, R)}{osuffix}")
+
+
+def x_name(variant, dtype, M, K):
+    return f"X_{variant}_{dtype}_{M}x{K}"
+
+
+def w_name(wname, variant, dtype, M, K):
+    return f"{wname}_{variant}_{dtype}_{M}x{K}"
 
 
 def npy_path(name):
@@ -98,15 +110,14 @@ def dtype_bytes(dtype):
 # ---------------------------------------------------------------------------
 def do_prep():
     rng = np.random.default_rng(42)
-    for variant, dtype, M in SPECS:
+    for variant, dtype, M, K, _, _, _ in SPECS:
         nd = NP_DTYPES[dtype]
         x = (rng.standard_normal((M, K)) * 0.5).astype(np.float32)
         if dtype == "bfloat16":
             import ml_dtypes
 
             x = x.astype(ml_dtypes.bfloat16).view(np.uint16)
-        np.save(npy_path(f"X_{variant}_{dtype}_{M}"), x)
-        # if variant == "l1ub":
+        np.save(npy_path(x_name(variant, dtype, M, K)), x)
         if variant in ("l1ub", "l1ub_single"):
             for wname in ("W1", "W2"):
                 w = (rng.standard_normal((K, N)) * 0.05).astype(np.float32)
@@ -114,7 +125,7 @@ def do_prep():
                     import ml_dtypes
 
                     w = w.astype(ml_dtypes.bfloat16).view(np.uint16)
-                np.save(npy_path(f"{wname}_{variant}_{dtype}_{M}"), w)
+                np.save(npy_path(w_name(wname, variant, dtype, M, K)), w)
     print("[prep] inputs saved")
 
 
@@ -177,15 +188,14 @@ def do_run():
 
     # 上传一次所有输入，计时复用
     uploads = {}
-    for variant, dtype, M in SPECS:
-        x = np.load(npy_path(f"X_{variant}_{dtype}_{M}"))
+    for variant, dtype, M, K, _, _, _ in SPECS:
+        x = np.load(npy_path(x_name(variant, dtype, M, K)))
         ptr = rt.malloc_device(x.nbytes)
         rt.memcpy_h2d(ptr, x.tobytes(order="C"))
         entry = {"X": (ptr, x)}
-        # if variant == "l1ub":
         if variant in ("l1ub", "l1ub_single"):
             for wname in ("W1", "W2"):
-                w = np.load(npy_path(f"{wname}_{variant}_{dtype}_{M}"))
+                w = np.load(npy_path(w_name(wname, variant, dtype, M, K)))
                 wptr = rt.malloc_device(w.nbytes)
                 rt.memcpy_h2d(wptr, w.tobytes(order="C"))
                 entry[wname] = (wptr, w)
@@ -195,13 +205,13 @@ def do_run():
         else:
             optr = rt.malloc_device(x.nbytes)
             entry["O"] = optr
-        uploads[(variant, dtype, M)] = entry
+        uploads[(variant, dtype, M, K)] = entry
 
     results = []
     stream = rt.create_stream()
     try:
-        for variant, dtype, M in SPECS:
-            entry = uploads[(variant, dtype, M)]
+        for variant, dtype, M, K, outdir, oprefix, osuffix in SPECS:
+            entry = uploads[(variant, dtype, M, K)]
             # mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
             if variant in ("ub2ub", "ub_scalar"):
                 mode = "aiv"  # AIV 向量核 ELF
@@ -221,7 +231,7 @@ def do_run():
                 kname = f"{variant}_kernel"
             times = {}
             for R in (R_LOW, R_HIGH):
-                path = o_path(variant, dtype, M, R)
+                path = o_path(variant, dtype, M, K, R, outdir, oprefix, osuffix)
                 if not os.path.exists(path):
                     print(f"[skip] missing {path}")
                     times = None
@@ -229,7 +239,6 @@ def do_run():
                 with open(path, "rb") as f:
                     obytes = f.read()
                 module, func = rt.load_kernel(kname, obytes, 0, mode)
-                # if variant == "l1ub":
                 if variant in ("l1ub", "l1ub_single"):
                     args = [
                         ("ptr", entry["X"][0]),
@@ -254,7 +263,7 @@ def do_run():
             bw_traffic = traffic_bytes / t_round / 1e9
             dma_us = t_round / meta["dma_per_round"] * 1e6
             results.append(
-                (variant, dtype, M, block_bytes,
+                (variant, dtype, M, K, block_bytes,
                  times[R_LOW] * 1e6, times[R_HIGH] * 1e6,
                  t_round * 1e6, dma_us, bw_move, bw_traffic)
             )
@@ -270,9 +279,9 @@ def do_run():
               f"{'t_r16us':>8} {'t_r128us':>9} {'round_us':>9} {'dma_us':>7} "
               f"{'GB/s(mv)':>9} {'GB/s(tr)':>9}")
         for r in results:
-            print(f"{r[0]:12} {r[1]:10} {str(r[2])+'x'+str(K):>10} {r[3]/1024:>6.0f} "
-                  f"{r[4]:>8.1f} {r[5]:>9.1f} {r[6]:>9.2f} {r[7]:>7.2f} "
-                  f"{r[8]:>9.2f} {r[9]:>9.2f}")
+            print(f"{r[0]:12} {r[1]:10} {str(r[2])+'x'+str(r[3]):>10} {r[4]/1024:>6.2f} "
+                  f"{r[5]:>8.1f} {r[6]:>9.1f} {r[7]:>9.2f} {r[8]:>7.2f} "
+                  f"{r[9]:>9.2f} {r[10]:>9.2f}")
     finally:
         rt.destroy_stream(stream)
         for entry in uploads.values():
@@ -295,11 +304,11 @@ def do_verify():
     rt.set_device(0)
     stream = rt.create_stream()
     try:
-        for variant, dtype, M in SPECS:
-            path = o_path(variant, dtype, M, R_HIGH)
+        for variant, dtype, M, K, outdir, oprefix, osuffix in SPECS:
+            path = o_path(variant, dtype, M, K, R_HIGH, outdir, oprefix, osuffix)
             if not os.path.exists(path):
                 continue
-            x = np.load(npy_path(f"X_{variant}_{dtype}_{M}"))
+            x = np.load(npy_path(x_name(variant, dtype, M, K)))
             # mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
             if variant in ("ub2ub", "ub_scalar"):
                 mode = "aiv"
@@ -335,8 +344,8 @@ def do_verify():
                 rt.free_device(xptr)
                 rt.free_device(optr)
             else:
-                w1 = np.load(npy_path(f"W1_{variant}_{dtype}_{M}"))
-                w2 = np.load(npy_path(f"W2_{variant}_{dtype}_{M}"))
+                w1 = np.load(npy_path(w_name("W1", variant, dtype, M, K)))
+                w2 = np.load(npy_path(w_name("W2", variant, dtype, M, K)))
                 xptr = rt.malloc_device(x.nbytes)
                 w1ptr = rt.malloc_device(w1.nbytes)
                 w2ptr = rt.malloc_device(w2.nbytes)

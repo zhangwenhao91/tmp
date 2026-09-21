@@ -8,3 +8,10 @@
 *.o
 !6_ub2ub_*_r*.o
 !6_l1ub_*_r*.o
+
+# 小尺寸搬运测试（build_small.sh）：除本地产物外全量跟踪
+!new_env/small/*.mlir
+!new_env/small/n5_*.ll
+!new_env/small/n6_*.o
+new_env/small/*.err
+small_build.log
