@@ -7,11 +7,15 @@
 #   l1ub_b   = 循环内 L1->UB + UB->L1（mov.ub.to.l1.v310），无 gemm
 #
 # 消融判据（NPU 上 ablation_run.py 逐个 launch）：
-#   A 崩 -> 根因在 L1->UB 本身；A 过 B 崩 -> 根因在 UB->L1；A、B 都过 ->
-#   与 gemm 的交互（control 才崩）。
+#   已确认（001bb87 之后 NPU 实测）：control/A/B 全部 0x7bc87 -> 与 gemm、
+#   UB->L1、跨核同步无关，最小化到 mov.l1.to.ub.v310。
+#   baseline（A0 / l1ub_c）补最后一刀：kernel 只有 GM->L1 (mov.out.to.l1) +
+#   L1 常驻 gemm，无任何 L1<->UB 搬运。A0 崩 -> 问题比 L1<->UB 更基础
+#   （GM->L1 就崩）；A0 过 -> 实锤 v310 L1<->UB 搬运。
 #
-# 产物：new_env/n6_{l1ub_a,l1ub_b}_{dtype}_{M}x256_r{R}_single.o
-# 两个变体的 prim_func 均命名为 l1ub_kernel（独立文件编译），kname/sed 无需区分。
+# 产物：new_env/n6_{baseline,l1ub_a,l1ub_b}_{dtype}_{M}x256_r{R}_single.o
+# l1ub_a/l1ub_b 的 prim_func 均命名为 l1ub_kernel；baseline 为 baseline_kernel
+# （3-ptr 签名，ablation_run.py 单独 3-arg launch）。
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -30,7 +34,7 @@ N=16
 M=16
 DT=bfloat16
 REPEATS="16 128"
-VARIANTS="l1ub_a l1ub_b"
+VARIANTS="baseline l1ub_a l1ub_b"
 
 fail=0
 total=0
@@ -61,7 +65,7 @@ build_one() { # $1=variant $2=REPEAT
     echo "[FAIL-s5] $tag"; fail=$((fail+1)); return; }
 
   # fix 0x7bc78: 纯 cube .o 默认 .text Al=4 -> 加 align 256
-  sed -i 's/^\(define dso_local ptc_kernel void @l1ub_kernel(.*)\) #0 {$/\1 align 256 #0 {/' \
+  sed -i 's/^\(define dso_local ptc_kernel void @.*(.*)\) #0 {$/\1 align 256 #0 {/' \
     "$NEWD/n5_${tag}_single.ll"
   grep -q 'align 256' "$NEWD/n5_${tag}_single.ll" || {
     echo "[FAIL-s5p] $tag: align 256 not inserted"; fail=$((fail+1)); return; }

@@ -7,14 +7,22 @@
   control       原版 l1ub（带 gemm，已知必崩）-> 复现基线
   l1ub_a bf16 r16/r128  循环内只有 L1->UB 一跳（mov.l1.to.ub.v310）
   l1ub_b bf16 r16/r128  循环内 L1->UB + UB->L1 往返（mov.ub.to.l1.v310）
+  baseline bf16 r16/r128 无任何 L1<->UB（GM->L1 + L1 常驻 gemm）-> 最后一刀
+
+实测进度（001bb87 之后）：
+  control/A/B 全部 0x7bc87 -> 与 gemm、UB->L1、跨核同步无关，
+  最小化到 mov.l1.to.ub.v310；baseline 决断是 GM->L1 级还是 L1<->UB 级。
 
 推断：
-  A 崩            -> 根因在 L1->UB（mov.l1.to.ub.v310）本身
-  A 过、B 崩      -> 根因在 UB->L1（mov.ub.to.l1.v310）
-  A、B 都过       -> 根因在与 gemm 的交互（仅 control 崩）
+  baseline 崩   -> 问题比 L1<->UB 更基础（GM->L1 就崩），需 plog 故障 PC
+  baseline 过   -> 实锤 v310 L1<->UB 搬运（mov.l1.to.ub.v310）
 
 输入在机内生成（固定 seed，无须 npy 准备）；每个 case 用独立 stream，
-某个 case 崩不会污染后续。PASS 时顺带用 torch 校验 OUT1/OUT2 vs X@W。
+某个 case 崩不会污染后续。PASS 时顺带用 torch 校验输出 vs golden。
+
+case 记录：(label, .o 相对路径, kname, 指针数，类型)
+  5-ptr：X/W1/W2/O1/O2（l1ub 系，golden=OUT vs X@W1 / X@W2）
+  3-ptr：X/W/O   （baseline，golden=OUT vs X@W）
 """
 import os
 import sys
@@ -27,15 +35,16 @@ from bench_run import _load_rt
 
 M, K, N = 16, 256, 16
 DTYPE = "bfloat16"
-KNAME = "l1ub_kernel"
 MODE = "aic"
 
 CASES = [
-    ("control-l1ub,bf16,16x256,r16", "new_env/n6_l1ub_bfloat16_16x256_r16_single.o"),
-    ("A-l1ub-only,bf16,16x256,r16", "new_env/n6_l1ub_a_bfloat16_16x256_r16_single.o"),
-    ("A-l1ub-only,bf16,16x256,r128", "new_env/n6_l1ub_a_bfloat16_16x256_r128_single.o"),
-    ("B-roundtrip,bf16,16x256,r16", "new_env/n6_l1ub_b_bfloat16_16x256_r16_single.o"),
-    ("B-roundtrip,bf16,16x256,r128", "new_env/n6_l1ub_b_bfloat16_16x256_r128_single.o"),
+    ("control-l1ub,bf16,16x256,r16", "new_env/n6_l1ub_bfloat16_16x256_r16_single.o", "l1ub_kernel", 5),
+    ("A-l1ub-only,bf16,16x256,r16", "new_env/n6_l1ub_a_bfloat16_16x256_r16_single.o", "l1ub_kernel", 5),
+    ("A-l1ub-only,bf16,16x256,r128", "new_env/n6_l1ub_a_bfloat16_16x256_r128_single.o", "l1ub_kernel", 5),
+    ("B-roundtrip,bf16,16x256,r16", "new_env/n6_l1ub_b_bfloat16_16x256_r16_single.o", "l1ub_kernel", 5),
+    ("B-roundtrip,bf16,16x256,r128", "new_env/n6_l1ub_b_bfloat16_16x256_r128_single.o", "l1ub_kernel", 5),
+    ("base-A0,bf16,16x256,r16", "new_env/n6_baseline_bfloat16_16x256_r16_single.o", "baseline_kernel", 3),
+    ("base-A0,bf16,16x256,r128", "new_env/n6_baseline_bfloat16_16x256_r128_single.o", "baseline_kernel", 3),
 ]
 
 
@@ -62,7 +71,9 @@ def golden(x, w1, w2):
     w2b = torch.from_numpy(w2.copy())
     if DTYPE == "bfloat16":
         xb, w1b, w2b = (xb.view(torch.bfloat16), w1b.view(torch.bfloat16), w2b.view(torch.bfloat16))
-    return ((xb.float() @ w1b.float()).numpy(), (xb.float() @ w2b.float()).numpy())
+    g1 = (xb.float() @ w1b.float()).numpy()
+    g2 = (xb.float() @ w2b.float()).numpy()
+    return g1, g2, g1  # 5-ptr: O1/O2; 3-ptr(baseline): 只用 g1(golden for W=w1)
 
 
 def upload(rt, arr):
@@ -83,7 +94,7 @@ def main():
     g = golden(x, w1, w2)
 
     print("=== l1ub 消融（0x7bc87 定位）===")
-    for label, rel in CASES:
+    for label, rel, kname, nptrs in CASES:
         path = os.path.join(HERE, rel)
         if not os.path.exists(path):
             print(f"[{label}] SKIP (missing {rel})")
@@ -92,20 +103,24 @@ def main():
             obytes = f.read()
         stream = rt.create_stream()
         try:
-            module, func = rt.load_kernel(KNAME, obytes, 0, MODE)
+            module, func = rt.load_kernel(kname, obytes, 0, MODE)
         except Exception as e:
             rt.destroy_stream(stream)
             print(f"[{label}] LOAD-FAIL: {e}")
             continue
         try:
+            if nptrs == 3:
+                args = [("ptr", xp), ("ptr", w1p), ("ptr", o1p), ("int32", 0)]
+            else:
+                args = [
+                    ("ptr", xp), ("ptr", w1p), ("ptr", w2p),
+                    ("ptr", o1p), ("ptr", o2p), ("int32", 0),
+                ]
             rt.launch_kernel(
                 func=func,
                 stream=stream,
                 blocknum=1,
-                kernel_args=[
-                    ("ptr", xp), ("ptr", w1p), ("ptr", w2p),
-                    ("ptr", o1p), ("ptr", o2p), ("int32", 0),
-                ],
+                kernel_args=args,
             )
             rt.synchronize_stream(stream)
         except Exception as e:
