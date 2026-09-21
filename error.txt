@@ -1,3 +1,23 @@
-cat /usr/local/Ascend/driver/version.info                      # 完整版本行
-python3 -c "import acl; acl.init(); print(acl.rt.get_soc_name())"  # 完整 soc 名
-grep -iE "ai_core|vector_core|npu_arch|arch|core_cnt" /root/ascend/log/run/plog/*.log | head -20  # 核数量/arch
+root@localhost:/home/zwh/tmp/bench_transfer# cat /usr/local/Ascend/driver/version.info 
+Version=25.7.0
+ascendhal_version=7.35.23
+aicpu_version=1.0
+tdt_version=1.0
+log_version=1.0
+prof_version=2.0
+dvppkernels_version=1.1
+tsfw_version=1.0
+Innerversion=V100R001C11SPC200B203
+compatible_version=[V100R001C22],[V100R001C23],[V100R001C25],[V100R001C10],[V100R001C11]
+compatible_version_fw=[7.0.0,9.9.9]
+package_version=25.7.0
+root@localhost:/home/zwh/tmp/bench_transfer# python3 -c "import acl; acl.init(); print(acl.rt.get_soc_name())"
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+AttributeError: module 'acl.rt' has no attribute 'get_soc_name'
+root@localhost:/home/zwh/tmp/bench_transfer# python3 -c "import acl; acl.init(); print(acl.rt.get_soc_name())"                 
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+AttributeError: module 'acl.rt' has no attribute 'get_soc_name'
+root@localhost:/home/zwh/tmp/bench_transfer# grep -iE "ai_core|vector_core|npu_arch|arch|core_cnt" /root/ascend/log/run/plog/*.log | head -20
+root@localhost:/home/zwh/tmp/bench_transfer# 
