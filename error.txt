@@ -1,22 +1,2 @@
-root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 27, done.
-remote: Counting objects: 100% (27/27), done.
-remote: Compressing objects: 100% (15/15), done.
-remote: Total 22 (delta 8), reused 17 (delta 6), pack-reused 0 (from 0)
-Unpacking objects: 100% (22/22), 9.33 KiB | 4.67 MiB/s, done.
-From https://github.com/zhangwenhao91/tmp
-   4a7e401..994d028  main       -> origin/main
-Updating 4a7e401..994d028
-error: Your local changes to the following files would be overwritten by merge:
-        bench_transfer/6_ub2ub_bfloat16_128x256_r128.o
-        bench_transfer/6_ub2ub_bfloat16_128x256_r16.o
-        bench_transfer/6_ub2ub_bfloat16_16x256_r128.o
-        bench_transfer/6_ub2ub_bfloat16_16x256_r16.o
-        bench_transfer/6_ub2ub_bfloat16_64x256_r128.o
-        bench_transfer/6_ub2ub_bfloat16_64x256_r16.o
-        bench_transfer/6_ub2ub_float32_16x256_r128.o
-        bench_transfer/6_ub2ub_float32_16x256_r16.o
-        bench_transfer/6_ub2ub_float32_64x256_r128.o
-        bench_transfer/6_ub2ub_float32_64x256_r16.o
-Please commit your changes or stash them before you merge.
-Aborting
+git checkout -- .
+git pull
