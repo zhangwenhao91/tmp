@@ -1,23 +1,11 @@
-root@localhost:/home/zwh/tmp/bench_transfer# cat /usr/local/Ascend/driver/version.info 
-Version=25.7.0
-ascendhal_version=7.35.23
-aicpu_version=1.0
-tdt_version=1.0
-log_version=1.0
-prof_version=2.0
-dvppkernels_version=1.1
-tsfw_version=1.0
-Innerversion=V100R001C11SPC200B203
-compatible_version=[V100R001C22],[V100R001C23],[V100R001C25],[V100R001C10],[V100R001C11]
-compatible_version_fw=[7.0.0,9.9.9]
-package_version=25.7.0
-root@localhost:/home/zwh/tmp/bench_transfer# python3 -c "import acl; acl.init(); print(acl.rt.get_soc_name())"
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-AttributeError: module 'acl.rt' has no attribute 'get_soc_name'
-root@localhost:/home/zwh/tmp/bench_transfer# python3 -c "import acl; acl.init(); print(acl.rt.get_soc_name())"                 
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-AttributeError: module 'acl.rt' has no attribute 'get_soc_name'
-root@localhost:/home/zwh/tmp/bench_transfer# grep -iE "ai_core|vector_core|npu_arch|arch|core_cnt" /root/ascend/log/run/plog/*.log | head -20
-root@localhost:/home/zwh/tmp/bench_transfer# 
+# 1) 完整 soc/arch 表述行（之前只看到短名）
+grep -aiE "soc_version|DeviceInfo|npu_arch|npuarch|ai_core|vector_core|core_cnt|dav-" /root/ascend/log/run/plog/* /root/ascend/log/debug/plog/* 2>/dev/null | tail -30
+
+# 2) npu-smi 到底在哪
+ls /usr/local/Ascend/driver/tools/ 2>/dev/null; find /usr/local/Ascend /opt /usr/bin -maxdepth 4 -type f -name "*npu-smi*" 2>/dev/null | head
+
+# 3) python acl 里 soc 相关接口的真名
+python3 -c "import acl,acl.rt; acl.init(); acl.rt.set_device(0); print([x for x in dir(acl.rt) if 'soc' in x.lower() or 'version' in x.lower() or 'core' in x.lower()])"
+
+# 4) 若 3) 有 soc 取名的重试
+python3 -c "import acl; acl.init(); acl.rt.set_device(0); print(getattr(acl.rt,'get_soc_version',lambda:'n/a')())"
