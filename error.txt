@@ -1,25 +1,13 @@
-root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 11, done.
-remote: Counting objects: 100% (11/11), done.
-remote: Compressing objects: 100% (4/4), done.
-remote: Total 7 (delta 5), reused 4 (delta 3), pack-reused 0 (from 0)
-Unpacking objects: 100% (7/7), 2.64 KiB | 2.64 MiB/s, done.
-From https://github.com/zhangwenhao91/tmp
-   74fdee2..8690004  main       -> origin/main
-Updating 74fdee2..8690004
-Fast-forward
- bench_transfer/ablation_run.py | 16 ++++++++++++----
- error.txt                      | 88 +++++++++++++++++++++++++++++++++-------------------------------------------------------
- 2 files changed, 45 insertions(+), 59 deletions(-)
-root@localhost:/home/zwh/tmp/bench_transfer# python3 ablation_run.py 
-=== l1ub 消融（0x7bc87 定位）===
-[control-l1ub,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[A-l1ub-only,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[A-l1ub-only,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[B-roundtrip,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[B-roundtrip,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[base-A0,bf16,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[base-A0,bf16,16x256,r128] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[diag-c910,l1ub,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-[diag-c920,l1ub,16x256,r16] FAIL: rtStreamSynchronize failed, error code: 0x7bc87
-root@localhost:/home/zwh/tmp/bench_transfer# 
+NPU 上跑（注意先删掉上一条回复里那个写错的 python -c，直接用这个）：
+cd ~/tmp/bench_transfer
+ASCEND_GLOBAL_LOG_LEVEL=1 ASCEND_SLOG_PRINT_TO_STDOUT=0 python3 ablation_run.py
+
+# 找最新日志
+ls -lt ~/ascend/log/plog/*.log 2>/dev/null | head
+ls -lt ~/ascend/log/slog/*/* 2>/dev/null | head
+ls -lt /var/log/npu/{slog,plog}/*/* 2>/dev/null | head
+
+# grep 关键字段（aicore 异常、任务、地址）
+grep -rniE "aicore|exception|0x7bc87|fault|task.*(sched|fail)|daughter" \
+  ~/ascend/log/plog/ ~/ascend/log/slog/ /var/log/npu/ 2>/dev/null | tail -80
+把 grep 到的关键行发我——重点想看到：异常是发生在第一条指令（那说明任务下发/入口配置问题），还是某条具体指令（那就能精确对回 .ll 行号）。
