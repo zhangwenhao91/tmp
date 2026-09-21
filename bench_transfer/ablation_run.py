@@ -8,14 +8,20 @@
   l1ub_a bf16 r16/r128  循环内只有 L1->UB 一跳（mov.l1.to.ub.v310）
   l1ub_b bf16 r16/r128  循环内 L1->UB + UB->L1 往返（mov.ub.to.l1.v310）
   baseline bf16 r16/r128 无任何 L1<->UB（GM->L1 + L1 常驻 gemm）-> 最后一刀
+  diag-c910/-c920      同一 l1ub cube 内核，CANN 9.1.0 vs 9.2.0 ccec 生成
+                       -> 判别是否编译器版本 codegen 问题
 
-实测进度（001bb87 之后）：
-  control/A/B 全部 0x7bc87 -> 与 gemm、UB->L1、跨核同步无关，
-  最小化到 mov.l1.to.ub.v310；baseline 决断是 GM->L1 级还是 L1<->UB 级。
+实测进度（74fdee2 之后）：
+  control/A/B/base-A0 全部 0x7bc87 -> 连零 L1<->UB 的 GM->L1+gemm kernel
+  也在 cube 核上崩。历史所有 aic/cube 形态内核从未成功执行过（仅 aiv 的
+  ub2ub/ub_scalar 通过），diag 只注册未执行。c910/c920 判别 cube 路径是否
+  存在编译器版本依赖；若仍崩，下一个动作是抓 CANN plog 故障 PC（需
+  ASCEND_GLOBAL_LOG_LEVEL=1 重跑）确认崩在哪条指令。
 
 推断：
-  baseline 崩   -> 问题比 L1<->UB 更基础（GM->L1 就崩），需 plog 故障 PC
   baseline 过   -> 实锤 v310 L1<->UB 搬运（mov.l1.to.ub.v310）
+  baseline 崩   -> 问题比 L1<->UB 更基础：下一刀 c910/c920 判别是否
+                   ccec 编译器版本；再不行 -> plog 故障 PC。
 
 输入在机内生成（固定 seed，无须 npy 准备）；每个 case 用独立 stream，
 某个 case 崩不会污染后续。PASS 时顺带用 torch 校验输出 vs golden。
@@ -45,6 +51,8 @@ CASES = [
     ("B-roundtrip,bf16,16x256,r128", "new_env/n6_l1ub_b_bfloat16_16x256_r128_single.o", "l1ub_kernel", 5),
     ("base-A0,bf16,16x256,r16", "new_env/n6_baseline_bfloat16_16x256_r16_single.o", "baseline_kernel", 3),
     ("base-A0,bf16,16x256,r128", "new_env/n6_baseline_bfloat16_16x256_r128_single.o", "baseline_kernel", 3),
+    ("diag-c910,l1ub,16x256,r16", "new_env/diag_l1ub_bf16_16x256_r16_align4_ccec910.o", "l1ub_kernel", 5),
+    ("diag-c920,l1ub,16x256,r16", "new_env/diag_l1ub_bf16_16x256_r16_align4_ccec920.o", "l1ub_kernel", 5),
 ]
 
 
