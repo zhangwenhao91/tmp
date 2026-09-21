@@ -1,113 +1,15 @@
-root@localhost:/home/zwh/tmp/bench_transfer# ls /data/pri/Ascend/9.2.0.B060/cann-9.2.0/opp/built-in/op_impl/ai_core/tbe/kernel/ 2>/dev/null
-ls /data/pri/Ascend/9.2.0.B060/cann-9.2.0/opp/built-in/op_impl/ai_core/tbe/kernel/ascend950/ 2>/dev/null | grep -iE "matmul|mm_|gemm|conv" | head
-ascend910_93  ascend910b  ascend950  config  scene.info  version.info
-root@localhost:/home/zwh/tmp/bench_transfer# find /data/pri/Ascend/9.2.0.B060 /usr/local/Ascend -maxdepth 6 -type f \( -name ccec -o -name bisheng -o -name "*ascendc*" \) 2>/dev/null | head
-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler_bak/bin/bisheng
-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler/bin/bisheng
-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/ascendc_tools/ascendc_npuchk_report.py
-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/x86_64-linux/simulator/Kirin9030/lib/libascendcl.so
-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/x86_64-linux/simulator/KirinX90/lib/libascendcl.so
-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/x86_64-linux/devlib/linux/x86_64/libascendcl.so
-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/x86_64-linux/devlib/linux/aarch64/libascendcl.so
-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/x86_64-linux/bin/ascendc_pack_kernel
-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/x86_64-linux/tikcpp/ascendc_kernel_cmake/fwk_modules/ascendc_config.cmake.in
-/data/pri/Ascend/9.2.0.B060/cann-9.2.0/x86_64-linux/tikcpp/ascendc_kernel_cmake/ascendc.cmake
-root@localhost:/home/zwh/tmp/bench_transfer# CC=/data/pri/Ascend/9.2.0.B060/cann-9.2.0/*/bin/ccec
-root@localhost:/home/zwh/tmp/bench_transfer# strings $CC 2>/dev/null | grep -oE "dav-[a-z0-9-]+" | sort -u
-dav-2002
-dav-2201
-dav-310-cube
-dav-310r
-dav-310r6
-dav-310r6-cube
-dav-310r6-vec
-dav-3510
-dav-380r
-dav-380r1-cube
-dav-510r
-dav-510r2
-dav-5161
-dav-5162
-dav-5163
-dav-5165
-dav-516r
-dav-516r1
-dav-516r1-vec
-dav-516r2
-dav-516r3
-dav-516r3-vec
-dav-516r5
-dav-9201
-dav-9202
-dav-920r
-dav-920r1
-dav-920r1-cube
-dav-920r1-vec
-dav-920r2
-dav-920r2-cube
-dav-920r2-vec
-dav-926r1-vec
-dav-c100
-dav-c220
-dav-c220-cube
-dav-c220-vec
-dav-c310
-dav-c310-cube
-dav-c310-simd
-dav-c310-simt
-dav-c310-vec
-dav-c310-vecdav-m310
-dav-l100
-dav-l100-es
-dav-l200
-dav-l210
-dav-l300
-dav-l300-vec
-dav-l310
-dav-l310-eff
-dav-l311
-dav-l311-eff
-dav-l510
-dav-m100
-dav-m200
-dav-m200-vec
-dav-m201
-dav-m210
-dav-m210-vec
-dav-m300
-dav-m300-vec
-dav-m310
-dav-n350
-dav-s200
-dav-s200-es
-dav-t100
-dav-t100-es
-dav-t200
-dav-t210
-dav-t300
-root@localhost:/home/zwh/tmp/bench_transfer# echo "ASCEND_HOME=$ASCEND_HOME"; ls -l /usr/local/Ascend/ascend-toolkit/latest 2>/dev/null; ls /usr/local/Ascend/ascend-toolkit 2>/dev/null
-ASCEND_HOME=
-total 28
-lrwxrwxrwx  1 root root   18 Sep 10  2025 acllib -> ../8.3.RC1/runtime
-lrwxrwxrwx  1 root root   14 Sep 10  2025 atc -> ../8.3.RC1/atc
-lrwxrwxrwx  1 root root   16 Sep 10  2025 bin -> x86_64-linux/bin
-lrwxrwxrwx  1 root root   19 Sep 10  2025 compiler -> ../8.3.RC1/compiler
-lrwxrwxrwx  1 root root   17 Sep 10  2025 conf -> x86_64-linux/conf
-lrwxrwxrwx  1 root root   20 Sep 10  2025 fwkacllib -> ../8.3.RC1/fwkacllib
-lrwxrwxrwx  1 root root   15 Sep 10  2025 hccl -> ../8.3.RC1/hccl
-lrwxrwxrwx  1 root root   20 Sep 10  2025 include -> x86_64-linux/include
-lrwxrwxrwx  1 root root   18 Sep 10  2025 lib64 -> x86_64-linux/lib64
-lrwxrwxrwx  1 root root   14 Sep 10  2025 opp -> ../8.3.RC1/opp
-lrwxrwxrwx  1 root root   21 Sep 10  2025 opp_kernel -> ../8.3.RC1/opp_kernel
-lrwxrwxrwx  1 root root   14 Sep 10  2025 ops -> ../8.3.RC1/opp
--rw-rw----  1 root root    0 Sep 10  2025 platform.ini
-drwxr-xr-x  3 root root 4096 Sep 10  2025 python
--r-xr-x---  1 root root 4677 Sep 10  2025 remove_latest_softlink.sh
-lrwxrwxrwx  1 root root   18 Sep 10  2025 runtime -> ../8.3.RC1/runtime
-lrwxrwxrwx  1 root root   18 Sep 10  2025 toolkit -> ../8.3.RC1/toolkit
-drwxr-xr-x  2 root root 4096 Sep 10  2025 tools
-drwxr-xr-x  3 root root 4096 Sep 10  2025 var
--rw-r--r--  1 root root 1016 Sep 10  2025 version.cfg
-dr-xr-xr-x 15 root root 4096 Sep 10  2025 x86_64-linux
-8.3.RC1  latest
-root@localhost:/home/zwh/tmp/bench_transfer# 
+# 1) bisheng 的 arch/目标接口 + 它认识的 950 串
+timeout 20 /data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler/bin/bisheng --version 2>&1 | head -5
+timeout 20 /data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler/bin/bisheng --help 2>&1 | grep -iE "arch|aicore|cce|target|soc|depth" | head -30
+strings /data/pri/Ascend/9.2.0.B060/cann-9.2.0/tools/bisheng_compiler/bin/bisheng 2>/dev/null | grep -iE "ascend950|950" | sort -u | head -20
+
+# 2) 官方 950 cube 预编译算子的 ELF 长相（它就是我们在复刻的对象）
+K=/data/pri/Ascend/9.2.0.B060/cann-9.2.0/opp/built-in/op_impl/ai_core/tbe/kernel/ascend950
+ls $K/*.o 2>/dev/null | head
+O=$(ls $K/*.o 2>/dev/null | head -1); echo "[$O]"
+readelf -h "$O" 2>/dev/null | head -14
+readelf -S "$O" 2>/dev/null | grep -iE "text|hacc|aicore|\.hc$" | head
+strings "$O" 2>/dev/null | grep -iE "dav-|magic|aicore|kernel_type|high_perf" | head -15
+
+# 3) 设备核数量（决定是不是 m 系 8+7 布局）
+grep -aiE "aic_cnt|vector.*cnt|ai_core_cnt|core_num|cube_core|vector_core" /data/pri/Ascend/9.2.0.B060/*/conf/*.ini /usr/local/Ascend/ascend-toolkit/8.3.RC1/*/conf/*.ini 2>/dev/null | head
