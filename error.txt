@@ -1,3 +1,21 @@
+root@localhost:/home/zwh/tmp/bench_transfer# git pull
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 3 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (3/3), 1.62 KiB | 1.62 MiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   d936275..a1686fc  main       -> origin/main
+Updating d936275..a1686fc
+Fast-forward
+ error.txt | 45 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
+root@localhost:/home/zwh/tmp/bench_transfer# cd ..
+root@localhost:/home/zwh/tmp# git pull
+Already up to date.
+root@localhost:/home/zwh/tmp# cd bench_transfer/
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py prep
+[prep] inputs saved
 root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py verify
 [verify] ub2ub bfloat16 16x256: PASS (恒等)
 [verify] ub_scalar bfloat16 16x256: PASS (恒等)
@@ -17,17 +35,17 @@ Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/bench_run.py", line 371, in do_verify
     rt.synchronize_stream(stream)
 RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
-root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run
-[ub2ub bfloat16 16x256] T(r16)=9.6us T(r128)=6.3us round=-0.03us dma=-0.03us bw(move)=-274.47GB/s bw(traffic)=-548.94GB/s
-[ub_scalar bfloat16 16x256] T(r16)=914.5us T(r128)=6787.6us round=52.44us dma=52.44us bw(move)=0.16GB/s bw(traffic)=0.31GB/s
-[ub2ub bfloat16 64x256] T(r16)=2.9us T(r128)=119.8us round=1.04us dma=1.04us bw(move)=31.39GB/s bw(traffic)=62.78GB/s
-[ub_scalar bfloat16 64x256] T(r16)=3394.5us T(r128)=27143.1us round=212.04us dma=212.04us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
-[ub2ub bfloat16 128x256] T(r16)=4.5us T(r128)=212.3us round=1.86us dma=1.86us bw(move)=35.33GB/s bw(traffic)=70.65GB/s
-[ub_scalar bfloat16 128x256] T(r16)=6791.0us T(r128)=54284.1us round=424.05us dma=424.05us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
-[ub2ub float32 16x256] T(r16)=2.7us T(r128)=8.8us round=0.05us dma=0.05us bw(move)=300.76GB/s bw(traffic)=601.53GB/s
-[ub_scalar float32 16x256] T(r16)=842.3us T(r128)=6727.9us round=52.55us dma=52.55us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
-[ub2ub float32 64x256] T(r16)=5.1us T(r128)=24.2us round=0.17us dma=0.17us bw(move)=384.27GB/s bw(traffic)=768.54GB/s
-[ub_scalar float32 64x256] T(r16)=3364.9us T(r128)=26905.4us round=210.18us dma=210.18us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run   
+[ub2ub bfloat16 16x256] T(r16)=3.2us T(r128)=6.2us round=0.03us dma=0.03us bw(move)=304.24GB/s bw(traffic)=608.48GB/s
+[ub_scalar bfloat16 16x256] T(r16)=849.1us T(r128)=6787.0us round=53.02us dma=53.02us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 64x256] T(r16)=217.6us T(r128)=217.6us round=-0.00us dma=-0.00us bw(move)=-67365.13GB/s bw(traffic)=-134730.26GB/s
+[ub_scalar bfloat16 64x256] T(r16)=3394.3us T(r128)=27144.2us round=212.05us dma=212.05us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 128x256] T(r16)=4.3us T(r128)=24.1us round=0.18us dma=0.18us bw(move)=371.71GB/s bw(traffic)=743.41GB/s
+[ub_scalar bfloat16 128x256] T(r16)=6788.6us T(r128)=54284.2us round=424.07us dma=424.07us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x256] T(r16)=3.6us T(r128)=8.9us round=0.05us dma=0.05us bw(move)=346.30GB/s bw(traffic)=692.59GB/s
+[ub_scalar float32 16x256] T(r16)=843.6us T(r128)=6729.0us round=52.55us dma=52.55us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub float32 64x256] T(r16)=4.6us T(r128)=33.9us round=0.26us dma=0.26us bw(move)=250.14GB/s bw(traffic)=500.27GB/s
+[ub_scalar float32 64x256] T(r16)=3366.1us T(r128)=26905.9us round=210.18us dma=210.18us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
 [skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_16x256_r16.o
 [skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_bfloat16_64x256_r16.o
 [skip] missing /home/zwh/tmp/bench_transfer/6_l1ub_float32_16x256_r16.o
@@ -42,3 +60,4 @@ Traceback (most recent call last):
   File "/home/zwh/tmp/bench_transfer/bench_run.py", line 183, in _bench_once
     rt.synchronize_stream(stream)
 RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
+root@localhost:/home/zwh/tmp/bench_transfer# 
