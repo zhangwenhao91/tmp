@@ -346,6 +346,7 @@ def do_verify():
         for variant, dtype, M, K, outdir, oprefix, osuffix in SPECS:
             path = o_path(variant, dtype, M, K, R_HIGH, outdir, oprefix, osuffix)
             if not os.path.exists(path):
+                print(f"[skip] missing {path}")
                 continue
             x = np.load(npy_path(x_name(variant, dtype, M, K)))
             # mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
