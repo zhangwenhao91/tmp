@@ -61,3 +61,12 @@ Traceback (most recent call last):
     rt.synchronize_stream(stream)
 RuntimeError: rtStreamSynchronize failed, error code: 0x7bc87
 root@localhost:/home/zwh/tmp/bench_transfer# 
+
+--- 2026-09-22 编译器修复 + l1ub build 记录 ---
+[stage5 根因] CCEIntrinsicMap.td: mov.l1.to.l1.v310 与 mov.ub.to.l1.v310 原映射到同一 LLVM 名
+  llvm.hivm.MOV.UB.TO.L1.v310；同模块两种签名(ptr<2>/ptr<6>)触发 CCETranslate.cpp:294 conflicting declaration。
+[修复] mov.l1.to.l1.v310 改用独立名 llvm.hivm.MOV.L1.TO.L1.v310（ccec 实测可共存）。
+[产物] 完整 l1ub(mix, gemm在循环) 已建: 6_l1ub_bf16_16/64+f32_16 *.o
+  l1ub_b(消融-B) 已建 10 个 6_l1ub_b_*.o；l1ub_single 已建 new_env/n6_*.o。
+[新发现] 完整 l1ub bf16_128 / f32_64 在 stage3 PlanMemory UB 超限
+  (totalAligned=295936/280576 > capacity=253952；mix 跨核需 UB 双份 staging)。

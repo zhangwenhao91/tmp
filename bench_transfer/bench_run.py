@@ -14,6 +14,8 @@ variant 说明：
   ub2ub      : UB->UB，AIV，.o 在根目录 6_*.o
   ub_scalar  : UB->标量->UB，AIV，根目录 6_*.o
   l1ub       : L1->UB->L1 mix 双核，AIC 入口带 _mix_aic 后缀，根目录 6_*.o
+  l1ub_b     : L1->UB + UB->L1 消融-B（gemm 在循环外，单向 a->b），mix 双核，
+               根目录 6_l1ub_b_*.o（build_l1ub_b.sh 产物）
   l1ub_single: L1->UB->L1 单核 AIC（绕开 mix 跨核同步 0x7bc87），
                .o 在 new_env/n6_l1ub_*_single.o（官方 OpenTileAS ed2beb55 +
                CANN 9.2.0-beta.2 编译，stage3 仅 --npu-plan-memory，
@@ -57,6 +59,13 @@ SPECS = [
     ("l1ub", "bfloat16", 16, 256, HERE, "6_", ".o"),
     ("l1ub", "bfloat16", 64, 256, HERE, "6_", ".o"),
     ("l1ub", "float32", 16, 256, HERE, "6_", ".o"),
+    # l1ub_b（L1->UB + UB->L1 消融-B，mix 双核，根目录 6_l1ub_b_*.o，
+    #   build_l1ub_b.sh 产物；stage5 已打通，见 error 记录）
+    ("l1ub_b", "bfloat16", 16, 256, HERE, "6_", ".o"),
+    ("l1ub_b", "bfloat16", 64, 256, HERE, "6_", ".o"),
+    ("l1ub_b", "bfloat16", 128, 256, HERE, "6_", ".o"),
+    ("l1ub_b", "float32", 16, 256, HERE, "6_", ".o"),
+    ("l1ub_b", "float32", 64, 256, HERE, "6_", ".o"),
     ("l1ub_single", "bfloat16", 16, 256, NEW_ENV_DIR, "n6_", "_single.o"),
     ("l1ub_single", "bfloat16", 64, 256, NEW_ENV_DIR, "n6_", "_single.o"),
     ("l1ub_single", "bfloat16", 128, 256, NEW_ENV_DIR, "n6_", "_single.o"),
@@ -76,6 +85,8 @@ TRANSFERS = {
     "ub2ub": {"blocks_per_round": 1, "dma_per_round": 1},
     "ub_scalar": {"blocks_per_round": 1, "dma_per_round": 1},
     "l1ub": {"blocks_per_round": 2, "dma_per_round": 4},  # 2x(L1->UB) + 2x(UB->L1)
+    # 消融-B：每轮 1x(L1->UB) + 1x(UB->L1)，只有单向 a->b（无返程）
+    "l1ub_b": {"blocks_per_round": 1, "dma_per_round": 2},
     # 单核版与 mix 版相同链路：每轮 2x(L1->UB) + 2x(UB->L1)
     "l1ub_single": {"blocks_per_round": 2, "dma_per_round": 4},
 }
@@ -125,7 +136,7 @@ def do_prep():
 
             x = x.astype(ml_dtypes.bfloat16).view(np.uint16)
         np.save(npy_path(x_name(variant, dtype, M, K)), x)
-        if variant in ("l1ub", "l1ub_single"):
+        if variant in ("l1ub", "l1ub_b", "l1ub_single"):
             for wname in ("W1", "W2"):
                 w = (rng.standard_normal((K, N)) * 0.05).astype(np.float32)
                 if dtype == "bfloat16":
@@ -200,7 +211,7 @@ def do_run():
         ptr = rt.malloc_device(x.nbytes)
         rt.memcpy_h2d(ptr, x.tobytes(order="C"))
         entry = {"X": (ptr, x)}
-        if variant in ("l1ub", "l1ub_single"):
+        if variant in ("l1ub", "l1ub_b", "l1ub_single"):
             for wname in ("W1", "W2"):
                 w = np.load(npy_path(w_name(wname, variant, dtype, M, K)))
                 wptr = rt.malloc_device(w.nbytes)
@@ -222,13 +233,13 @@ def do_run():
             # mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
             if variant in ("ub2ub", "ub_scalar"):
                 mode = "aiv"  # AIV 向量核 ELF
-            elif variant == "l1ub":
+            elif variant in ("l1ub", "l1ub_b"):
                 mode = "mix"  # AIC ELF，runtime 自动配对 _mix_aiv 半核
             else:  # l1ub_single
                 mode = "aic"  # 单核 AIC ELF（registerKernel 非 "aiv" 均走 AIC magic）
             # mix 双函数 .o 的入口符号带 _mix_aic 后缀（runtime 自动配对 _mix_aiv）
             # kname = f"{variant}_kernel" if variant in ("ub2ub", "ub_scalar") else f"{variant}_kernel_mix_aic"
-            if variant == "l1ub":
+            if variant in ("l1ub", "l1ub_b"):
                 kname = "l1ub_kernel_mix_aic"
             elif variant == "l1ub_single":
                 # l1ub_single 复用原 l1ub DSL，单核 .o 入口符号就是 l1ub_kernel（.ll: @l1ub_kernel）
@@ -246,7 +257,7 @@ def do_run():
                 with open(path, "rb") as f:
                     obytes = f.read()
                 module, func = rt.load_kernel(kname, obytes, 0, mode)
-                if variant in ("l1ub", "l1ub_single"):
+                if variant in ("l1ub", "l1ub_b", "l1ub_single"):
                     args = [
                         ("ptr", entry["X"][0]),
                         ("ptr", entry["W1"][0]),
@@ -324,7 +335,7 @@ def do_verify():
             else:  # l1ub_single
                 mode = "aic"
             # kname = "ub2ub_kernel" if variant == "ub2ub" else ("ub_scalar_kernel" if variant == "ub_scalar" else "l1ub_kernel_mix_aic")
-            if variant == "l1ub":
+            if variant in ("l1ub", "l1ub_b"):
                 kname = "l1ub_kernel_mix_aic"
             elif variant == "l1ub_single":
                 # kname = f"{variant}_kernel"  # 错误：拼成 l1ub_single_kernel，.o 中无此符号 -> 0x7bc78
