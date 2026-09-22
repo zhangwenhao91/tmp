@@ -1,350 +1,6 @@
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.604.884 [elf.cc:919] 4107 ParseKernelMetaData: section name = .note.GNU-stack.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.604.895 [elf.cc:1194] 4107 UpdateKernelsInfo: update meta info, kernel_name=ub_scalar_kernel, dfxAddr=0x3ad21fc, dfxSize=40, funcType=0, elfDataFlag=1, userArgsNum=128, crossCoreSync=0, kernelVfType=1, shareMemSize=0, minStackSize=352, funcEntryType=0, functionEntry=0, schedMode=0, taskRation_0=0, taskRation_1=0, hasParamSummary=0, paramCount=0, paramTotalSize=0, earlyStartEnable=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.604.904 [runtime.cc:1748] 4107 AddProgramToPool: progId=50, poolIdx=0, activeCount=50
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.604.916 [program.cc:1720] 4107 GetKernelTypeAndMixType: Get kernel type success, kernelName=ub_scalar_kernel, funcType=0, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), mixType=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.604.926 [program.cc:1163] 4107 SetKernelAttribute: kernel_name=ub_scalar_kernel, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), userParamNum=128, sysParamNum=1, IsNeedSetFftsAddrInArg=0, isSupportOverFlow=1, elfDataFlag=1, earlyStartEnable=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.604.931 [program.cc:1763] 4107 BuildNewKernel: new kernel success, size=1304, programId=50, original kernel_name=ub_scalar_kernel, register kernel_name=ub_scalar_kernel, tilingKey=0, functionEntry=0, funcType=0, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), mixType=0, taskRation=2, offset=0, dfxAddr=61678076, dfxSize=40, earlyStartEnable=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.604.946 [api_impl.cc:2242] 4107 DevMalloc: size=2048, type=2, moduleId=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.604.969 [api_error.cc:1810] 4107 DevMalloc: device malloc, size=2048(bytes), type=2, moduleId=0, start ptr=0x1200000e7000, end ptr=0x1200000e7800
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.605.053 [api_impl.cc:2242] 4107 DevMalloc: size=2048, type=2, moduleId=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.605.072 [api_error.cc:1810] 4107 DevMalloc: device malloc, size=2048(bytes), type=2, moduleId=0, start ptr=0x1200000e8000, end ptr=0x1200000e8800
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.605.106 [program.cc:1542] 4107 BinaryPoolMemCopySync: binary memcpy to pool_mem, dev_mem=0x120041032000, size=344, device_id=7, readonly=1.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.608.310 [task_res_da.cc:100] 4178 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=27, head=26, tail=27, taskResAHead=26, taskResATail=27, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.608.321 [stream_david.cc:1479] 4178 GetTaskIdByPos: taskInfo is null, pos=27
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.608.323 [stream.cc:1928] 4178 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=27, nextTaskId=65535, finishedPos=26, endTaskId=26
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.608.328 [task_res_da.cc:198] 4178 RecycleTaskInfo: recycle taskinfo success, pos=26, sqeNum=1, headBeforeRecycle=26, taskResAHead=27, tail=27, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.614.512 [program.cc:1482] 4107 BinaryMemAdvise: advise memory, dev_mem=0x120041000000, dev_size=344, advise_type=3, device_id=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.625.522 [program.cc:1482] 4107 BinaryMemAdvise: advise memory, dev_mem=0x120041000000, dev_size=344, advise_type=2, device_id=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.625.570 [task_res_da.cc:155] 4107 AllocTaskInfoAndPos: alloc taskinfo success, device_id=7, stream_id=28, pos=27, sqeNum=1, head=27, taskResATail=28, allocNum=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.625.593 [aix_starsv2.cc:152] 4107 LoadArgsWithCopy: Load args success, size=20, device_id=7, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.625.599 [aix_starsv2.cc:407] 4107 StreamLaunchKernelV1: stream_id=28, kernel_name=ub_scalar_kernel, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), funcType=0, arg_size=20, taskRation=2, mixType=0, kernelVfType=1, dynamicSmSize=0, addr1=0x120041032000, addr2=0x0, kernelFlag=0x0, qos=0, partId=0, schemMode=0, infoAddr=(nil), atomicIndex=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.625.612 [davinci_kernel_task_v200_base.cc:179] 4107 ConstructCommonAicAivSqeWord: sqe dieFriendly=1, blockdim=1, groupDim=1, groupBlockDim=1, featureFlag=0,kernelcredit=253.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.625.616 [davinci_kernel_task_v200_base.cc:128] 4107 ConstructAivSqePart: set cfgInfo schemMode=0, sqe_schem=0, ratio=1, aivSimtDcuSmSize=262144.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.625.622 [stream_david.cc:760] 4107 AddTaskToList: public task, stream_id=28, task_id=27, task_type=66 (KERNEL_AIVEC), head=27, tail=28
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.625.626 [stream_david.cc:813] 4107 StarsAddTaskToStream: single-operator stream, stream_id=28, task_id=27, task_sn=54, type=66(KERNEL_AIVEC), sqe_num=1, device_id=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.625.636 [task_david.cc:630] 4107 DavidSendTask: device_id=7, ts_id=0, sq_id=123, stream_id=28, task_id=27, flip_num=0, task_sn=54, task_type=66(KERNEL_AIVEC), drvRet=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.625.679 [api_impl.cc:1691] 4107 StreamSynchronize: stream_id=28.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.626.497 [task_res_da.cc:100] 4107 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=28, head=27, tail=28, taskResAHead=27, taskResATail=28, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.626.515 [stream_david.cc:1479] 4107 GetTaskIdByPos: taskInfo is null, pos=28
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.626.518 [stream.cc:1928] 4107 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=28, nextTaskId=65535, finishedPos=27, endTaskId=27
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.626.523 [stream.cc:2065] 4107 SynchronizeImpl: device_id=7, stream_id=28, task_id=27 has been completed, no concerned cqe.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.626.529 [api_impl.cc:1724] 4107 StreamSynchronize: Trigger implicit mempool trim (exclude graph pool).
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.626.534 [api_error.cc:1485] 4107 StreamSynchronize: stream synchronize exit, stream_id=28, result=0x0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.626.902 [api_impl.cc:2265] 4107 DevFree: device free mem=0x1200000e7000
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.626.936 [api_impl.cc:2265] 4107 DevFree: device free mem=0x1200000e8000
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.626.976 [program.cc:147] 4107 ResetProgramAllocatorOnDestroy: Program allocator slot already empty on destroy, prog=0x3bfe730, progId=50, ref=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.681 [runtime.cc:4863] 4107 ChgUserDevIdToDeviceId: devId=0, drv devId=7, isDeviceSetResetOp=1
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.691 [api_impl.cc:2728] 4107 SetDevice: drv devId=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.696 [runtime.cc:2742] 4107 PrimaryContextRetain: Context inc ref, devId=7, ts_id=0, count=0x35
-[INFO] PROFILING(4107,python):2026-09-22-09:56:27.627.719 [msprofiler_impl.cpp:364] (tid:4107) ProfNotifySetDevice, not on cmd mode or acl api not ready.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.723 [runtime.cc:3046] 4107 MsProfNotifyWhenSetDevice: MsprofNotifySetDevice success, devId=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.726 [api_impl.cc:2737] 4107 SetDevice: SetCurRef = 0xdf1870,drv devId=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.730 [api_impl.cc:2739] 4107 SetDevice: New device success, deviceId=7.
-[INFO] PROFILING(4107,python):2026-09-22-09:56:27.627.737 [msprofiler_impl.cpp:364] (tid:4107) ProfNotifySetDevice, not on cmd mode or acl api not ready.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.739 [runtime.cc:4890] 4107 GetUserDevIdByDeviceId: userDevId=0, deviceId=7, isDeviceSetResetOp=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.743 [api_impl.cc:2750] 4107 SetDevice: SetDevice success, curCtx=0xdf1870, drv devId=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.753 [runtime.cc:1708] 4107 MallocProgramAndReg: new ElfProgram ok, magic=0x41415246, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), Runtime_alloc_size=10584
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.760 [program.cc:248] 4107 SaveBinaryData: Malloc the buffer for elfData, len=1856
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.771 [elf.cc:919] 4107 ParseKernelMetaData: section name = .text.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.776 [elf.cc:919] 4107 ParseKernelMetaData: section name = __CCE_KernelArgSize.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.778 [elf.cc:919] 4107 ParseKernelMetaData: section name = .ascend.meta.ub2ub_kernel.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.781 [elf.cc:679] 4107 ElfParseTlvInfo: kernelVfType=1
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.784 [elf.cc:685] 4107 ElfParseTlvInfo: shareMemSize=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.786 [elf.cc:694] 4107 ElfParseTlvInfo: tlvLength=4, minStackSize=352.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.789 [elf.cc:954] 4107 ParseKernelMetaData: kernel_name=ub2ub_kernel, ration[0]=0, ration[1]=0, dfxAddr=0x3ac87e4, dfxSize=40, funcType=0, crossCoreSync=0, kernelVfType=1, shareMemSize=0, minStackSize=352, earlyStartEnable=0, isSupportFuncEntry=0, functionEntryFlag=128, functionEntry=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.793 [elf.cc:919] 4107 ParseKernelMetaData: section name = .note.GNU-stack.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.804 [elf.cc:1194] 4107 UpdateKernelsInfo: update meta info, kernel_name=ub2ub_kernel, dfxAddr=0x3ac87e4, dfxSize=40, funcType=0, elfDataFlag=1, userArgsNum=128, crossCoreSync=0, kernelVfType=1, shareMemSize=0, minStackSize=352, funcEntryType=0, functionEntry=0, schedMode=0, taskRation_0=0, taskRation_1=0, hasParamSummary=0, paramCount=0, paramTotalSize=0, earlyStartEnable=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.811 [runtime.cc:1748] 4107 AddProgramToPool: progId=51, poolIdx=0, activeCount=51
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.821 [program.cc:1720] 4107 GetKernelTypeAndMixType: Get kernel type success, kernelName=ub2ub_kernel, funcType=0, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), mixType=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.832 [program.cc:1163] 4107 SetKernelAttribute: kernel_name=ub2ub_kernel, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), userParamNum=128, sysParamNum=1, IsNeedSetFftsAddrInArg=0, isSupportOverFlow=1, elfDataFlag=1, earlyStartEnable=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.837 [program.cc:1763] 4107 BuildNewKernel: new kernel success, size=1304, programId=51, original kernel_name=ub2ub_kernel, register kernel_name=ub2ub_kernel, tilingKey=0, functionEntry=0, funcType=0, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), mixType=0, taskRation=2, offset=0, dfxAddr=61638628, dfxSize=40, earlyStartEnable=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.850 [api_impl.cc:2242] 4107 DevMalloc: size=2048, type=2, moduleId=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.627.875 [api_error.cc:1810] 4107 DevMalloc: device malloc, size=2048(bytes), type=2, moduleId=0, start ptr=0x1200000e7000, end ptr=0x1200000e7800
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.628.036 [api_impl.cc:2242] 4107 DevMalloc: size=2048, type=2, moduleId=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.628.049 [api_error.cc:1810] 4107 DevMalloc: device malloc, size=2048(bytes), type=2, moduleId=0, start ptr=0x1200000e8000, end ptr=0x1200000e8800
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.628.082 [program.cc:1542] 4107 BinaryPoolMemCopySync: binary memcpy to pool_mem, dev_mem=0x120041033000, size=544, device_id=7, readonly=1.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.629.488 [task_res_da.cc:100] 4178 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=28, head=27, tail=28, taskResAHead=27, taskResATail=28, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.629.494 [stream_david.cc:1479] 4178 GetTaskIdByPos: taskInfo is null, pos=28
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.629.496 [stream.cc:1928] 4178 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=28, nextTaskId=65535, finishedPos=27, endTaskId=27
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.629.500 [task_res_da.cc:198] 4178 RecycleTaskInfo: recycle taskinfo success, pos=27, sqeNum=1, headBeforeRecycle=27, taskResAHead=28, tail=28, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.636.522 [program.cc:1482] 4107 BinaryMemAdvise: advise memory, dev_mem=0x120041000000, dev_size=544, advise_type=3, device_id=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.516 [program.cc:1482] 4107 BinaryMemAdvise: advise memory, dev_mem=0x120041000000, dev_size=544, advise_type=2, device_id=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.550 [task_res_da.cc:155] 4107 AllocTaskInfoAndPos: alloc taskinfo success, device_id=7, stream_id=28, pos=28, sqeNum=1, head=28, taskResATail=29, allocNum=29.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.573 [aix_starsv2.cc:152] 4107 LoadArgsWithCopy: Load args success, size=20, device_id=7, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.580 [aix_starsv2.cc:407] 4107 StreamLaunchKernelV1: stream_id=28, kernel_name=ub2ub_kernel, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), funcType=0, arg_size=20, taskRation=2, mixType=0, kernelVfType=1, dynamicSmSize=0, addr1=0x120041033000, addr2=0x0, kernelFlag=0x0, qos=0, partId=0, schemMode=0, infoAddr=(nil), atomicIndex=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.591 [davinci_kernel_task_v200_base.cc:179] 4107 ConstructCommonAicAivSqeWord: sqe dieFriendly=1, blockdim=1, groupDim=1, groupBlockDim=1, featureFlag=0,kernelcredit=253.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.595 [davinci_kernel_task_v200_base.cc:128] 4107 ConstructAivSqePart: set cfgInfo schemMode=0, sqe_schem=0, ratio=1, aivSimtDcuSmSize=262144.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.600 [stream_david.cc:760] 4107 AddTaskToList: public task, stream_id=28, task_id=28, task_type=66 (KERNEL_AIVEC), head=28, tail=29
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.604 [stream_david.cc:813] 4107 StarsAddTaskToStream: single-operator stream, stream_id=28, task_id=28, task_sn=55, type=66(KERNEL_AIVEC), sqe_num=1, device_id=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.614 [task_david.cc:630] 4107 DavidSendTask: device_id=7, ts_id=0, sq_id=123, stream_id=28, task_id=28, flip_num=0, task_sn=55, task_type=66(KERNEL_AIVEC), drvRet=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.654 [api_impl.cc:1691] 4107 StreamSynchronize: stream_id=28.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.647.678 [task_res_da.cc:100] 4107 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=29, head=28, tail=29, taskResAHead=28, taskResATail=29, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.647.682 [stream_david.cc:1479] 4107 GetTaskIdByPos: taskInfo is null, pos=29
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.647.682 [task_res_da.cc:100] 4178 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=29, head=28, tail=29, taskResAHead=28, taskResATail=29, taskInfo_id=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.685 [stream.cc:1928] 4107 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=29, nextTaskId=65535, finishedPos=28, endTaskId=28
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.647.687 [stream_david.cc:1479] 4178 GetTaskIdByPos: taskInfo is null, pos=29
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.690 [stream.cc:1928] 4178 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=29, nextTaskId=65535, finishedPos=28, endTaskId=28
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.689 [stream.cc:2065] 4107 SynchronizeImpl: device_id=7, stream_id=28, task_id=28 has been completed, no concerned cqe.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.696 [task_res_da.cc:198] 4178 RecycleTaskInfo: recycle taskinfo success, pos=28, sqeNum=1, headBeforeRecycle=28, taskResAHead=29, tail=29, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.696 [api_impl.cc:1724] 4107 StreamSynchronize: Trigger implicit mempool trim (exclude graph pool).
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.647.701 [api_error.cc:1485] 4107 StreamSynchronize: stream synchronize exit, stream_id=28, result=0x0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.026 [api_impl.cc:2265] 4107 DevFree: device free mem=0x1200000e7000
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.061 [api_impl.cc:2265] 4107 DevFree: device free mem=0x1200000e8000
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.648.102 [program.cc:147] 4107 ResetProgramAllocatorOnDestroy: Program allocator slot already empty on destroy, prog=0x3bfe730, progId=51, ref=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.783 [runtime.cc:4863] 4107 ChgUserDevIdToDeviceId: devId=0, drv devId=7, isDeviceSetResetOp=1
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.795 [api_impl.cc:2728] 4107 SetDevice: drv devId=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.799 [runtime.cc:2742] 4107 PrimaryContextRetain: Context inc ref, devId=7, ts_id=0, count=0x36
-[INFO] PROFILING(4107,python):2026-09-22-09:56:27.648.821 [msprofiler_impl.cpp:364] (tid:4107) ProfNotifySetDevice, not on cmd mode or acl api not ready.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.826 [runtime.cc:3046] 4107 MsProfNotifyWhenSetDevice: MsprofNotifySetDevice success, devId=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.829 [api_impl.cc:2737] 4107 SetDevice: SetCurRef = 0xdf1870,drv devId=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.832 [api_impl.cc:2739] 4107 SetDevice: New device success, deviceId=7.
-[INFO] PROFILING(4107,python):2026-09-22-09:56:27.648.840 [msprofiler_impl.cpp:364] (tid:4107) ProfNotifySetDevice, not on cmd mode or acl api not ready.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.843 [runtime.cc:4890] 4107 GetUserDevIdByDeviceId: userDevId=0, deviceId=7, isDeviceSetResetOp=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.848 [api_impl.cc:2750] 4107 SetDevice: SetDevice success, curCtx=0xdf1870, drv devId=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.858 [runtime.cc:1708] 4107 MallocProgramAndReg: new ElfProgram ok, magic=0x41415246, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), Runtime_alloc_size=10584
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.864 [program.cc:248] 4107 SaveBinaryData: Malloc the buffer for elfData, len=1392
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.875 [elf.cc:919] 4107 ParseKernelMetaData: section name = .text.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.880 [elf.cc:919] 4107 ParseKernelMetaData: section name = __CCE_KernelArgSize.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.882 [elf.cc:919] 4107 ParseKernelMetaData: section name = .ascend.meta.ub_scalar_kernel.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.885 [elf.cc:679] 4107 ElfParseTlvInfo: kernelVfType=1
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.887 [elf.cc:685] 4107 ElfParseTlvInfo: shareMemSize=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.890 [elf.cc:694] 4107 ElfParseTlvInfo: tlvLength=4, minStackSize=352.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.893 [elf.cc:954] 4107 ParseKernelMetaData: kernel_name=ub_scalar_kernel, ration[0]=0, ration[1]=0, dfxAddr=0x3aca7a4, dfxSize=40, funcType=0, crossCoreSync=0, kernelVfType=1, shareMemSize=0, minStackSize=352, earlyStartEnable=0, isSupportFuncEntry=0, functionEntryFlag=128, functionEntry=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.897 [elf.cc:919] 4107 ParseKernelMetaData: section name = .note.GNU-stack.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.908 [elf.cc:1194] 4107 UpdateKernelsInfo: update meta info, kernel_name=ub_scalar_kernel, dfxAddr=0x3aca7a4, dfxSize=40, funcType=0, elfDataFlag=1, userArgsNum=128, crossCoreSync=0, kernelVfType=1, shareMemSize=0, minStackSize=352, funcEntryType=0, functionEntry=0, schedMode=0, taskRation_0=0, taskRation_1=0, hasParamSummary=0, paramCount=0, paramTotalSize=0, earlyStartEnable=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.915 [runtime.cc:1748] 4107 AddProgramToPool: progId=52, poolIdx=0, activeCount=52
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.926 [program.cc:1720] 4107 GetKernelTypeAndMixType: Get kernel type success, kernelName=ub_scalar_kernel, funcType=0, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), mixType=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.937 [program.cc:1163] 4107 SetKernelAttribute: kernel_name=ub_scalar_kernel, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), userParamNum=128, sysParamNum=1, IsNeedSetFftsAddrInArg=0, isSupportOverFlow=1, elfDataFlag=1, earlyStartEnable=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.942 [program.cc:1763] 4107 BuildNewKernel: new kernel success, size=1304, programId=52, original kernel_name=ub_scalar_kernel, register kernel_name=ub_scalar_kernel, tilingKey=0, functionEntry=0, funcType=0, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), mixType=0, taskRation=2, offset=0, dfxAddr=61646756, dfxSize=40, earlyStartEnable=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.955 [api_impl.cc:2242] 4107 DevMalloc: size=2048, type=2, moduleId=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.648.976 [api_error.cc:1810] 4107 DevMalloc: device malloc, size=2048(bytes), type=2, moduleId=0, start ptr=0x1200000e7000, end ptr=0x1200000e7800
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.649.118 [api_impl.cc:2242] 4107 DevMalloc: size=2048, type=2, moduleId=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.649.128 [api_error.cc:1810] 4107 DevMalloc: device malloc, size=2048(bytes), type=2, moduleId=0, start ptr=0x1200000e8000, end ptr=0x1200000e8800
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.649.159 [program.cc:1542] 4107 BinaryPoolMemCopySync: binary memcpy to pool_mem, dev_mem=0x120041034000, size=336, device_id=7, readonly=1.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.658.514 [program.cc:1482] 4107 BinaryMemAdvise: advise memory, dev_mem=0x120041000000, dev_size=336, advise_type=3, device_id=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.669.517 [program.cc:1482] 4107 BinaryMemAdvise: advise memory, dev_mem=0x120041000000, dev_size=336, advise_type=2, device_id=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.669.554 [task_res_da.cc:155] 4107 AllocTaskInfoAndPos: alloc taskinfo success, device_id=7, stream_id=28, pos=29, sqeNum=1, head=29, taskResATail=30, allocNum=30.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.669.578 [aix_starsv2.cc:152] 4107 LoadArgsWithCopy: Load args success, size=20, device_id=7, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.669.584 [aix_starsv2.cc:407] 4107 StreamLaunchKernelV1: stream_id=28, kernel_name=ub_scalar_kernel, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), funcType=0, arg_size=20, taskRation=2, mixType=0, kernelVfType=1, dynamicSmSize=0, addr1=0x120041034000, addr2=0x0, kernelFlag=0x0, qos=0, partId=0, schemMode=0, infoAddr=(nil), atomicIndex=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.669.600 [davinci_kernel_task_v200_base.cc:179] 4107 ConstructCommonAicAivSqeWord: sqe dieFriendly=1, blockdim=1, groupDim=1, groupBlockDim=1, featureFlag=0,kernelcredit=253.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.669.604 [davinci_kernel_task_v200_base.cc:128] 4107 ConstructAivSqePart: set cfgInfo schemMode=0, sqe_schem=0, ratio=1, aivSimtDcuSmSize=262144.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.669.609 [stream_david.cc:760] 4107 AddTaskToList: public task, stream_id=28, task_id=29, task_type=66 (KERNEL_AIVEC), head=29, tail=30
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.669.613 [stream_david.cc:813] 4107 StarsAddTaskToStream: single-operator stream, stream_id=28, task_id=29, task_sn=56, type=66(KERNEL_AIVEC), sqe_num=1, device_id=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.669.623 [task_david.cc:630] 4107 DavidSendTask: device_id=7, ts_id=0, sq_id=123, stream_id=28, task_id=29, flip_num=0, task_sn=56, task_type=66(KERNEL_AIVEC), drvRet=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.669.665 [api_impl.cc:1691] 4107 StreamSynchronize: stream_id=28.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.671.337 [task_res_da.cc:100] 4107 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=30, head=29, tail=30, taskResAHead=29, taskResATail=30, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.671.352 [stream_david.cc:1479] 4107 GetTaskIdByPos: taskInfo is null, pos=30
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.671.356 [stream.cc:1928] 4107 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=30, nextTaskId=65535, finishedPos=29, endTaskId=29
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.671.360 [stream.cc:2065] 4107 SynchronizeImpl: device_id=7, stream_id=28, task_id=29 has been completed, no concerned cqe.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.671.366 [api_impl.cc:1724] 4107 StreamSynchronize: Trigger implicit mempool trim (exclude graph pool).
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.671.371 [api_error.cc:1485] 4107 StreamSynchronize: stream synchronize exit, stream_id=28, result=0x0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.671.708 [api_impl.cc:2265] 4107 DevFree: device free mem=0x1200000e7000
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.671.739 [api_impl.cc:2265] 4107 DevFree: device free mem=0x1200000e8000
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.671.782 [program.cc:147] 4107 ResetProgramAllocatorOnDestroy: Program allocator slot already empty on destroy, prog=0x3ac7cb0, progId=52, ref=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.456 [runtime.cc:4863] 4107 ChgUserDevIdToDeviceId: devId=0, drv devId=7, isDeviceSetResetOp=1
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.465 [api_impl.cc:2728] 4107 SetDevice: drv devId=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.470 [runtime.cc:2742] 4107 PrimaryContextRetain: Context inc ref, devId=7, ts_id=0, count=0x37
-[INFO] PROFILING(4107,python):2026-09-22-09:56:27.672.780 [msprofiler_impl.cpp:364] (tid:4107) ProfNotifySetDevice, not on cmd mode or acl api not ready.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.785 [runtime.cc:3046] 4107 MsProfNotifyWhenSetDevice: MsprofNotifySetDevice success, devId=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.788 [api_impl.cc:2737] 4107 SetDevice: SetCurRef = 0xdf1870,drv devId=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.792 [api_impl.cc:2739] 4107 SetDevice: New device success, deviceId=7.
-[INFO] PROFILING(4107,python):2026-09-22-09:56:27.672.799 [msprofiler_impl.cpp:364] (tid:4107) ProfNotifySetDevice, not on cmd mode or acl api not ready.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.802 [runtime.cc:4890] 4107 GetUserDevIdByDeviceId: userDevId=0, deviceId=7, isDeviceSetResetOp=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.806 [api_impl.cc:2750] 4107 SetDevice: SetDevice success, curCtx=0xdf1870, drv devId=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.818 [runtime.cc:1708] 4107 MallocProgramAndReg: new ElfProgram ok, magic=0x41415246, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), Runtime_alloc_size=10584
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.826 [program.cc:248] 4107 SaveBinaryData: Malloc the buffer for elfData, len=1856
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.837 [elf.cc:919] 4107 ParseKernelMetaData: section name = .text.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.841 [elf.cc:919] 4107 ParseKernelMetaData: section name = __CCE_KernelArgSize.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.844 [elf.cc:919] 4107 ParseKernelMetaData: section name = .ascend.meta.ub2ub_kernel.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.846 [elf.cc:679] 4107 ElfParseTlvInfo: kernelVfType=1
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.849 [elf.cc:685] 4107 ElfParseTlvInfo: shareMemSize=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.850 [elf.cc:694] 4107 ElfParseTlvInfo: tlvLength=4, minStackSize=352.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.854 [elf.cc:954] 4107 ParseKernelMetaData: kernel_name=ub2ub_kernel, ration[0]=0, ration[1]=0, dfxAddr=0x3ac6fc4, dfxSize=40, funcType=0, crossCoreSync=0, kernelVfType=1, shareMemSize=0, minStackSize=352, earlyStartEnable=0, isSupportFuncEntry=0, functionEntryFlag=128, functionEntry=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.858 [elf.cc:919] 4107 ParseKernelMetaData: section name = .note.GNU-stack.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.870 [elf.cc:1194] 4107 UpdateKernelsInfo: update meta info, kernel_name=ub2ub_kernel, dfxAddr=0x3ac6fc4, dfxSize=40, funcType=0, elfDataFlag=1, userArgsNum=128, crossCoreSync=0, kernelVfType=1, shareMemSize=0, minStackSize=352, funcEntryType=0, functionEntry=0, schedMode=0, taskRation_0=0, taskRation_1=0, hasParamSummary=0, paramCount=0, paramTotalSize=0, earlyStartEnable=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.876 [runtime.cc:1748] 4107 AddProgramToPool: progId=53, poolIdx=0, activeCount=53
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.887 [program.cc:1720] 4107 GetKernelTypeAndMixType: Get kernel type success, kernelName=ub2ub_kernel, funcType=0, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), mixType=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.896 [program.cc:1163] 4107 SetKernelAttribute: kernel_name=ub2ub_kernel, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), userParamNum=128, sysParamNum=1, IsNeedSetFftsAddrInArg=0, isSupportOverFlow=1, elfDataFlag=1, earlyStartEnable=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.902 [program.cc:1763] 4107 BuildNewKernel: new kernel success, size=1304, programId=53, original kernel_name=ub2ub_kernel, register kernel_name=ub2ub_kernel, tilingKey=0, functionEntry=0, funcType=0, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), mixType=0, taskRation=2, offset=0, dfxAddr=61632452, dfxSize=40, earlyStartEnable=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.916 [api_impl.cc:2242] 4107 DevMalloc: size=4096, type=2, moduleId=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.672.939 [api_error.cc:1810] 4107 DevMalloc: device malloc, size=4096(bytes), type=2, moduleId=0, start ptr=0x1200000e7000, end ptr=0x1200000e8000
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.673.044 [api_impl.cc:2242] 4107 DevMalloc: size=4096, type=2, moduleId=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.673.050 [api_error.cc:1810] 4107 DevMalloc: device malloc, size=4096(bytes), type=2, moduleId=0, start ptr=0x1200000e8000, end ptr=0x1200000e9000
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.673.082 [program.cc:1542] 4107 BinaryPoolMemCopySync: binary memcpy to pool_mem, dev_mem=0x120041035000, size=544, device_id=7, readonly=1.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.680.509 [program.cc:1482] 4107 BinaryMemAdvise: advise memory, dev_mem=0x120041000000, dev_size=544, advise_type=3, device_id=7.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.685.490 [task_res_da.cc:100] 4178 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=30, head=29, tail=30, taskResAHead=29, taskResATail=30, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.685.499 [stream_david.cc:1479] 4178 GetTaskIdByPos: taskInfo is null, pos=30
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.685.501 [stream.cc:1928] 4178 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=30, nextTaskId=65535, finishedPos=29, endTaskId=29
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.685.508 [task_res_da.cc:198] 4178 RecycleTaskInfo: recycle taskinfo success, pos=29, sqeNum=1, headBeforeRecycle=29, taskResAHead=30, tail=30, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.516 [program.cc:1482] 4107 BinaryMemAdvise: advise memory, dev_mem=0x120041000000, dev_size=544, advise_type=2, device_id=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.545 [task_res_da.cc:155] 4107 AllocTaskInfoAndPos: alloc taskinfo success, device_id=7, stream_id=28, pos=30, sqeNum=1, head=30, taskResATail=31, allocNum=31.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.567 [aix_starsv2.cc:152] 4107 LoadArgsWithCopy: Load args success, size=20, device_id=7, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.574 [aix_starsv2.cc:407] 4107 StreamLaunchKernelV1: stream_id=28, kernel_name=ub2ub_kernel, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), funcType=0, arg_size=20, taskRation=2, mixType=0, kernelVfType=1, dynamicSmSize=0, addr1=0x120041035000, addr2=0x0, kernelFlag=0x0, qos=0, partId=0, schemMode=0, infoAddr=(nil), atomicIndex=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.586 [davinci_kernel_task_v200_base.cc:179] 4107 ConstructCommonAicAivSqeWord: sqe dieFriendly=1, blockdim=1, groupDim=1, groupBlockDim=1, featureFlag=0,kernelcredit=253.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.590 [davinci_kernel_task_v200_base.cc:128] 4107 ConstructAivSqePart: set cfgInfo schemMode=0, sqe_schem=0, ratio=1, aivSimtDcuSmSize=262144.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.595 [stream_david.cc:760] 4107 AddTaskToList: public task, stream_id=28, task_id=30, task_type=66 (KERNEL_AIVEC), head=30, tail=31
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.599 [stream_david.cc:813] 4107 StarsAddTaskToStream: single-operator stream, stream_id=28, task_id=30, task_sn=57, type=66(KERNEL_AIVEC), sqe_num=1, device_id=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.608 [task_david.cc:630] 4107 DavidSendTask: device_id=7, ts_id=0, sq_id=123, stream_id=28, task_id=30, flip_num=0, task_sn=57, task_type=66(KERNEL_AIVEC), drvRet=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.642 [api_impl.cc:1691] 4107 StreamSynchronize: stream_id=28.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.691.664 [task_res_da.cc:100] 4107 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=31, head=30, tail=31, taskResAHead=30, taskResATail=31, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.691.668 [stream_david.cc:1479] 4107 GetTaskIdByPos: taskInfo is null, pos=31
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.671 [stream.cc:1928] 4107 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=31, nextTaskId=65535, finishedPos=30, endTaskId=30
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.674 [stream.cc:2065] 4107 SynchronizeImpl: device_id=7, stream_id=28, task_id=30 has been completed, no concerned cqe.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.680 [api_impl.cc:1724] 4107 StreamSynchronize: Trigger implicit mempool trim (exclude graph pool).
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.687 [api_error.cc:1485] 4107 StreamSynchronize: stream synchronize exit, stream_id=28, result=0x0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.946 [api_impl.cc:2265] 4107 DevFree: device free mem=0x1200000e7000
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.691.976 [api_impl.cc:2265] 4107 DevFree: device free mem=0x1200000e8000
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.692.017 [program.cc:147] 4107 ResetProgramAllocatorOnDestroy: Program allocator slot already empty on destroy, prog=0x3abe120, progId=53, ref=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.602 [runtime.cc:4863] 4107 ChgUserDevIdToDeviceId: devId=0, drv devId=7, isDeviceSetResetOp=1
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.609 [api_impl.cc:2728] 4107 SetDevice: drv devId=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.613 [runtime.cc:2742] 4107 PrimaryContextRetain: Context inc ref, devId=7, ts_id=0, count=0x38
-[INFO] PROFILING(4107,python):2026-09-22-09:56:27.692.635 [msprofiler_impl.cpp:364] (tid:4107) ProfNotifySetDevice, not on cmd mode or acl api not ready.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.638 [runtime.cc:3046] 4107 MsProfNotifyWhenSetDevice: MsprofNotifySetDevice success, devId=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.642 [api_impl.cc:2737] 4107 SetDevice: SetCurRef = 0xdf1870,drv devId=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.645 [api_impl.cc:2739] 4107 SetDevice: New device success, deviceId=7.
-[INFO] PROFILING(4107,python):2026-09-22-09:56:27.692.652 [msprofiler_impl.cpp:364] (tid:4107) ProfNotifySetDevice, not on cmd mode or acl api not ready.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.655 [runtime.cc:4890] 4107 GetUserDevIdByDeviceId: userDevId=0, deviceId=7, isDeviceSetResetOp=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.659 [api_impl.cc:2750] 4107 SetDevice: SetDevice success, curCtx=0xdf1870, drv devId=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.667 [runtime.cc:1708] 4107 MallocProgramAndReg: new ElfProgram ok, magic=0x41415246, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), Runtime_alloc_size=10584
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.673 [program.cc:248] 4107 SaveBinaryData: Malloc the buffer for elfData, len=1408
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.682 [elf.cc:919] 4107 ParseKernelMetaData: section name = .text.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.687 [elf.cc:919] 4107 ParseKernelMetaData: section name = __CCE_KernelArgSize.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.690 [elf.cc:919] 4107 ParseKernelMetaData: section name = .ascend.meta.ub_scalar_kernel.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.693 [elf.cc:679] 4107 ElfParseTlvInfo: kernelVfType=1
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.695 [elf.cc:685] 4107 ElfParseTlvInfo: shareMemSize=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.697 [elf.cc:694] 4107 ElfParseTlvInfo: tlvLength=4, minStackSize=352.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.700 [elf.cc:954] 4107 ParseKernelMetaData: kernel_name=ub_scalar_kernel, ration[0]=0, ration[1]=0, dfxAddr=0x3aca7b4, dfxSize=40, funcType=0, crossCoreSync=0, kernelVfType=1, shareMemSize=0, minStackSize=352, earlyStartEnable=0, isSupportFuncEntry=0, functionEntryFlag=128, functionEntry=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.705 [elf.cc:919] 4107 ParseKernelMetaData: section name = .note.GNU-stack.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.716 [elf.cc:1194] 4107 UpdateKernelsInfo: update meta info, kernel_name=ub_scalar_kernel, dfxAddr=0x3aca7b4, dfxSize=40, funcType=0, elfDataFlag=1, userArgsNum=128, crossCoreSync=0, kernelVfType=1, shareMemSize=0, minStackSize=352, funcEntryType=0, functionEntry=0, schedMode=0, taskRation_0=0, taskRation_1=0, hasParamSummary=0, paramCount=0, paramTotalSize=0, earlyStartEnable=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.723 [runtime.cc:1748] 4107 AddProgramToPool: progId=54, poolIdx=0, activeCount=54
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.734 [program.cc:1720] 4107 GetKernelTypeAndMixType: Get kernel type success, kernelName=ub_scalar_kernel, funcType=0, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), mixType=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.744 [program.cc:1163] 4107 SetKernelAttribute: kernel_name=ub_scalar_kernel, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), userParamNum=128, sysParamNum=1, IsNeedSetFftsAddrInArg=0, isSupportOverFlow=1, elfDataFlag=1, earlyStartEnable=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.750 [program.cc:1763] 4107 BuildNewKernel: new kernel success, size=1304, programId=54, original kernel_name=ub_scalar_kernel, register kernel_name=ub_scalar_kernel, tilingKey=0, functionEntry=0, funcType=0, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), mixType=0, taskRation=2, offset=0, dfxAddr=61646772, dfxSize=40, earlyStartEnable=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.762 [api_impl.cc:2242] 4107 DevMalloc: size=4096, type=2, moduleId=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.780 [api_error.cc:1810] 4107 DevMalloc: device malloc, size=4096(bytes), type=2, moduleId=0, start ptr=0x1200000e7000, end ptr=0x1200000e8000
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.844 [api_impl.cc:2242] 4107 DevMalloc: size=4096, type=2, moduleId=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.860 [api_error.cc:1810] 4107 DevMalloc: device malloc, size=4096(bytes), type=2, moduleId=0, start ptr=0x1200000e8000, end ptr=0x1200000e9000
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.692.893 [program.cc:1542] 4107 BinaryPoolMemCopySync: binary memcpy to pool_mem, dev_mem=0x120041036000, size=352, device_id=7, readonly=1.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.696.484 [task_res_da.cc:100] 4178 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=31, head=30, tail=31, taskResAHead=30, taskResATail=31, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.696.489 [stream_david.cc:1479] 4178 GetTaskIdByPos: taskInfo is null, pos=31
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.696.491 [stream.cc:1928] 4178 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=31, nextTaskId=65535, finishedPos=30, endTaskId=30
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.696.496 [task_res_da.cc:198] 4178 RecycleTaskInfo: recycle taskinfo success, pos=30, sqeNum=1, headBeforeRecycle=30, taskResAHead=31, tail=31, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.702.500 [program.cc:1482] 4107 BinaryMemAdvise: advise memory, dev_mem=0x120041000000, dev_size=352, advise_type=3, device_id=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.713.494 [program.cc:1482] 4107 BinaryMemAdvise: advise memory, dev_mem=0x120041000000, dev_size=352, advise_type=2, device_id=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.713.507 [task_res_da.cc:155] 4107 AllocTaskInfoAndPos: alloc taskinfo success, device_id=7, stream_id=28, pos=31, sqeNum=1, head=31, taskResATail=32, allocNum=32.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.713.526 [aix_starsv2.cc:152] 4107 LoadArgsWithCopy: Load args success, size=20, device_id=7, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.713.532 [aix_starsv2.cc:407] 4107 StreamLaunchKernelV1: stream_id=28, kernel_name=ub_scalar_kernel, kernelAttrType=KERNEL_ATTR_TYPE_VECTOR(2), funcType=0, arg_size=20, taskRation=2, mixType=0, kernelVfType=1, dynamicSmSize=0, addr1=0x120041036000, addr2=0x0, kernelFlag=0x0, qos=0, partId=0, schemMode=0, infoAddr=(nil), atomicIndex=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.713.543 [davinci_kernel_task_v200_base.cc:179] 4107 ConstructCommonAicAivSqeWord: sqe dieFriendly=1, blockdim=1, groupDim=1, groupBlockDim=1, featureFlag=0,kernelcredit=253.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.713.547 [davinci_kernel_task_v200_base.cc:128] 4107 ConstructAivSqePart: set cfgInfo schemMode=0, sqe_schem=0, ratio=1, aivSimtDcuSmSize=262144.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.713.552 [stream_david.cc:760] 4107 AddTaskToList: public task, stream_id=28, task_id=31, task_type=66 (KERNEL_AIVEC), head=31, tail=32
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.713.558 [stream_david.cc:813] 4107 StarsAddTaskToStream: single-operator stream, stream_id=28, task_id=31, task_sn=58, type=66(KERNEL_AIVEC), sqe_num=1, device_id=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.713.567 [task_david.cc:630] 4107 DavidSendTask: device_id=7, ts_id=0, sq_id=123, stream_id=28, task_id=31, flip_num=0, task_sn=58, task_type=66(KERNEL_AIVEC), drvRet=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.713.585 [api_impl.cc:1691] 4107 StreamSynchronize: stream_id=28.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.715.266 [task_res_da.cc:100] 4107 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=32, head=31, tail=32, taskResAHead=31, taskResATail=32, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.715.270 [stream_david.cc:1479] 4107 GetTaskIdByPos: taskInfo is null, pos=32
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.274 [stream.cc:1928] 4107 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=32, nextTaskId=65535, finishedPos=31, endTaskId=31
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.277 [stream.cc:2065] 4107 SynchronizeImpl: device_id=7, stream_id=28, task_id=31 has been completed, no concerned cqe.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.282 [api_impl.cc:1724] 4107 StreamSynchronize: Trigger implicit mempool trim (exclude graph pool).
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.285 [api_error.cc:1485] 4107 StreamSynchronize: stream synchronize exit, stream_id=28, result=0x0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.496 [api_impl.cc:2265] 4107 DevFree: device free mem=0x1200000e7000
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.521 [api_impl.cc:2265] 4107 DevFree: device free mem=0x1200000e8000
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.715.561 [program.cc:147] 4107 ResetProgramAllocatorOnDestroy: Program allocator slot already empty on destroy, prog=0x3ac7cb0, progId=54, ref=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.572 [api_impl.cc:1534] 4107 StreamDestroy: stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.579 [stream_state_callback_manager.cc:68] 4107 Notify: No stream state callback function registered!
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.584 [stream_david.cc:590] 4107 TearDown: stream_id=28, sq_id=123, head=31, tail=32, isForceRecycle=0, flag=0, failMode=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.590 [task_res_da.cc:155] 4107 AllocTaskInfoAndPos: alloc taskinfo success, device_id=7, stream_id=28, pos=32, sqeNum=1, head=31, taskResATail=33, allocNum=33.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.596 [maintenance_task_v200_base.cc:47] 4107 ConstructDavidSqeForMaintenanceTask: MaintenanceTask, device_id=7, stream_id=28, task_id=32, task_sn=59.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.600 [stream_david.cc:760] 4107 AddTaskToList: public task, stream_id=28, task_id=32, task_type=6 (MAINTENANCE), head=31, tail=33
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.604 [stream_david.cc:813] 4107 StarsAddTaskToStream: single-operator stream, stream_id=28, task_id=32, task_sn=59, type=6(MAINTENANCE), sqe_num=1, device_id=7
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.608 [task_david.cc:630] 4107 DavidSendTask: device_id=7, ts_id=0, sq_id=123, stream_id=28, task_id=32, flip_num=0, task_sn=59, task_type=6(MAINTENANCE), drvRet=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.613 [task_recycle_send_sync.cc:188] 4107 SyncTaskForSeparateSendAndRecycle: device_id=7, stream_id=28, taskResPos=32 timeout=4294967295.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.715.619 [task_res_da.cc:100] 4107 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=33, head=31, tail=33, taskResAHead=31, taskResATail=33, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.715.622 [stream_david.cc:1479] 4107 GetTaskIdByPos: taskInfo is null, pos=33
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.715.624 [stream.cc:1928] 4107 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=33, nextTaskId=65535, finishedPos=32, endTaskId=32
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.555 [task_recycle_cqrpt_base.cc:358] 4178 ProcReport: Get logic report: cnt=1, idx=0, stream_id=28, report_pos=32, sync_pos=4294967295, sqe_type=3, sq_head=32, target_task_sn=4294967295, report_task_sn=59, retCode=0, errType=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.566 [task_recycle_cqrpt_base.cc:376] 4178 ProcReport: taskType=6.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.584 [task_recycle.cc:75] 4178 ProcLogicCqUntilEmpty: Task Wait: stream_id=28, logicCqId=12073, retCode=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.725.588 [task_res_da.cc:100] 4178 GetTaskInfo: taskId is invalid, device_id=7, stream_id=28, taskId=33, head=31, tail=33, taskResAHead=31, taskResATail=33, taskInfo_id=0.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:27.725.591 [stream_david.cc:1479] 4178 GetTaskIdByPos: taskInfo is null, pos=33
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.593 [stream.cc:1928] 4178 GetFinishedTaskIdBySqHead: stream_id=28, sq_id=123, sqHead=33, nextTaskId=65535, finishedPos=32, endTaskId=32
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.599 [task_res_da.cc:198] 4178 RecycleTaskInfo: recycle taskinfo success, pos=32, sqeNum=1, headBeforeRecycle=31, taskResAHead=33, tail=33, stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.602 [stream.cc:2073] 4107 SynchronizeImpl: device_id=7, stream_id=28, task_id=32 has been completed, concerned task_id=32 has been recycled.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.632 [stream_sqcq_manage.cc:734] 4107 FreeLogicCq: Return(0), threadIdentifier(140454932629312), devId(7), tsId(0), cqId(12073), isFastCq(0).
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.654 [npu_driver_res.cc:1035] 4107 StreamUnBindLogicCq: success: deviceId=7, tsId=0, streamId=28, logicCq=12073.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.690 [npu_driver_res.cc:1949] 4107 LogicCqFree: Succ:device_id=7,ts_id=0,type=2,logic_cq_id=12073, drvFlag=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.695 [stream.cc:290] 4107 FreeStreamId: Free stream_id=28.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.701 [stream_sqcq_manage.cc:461] 4107 DeAllocStreamSqCq: deviceId=7, tsId=0, drvFlag=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.707 [npu_driver_res.cc:1822] 4107 NormalSqCqFree: Normal sqcq free, sqId=123, cqId=123, device_id=7, tsId=0, drvFlag=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.970 [npu_driver_res.cc:1832] 4107 NormalSqCqFree: Normal sqcq free success, sqId=123, cqId=123, device_id=7, tsId=0, drvFlag=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.976 [stream_sqcq_manage.cc:476] 4107 DeAllocStreamSqCq: [SqCqManage]success to release sq, sq_id=123, cq_id=123, stream_id=28, is_sq_need_release=1, drvFlag=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.981 [npu_driver_res.cc:1366] 4107 StreamIdFree: stream id free begin, device_id=7, stream_id=28, ts_id=0, remote_stream_id=0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:27.725.992 [npu_driver_res.cc:1377] 4107 StreamIdFree: Stream id free success, stream_id=28, device_id=7, tsId=0, streamFlag=0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:27.726.100 [acl.cpp:632]4107 aclFinalizeImpl: start to execute aclFinalize
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:27.726.107 [acl.cpp:549]4107 aclFinalizeInternal: start to execute aclFinalizeInternal
-[INFO] DRV(4107,python):2026-09-22-09:56:27.726.570 [hdc_core.c:1733][ascend][curpid:4107,4107][drv][hdc][drvHdcSetSessionReference]Get pid number. (session=8826; pid=4107)
-[INFO] DRV(4107,python):2026-09-22-09:56:27.726.646 [hdc_client.c:434][ascend][curpid:4107,4107][drv][hdc][drv_hdc_client_session_close]Destroy client session. (sock=8826)
-[INFO] TDT(4107,python):2026-09-22-09:56:27.812.716 [client_manager.cpp:398][ChangeUserDeviceIdToLogicDeviceId][tid:4176] [TsdClient] change userDevId [0] to logicDevId [7]
-[INFO] TDT(4107,python):2026-09-22-09:56:27.812.742 [client_manager.cpp:398][ChangeUserDeviceIdToLogicDeviceId][tid:4176] [TsdClient] change userDevId [0] to logicDevId [7]
-[INFO] TDT(4107,python):2026-09-22-09:56:27.812.746 [client_manager.cpp:398][ChangeUserDeviceIdToLogicDeviceId][tid:4176] [TsdClient] change userDevId [0] to logicDevId [7]
-[INFO] DRV(4107,python):2026-09-22-09:56:28.628.728 [hdc_client.c:434][ascend][curpid:4107,4173][drv][hdc][drv_hdc_client_session_close]Destroy client session. (sock=8821)
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.855 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_MALLOC_FREE, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.860 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_MALLOC_FREE_HOST, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.864 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_CONTEXT, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.866 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_SET_RESET_DEVICE, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.869 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_EVENT, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.871 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_STREAM, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.873 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_DVPP_MALLOC_FREE, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.875 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_RECORD_RESET_EVENT, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.878 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DATA_BUFFER, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.880 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_TENSOR_DESC, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.882 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DESC, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.884 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DATASET, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.887 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_LOAD_UNLOAD_MODEL, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.889 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_AIPP, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.891 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_ATTR, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.893 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_HANDLE, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.896 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DVPP_CHANNEL_DESC, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.898 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DVPP_PIC_DESC, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.901 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DVPP_ROI_CONFIG, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.904 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DVPP_RESIZE_CONFIG, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.906 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DVPP_JPEGE_CONFIG, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.908 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_VDEC_CHANNEL_DESC, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.910 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_VENC_CHANNEL_DESC, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.913 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DVPP_STREAM_DESC, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.915 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_VDEC_FRAME_CONFIG, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.917 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_VENC_FRAME_CONFIG, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.919 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DVPP_CHANNEL, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.921 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_VDEC_CHANNEL, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.924 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_VENC_CHANNEL, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.926 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_DVPP_BATCH_PIC_DESC, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.928 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_GROUP_INFO, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.930 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_PROF_CONFIG, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.932 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_PROF_SUB_CONFIG, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.935 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_MODEL_CONFIG, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.937 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_QUEUE_ID, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.950 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_QUEUE_ATTR, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.953 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_QUEUE_ROUTE, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.955 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_QUEUE_ROUTE_LIST, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.957 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_QUEUE_ROUTE_QUERY, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.960 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_MBUF, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.962 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_GRAPH_DUMP_OPTION, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.964 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_ALLOCATOR_DESC, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.966 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_CREATE_DESTROY_ALLOCATOR_BINARY_DESC, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.969 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_RESERVE_RELEASE_MEMORY_ADDRESS, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.971 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_MALLOC_FREE_PHYSICAL_MEMORY, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.973 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_MAP_UNMAP_MEMORY, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.976 [resource_statistics.cpp:113]4107 TraverseStatistics: The ResourceType:ACL_STATISTICS_LOAD_UNLOAD_BINARY, applyTotal = 0, applySucc = 0, releaseTotal = 0, releaseSucc = 0
-[INFO] PROFILING(4107,python):2026-09-22-09:56:28.628.987 [dyn_prof_mgr.cpp:74] (tid:4107) Dynamic profiling task has not been started
-[WARNING] PROFILING(4107,python):2026-09-22-09:56:28.628.990 [prof_acl_mgr.cpp:2684] (tid:4107) Skip profiling finalize process because current mode is not common or aclapi.
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.628.998 [acl.cpp:359]4107 IsEnableAutoUCMemeory: auto-uc-memory is enabled.
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.629.001 [acl.cpp:594]4107 aclFinalizeInternal: unregister kernel launch fill function in aclFinalize
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.629.015 [runtime.cc:5207] 4107 UnRegKernelLaunchFillFunc: unregister callback finish, symbol:g_opSystemRunCfg.
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.629.018 [acl.cpp:626]4107 aclFinalizeInternal: execute aclFinalizeInternal successfully
-[INFO] ASCENDCL(4107,python):2026-09-22-09:56:28.629.020 [acl.cpp:644]4107 aclFinalizeImpl: successfully execute aclFinalize
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.629.033 [runtime.cc:4863] 4107 ChgUserDevIdToDeviceId: devId=0, drv devId=7, isDeviceSetResetOp=1
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.629.039 [api_impl.cc:3036] 4107 DeviceReset: Reset device, drv devId=7.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.629.044 [runtime.cc:254] 4107 DecideOrdinaryPrimaryReleaseAction: Context TryDecRef, ts_id=0, count=0x37, reset:0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.629.047 [api_impl.cc:3049] 4107 DeviceReset: Succ, drv devId=7.
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py prep
+[prep] inputs saved
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py verify
 [verify] ub2ub bfloat16 16x256: PASS (恒等)
 [verify] ub_scalar bfloat16 16x256: PASS (恒等)
 [verify] ub2ub bfloat16 64x256: PASS (恒等)
@@ -355,60 +11,130 @@
 [verify] ub_scalar float32 16x256: PASS (恒等)
 [verify] ub2ub float32 64x256: PASS (恒等)
 [verify] ub_scalar float32 64x256: PASS (恒等)
-[verify] ub2ub bfloat16 1x8: PASS (恒等)
-[verify] ub_scalar bfloat16 1x8: PASS (恒等)
-[verify] ub2ub float32 1x8: PASS (恒等)
-[verify] ub_scalar float32 1x8: PASS (恒等)
-[verify] ub2ub bfloat16 2x8: PASS (恒等)
-[verify] ub_scalar bfloat16 2x8: PASS (恒等)
-[verify] ub2ub float32 2x8: PASS (恒等)
-[verify] ub_scalar float32 2x8: PASS (恒等)
-[verify] ub2ub bfloat16 4x8: PASS (恒等)
-[verify] ub_scalar bfloat16 4x8: PASS (恒等)
-[verify] ub2ub float32 4x8: PASS (恒等)
-[verify] ub_scalar float32 4x8: PASS (恒等)
-[verify] ub2ub bfloat16 8x8: PASS (恒等)
-[verify] ub_scalar bfloat16 8x8: PASS (恒等)
-[verify] ub2ub float32 8x8: PASS (恒等)
-[verify] ub_scalar float32 8x8: PASS (恒等)
-[verify] ub2ub bfloat16 8x16: PASS (恒等)
-[verify] ub_scalar bfloat16 8x16: PASS (恒等)
-[verify] ub2ub float32 8x16: PASS (恒等)
-[verify] ub_scalar float32 8x16: PASS (恒等)
-[verify] ub2ub bfloat16 16x16: PASS (恒等)
-[verify] ub_scalar bfloat16 16x16: PASS (恒等)
-[verify] ub2ub float32 16x16: PASS (恒等)
-[verify] ub_scalar float32 16x16: PASS (恒等)
-[verify] ub2ub bfloat16 16x32: PASS (恒等)
-[verify] ub_scalar bfloat16 16x32: PASS (恒等)
-[verify] ub2ub float32 16x32: PASS (恒等)
-[verify] ub_scalar float32 16x32: PASS (恒等)
-[verify] ub2ub bfloat16 16x64: PASS (恒等)
-[verify] ub_scalar bfloat16 16x64: PASS (恒等)
-[verify] ub2ub float32 16x64: PASS (恒等)
-[verify] ub_scalar float32 16x64: PASS (恒等)
-[INFO] PROFILING(4107,python):2026-09-22-09:56:28.648.113 [dyn_prof_mgr.cpp:74] (tid:4107) Dynamic profiling task has not been started
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.648.149 [osal.cc:338] 4107 ThreadExit: ThreadExit start.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.648.154 [global_state_manager.cc:96] 4107 ForceUnlocked: already in RUNNING state, no action needed
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.683.855 [global_state_manager.cc:130] 4177 DecBackgroundThreadCount: ReportRasRun thread does not need to be locked. Total:1
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.683.874 [runtime.cc:5586] 4177 ReportRasRun: Report ras thread exits normally!
-[INFO] TDT(4107,python):2026-09-22-09:56:28.843.529 [client_manager.cpp:398][ChangeUserDeviceIdToLogicDeviceId][tid:4176] [TsdClient] change userDevId [0] to logicDevId [7]
-[INFO] TDT(4107,python):2026-09-22-09:56:28.843.553 [client_manager.cpp:398][ChangeUserDeviceIdToLogicDeviceId][tid:4176] [TsdClient] change userDevId [0] to logicDevId [7]
-[INFO] TDT(4107,python):2026-09-22-09:56:28.843.558 [client_manager.cpp:398][ChangeUserDeviceIdToLogicDeviceId][tid:4176] [TsdClient] change userDevId [0] to logicDevId [7]
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.843.663 [global_state_manager.cc:130] 4176 DecBackgroundThreadCount: MonitoringRun thread does not need to be locked. Total:0
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.843.668 [stars_engine.cc:1932] 4176 MonitoringRun: Stars Monitor thread has finished, ts_id=0.
-[INFO] IDEDD(4107,python):2026-09-22-09:56:28.845.684 [kernel_dfx_dumper.cpp:148][tid:4107] Begin to stop the dfx dump task.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.845.845 [runtime_keeper.cc:250] 4107 PrepareRuntimeProcessExitImpl: Runtime process exit prepare start.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.845.850 [global_state_manager.cc:96] 4107 ForceUnlocked: already in RUNNING state, no action needed
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.845.856 [runtime.cc:5556] 4107 DestroyReportRasThread: Join report ras thread OK.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.845.860 [runtime.cc:1635] 4107 WaitMonitorExit: wait monitor success, used count=0.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.939.746 [stars_engine.cc:223] 4178 RecycleThreadRun: RecycleThreadRun thread leave.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.945.489 [stars_engine.cc:199] 4107 DestroyRecycleThread: Stars engine joined recycle thread OK.
-[WARNING] RUNTIME(4107,python):2026-09-22-09:56:28.945.503 [osal.cc:246] 4107 Join: mmJoinTask failed, thread=140452025063104 does not exist!
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.945.506 [stars_engine.cc:158] 4107 Stop: StarsEngine joined monitor thread OK.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.945.529 [xpu_task_fail_callback_data_manager.cc:64] 4107 ~XpuTaskFailCallBackManager: XpuTaskFailCallBackManager Destructor.
-[INFO] RUNTIME(4107,python):2026-09-22-09:56:28.945.531 [task_fail_callback_data_manager.cc:91] 4107 ~TaskFailCallBackManager: Destructor.
-[INFO] ATRACE(4107,python):2026-09-22-09:56:28.959.115 [stacktrace_signal.c:229](tid:4107) unregister all signal handlers, can not capture signal.
-[INFO] DRV(4107,python):2026-09-22-09:56:29.142.719 [hdc_client.c:434][ascend][curpid:4107,4174][drv][hdc][drv_hdc_client_session_close]Destroy client session. (sock=8823)
-[INFO] ATRACE(4107,python):2026-09-22-09:56:29.142.830 [atrace_client_core.c:127](tid:4174) atrace receive thread exited, devId=7.
+[verify] l1ub bfloat16 16x256: ERROR rtStreamSynchronize failed, error code: 0x7bc87
+[verify] l1ub bfloat16 64x256: ERROR rtStreamSynchronize failed, error code: 0x7bc87
+[verify] l1ub float32 16x256: ERROR rtStreamSynchronize failed, error code: 0x7bc87
+Traceback (most recent call last):
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 497, in <module>
+    main()
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 487, in main
+    do_verify()
+  File "/home/zwh/tmp/bench_transfer/bench_run.py", line 407, in do_verify
+    w1 = np.load(npy_path(w_name("W1", variant, dtype, M, K)))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.0/lib/python3.11/site-packages/numpy/lib/npyio.py", line 405, in load
+    fid = stack.enter_context(open(os_fspath(file), "rb"))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/zwh/tmp/bench_transfer/bench_W1_l1ub_a_bfloat16_16x256.npy'
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run   
+[ub2ub bfloat16 16x256] T(r16)=40.4us T(r128)=38.6us round=-0.02us dma=-0.02us bw(move)=-494.45GB/s bw(traffic)=-988.90GB/s
+[ub_scalar bfloat16 16x256] T(r16)=850.8us T(r128)=6789.5us round=53.02us dma=53.02us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 64x256] T(r16)=45.0us T(r128)=138.7us round=0.84us dma=0.84us bw(move)=39.15GB/s bw(traffic)=78.31GB/s
+[ub_scalar bfloat16 64x256] T(r16)=3397.0us T(r128)=27144.4us round=212.03us dma=212.03us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 128x256] T(r16)=46.7us T(r128)=47.7us round=0.01us dma=0.01us bw(move)=7154.44GB/s bw(traffic)=14308.89GB/s
+[ub_scalar bfloat16 128x256] T(r16)=6789.3us T(r128)=54282.7us round=424.05us dma=424.05us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x256] T(r16)=35.8us T(r128)=42.3us round=0.06us dma=0.06us bw(move)=280.45GB/s bw(traffic)=560.91GB/s
+[ub_scalar float32 16x256] T(r16)=930.5us T(r128)=6729.0us round=51.77us dma=51.77us bw(move)=0.32GB/s bw(traffic)=0.63GB/s
+[ub2ub float32 64x256] T(r16)=57.7us T(r128)=46.2us round=-0.10us dma=-0.10us bw(move)=-637.69GB/s bw(traffic)=-1275.39GB/s
+[ub_scalar float32 64x256] T(r16)=3366.1us T(r128)=26905.6us round=210.17us dma=210.17us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ERROR] l1ub bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ub2ub bfloat16 1x8] T(r16)=46.5us T(r128)=46.4us round=-0.00us dma=-0.00us bw(move)=-25.20GB/s bw(traffic)=-50.41GB/s
+[ub_scalar bfloat16 1x8] T(r16)=44.2us T(r128)=47.5us round=0.03us dma=0.03us bw(move)=0.55GB/s bw(traffic)=1.10GB/s
+[ub2ub float32 1x8] T(r16)=46.1us T(r128)=46.4us round=0.00us dma=0.00us bw(move)=11.60GB/s bw(traffic)=23.21GB/s
+[ub_scalar float32 1x8] T(r16)=46.3us T(r128)=46.0us round=-0.00us dma=-0.00us bw(move)=-12.48GB/s bw(traffic)=-24.95GB/s
+[ub2ub bfloat16 2x8] T(r16)=301.2us T(r128)=272.6us round=-0.26us dma=-0.26us bw(move)=-0.13GB/s bw(traffic)=-0.25GB/s
+[ub_scalar bfloat16 2x8] T(r16)=46.5us T(r128)=46.0us round=-0.00us dma=-0.00us bw(move)=-6.41GB/s bw(traffic)=-12.82GB/s
+[ub2ub float32 2x8] T(r16)=46.0us T(r128)=42.3us round=-0.03us dma=-0.03us bw(move)=-1.95GB/s bw(traffic)=-3.89GB/s
+[ub_scalar float32 2x8] T(r16)=46.0us T(r128)=46.7us round=0.01us dma=0.01us bw(move)=10.93GB/s bw(traffic)=21.85GB/s
+[ub2ub bfloat16 4x8] T(r16)=45.5us T(r128)=46.1us round=0.01us dma=0.01us bw(move)=11.14GB/s bw(traffic)=22.29GB/s
+[ub_scalar bfloat16 4x8] T(r16)=46.7us T(r128)=46.1us round=-0.01us dma=-0.01us bw(move)=-11.58GB/s bw(traffic)=-23.16GB/s
+[ub2ub float32 4x8] T(r16)=45.7us T(r128)=266.6us round=1.97us dma=1.97us bw(move)=0.06GB/s bw(traffic)=0.13GB/s
+[ub_scalar float32 4x8] T(r16)=46.2us T(r128)=47.5us round=0.01us dma=0.01us bw(move)=11.02GB/s bw(traffic)=22.04GB/s
+[ub2ub bfloat16 8x8] T(r16)=46.6us T(r128)=46.7us round=0.00us dma=0.00us bw(move)=195.05GB/s bw(traffic)=390.10GB/s
+[ub_scalar bfloat16 8x8] T(r16)=46.7us T(r128)=87.8us round=0.37us dma=0.37us bw(move)=0.35GB/s bw(traffic)=0.70GB/s
+[ub2ub float32 8x8] T(r16)=47.1us T(r128)=30.4us round=-0.15us dma=-0.15us bw(move)=-1.72GB/s bw(traffic)=-3.44GB/s
+[ub_scalar float32 8x8] T(r16)=30.3us T(r128)=96.7us round=0.59us dma=0.59us bw(move)=0.43GB/s bw(traffic)=0.86GB/s
+[ub2ub bfloat16 8x16] T(r16)=47.1us T(r128)=46.6us round=-0.00us dma=-0.00us bw(move)=-62.40GB/s bw(traffic)=-124.80GB/s
+[ub_scalar bfloat16 8x16] T(r16)=46.3us T(r128)=168.2us round=1.09us dma=1.09us bw(move)=0.24GB/s bw(traffic)=0.47GB/s
+[ub2ub float32 8x16] T(r16)=46.8us T(r128)=46.7us round=-0.00us dma=-0.00us bw(move)=-599.08GB/s bw(traffic)=-1198.17GB/s
+[ub_scalar float32 8x16] T(r16)=46.8us T(r128)=163.7us round=1.04us dma=1.04us bw(move)=0.49GB/s bw(traffic)=0.98GB/s
+[ub2ub bfloat16 16x16] T(r16)=47.7us T(r128)=47.5us round=-0.00us dma=-0.00us bw(move)=-239.35GB/s bw(traffic)=-478.70GB/s
+[ub_scalar bfloat16 16x16] T(r16)=48.8us T(r128)=334.7us round=2.55us dma=2.55us bw(move)=0.20GB/s bw(traffic)=0.40GB/s
+[ub2ub float32 16x16] T(r16)=47.0us T(r128)=46.6us round=-0.00us dma=-0.00us bw(move)=-312.38GB/s bw(traffic)=-624.76GB/s
+[ub_scalar float32 16x16] T(r16)=47.2us T(r128)=326.1us round=2.49us dma=2.49us bw(move)=0.41GB/s bw(traffic)=0.82GB/s
+[ub2ub bfloat16 16x32] T(r16)=46.4us T(r128)=46.4us round=-0.00us dma=-0.00us bw(move)=-1403.43GB/s bw(traffic)=-2806.85GB/s
+[ub_scalar bfloat16 16x32] T(r16)=109.7us T(r128)=861.7us round=6.71us dma=6.71us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x32] T(r16)=47.7us T(r128)=46.4us round=-0.01us dma=-0.01us bw(move)=-181.54GB/s bw(traffic)=-363.08GB/s
+[ub_scalar float32 16x32] T(r16)=108.7us T(r128)=854.0us round=6.65us dma=6.65us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub bfloat16 16x64] T(r16)=46.1us T(r128)=46.3us round=0.00us dma=0.00us bw(move)=960.70GB/s bw(traffic)=1921.40GB/s
+[ub_scalar bfloat16 16x64] T(r16)=215.2us T(r128)=1708.3us round=13.33us dma=13.33us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x64] T(r16)=44.4us T(r128)=45.7us round=0.01us dma=0.01us bw(move)=360.46GB/s bw(traffic)=720.91GB/s
+[ub_scalar float32 16x64] T(r16)=362.2us T(r128)=1829.0us round=13.10us dma=13.10us bw(move)=0.31GB/s bw(traffic)=0.63GB/s
+
+===== 差分法汇总（t_round 消除 launch/GM/gemm 常数）=====
+variant      dtype           shape     KB  t_r16us  t_r128us  round_us  dma_us  GB/s(mv)  GB/s(tr)
+ub2ub        bfloat16       16x256   8.00     40.4      38.6     -0.02   -0.02   -494.45   -988.90
+ub_scalar    bfloat16       16x256   8.00    850.8    6789.5     53.02   53.02      0.15      0.31
+ub2ub        bfloat16       64x256  32.00     45.0     138.7      0.84    0.84     39.15     78.31
+ub_scalar    bfloat16       64x256  32.00   3397.0   27144.4    212.03  212.03      0.15      0.31
+ub2ub        bfloat16      128x256  64.00     46.7      47.7      0.01    0.01   7154.44  14308.89
+ub_scalar    bfloat16      128x256  64.00   6789.3   54282.7    424.05  424.05      0.15      0.31
+ub2ub        float32        16x256  16.00     35.8      42.3      0.06    0.06    280.45    560.91
+ub_scalar    float32        16x256  16.00    930.5    6729.0     51.77   51.77      0.32      0.63
+ub2ub        float32        64x256  64.00     57.7      46.2     -0.10   -0.10   -637.69  -1275.39
+ub_scalar    float32        64x256  64.00   3366.1   26905.6    210.17  210.17      0.31      0.62
+ub2ub        bfloat16          1x8   0.02     46.5      46.4     -0.00   -0.00    -25.20    -50.41
+ub_scalar    bfloat16          1x8   0.02     44.2      47.5      0.03    0.03      0.55      1.10
+ub2ub        float32           1x8   0.03     46.1      46.4      0.00    0.00     11.60     23.21
+ub_scalar    float32           1x8   0.03     46.3      46.0     -0.00   -0.00    -12.48    -24.95
+ub2ub        bfloat16          2x8   0.03    301.2     272.6     -0.26   -0.26     -0.13     -0.25
+ub_scalar    bfloat16          2x8   0.03     46.5      46.0     -0.00   -0.00     -6.41    -12.82
+ub2ub        float32           2x8   0.06     46.0      42.3     -0.03   -0.03     -1.95     -3.89
+ub_scalar    float32           2x8   0.06     46.0      46.7      0.01    0.01     10.93     21.85
+ub2ub        bfloat16          4x8   0.06     45.5      46.1      0.01    0.01     11.14     22.29
+ub_scalar    bfloat16          4x8   0.06     46.7      46.1     -0.01   -0.01    -11.58    -23.16
+ub2ub        float32           4x8   0.12     45.7     266.6      1.97    1.97      0.06      0.13
+ub_scalar    float32           4x8   0.12     46.2      47.5      0.01    0.01     11.02     22.04
+ub2ub        bfloat16          8x8   0.12     46.6      46.7      0.00    0.00    195.05    390.10
+ub_scalar    bfloat16          8x8   0.12     46.7      87.8      0.37    0.37      0.35      0.70
+ub2ub        float32           8x8   0.25     47.1      30.4     -0.15   -0.15     -1.72     -3.44
+ub_scalar    float32           8x8   0.25     30.3      96.7      0.59    0.59      0.43      0.86
+ub2ub        bfloat16         8x16   0.25     47.1      46.6     -0.00   -0.00    -62.40   -124.80
+ub_scalar    bfloat16         8x16   0.25     46.3     168.2      1.09    1.09      0.24      0.47
+ub2ub        float32          8x16   0.50     46.8      46.7     -0.00   -0.00   -599.08  -1198.17
+ub_scalar    float32          8x16   0.50     46.8     163.7      1.04    1.04      0.49      0.98
+ub2ub        bfloat16        16x16   0.50     47.7      47.5     -0.00   -0.00   -239.35   -478.70
+ub_scalar    bfloat16        16x16   0.50     48.8     334.7      2.55    2.55      0.20      0.40
+ub2ub        float32         16x16   1.00     47.0      46.6     -0.00   -0.00   -312.38   -624.76
+ub_scalar    float32         16x16   1.00     47.2     326.1      2.49    2.49      0.41      0.82
+ub2ub        bfloat16        16x32   1.00     46.4      46.4     -0.00   -0.00  -1403.43  -2806.85
+ub_scalar    bfloat16        16x32   1.00    109.7     861.7      6.71    6.71      0.15      0.31
+ub2ub        float32         16x32   2.00     47.7      46.4     -0.01   -0.01   -181.54   -363.08
+ub_scalar    float32         16x32   2.00    108.7     854.0      6.65    6.65      0.31      0.62
+ub2ub        bfloat16        16x64   2.00     46.1      46.3      0.00    0.00    960.70   1921.40
+ub_scalar    bfloat16        16x64   2.00    215.2    1708.3     13.33   13.33      0.15      0.31
+ub2ub        float32         16x64   4.00     44.4      45.7      0.01    0.01    360.46    720.91
+ub_scalar    float32         16x64   4.00    362.2    1829.0     13.10   13.10      0.31      0.63
 root@localhost:/home/zwh/tmp/bench_transfer# 
