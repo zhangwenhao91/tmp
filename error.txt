@@ -1,4 +1,29 @@
-ls /usr/local/Ascend/ascend-toolkit/                      # 确认版本目录
-python3 -c "import torch_npu; print(torch_npu.npu.get_device_properties(0))"   # 尽量有 arch
-cat /usr/local/Ascend/driver/version.info 2>/dev/null     # 驱动版本
-grep -rn "9579\|950PR\|3510\|c310" /usr/local/Ascend/ascend-toolkit/*/x86_64-linux/data/ 2>/dev/null | head
+root@localhost:/home/zwh/tmp/bench_transfer# ls /usr/local/Ascend/ascend-toolkit/  
+8.3.RC1  latest
+root@localhost:/home/zwh/tmp/bench_transfer# python3 -c "import torch_npu; print(torch_npu.npu.get_device_properties(0))"
+_NPUDeviceProperties(name='Ascend950PR_9579', total_memory=126208MB, cube_core_num=28, vector_core_num=56, uuid=0008d80a-d200-0000-0000-007966340000, L2_cache_size=128MB)
+root@localhost:/home/zwh/tmp/bench_transfer# cat /usr/local/Ascend/driver/version.info 2>/dev/null
+Version=25.7.0
+ascendhal_version=7.35.23
+aicpu_version=1.0
+tdt_version=1.0
+log_version=1.0
+prof_version=2.0
+dvppkernels_version=1.1
+tsfw_version=1.0
+Innerversion=V100R001C11SPC200B203
+compatible_version=[V100R001C22],[V100R001C23],[V100R001C25],[V100R001C10],[V100R001C11]
+compatible_version_fw=[7.0.0,9.9.9]
+package_version=25.7.0
+root@localhost:/home/zwh/tmp/bench_transfer# grep -rn "9579\|950PR\|3510\|c310" /usr/local/Ascend/ascend-toolkit/*/x86_64-linux/data/ 2>/dev/null | head
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:322:{"cost_time":"1006","hash_str":"3351045419949033009"}
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:533:{"cost_time":"42610","hash_str":"16351007966619505369"}
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:661:{"cost_time":"225651","hash_str":"17694038737460199579"}
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:717:{"cost_time":"20526","hash_str":"2589847777513510394"}
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:1227:{"cost_time":"147126","hash_str":"1481397813510833937"}
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:1462:{"cost_time":"92043","hash_str":"13107019957979739438"}
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:2461:{"cost_time":"1360","hash_str":"9579676977779330442"}
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:2490:{"cost_time":"5470","hash_str":"5789481957972206482"}
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:2974:{"cost_time":"1351086","hash_str":"4368158329920886484"}
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:3077:{"cost_time":"11565","hash_str":"15529579889608833776"}
+root@localhost:/home/zwh/tmp/bench_transfer# 
