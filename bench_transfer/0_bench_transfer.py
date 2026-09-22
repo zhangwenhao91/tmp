@@ -360,6 +360,63 @@ def l1ub_b(M, K, N, REPEAT, dtype="bfloat16"):
 
 
 # --------------------------------------------------------------------------
+# 3c) UB -> L1 消融-C：循环内仅 UB->L1 一跳，且全内核零 L1->UB。
+#     前辈已确认框架无 L1->UB 拷贝；此前 l1ub_w"写方向"实为循环外仍带一次
+#     MOV.L1.TO.UB（const 填充），故从未得到过真·纯 UB->L1 内核。
+#     ub_src 由 GM->UB 填充（无 gemm 引用 -> 推断 UB），循环内 T.copy(ub_src,buf*)
+#     只发 MOV.UB.TO.L1；buf_a/buf_b 由同循环 gemm 保 L1。
+# --------------------------------------------------------------------------
+def l1ub_c(M, K, N, REPEAT, dtype="bfloat16"):
+    @T.prim_func
+    def l1ub_kernel(
+        X: T.Buffer((M, K), dtype),
+        W1: T.Buffer((K, N), dtype),
+        W2: T.Buffer((K, N), dtype),
+        OUT1: T.Buffer((M, N), "float32"),
+        OUT2: T.Buffer((M, N), "float32"),
+    ):
+        with T.Kernel(1) as bx:
+            buf_a = T.alloc_shared((M, K), dtype)  # gemm A -> L1
+            buf_b = T.alloc_shared((M, K), dtype)  # gemm A -> L1
+            ub_src = T.alloc_shared((M, K), dtype)  # 无 gemm -> UB（被测源）
+            w1_shared = T.alloc_shared((K, N), dtype)  # gemm B -> L1
+            w2_shared = T.alloc_shared((K, N), dtype)  # gemm B -> L1
+            acc1 = T.alloc_fragment((M, N), "float32")
+            acc2 = T.alloc_fragment((M, N), "float32")
+            out1_ub = T.alloc_shared((M, N), "float32")
+            out2_ub = T.alloc_shared((M, N), "float32")
+
+            T.copy(X[0:M, 0:K], ub_src)  # GM -> UB
+            T.copy(W1[0:K, 0:N], w1_shared)  # GM -> L1 (CUBE)
+            T.copy(W2[0:K, 0:N], w2_shared)  # GM -> L1 (CUBE)
+
+            for r in T.serial(REPEAT):
+                T.copy(ub_src, buf_a)  # UB -> L1（被测唯一一跳）
+                T.gemm(
+                    buf_a,
+                    w1_shared,
+                    acc1,
+                    transpose_B=False,
+                    clear_accum=True,
+                )
+                T.copy(ub_src, buf_b)  # UB -> L1（对称）
+                T.gemm(
+                    buf_b,
+                    w2_shared,
+                    acc2,
+                    transpose_B=False,
+                    clear_accum=True,
+                )
+
+            T.copy(acc1, out1_ub)
+            T.copy(out1_ub, OUT1[0:M, 0:N])
+            T.copy(acc2, out2_ub)
+            T.copy(out2_ub, OUT2[0:M, 0:N])
+
+    return l1ub_kernel
+
+
+# --------------------------------------------------------------------------
 # baseline：无 REPEAT 搬运，只有 GM 载入 + gemm + 输出。
 # 与 l12l1/l1ub 差分可消去 gemm/GM/launch 常数开销。
 # --------------------------------------------------------------------------
@@ -399,6 +456,7 @@ VARIANTS = {
     "l1ub_a": l1ub_a,
     "l1ub_w": l1ub_w,
     "l1ub_b": l1ub_b,
+    "l1ub_c": l1ub_c,
     "baseline": baseline,
 }
 

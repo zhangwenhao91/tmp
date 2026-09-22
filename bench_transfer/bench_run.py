@@ -80,6 +80,11 @@ SPECS = [
     ("l1ub_b", "bfloat16", 128, 256, HERE, "6_", ".o"),
     ("l1ub_b", "float32", 16, 256, HERE, "6_", ".o"),
     ("l1ub_b", "float32", 64, 256, HERE, "6_", ".o"),
+    # l1ub_c（纯 UB->L1，零 L1->UB；前辈确认框架无 L1->UB 拷贝，仅验证 UB->L1）
+    ("l1ub_c", "bfloat16", 16, 256, HERE, "6_", ".o"),
+    ("l1ub_c", "bfloat16", 64, 256, HERE, "6_", ".o"),
+    ("l1ub_c", "float32", 16, 256, HERE, "6_", ".o"),
+    ("l1ub_c", "float32", 64, 256, HERE, "6_", ".o"),
     ("l1ub_single", "bfloat16", 16, 256, NEW_ENV_DIR, "n6_", "_single.o"),
     ("l1ub_single", "bfloat16", 64, 256, NEW_ENV_DIR, "n6_", "_single.o"),
     ("l1ub_single", "bfloat16", 128, 256, NEW_ENV_DIR, "n6_", "_single.o"),
@@ -105,6 +110,7 @@ TRANSFERS = {
     "l1ub_a": {"blocks_per_round": 1, "dma_per_round": 1},
     # 消融-W（写方向）：每轮仅 1x(UB->L1)，L1->UB/gemm 落在循环外
     "l1ub_w": {"blocks_per_round": 1, "dma_per_round": 1},
+    "l1ub_c": {"blocks_per_round": 1, "dma_per_round": 1},
     # 单核版与 mix 版相同链路：每轮 2x(L1->UB) + 2x(UB->L1)
     "l1ub_single": {"blocks_per_round": 2, "dma_per_round": 4},
 }
@@ -251,13 +257,13 @@ def do_run():
             # mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
             if variant in ("ub2ub", "ub_scalar"):
                 mode = "aiv"  # AIV 向量核 ELF
-            elif variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b"):
+            elif variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b", "l1ub_c"):
                 mode = "mix"  # AIC ELF，runtime 自动配对 _mix_aiv 半核
             else:  # l1ub_single
                 mode = "aic"  # 单核 AIC ELF（registerKernel 非 "aiv" 均走 AIC magic）
             # mix 双函数 .o 的入口符号带 _mix_aic 后缀（runtime 自动配对 _mix_aiv）
             # kname = f"{variant}_kernel" if variant in ("ub2ub", "ub_scalar") else f"{variant}_kernel_mix_aic"
-            if variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b"):
+            if variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b", "l1ub_c"):
                 kname = "l1ub_kernel_mix_aic"
             elif variant == "l1ub_single":
                 # l1ub_single 复用原 l1ub DSL，单核 .o 入口符号就是 l1ub_kernel（.ll: @l1ub_kernel）
@@ -370,12 +376,12 @@ def do_verify():
             # mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
             if variant in ("ub2ub", "ub_scalar"):
                 mode = "aiv"
-            elif variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b"):
+            elif variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b", "l1ub_c"):
                 mode = "mix"
             else:  # l1ub_single
                 mode = "aic"
             # kname = "ub2ub_kernel" if variant == "ub2ub" else ("ub_scalar_kernel" if variant == "ub_scalar" else "l1ub_kernel_mix_aic")
-            if variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b"):
+            if variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b", "l1ub_c"):
                 kname = "l1ub_kernel_mix_aic"
             elif variant == "l1ub_single":
                 # kname = f"{variant}_kernel"  # 错误：拼成 l1ub_single_kernel，.o 中无此符号 -> 0x7bc78
