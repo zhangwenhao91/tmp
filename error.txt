@@ -1,3 +1,74 @@
+root@localhost:/home/zwh/tmp/bench_transfer# git pull
+remote: Enumerating objects: 67, done.
+remote: Counting objects: 100% (67/67), done.
+remote: Compressing objects: 100% (7/7), done.
+remote: Total 59 (delta 54), reused 56 (delta 52), pack-reused 0 (from 0)
+Unpacking objects: 100% (59/59), 537.82 KiB | 2.20 MiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   2df0b51..f91151a  main       -> origin/main
+Updating 2df0b51..f91151a
+Fast-forward
+ bench_transfer/6_baseline_bfloat16_128x256_r128.o | Bin 0 -> 218416 bytes
+ bench_transfer/6_baseline_bfloat16_128x256_r16.o  | Bin 0 -> 218416 bytes
+ bench_transfer/6_baseline_bfloat16_16x256_r128.o  | Bin 3752 -> 218072 bytes
+ bench_transfer/6_baseline_bfloat16_16x256_r16.o   | Bin 3752 -> 218072 bytes
+ bench_transfer/6_baseline_bfloat16_64x256_r128.o  | Bin 3752 -> 218072 bytes
+ bench_transfer/6_baseline_bfloat16_64x256_r16.o   | Bin 3752 -> 218072 bytes
+ bench_transfer/6_baseline_float32_16x256_r128.o   | Bin 3744 -> 218064 bytes
+ bench_transfer/6_baseline_float32_16x256_r16.o    | Bin 3744 -> 218064 bytes
+ bench_transfer/6_baseline_float32_64x256_r128.o   | Bin 3744 -> 218408 bytes
+ bench_transfer/6_baseline_float32_64x256_r16.o    | Bin 3744 -> 218408 bytes
+ bench_transfer/6_l1ub_a_bfloat16_128x256_r128.o   | Bin 4912 -> 219768 bytes
+ bench_transfer/6_l1ub_a_bfloat16_128x256_r16.o    | Bin 4912 -> 219768 bytes
+ bench_transfer/6_l1ub_a_bfloat16_16x256_r128.o    | Bin 4904 -> 219440 bytes
+ bench_transfer/6_l1ub_a_bfloat16_16x256_r16.o     | Bin 4904 -> 219440 bytes
+ bench_transfer/6_l1ub_a_bfloat16_64x256_r128.o    | Bin 4912 -> 219440 bytes
+ bench_transfer/6_l1ub_a_bfloat16_64x256_r16.o     | Bin 4912 -> 219440 bytes
+ bench_transfer/6_l1ub_a_float32_16x256_r128.o     | Bin 4896 -> 219424 bytes
+ bench_transfer/6_l1ub_a_float32_16x256_r16.o      | Bin 4896 -> 219424 bytes
+ bench_transfer/6_l1ub_a_float32_64x256_r128.o     | Bin 4904 -> 219752 bytes
+ bench_transfer/6_l1ub_a_float32_64x256_r16.o      | Bin 4904 -> 219752 bytes
+ bench_transfer/6_l1ub_b_bfloat16_128x256_r128.o   | Bin 4912 -> 219768 bytes
+ bench_transfer/6_l1ub_b_bfloat16_128x256_r16.o    | Bin 4912 -> 219768 bytes
+ bench_transfer/6_l1ub_b_bfloat16_16x256_r128.o    | Bin 4904 -> 219440 bytes
+ bench_transfer/6_l1ub_b_bfloat16_16x256_r16.o     | Bin 4904 -> 219440 bytes
+ bench_transfer/6_l1ub_b_bfloat16_64x256_r128.o    | Bin 4912 -> 219440 bytes
+ bench_transfer/6_l1ub_b_bfloat16_64x256_r16.o     | Bin 4912 -> 219440 bytes
+ bench_transfer/6_l1ub_b_float32_16x256_r128.o     | Bin 4896 -> 219424 bytes
+ bench_transfer/6_l1ub_b_float32_16x256_r16.o      | Bin 4896 -> 219424 bytes
+ bench_transfer/6_l1ub_b_float32_64x256_r128.o     | Bin 4904 -> 219752 bytes
+ bench_transfer/6_l1ub_b_float32_64x256_r16.o      | Bin 4904 -> 219752 bytes
+ bench_transfer/6_l1ub_bfloat16_16x256_r128.o      | Bin 5488 -> 220568 bytes
+ bench_transfer/6_l1ub_bfloat16_16x256_r16.o       | Bin 5488 -> 220568 bytes
+ bench_transfer/6_l1ub_bfloat16_64x256_r128.o      | Bin 5496 -> 220824 bytes
+ bench_transfer/6_l1ub_bfloat16_64x256_r16.o       | Bin 5496 -> 220824 bytes
+ bench_transfer/6_l1ub_c_bfloat16_128x256_r128.o   | Bin 5232 -> 220184 bytes
+ bench_transfer/6_l1ub_c_bfloat16_128x256_r16.o    | Bin 5232 -> 220184 bytes
+ bench_transfer/6_l1ub_c_bfloat16_16x256_r128.o    | Bin 5224 -> 219856 bytes
+ bench_transfer/6_l1ub_c_bfloat16_16x256_r16.o     | Bin 5224 -> 219856 bytes
+ bench_transfer/6_l1ub_c_bfloat16_64x256_r128.o    | Bin 5232 -> 220112 bytes
+ bench_transfer/6_l1ub_c_bfloat16_64x256_r16.o     | Bin 5232 -> 220112 bytes
+ bench_transfer/6_l1ub_c_float32_16x256_r128.o     | Bin 5208 -> 220104 bytes
+ bench_transfer/6_l1ub_c_float32_16x256_r16.o      | Bin 5208 -> 220104 bytes
+ bench_transfer/6_l1ub_c_float32_64x256_r128.o     | Bin 5216 -> 220432 bytes
+ bench_transfer/6_l1ub_c_float32_64x256_r16.o      | Bin 5216 -> 220432 bytes
+ bench_transfer/6_l1ub_float32_16x256_r128.o       | Bin 5480 -> 220552 bytes
+ bench_transfer/6_l1ub_float32_16x256_r16.o        | Bin 5480 -> 220552 bytes
+ bench_transfer/6_l1ub_w_bfloat16_128x256_r128.o   | Bin 4912 -> 219768 bytes
+ bench_transfer/6_l1ub_w_bfloat16_128x256_r16.o    | Bin 4912 -> 219768 bytes
+ bench_transfer/6_l1ub_w_bfloat16_16x256_r128.o    | Bin 4904 -> 219440 bytes
+ bench_transfer/6_l1ub_w_bfloat16_16x256_r16.o     | Bin 4904 -> 219440 bytes
+ bench_transfer/6_l1ub_w_bfloat16_64x256_r128.o    | Bin 4912 -> 219440 bytes
+ bench_transfer/6_l1ub_w_bfloat16_64x256_r16.o     | Bin 4912 -> 219440 bytes
+ bench_transfer/6_l1ub_w_float32_16x256_r128.o     | Bin 4896 -> 219424 bytes
+ bench_transfer/6_l1ub_w_float32_16x256_r16.o      | Bin 4896 -> 219424 bytes
+ bench_transfer/6_l1ub_w_float32_64x256_r128.o     | Bin 4904 -> 219752 bytes
+ bench_transfer/6_l1ub_w_float32_64x256_r16.o      | Bin 4904 -> 219752 bytes
+ bench_transfer/scripts/build_l1ub_b.sh            |  44 +++++++++++++++++++++++++++++++----
+ error.txt                                         | 179 ++++++++------------------------------------------------------------------------------------------------------------------------------------
+ 58 files changed, 50 insertions(+), 173 deletions(-)
+ create mode 100644 bench_transfer/6_baseline_bfloat16_128x256_r128.o
+ create mode 100644 bench_transfer/6_baseline_bfloat16_128x256_r16.o
 root@localhost:/home/zwh/tmp/bench_transfer# python official_l1_probe/run_baseline.py 
 [ERROR] baseline_bfloat16_16x256_r16: rtStreamSynchronize failed, error code: 0x7bc87
 [ERROR] baseline_bfloat16_16x256_r128: rtStreamSynchronize failed, error code: 0x7bc87
@@ -8,3 +79,119 @@ root@localhost:/home/zwh/tmp/bench_transfer# python official_l1_probe/run_baseli
 [ERROR] baseline_float32_64x256_r16: rtStreamSynchronize failed, error code: 0x7bc87
 [ERROR] baseline_float32_64x256_r128: rtStreamSynchronize failed, error code: 0x7bc87
 [RESULT] 存在 ERROR/FAIL，见上
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run
+[ub2ub bfloat16 16x256] T(r16)=3.3us T(r128)=6.2us round=0.03us dma=0.03us bw(move)=317.42GB/s bw(traffic)=634.83GB/s
+[ub_scalar bfloat16 16x256] T(r16)=849.4us T(r128)=6787.7us round=53.02us dma=53.02us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 64x256] T(r16)=4.5us T(r128)=14.0us round=0.09us dma=0.09us bw(move)=384.16GB/s bw(traffic)=768.32GB/s
+[ub_scalar bfloat16 64x256] T(r16)=3394.9us T(r128)=27145.6us round=212.06us dma=212.06us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 128x256] T(r16)=4.5us T(r128)=24.1us round=0.18us dma=0.18us bw(move)=374.02GB/s bw(traffic)=748.05GB/s
+[ub_scalar bfloat16 128x256] T(r16)=6789.0us T(r128)=54286.3us round=424.08us dma=424.08us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x256] T(r16)=3.1us T(r128)=9.2us round=0.05us dma=0.05us bw(move)=301.41GB/s bw(traffic)=602.82GB/s
+[ub_scalar float32 16x256] T(r16)=842.1us T(r128)=6728.0us round=52.55us dma=52.55us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub float32 64x256] T(r16)=4.4us T(r128)=24.1us round=0.18us dma=0.18us bw(move)=371.35GB/s bw(traffic)=742.71GB/s
+[ub_scalar float32 64x256] T(r16)=3365.3us T(r128)=26907.1us round=210.19us dma=210.19us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ERROR] l1ub bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_c bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_c bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_c float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_c float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ub2ub bfloat16 1x8] T(r16)=3.7us T(r128)=5.6us round=0.02us dma=0.02us bw(move)=0.98GB/s bw(traffic)=1.95GB/s
+[ub_scalar bfloat16 1x8] T(r16)=3.3us T(r128)=18.3us round=0.13us dma=0.13us bw(move)=0.12GB/s bw(traffic)=0.24GB/s
+[ub2ub float32 1x8] T(r16)=3.3us T(r128)=4.3us round=0.01us dma=0.01us bw(move)=3.72GB/s bw(traffic)=7.45GB/s
+[ub_scalar float32 1x8] T(r16)=3.2us T(r128)=14.6us round=0.10us dma=0.10us bw(move)=0.31GB/s bw(traffic)=0.63GB/s
+[ub2ub bfloat16 2x8] T(r16)=3.6us T(r128)=9.1us round=0.05us dma=0.05us bw(move)=0.66GB/s bw(traffic)=1.32GB/s
+[ub_scalar bfloat16 2x8] T(r16)=5.3us T(r128)=35.9us round=0.27us dma=0.27us bw(move)=0.12GB/s bw(traffic)=0.23GB/s
+[ub2ub float32 2x8] T(r16)=3.6us T(r128)=4.8us round=0.01us dma=0.01us bw(move)=6.10GB/s bw(traffic)=12.20GB/s
+[ub_scalar float32 2x8] T(r16)=3.5us T(r128)=20.9us round=0.16us dma=0.16us bw(move)=0.41GB/s bw(traffic)=0.83GB/s
+[ub2ub bfloat16 4x8] T(r16)=3.5us T(r128)=16.4us round=0.12us dma=0.12us bw(move)=0.56GB/s bw(traffic)=1.11GB/s
+[ub_scalar bfloat16 4x8] T(r16)=5.9us T(r128)=40.7us round=0.31us dma=0.31us bw(move)=0.21GB/s bw(traffic)=0.41GB/s
+[ub2ub float32 4x8] T(r16)=3.2us T(r128)=6.4us round=0.03us dma=0.03us bw(move)=4.45GB/s bw(traffic)=8.91GB/s
+[ub_scalar float32 4x8] T(r16)=5.8us T(r128)=40.7us round=0.31us dma=0.31us bw(move)=0.41GB/s bw(traffic)=0.82GB/s
+[ub2ub bfloat16 8x8] T(r16)=5.0us T(r128)=31.3us round=0.23us dma=0.23us bw(move)=0.55GB/s bw(traffic)=1.09GB/s
+[ub_scalar bfloat16 8x8] T(r16)=11.7us T(r128)=86.4us round=0.67us dma=0.67us bw(move)=0.19GB/s bw(traffic)=0.38GB/s
+[ub2ub float32 8x8] T(r16)=4.1us T(r128)=4.0us round=-0.00us dma=-0.00us bw(move)=-458.76GB/s bw(traffic)=-917.51GB/s
+[ub_scalar float32 8x8] T(r16)=11.7us T(r128)=85.3us round=0.66us dma=0.66us bw(move)=0.39GB/s bw(traffic)=0.78GB/s
+[ub2ub bfloat16 8x16] T(r16)=3.6us T(r128)=3.6us round=0.00us dma=0.00us bw(move)=804.04GB/s bw(traffic)=1608.09GB/s
+[ub_scalar bfloat16 8x16] T(r16)=21.7us T(r128)=166.9us round=1.30us dma=1.30us bw(move)=0.20GB/s bw(traffic)=0.40GB/s
+[ub2ub float32 8x16] T(r16)=3.0us T(r128)=3.8us round=0.01us dma=0.01us bw(move)=69.12GB/s bw(traffic)=138.24GB/s
+[ub_scalar float32 8x16] T(r16)=21.1us T(r128)=162.6us round=1.26us dma=1.26us bw(move)=0.41GB/s bw(traffic)=0.81GB/s
+[ub2ub bfloat16 16x16] T(r16)=2.8us T(r128)=3.7us round=0.01us dma=0.01us bw(move)=64.80GB/s bw(traffic)=129.60GB/s
+[ub_scalar bfloat16 16x16] T(r16)=42.4us T(r128)=333.0us round=2.59us dma=2.59us bw(move)=0.20GB/s bw(traffic)=0.39GB/s
+[ub2ub float32 16x16] T(r16)=2.6us T(r128)=3.9us round=0.01us dma=0.01us bw(move)=87.87GB/s bw(traffic)=175.75GB/s
+[ub_scalar float32 16x16] T(r16)=41.4us T(r128)=324.4us round=2.53us dma=2.53us bw(move)=0.41GB/s bw(traffic)=0.81GB/s
+[ub2ub bfloat16 16x32] T(r16)=2.2us T(r128)=3.7us round=0.01us dma=0.01us bw(move)=77.12GB/s bw(traffic)=154.23GB/s
+[ub_scalar bfloat16 16x32] T(r16)=108.3us T(r128)=860.4us round=6.71us dma=6.71us bw(move)=0.15GB/s bw(traffic)=0.30GB/s
+[ub2ub float32 16x32] T(r16)=3.3us T(r128)=4.1us round=0.01us dma=0.01us bw(move)=286.29GB/s bw(traffic)=572.58GB/s
+[ub_scalar float32 16x32] T(r16)=107.4us T(r128)=852.8us round=6.66us dma=6.66us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub bfloat16 16x64] T(r16)=3.4us T(r128)=4.1us round=0.01us dma=0.01us bw(move)=310.77GB/s bw(traffic)=621.55GB/s
+[ub_scalar bfloat16 16x64] T(r16)=214.3us T(r128)=1707.0us round=13.33us dma=13.33us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x64] T(r16)=3.3us T(r128)=4.7us round=0.01us dma=0.01us bw(move)=317.05GB/s bw(traffic)=634.09GB/s
+[ub_scalar float32 16x64] T(r16)=212.8us T(r128)=1693.8us round=13.22us dma=13.22us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+
+===== 差分法汇总（t_round 消除 launch/GM/gemm 常数）=====
+variant      dtype           shape     KB  t_r16us  t_r128us  round_us  dma_us  GB/s(mv)  GB/s(tr)
+ub2ub        bfloat16       16x256   8.00      3.3       6.2      0.03    0.03    317.42    634.83
+ub_scalar    bfloat16       16x256   8.00    849.4    6787.7     53.02   53.02      0.15      0.31
+ub2ub        bfloat16       64x256  32.00      4.5      14.0      0.09    0.09    384.16    768.32
+ub_scalar    bfloat16       64x256  32.00   3394.9   27145.6    212.06  212.06      0.15      0.31
+ub2ub        bfloat16      128x256  64.00      4.5      24.1      0.18    0.18    374.02    748.05
+ub_scalar    bfloat16      128x256  64.00   6789.0   54286.3    424.08  424.08      0.15      0.31
+ub2ub        float32        16x256  16.00      3.1       9.2      0.05    0.05    301.41    602.82
+ub_scalar    float32        16x256  16.00    842.1    6728.0     52.55   52.55      0.31      0.62
+ub2ub        float32        64x256  64.00      4.4      24.1      0.18    0.18    371.35    742.71
+ub_scalar    float32        64x256  64.00   3365.3   26907.1    210.19  210.19      0.31      0.62
+ub2ub        bfloat16          1x8   0.02      3.7       5.6      0.02    0.02      0.98      1.95
+ub_scalar    bfloat16          1x8   0.02      3.3      18.3      0.13    0.13      0.12      0.24
+ub2ub        float32           1x8   0.03      3.3       4.3      0.01    0.01      3.72      7.45
+ub_scalar    float32           1x8   0.03      3.2      14.6      0.10    0.10      0.31      0.63
+ub2ub        bfloat16          2x8   0.03      3.6       9.1      0.05    0.05      0.66      1.32
+ub_scalar    bfloat16          2x8   0.03      5.3      35.9      0.27    0.27      0.12      0.23
+ub2ub        float32           2x8   0.06      3.6       4.8      0.01    0.01      6.10     12.20
+ub_scalar    float32           2x8   0.06      3.5      20.9      0.16    0.16      0.41      0.83
+ub2ub        bfloat16          4x8   0.06      3.5      16.4      0.12    0.12      0.56      1.11
+ub_scalar    bfloat16          4x8   0.06      5.9      40.7      0.31    0.31      0.21      0.41
+ub2ub        float32           4x8   0.12      3.2       6.4      0.03    0.03      4.45      8.91
+ub_scalar    float32           4x8   0.12      5.8      40.7      0.31    0.31      0.41      0.82
+ub2ub        bfloat16          8x8   0.12      5.0      31.3      0.23    0.23      0.55      1.09
+ub_scalar    bfloat16          8x8   0.12     11.7      86.4      0.67    0.67      0.19      0.38
+ub2ub        float32           8x8   0.25      4.1       4.0     -0.00   -0.00   -458.76   -917.51
+ub_scalar    float32           8x8   0.25     11.7      85.3      0.66    0.66      0.39      0.78
+ub2ub        bfloat16         8x16   0.25      3.6       3.6      0.00    0.00    804.04   1608.09
+ub_scalar    bfloat16         8x16   0.25     21.7     166.9      1.30    1.30      0.20      0.40
+ub2ub        float32          8x16   0.50      3.0       3.8      0.01    0.01     69.12    138.24
+ub_scalar    float32          8x16   0.50     21.1     162.6      1.26    1.26      0.41      0.81
+ub2ub        bfloat16        16x16   0.50      2.8       3.7      0.01    0.01     64.80    129.60
+ub_scalar    bfloat16        16x16   0.50     42.4     333.0      2.59    2.59      0.20      0.39
+ub2ub        float32         16x16   1.00      2.6       3.9      0.01    0.01     87.87    175.75
+ub_scalar    float32         16x16   1.00     41.4     324.4      2.53    2.53      0.41      0.81
+ub2ub        bfloat16        16x32   1.00      2.2       3.7      0.01    0.01     77.12    154.23
+ub_scalar    bfloat16        16x32   1.00    108.3     860.4      6.71    6.71      0.15      0.30
+ub2ub        float32         16x32   2.00      3.3       4.1      0.01    0.01    286.29    572.58
+ub_scalar    float32         16x32   2.00    107.4     852.8      6.66    6.66      0.31      0.62
+ub2ub        bfloat16        16x64   2.00      3.4       4.1      0.01    0.01    310.77    621.55
+ub_scalar    bfloat16        16x64   2.00    214.3    1707.0     13.33   13.33      0.15      0.31
+ub2ub        float32         16x64   4.00      3.3       4.7      0.01    0.01    317.05    634.09
+ub_scalar    float32         16x64   4.00    212.8    1693.8     13.22   13.22      0.31      0.62
+root@localhost:/home/zwh/tmp/bench_transfer# 
