@@ -256,20 +256,41 @@ def do_run():
                     break
                 with open(path, "rb") as f:
                     obytes = f.read()
-                module, func = rt.load_kernel(kname, obytes, 0, mode)
-                if variant in ("l1ub", "l1ub_b", "l1ub_single"):
-                    args = [
-                        ("ptr", entry["X"][0]),
-                        ("ptr", entry["W1"][0]),
-                        ("ptr", entry["W2"][0]),
-                        ("ptr", entry["O1"]),
-                        ("ptr", entry["O2"]),
-                        ("int32", 0),
-                    ]
-                else:
-                    args = [("ptr", entry["X"][0]), ("ptr", entry["O"]), ("int32", 0)]
-                times[R] = _bench_once(rt, func, stream, args)
-                rt.unregister_kernel(module)
+                module = None
+                try:
+                    module, func = rt.load_kernel(kname, obytes, 0, mode)
+                    if variant in ("l1ub", "l1ub_b", "l1ub_single"):
+                        args = [
+                            ("ptr", entry["X"][0]),
+                            ("ptr", entry["W1"][0]),
+                            ("ptr", entry["W2"][0]),
+                            ("ptr", entry["O1"]),
+                            ("ptr", entry["O2"]),
+                            ("int32", 0),
+                        ]
+                    else:
+                        args = [("ptr", entry["X"][0]), ("ptr", entry["O"]), ("int32", 0)]
+                    times[R] = _bench_once(rt, func, stream, args)
+                except RuntimeError as e:
+                    print(
+                        f"[ERROR] {variant} {dtype} {M}x{K} R={R}: {e}",
+                        file=sys.stderr,
+                    )
+                    times = None
+                    # 设备核异常后 stream 可能被污染，重建一个继续扫后续规格
+                    try:
+                        if module is not None:
+                            rt.unregister_kernel(module)
+                    except Exception:
+                        pass
+                    try:
+                        rt.destroy_stream(stream)
+                    except Exception:
+                        pass
+                    stream = rt.create_stream()
+                    break
+                if module is not None:
+                    rt.unregister_kernel(module)
             if not times:
                 continue
             t_round = (times[R_HIGH] - times[R_LOW]) / (R_HIGH - R_LOW)
@@ -344,72 +365,94 @@ def do_verify():
                 kname = f"{variant}_kernel"
             with open(path, "rb") as f:
                 obytes = f.read()
-            module, func = rt.load_kernel(kname, obytes, 0, mode)
-            if variant in ("ub2ub", "ub_scalar"):
-                xptr = rt.malloc_device(x.nbytes)
-                rt.memcpy_h2d(xptr, x.tobytes(order="C"))
-                optr = rt.malloc_device(x.nbytes)
-                rt.launch_kernel(
-                    func=func, stream=stream, blocknum=1,
-                    kernel_args=[("ptr", xptr), ("ptr", optr), ("int32", 0)],
-                )
-                rt.synchronize_stream(stream)
-                out = np.frombuffer(
-                    rt.memcpy_d2h(optr, x.nbytes), dtype=x.dtype
-                ).reshape(x.shape)
-                ok = np.array_equal(out, x)
-                print(f"[verify] {variant} {dtype} {M}x{K}: {'PASS' if ok else 'FAIL'} (恒等)")
-                rt.free_device(xptr)
-                rt.free_device(optr)
-            else:
-                w1 = np.load(npy_path(w_name("W1", variant, dtype, M, K)))
-                w2 = np.load(npy_path(w_name("W2", variant, dtype, M, K)))
-                xptr = rt.malloc_device(x.nbytes)
-                w1ptr = rt.malloc_device(w1.nbytes)
-                w2ptr = rt.malloc_device(w2.nbytes)
-                o1ptr = rt.malloc_device(M * N * 4)
-                o2ptr = rt.malloc_device(M * N * 4)
-                rt.memcpy_h2d(xptr, x.tobytes(order="C"))
-                rt.memcpy_h2d(w1ptr, w1.tobytes(order="C"))
-                rt.memcpy_h2d(w2ptr, w2.tobytes(order="C"))
-                rt.launch_kernel(
-                    func=func, stream=stream, blocknum=1,
-                    kernel_args=[
-                        ("ptr", xptr), ("ptr", w1ptr), ("ptr", w2ptr),
-                        ("ptr", o1ptr), ("ptr", o2ptr), ("int32", 0),
-                    ],
-                )
-                rt.synchronize_stream(stream)
-                o1 = np.frombuffer(
-                    rt.memcpy_d2h(o1ptr, M * N * 4), dtype=np.float32
-                ).reshape(M, N)
-                o2 = np.frombuffer(
-                    rt.memcpy_d2h(o2ptr, M * N * 4), dtype=np.float32
-                ).reshape(M, N)
-                # golden: 搬运无损则 OUT1 = X@W1, OUT2 = X@W2
-                import torch
+            module = None
+            try:
+                module, func = rt.load_kernel(kname, obytes, 0, mode)
+                if variant in ("ub2ub", "ub_scalar"):
+                    xptr = rt.malloc_device(x.nbytes)
+                    rt.memcpy_h2d(xptr, x.tobytes(order="C"))
+                    optr = rt.malloc_device(x.nbytes)
+                    rt.launch_kernel(
+                        func=func, stream=stream, blocknum=1,
+                        kernel_args=[("ptr", xptr), ("ptr", optr), ("int32", 0)],
+                    )
+                    rt.synchronize_stream(stream)
+                    out = np.frombuffer(
+                        rt.memcpy_d2h(optr, x.nbytes), dtype=x.dtype
+                    ).reshape(x.shape)
+                    ok = np.array_equal(out, x)
+                    print(f"[verify] {variant} {dtype} {M}x{K}: {'PASS' if ok else 'FAIL'} (恒等)")
+                    rt.free_device(xptr)
+                    rt.free_device(optr)
+                else:
+                    w1 = np.load(npy_path(w_name("W1", variant, dtype, M, K)))
+                    w2 = np.load(npy_path(w_name("W2", variant, dtype, M, K)))
+                    xptr = rt.malloc_device(x.nbytes)
+                    w1ptr = rt.malloc_device(w1.nbytes)
+                    w2ptr = rt.malloc_device(w2.nbytes)
+                    o1ptr = rt.malloc_device(M * N * 4)
+                    o2ptr = rt.malloc_device(M * N * 4)
+                    rt.memcpy_h2d(xptr, x.tobytes(order="C"))
+                    rt.memcpy_h2d(w1ptr, w1.tobytes(order="C"))
+                    rt.memcpy_h2d(w2ptr, w2.tobytes(order="C"))
+                    rt.launch_kernel(
+                        func=func, stream=stream, blocknum=1,
+                        kernel_args=[
+                            ("ptr", xptr), ("ptr", w1ptr), ("ptr", w2ptr),
+                            ("ptr", o1ptr), ("ptr", o2ptr), ("int32", 0),
+                        ],
+                    )
+                    rt.synchronize_stream(stream)
+                    o1 = np.frombuffer(
+                        rt.memcpy_d2h(o1ptr, M * N * 4), dtype=np.float32
+                    ).reshape(M, N)
+                    o2 = np.frombuffer(
+                        rt.memcpy_d2h(o2ptr, M * N * 4), dtype=np.float32
+                    ).reshape(M, N)
+                    # golden: 搬运无损则 OUT1 = X@W1, OUT2 = X@W2
+                    import torch
 
-                xt = torch.from_numpy(x.copy())
-                if dtype == "bfloat16":
-                    xt = xt.view(torch.bfloat16)
-                w1t = torch.from_numpy(w1.copy())
-                w2t = torch.from_numpy(w2.copy())
-                if dtype == "bfloat16":
-                    w1t = w1t.view(torch.bfloat16)
-                    w2t = w2t.view(torch.bfloat16)
-                g1 = (xt.float() @ w1t.float()).numpy()
-                g2 = (xt.float() @ w2t.float()).numpy()
-                e1 = float(np.abs(o1 - g1).max())
-                e2 = float(np.abs(o2 - g2).max())
-                print(
-                    # f"[verify] l1ub {dtype} {M}x{K}: "
-                    f"[verify] {variant} {dtype} {M}x{K}: "
-                    f"{'PASS' if e1 < 0.5 and e2 < 0.5 else 'FAIL'} "
-                    f"(max_err O1={e1:.4f} O2={e2:.4f})"
-                )
-                for p in (xptr, w1ptr, w2ptr, o1ptr, o2ptr):
-                    rt.free_device(p)
-            rt.unregister_kernel(module)
+                    xt = torch.from_numpy(x.copy())
+                    if dtype == "bfloat16":
+                        xt = xt.view(torch.bfloat16)
+                    w1t = torch.from_numpy(w1.copy())
+                    w2t = torch.from_numpy(w2.copy())
+                    if dtype == "bfloat16":
+                        w1t = w1t.view(torch.bfloat16)
+                        w2t = w2t.view(torch.bfloat16)
+                    g1 = (xt.float() @ w1t.float()).numpy()
+                    g2 = (xt.float() @ w2t.float()).numpy()
+                    e1 = float(np.abs(o1 - g1).max())
+                    e2 = float(np.abs(o2 - g2).max())
+                    print(
+                        # f"[verify] l1ub {dtype} {M}x{K}: "
+                        f"[verify] {variant} {dtype} {M}x{K}: "
+                        f"{'PASS' if e1 < 0.5 and e2 < 0.5 else 'FAIL'} "
+                        f"(max_err O1={e1:.4f} O2={e2:.4f})"
+                    )
+                    for p in (xptr, w1ptr, w2ptr, o1ptr, o2ptr):
+                        rt.free_device(p)
+            except RuntimeError as e:
+                # 设备核异常（0x7bc87 等）后 stream 可能被污染：
+                # 记录失败规格，重建 stream 继续扫后续规格
+                print(f"[verify] {variant} {dtype} {M}x{K}: ERROR {e}", file=sys.stderr)
+                try:
+                    if module is not None:
+                        rt.unregister_kernel(module)
+                except Exception:
+                    pass
+                try:
+                    rt.destroy_stream(stream)
+                except Exception:
+                    pass
+                stream = rt.create_stream()
+                continue
+            finally:
+                if module is not None:
+                    try:
+                        rt.unregister_kernel(module)
+                    except Exception:
+                        pass
     finally:
         rt.destroy_stream(stream)
         rt.finalize_runtime(0, True)
