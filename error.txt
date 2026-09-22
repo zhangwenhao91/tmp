@@ -1,24 +1,4 @@
-root@localhost:/home/zwh/tmp/bench_transfer# git pull
-remote: Enumerating objects: 11, done.
-remote: Counting objects: 100% (11/11), done.
-remote: Compressing objects: 100% (5/5), done.
-remote: Total 8 (delta 3), reused 5 (delta 2), pack-reused 0 (from 0)
-Unpacking objects: 100% (8/8), 5.17 KiB | 5.17 MiB/s, done.
-From https://github.com/zhangwenhao91/tmp
-   6a237e2..64ed7e0  main       -> origin/main
-Updating 6a237e2..64ed7e0
-Fast-forward
- bench_transfer/official_l1_probe/probe_matmul.py |  70 +++++++++++++++++++
- error.txt                                        | 532 ++++++++++++++++++++++++++++++++++-----------------------------------------------------------------------------------------------------------
- 2 files changed, 199 insertions(+), 403 deletions(-)
- create mode 100644 bench_transfer/official_l1_probe/probe_matmul.py
-root@localhost:/home/zwh/tmp/bench_transfer# python official_l1_probe/probe_matmul.py 
-device : Ascend950PR_9579
-torch  : 2.7.1+cpu
-torch_npu: 2.7.1.post3.dev20260129
-[matmul] 64x64x64 f16: PASS  132.6 us
-[matmul] 256x256x256 f16: PASS  679.7 us
-[matmul] 256x3072x256 f16: PASS  120.1 us
-[matmul] 1024x1024x1024 f16: PASS  181.2 us
-[RESULT] OK: 官方 matmul 全过，官方(L1)路径在本机可用
-root@localhost:/home/zwh/tmp/bench_transfer# 
+ls /usr/local/Ascend/ascend-toolkit/                      # 确认版本目录
+python3 -c "import torch_npu; print(torch_npu.npu.get_device_properties(0))"   # 尽量有 arch
+cat /usr/local/Ascend/driver/version.info 2>/dev/null     # 驱动版本
+grep -rn "9579\|950PR\|3510\|c310" /usr/local/Ascend/ascend-toolkit/*/x86_64-linux/data/ 2>/dev/null | head
