@@ -10,6 +10,8 @@ PY=/home/z30086261/tilelang-ascend-private/tilelang-tileir-ascend/.venv/bin/pyth
 OPT=/home/z30086261/tilelang-ascend-private/OpenTileAS/build/bin/tile-opt
 TRANS=/home/z30086261/tilelang-ascend-private/OpenTileAS/build/bin/tile-translate
 CCEC=/home/z30086261/Ascend/ascend-toolkit/cann-9.1.0/x86_64-linux/bin/ccec
+LLVM_LINK=/home/z30086261/Ascend/ascend-toolkit/cann-9.1.0/x86_64-linux/bin/llvm-link
+LDLD=/home/z30086261/Ascend/ascend-toolkit/cann-9.1.0/x86_64-linux/bin/ld.lld
 export PYTHONPATH=/home/z30086261/tilelang-ascend-private/tilelang-tileir-ascend
 
 K=256
@@ -53,10 +55,44 @@ build_one() { # $1=variant $2=M $3=dtype $4=REPEAT
 
   local MIXFLAG=""
   grep -q "part_of_mix" "3_${tag}_mix_npu.mlir" && MIXFLAG="-cce-enable-mix"
-  "$CCEC" --cce-aicore-arch=dav-c310-cube --cce-aicore-only $MIXFLAG -O2 \
-    -cce-bitcode-is-aicore -c "5_${tag}.ll" -o "6_${tag}.o" 2>/tmp/bench_s6.err || {
-    echo "[FAIL-s6] $tag"; head -3 /tmp/bench_s6.err; fail=$((fail+1)); fail_list="$fail_list $tag(s6)"; return; }
-  echo "[OK] 6_${tag}.o ($(stat -c%s "6_${tag}.o") bytes)${MIXFLAG:+ [mix]}"
+
+  # 官方 catlass 路线（opentileas.cpp runCatlassRoute，693/véry 对齐）：
+  # cube/mix 内核经 gemm -> CCEToLibraryCall -> __cce_catlass_ -> 模板调用
+  # _mlir_ciface_mma_tile_*（定义在 catlass_mma.*.c310.bc）且带 llvm.hivm.*
+  # 重定位。若不合并模板 + 最终 ld.lld 链接，交付的 .o 保留悬空 .rela.text，
+  # acl 加载器不解析 -> 首条 hivm/mma 跳转即 0x7bc87（此前全部 L1 内核崩因）。
+  BLIB=/home/z30086261/tilelang-ascend-private/OpenTileAS/build/lib
+  CATASS=""
+  grep -q "__cce_catlass_" "5_${tag}.ll" && CATASS=1
+  if [ -n "$CATASS" ]; then
+    local TPL="catlass_mma.aic.c310.bc"
+    [ -n "$MIXFLAG" ] && TPL="catlass_mma.mix_aic.c310.bc"
+    "$LLVM_LINK" --only-needed "5_${tag}.ll" "$BLIB/$TPL" -o "5_${tag}.cat.bc" 2>/tmp/bench_s6a.err || {
+      echo "[FAIL-s6a] $tag"; head -3 /tmp/bench_s6a.err; fail=$((fail+1)); fail_list="$fail_list $tag(s6a)"; return; }
+    "$CCEC" --cce-aicore-arch=dav-c310-cube --cce-aicore-only $MIXFLAG -O2 \
+      -cce-bitcode-is-aicore -cce-link-aicore-ll-module "$BLIB/libdevice.bc" \
+      -cce-link-aicore-ll-module "$BLIB/libdevice_simt.bc" \
+      -cce-link-aicore-ll-module "$BLIB/print.bc" -mllvm --cce-vf-auto-sync=global \
+      --cce-simd-vf-fusion=false -c "5_${tag}.cat.bc" -o "6_${tag}_ccec.o" 2>/tmp/bench_s6.err || {
+      echo "[FAIL-s6] $tag"; head -3 /tmp/bench_s6.err; fail=$((fail+1)); fail_list="$fail_list $tag(s6)"; return; }
+    if [ -n "$MIXFLAG" ]; then
+      # MIX: relocatable link，重定位原地解析（官方注释：static 会被加载器拒绝）
+      "$LDLD" -m aicorelinux -Ttext 0 -r -o "6_${tag}.o" "6_${tag}_ccec.o" 2>/tmp/bench_s7.err || {
+        echo "[FAIL-s7] $tag"; head -3 /tmp/bench_s7.err; fail=$((fail+1)); fail_list="$fail_list $tag(s7)"; return; }
+    else
+      local ENTRY=$(grep -oE "@[a-zA-Z_][a-zA-Z0-9_]*\(" "5_${tag}.ll" | head -1 | tr -d '@(')
+      [ -z "$ENTRY" ] && ENTRY="l1ub_kernel"
+      "$LDLD" -m aicorelinux -Ttext=0 -static -e "$ENTRY" -o "6_${tag}.o" "6_${tag}_ccec.o" 2>/tmp/bench_s7.err || {
+        echo "[FAIL-s7] $tag"; head -3 /tmp/bench_s7.err; fail=$((fail+1)); fail_list="$fail_list $tag(s7)"; return; }
+    fi
+    rm -f "6_${tag}_ccec.o"
+  else
+    # 纯 AIV：无模板/无重定位，原生 ccec（已验证可跑）
+    "$CCEC" --cce-aicore-arch=dav-c310-cube --cce-aicore-only $MIXFLAG -O2 \
+      -cce-bitcode-is-aicore -c "5_${tag}.ll" -o "6_${tag}.o" 2>/tmp/bench_s6.err || {
+      echo "[FAIL-s6] $tag"; head -3 /tmp/bench_s6.err; fail=$((fail+1)); fail_list="$fail_list $tag(s6)"; return; }
+  fi
+  echo "[OK] 6_${tag}.o ($(stat -c%s "6_${tag}.o") bytes)${MIXFLAG:+ [mix]}${CATASS:+ [catlass-linked]}"
   ok_list="$ok_list $tag"
 }
 
