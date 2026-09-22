@@ -1,29 +1,169 @@
-root@localhost:/home/zwh/tmp/bench_transfer# ls /usr/local/Ascend/ascend-toolkit/  
-8.3.RC1  latest
-root@localhost:/home/zwh/tmp/bench_transfer# python3 -c "import torch_npu; print(torch_npu.npu.get_device_properties(0))"
-_NPUDeviceProperties(name='Ascend950PR_9579', total_memory=126208MB, cube_core_num=28, vector_core_num=56, uuid=0008d80a-d200-0000-0000-007966340000, L2_cache_size=128MB)
-root@localhost:/home/zwh/tmp/bench_transfer# cat /usr/local/Ascend/driver/version.info 2>/dev/null
-Version=25.7.0
-ascendhal_version=7.35.23
-aicpu_version=1.0
-tdt_version=1.0
-log_version=1.0
-prof_version=2.0
-dvppkernels_version=1.1
-tsfw_version=1.0
-Innerversion=V100R001C11SPC200B203
-compatible_version=[V100R001C22],[V100R001C23],[V100R001C25],[V100R001C10],[V100R001C11]
-compatible_version_fw=[7.0.0,9.9.9]
-package_version=25.7.0
-root@localhost:/home/zwh/tmp/bench_transfer# grep -rn "9579\|950PR\|3510\|c310" /usr/local/Ascend/ascend-toolkit/*/x86_64-linux/data/ 2>/dev/null | head
-/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:322:{"cost_time":"1006","hash_str":"3351045419949033009"}
-/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:533:{"cost_time":"42610","hash_str":"16351007966619505369"}
-/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:661:{"cost_time":"225651","hash_str":"17694038737460199579"}
-/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:717:{"cost_time":"20526","hash_str":"2589847777513510394"}
-/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:1227:{"cost_time":"147126","hash_str":"1481397813510833937"}
-/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:1462:{"cost_time":"92043","hash_str":"13107019957979739438"}
-/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:2461:{"cost_time":"1360","hash_str":"9579676977779330442"}
-/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:2490:{"cost_time":"5470","hash_str":"5789481957972206482"}
-/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:2974:{"cost_time":"1351086","hash_str":"4368158329920886484"}
-/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/data/auto_deploy_op_cost/built-in/auto_deploy_unify.json:3077:{"cost_time":"11565","hash_str":"15529579889608833776"}
-root@localhost:/home/zwh/tmp/bench_transfer# 
+root@localhost:/home/zwh/tmp/bench_transfer# git pull
+remote: Enumerating objects: 42, done.
+remote: Counting objects: 100% (42/42), done.
+remote: Compressing objects: 100% (16/16), done.
+remote: Total 36 (delta 25), reused 26 (delta 20), pack-reused 0 (from 0)
+Unpacking objects: 100% (36/36), 15.56 KiB | 3.89 MiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   64ed7e0..35d5d31  main       -> origin/main
+Updating 64ed7e0..35d5d31
+Fast-forward
+ bench_transfer/0_bench_transfer.py               |  58 +++++++++++++++++++++++++++++++++++++++++++++++++
+ bench_transfer/6_baseline_bfloat16_16x256_r128.o | Bin 0 -> 3752 bytes
+ bench_transfer/6_baseline_bfloat16_16x256_r16.o  | Bin 0 -> 3752 bytes
+ bench_transfer/6_baseline_bfloat16_64x256_r128.o | Bin 0 -> 3752 bytes
+ bench_transfer/6_baseline_bfloat16_64x256_r16.o  | Bin 0 -> 3752 bytes
+ bench_transfer/6_baseline_float32_16x256_r128.o  | Bin 0 -> 3744 bytes
+ bench_transfer/6_baseline_float32_16x256_r16.o   | Bin 0 -> 3744 bytes
+ bench_transfer/6_baseline_float32_64x256_r128.o  | Bin 0 -> 3744 bytes
+ bench_transfer/6_baseline_float32_64x256_r16.o   | Bin 0 -> 3744 bytes
+ bench_transfer/6_l1ub_c_bfloat16_128x256_r128.o  | Bin 0 -> 5232 bytes
+ bench_transfer/6_l1ub_c_bfloat16_128x256_r16.o   | Bin 0 -> 5232 bytes
+ bench_transfer/6_l1ub_c_bfloat16_16x256_r128.o   | Bin 0 -> 5224 bytes
+ bench_transfer/6_l1ub_c_bfloat16_16x256_r16.o    | Bin 0 -> 5224 bytes
+ bench_transfer/6_l1ub_c_bfloat16_64x256_r128.o   | Bin 0 -> 5232 bytes
+ bench_transfer/6_l1ub_c_bfloat16_64x256_r16.o    | Bin 0 -> 5232 bytes
+ bench_transfer/6_l1ub_c_float32_16x256_r128.o    | Bin 0 -> 5208 bytes
+ bench_transfer/6_l1ub_c_float32_16x256_r16.o     | Bin 0 -> 5208 bytes
+ bench_transfer/6_l1ub_c_float32_64x256_r128.o    | Bin 0 -> 5216 bytes
+ bench_transfer/6_l1ub_c_float32_64x256_r16.o     | Bin 0 -> 5216 bytes
+ bench_transfer/bench_run.py                      |  14 ++++++++----
+ bench_transfer/official_l1_probe/run_baseline.py | 101 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ error.txt                                        | 167 ++++++++++++++++++++++++---------------------------------------------------------------------------------------------------------------------
+ 22 files changed, 197 insertions(+), 143 deletions(-)
+ create mode 100644 bench_transfer/6_baseline_bfloat16_16x256_r128.o
+ create mode 100644 bench_transfer/6_baseline_bfloat16_16x256_r16.o
+ create mode 100644 bench_transfer/6_baseline_bfloat16_64x256_r128.o
+ create mode 100644 bench_transfer/6_baseline_bfloat16_64x256_r16.o
+ create mode 100644 bench_transfer/6_baseline_float32_16x256_r128.o
+ create mode 100644 bench_transfer/6_baseline_float32_16x256_r16.o
+ create mode 100644 bench_transfer/6_baseline_float32_64x256_r128.o
+ create mode 100644 bench_transfer/6_baseline_float32_64x256_r16.o
+ create mode 100644 bench_transfer/6_l1ub_c_bfloat16_128x256_r128.o
+ create mode 100644 bench_transfer/6_l1ub_c_bfloat16_128x256_r16.o
+ create mode 100644 bench_transfer/6_l1ub_c_bfloat16_16x256_r128.o
+ create mode 100644 bench_transfer/6_l1ub_c_bfloat16_16x256_r16.o
+ create mode 100644 bench_transfer/6_l1ub_c_bfloat16_64x256_r128.o
+ create mode 100644 bench_transfer/6_l1ub_c_bfloat16_64x256_r16.o
+ create mode 100644 bench_transfer/6_l1ub_c_float32_16x256_r128.o
+ create mode 100644 bench_transfer/6_l1ub_c_float32_16x256_r16.o
+ create mode 100644 bench_transfer/6_l1ub_c_float32_64x256_r128.o
+ create mode 100644 bench_transfer/6_l1ub_c_float32_64x256_r16.o
+ create mode 100644 bench_transfer/official_l1_probe/run_baseline.py
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py prep
+[prep] inputs saved
+root@localhost:/home/zwh/tmp/bench_transfer# python bench_run.py run 
+[ub2ub bfloat16 16x256] T(r16)=1.9us T(r128)=6.7us round=0.04us dma=0.04us bw(move)=190.69GB/s bw(traffic)=381.39GB/s
+[ub_scalar bfloat16 16x256] T(r16)=849.0us T(r128)=6786.6us round=53.01us dma=53.01us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 64x256] T(r16)=2.7us T(r128)=13.7us round=0.10us dma=0.10us bw(move)=333.21GB/s bw(traffic)=666.42GB/s
+[ub_scalar bfloat16 64x256] T(r16)=3393.8us T(r128)=27141.5us round=212.03us dma=212.03us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub bfloat16 128x256] T(r16)=4.2us T(r128)=24.1us round=0.18us dma=0.18us bw(move)=370.55GB/s bw(traffic)=741.10GB/s
+[ub_scalar bfloat16 128x256] T(r16)=6788.1us T(r128)=54281.9us round=424.05us dma=424.05us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x256] T(r16)=1.9us T(r128)=8.7us round=0.06us dma=0.06us bw(move)=270.36GB/s bw(traffic)=540.71GB/s
+[ub_scalar float32 16x256] T(r16)=841.8us T(r128)=6727.0us round=52.55us dma=52.55us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub float32 64x256] T(r16)=4.2us T(r128)=24.0us round=0.18us dma=0.18us bw(move)=370.54GB/s bw(traffic)=741.07GB/s
+[ub_scalar float32 64x256] T(r16)=3364.2us T(r128)=26904.2us round=210.18us dma=210.18us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ERROR] l1ub bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_a float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_w float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_b float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_c bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_c bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_c float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_c float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single bfloat16 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single bfloat16 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single bfloat16 128x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single float32 16x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ERROR] l1ub_single float32 64x256 R=16: rtStreamSynchronize failed, error code: 0x7bc87
+[ub2ub bfloat16 1x8] T(r16)=1.9us T(r128)=5.4us round=0.03us dma=0.03us bw(move)=0.52GB/s bw(traffic)=1.03GB/s
+[ub_scalar bfloat16 1x8] T(r16)=2.9us T(r128)=18.2us round=0.14us dma=0.14us bw(move)=0.12GB/s bw(traffic)=0.24GB/s
+[ub2ub float32 1x8] T(r16)=2.2us T(r128)=3.9us round=0.02us dma=0.02us bw(move)=2.09GB/s bw(traffic)=4.19GB/s
+[ub_scalar float32 1x8] T(r16)=2.4us T(r128)=14.4us round=0.11us dma=0.11us bw(move)=0.30GB/s bw(traffic)=0.60GB/s
+[ub2ub bfloat16 2x8] T(r16)=1.9us T(r128)=8.8us round=0.06us dma=0.06us bw(move)=0.52GB/s bw(traffic)=1.05GB/s
+[ub_scalar bfloat16 2x8] T(r16)=5.1us T(r128)=35.6us round=0.27us dma=0.27us bw(move)=0.12GB/s bw(traffic)=0.23GB/s
+[ub2ub float32 2x8] T(r16)=2.0us T(r128)=4.5us round=0.02us dma=0.02us bw(move)=2.86GB/s bw(traffic)=5.71GB/s
+[ub_scalar float32 2x8] T(r16)=3.2us T(r128)=20.6us round=0.16us dma=0.16us bw(move)=0.41GB/s bw(traffic)=0.82GB/s
+[ub2ub bfloat16 4x8] T(r16)=2.7us T(r128)=16.2us round=0.12us dma=0.12us bw(move)=0.53GB/s bw(traffic)=1.06GB/s
+[ub_scalar bfloat16 4x8] T(r16)=5.7us T(r128)=40.6us round=0.31us dma=0.31us bw(move)=0.21GB/s bw(traffic)=0.41GB/s
+[ub2ub float32 4x8] T(r16)=2.0us T(r128)=5.8us round=0.03us dma=0.03us bw(move)=3.79GB/s bw(traffic)=7.59GB/s
+[ub_scalar float32 4x8] T(r16)=5.7us T(r128)=40.5us round=0.31us dma=0.31us bw(move)=0.41GB/s bw(traffic)=0.82GB/s
+[ub2ub bfloat16 8x8] T(r16)=4.5us T(r128)=31.1us round=0.24us dma=0.24us bw(move)=0.54GB/s bw(traffic)=1.08GB/s
+[ub_scalar bfloat16 8x8] T(r16)=11.4us T(r128)=86.1us round=0.67us dma=0.67us bw(move)=0.19GB/s bw(traffic)=0.38GB/s
+[ub2ub float32 8x8] T(r16)=1.9us T(r128)=3.4us round=0.01us dma=0.01us bw(move)=19.72GB/s bw(traffic)=39.44GB/s
+[ub_scalar float32 8x8] T(r16)=11.2us T(r128)=85.1us round=0.66us dma=0.66us bw(move)=0.39GB/s bw(traffic)=0.78GB/s
+[ub2ub bfloat16 8x16] T(r16)=2.0us T(r128)=3.4us round=0.01us dma=0.01us bw(move)=21.71GB/s bw(traffic)=43.43GB/s
+[ub_scalar bfloat16 8x16] T(r16)=21.5us T(r128)=166.8us round=1.30us dma=1.30us bw(move)=0.20GB/s bw(traffic)=0.39GB/s
+[ub2ub float32 8x16] T(r16)=2.0us T(r128)=3.5us round=0.01us dma=0.01us bw(move)=38.39GB/s bw(traffic)=76.77GB/s
+[ub_scalar float32 8x16] T(r16)=21.0us T(r128)=162.3us round=1.26us dma=1.26us bw(move)=0.41GB/s bw(traffic)=0.81GB/s
+[ub2ub bfloat16 16x16] T(r16)=1.9us T(r128)=3.4us round=0.01us dma=0.01us bw(move)=37.75GB/s bw(traffic)=75.51GB/s
+[ub_scalar bfloat16 16x16] T(r16)=42.2us T(r128)=332.9us round=2.60us dma=2.60us bw(move)=0.20GB/s bw(traffic)=0.39GB/s
+[ub2ub float32 16x16] T(r16)=1.9us T(r128)=3.7us round=0.02us dma=0.02us bw(move)=64.05GB/s bw(traffic)=128.09GB/s
+[ub_scalar float32 16x16] T(r16)=41.3us T(r128)=324.3us round=2.53us dma=2.53us bw(move)=0.41GB/s bw(traffic)=0.81GB/s
+[ub2ub bfloat16 16x32] T(r16)=1.9us T(r128)=3.6us round=0.02us dma=0.02us bw(move)=67.74GB/s bw(traffic)=135.49GB/s
+[ub_scalar bfloat16 16x32] T(r16)=108.3us T(r128)=859.6us round=6.71us dma=6.71us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x32] T(r16)=1.9us T(r128)=4.0us round=0.02us dma=0.02us bw(move)=112.19GB/s bw(traffic)=224.39GB/s
+[ub_scalar float32 16x32] T(r16)=107.2us T(r128)=852.5us round=6.65us dma=6.65us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+[ub2ub bfloat16 16x64] T(r16)=1.8us T(r128)=3.9us round=0.02us dma=0.02us bw(move)=108.46GB/s bw(traffic)=216.93GB/s
+[ub_scalar bfloat16 16x64] T(r16)=213.9us T(r128)=1706.4us round=13.33us dma=13.33us bw(move)=0.15GB/s bw(traffic)=0.31GB/s
+[ub2ub float32 16x64] T(r16)=1.9us T(r128)=4.6us round=0.02us dma=0.02us bw(move)=168.18GB/s bw(traffic)=336.37GB/s
+[ub_scalar float32 16x64] T(r16)=212.2us T(r128)=1691.8us round=13.21us dma=13.21us bw(move)=0.31GB/s bw(traffic)=0.62GB/s
+
+===== 差分法汇总（t_round 消除 launch/GM/gemm 常数）=====
+variant      dtype           shape     KB  t_r16us  t_r128us  round_us  dma_us  GB/s(mv)  GB/s(tr)
+ub2ub        bfloat16       16x256   8.00      1.9       6.7      0.04    0.04    190.69    381.39
+ub_scalar    bfloat16       16x256   8.00    849.0    6786.6     53.01   53.01      0.15      0.31
+ub2ub        bfloat16       64x256  32.00      2.7      13.7      0.10    0.10    333.21    666.42
+ub_scalar    bfloat16       64x256  32.00   3393.8   27141.5    212.03  212.03      0.15      0.31
+ub2ub        bfloat16      128x256  64.00      4.2      24.1      0.18    0.18    370.55    741.10
+ub_scalar    bfloat16      128x256  64.00   6788.1   54281.9    424.05  424.05      0.15      0.31
+ub2ub        float32        16x256  16.00      1.9       8.7      0.06    0.06    270.36    540.71
+ub_scalar    float32        16x256  16.00    841.8    6727.0     52.55   52.55      0.31      0.62
+ub2ub        float32        64x256  64.00      4.2      24.0      0.18    0.18    370.54    741.07
+ub_scalar    float32        64x256  64.00   3364.2   26904.2    210.18  210.18      0.31      0.62
+ub2ub        bfloat16          1x8   0.02      1.9       5.4      0.03    0.03      0.52      1.03
+ub_scalar    bfloat16          1x8   0.02      2.9      18.2      0.14    0.14      0.12      0.24
+ub2ub        float32           1x8   0.03      2.2       3.9      0.02    0.02      2.09      4.19
+ub_scalar    float32           1x8   0.03      2.4      14.4      0.11    0.11      0.30      0.60
+ub2ub        bfloat16          2x8   0.03      1.9       8.8      0.06    0.06      0.52      1.05
+ub_scalar    bfloat16          2x8   0.03      5.1      35.6      0.27    0.27      0.12      0.23
+ub2ub        float32           2x8   0.06      2.0       4.5      0.02    0.02      2.86      5.71
+ub_scalar    float32           2x8   0.06      3.2      20.6      0.16    0.16      0.41      0.82
+ub2ub        bfloat16          4x8   0.06      2.7      16.2      0.12    0.12      0.53      1.06
+ub_scalar    bfloat16          4x8   0.06      5.7      40.6      0.31    0.31      0.21      0.41
+ub2ub        float32           4x8   0.12      2.0       5.8      0.03    0.03      3.79      7.59
+ub_scalar    float32           4x8   0.12      5.7      40.5      0.31    0.31      0.41      0.82
+ub2ub        bfloat16          8x8   0.12      4.5      31.1      0.24    0.24      0.54      1.08
+ub_scalar    bfloat16          8x8   0.12     11.4      86.1      0.67    0.67      0.19      0.38
+ub2ub        float32           8x8   0.25      1.9       3.4      0.01    0.01     19.72     39.44
+ub_scalar    float32           8x8   0.25     11.2      85.1      0.66    0.66      0.39      0.78
+ub2ub        bfloat16         8x16   0.25      2.0       3.4      0.01    0.01     21.71     43.43
+ub_scalar    bfloat16         8x16   0.25     21.5     166.8      1.30    1.30      0.20      0.39
+ub2ub        float32          8x16   0.50      2.0       3.5      0.01    0.01     38.39     76.77
+ub_scalar    float32          8x16   0.50     21.0     162.3      1.26    1.26      0.41      0.81
+ub2ub        bfloat16        16x16   0.50      1.9       3.4      0.01    0.01     37.75     75.51
+ub_scalar    bfloat16        16x16   0.50     42.2     332.9      2.60    2.60      0.20      0.39
+ub2ub        float32         16x16   1.00      1.9       3.7      0.02    0.02     64.05    128.09
+ub_scalar    float32         16x16   1.00     41.3     324.3      2.53    2.53      0.41      0.81
+ub2ub        bfloat16        16x32   1.00      1.9       3.6      0.02    0.02     67.74    135.49
+ub_scalar    bfloat16        16x32   1.00    108.3     859.6      6.71    6.71      0.15      0.31
+ub2ub        float32         16x32   2.00      1.9       4.0      0.02    0.02    112.19    224.39
+ub_scalar    float32         16x32   2.00    107.2     852.5      6.65    6.65      0.31      0.62
+ub2ub        bfloat16        16x64   2.00      1.8       3.9      0.02    0.02    108.46    216.93
+ub_scalar    bfloat16        16x64   2.00    213.9    1706.4     13.33   13.33      0.15      0.31
+ub2ub        float32         16x64   4.00      1.9       4.6      0.02    0.02    168.18    336.37
+ub_scalar    float32         16x64   4.00    212.2    1691.8     13.21   13.21      0.31      0.62
