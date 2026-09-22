@@ -16,6 +16,10 @@ variant 说明：
   l1ub       : L1->UB->L1 mix 双核，AIC 入口带 _mix_aic 后缀，根目录 6_*.o
   l1ub_b     : L1->UB + UB->L1 消融-B（gemm 在循环外，单向 a->b），mix 双核，
                根目录 6_l1ub_b_*.o（build_l1ub_b.sh 产物）
+  l1ub_a     : 消融-A 读方向：循环内仅 L1->UB，UB->L1/gemm 在循环外，mix 双核，
+               根目录 6_l1ub_a_*.o（build_l1ub_b.sh 产物）
+  l1ub_w     : 消融-W 写方向：循环内仅 UB->L1，L1->UB/gemm 在循环外，mix 双核，
+               根目录 6_l1ub_w_*.o（build_l1ub_b.sh 产物）
   l1ub_single: L1->UB->L1 单核 AIC（绕开 mix 跨核同步 0x7bc87），
                .o 在 new_env/n6_l1ub_*_single.o（官方 OpenTileAS ed2beb55 +
                CANN 9.2.0-beta.2 编译，stage3 仅 --npu-plan-memory，
@@ -61,6 +65,16 @@ SPECS = [
     ("l1ub", "float32", 16, 256, HERE, "6_", ".o"),
     # l1ub_b（L1->UB + UB->L1 消融-B，mix 双核，根目录 6_l1ub_b_*.o，
     #   build_l1ub_b.sh 产物；stage5 已打通，见 error 记录）
+    ("l1ub_a", "bfloat16", 16, 256, HERE, "6_", ".o"),
+    ("l1ub_a", "bfloat16", 64, 256, HERE, "6_", ".o"),
+    ("l1ub_a", "bfloat16", 128, 256, HERE, "6_", ".o"),
+    ("l1ub_a", "float32", 16, 256, HERE, "6_", ".o"),
+    ("l1ub_a", "float32", 64, 256, HERE, "6_", ".o"),
+    ("l1ub_w", "bfloat16", 16, 256, HERE, "6_", ".o"),
+    ("l1ub_w", "bfloat16", 64, 256, HERE, "6_", ".o"),
+    ("l1ub_w", "bfloat16", 128, 256, HERE, "6_", ".o"),
+    ("l1ub_w", "float32", 16, 256, HERE, "6_", ".o"),
+    ("l1ub_w", "float32", 64, 256, HERE, "6_", ".o"),
     ("l1ub_b", "bfloat16", 16, 256, HERE, "6_", ".o"),
     ("l1ub_b", "bfloat16", 64, 256, HERE, "6_", ".o"),
     ("l1ub_b", "bfloat16", 128, 256, HERE, "6_", ".o"),
@@ -87,6 +101,10 @@ TRANSFERS = {
     "l1ub": {"blocks_per_round": 2, "dma_per_round": 4},  # 2x(L1->UB) + 2x(UB->L1)
     # 消融-B：每轮 1x(L1->UB) + 1x(UB->L1)，只有单向 a->b（无返程）
     "l1ub_b": {"blocks_per_round": 1, "dma_per_round": 2},
+    # 消融-A（读方向）：每轮仅 1x(L1->UB)，UB->L1/gemm 落在循环外
+    "l1ub_a": {"blocks_per_round": 1, "dma_per_round": 1},
+    # 消融-W（写方向）：每轮仅 1x(UB->L1)，L1->UB/gemm 落在循环外
+    "l1ub_w": {"blocks_per_round": 1, "dma_per_round": 1},
     # 单核版与 mix 版相同链路：每轮 2x(L1->UB) + 2x(UB->L1)
     "l1ub_single": {"blocks_per_round": 2, "dma_per_round": 4},
 }
@@ -233,13 +251,13 @@ def do_run():
             # mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
             if variant in ("ub2ub", "ub_scalar"):
                 mode = "aiv"  # AIV 向量核 ELF
-            elif variant in ("l1ub", "l1ub_b"):
+            elif variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b"):
                 mode = "mix"  # AIC ELF，runtime 自动配对 _mix_aiv 半核
             else:  # l1ub_single
                 mode = "aic"  # 单核 AIC ELF（registerKernel 非 "aiv" 均走 AIC magic）
             # mix 双函数 .o 的入口符号带 _mix_aic 后缀（runtime 自动配对 _mix_aiv）
             # kname = f"{variant}_kernel" if variant in ("ub2ub", "ub_scalar") else f"{variant}_kernel_mix_aic"
-            if variant in ("l1ub", "l1ub_b"):
+            if variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b"):
                 kname = "l1ub_kernel_mix_aic"
             elif variant == "l1ub_single":
                 # l1ub_single 复用原 l1ub DSL，单核 .o 入口符号就是 l1ub_kernel（.ll: @l1ub_kernel）
@@ -352,12 +370,12 @@ def do_verify():
             # mode = "aiv" if variant in ("ub2ub", "ub_scalar") else "mix"
             if variant in ("ub2ub", "ub_scalar"):
                 mode = "aiv"
-            elif variant == "l1ub":
+            elif variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b"):
                 mode = "mix"
             else:  # l1ub_single
                 mode = "aic"
             # kname = "ub2ub_kernel" if variant == "ub2ub" else ("ub_scalar_kernel" if variant == "ub_scalar" else "l1ub_kernel_mix_aic")
-            if variant in ("l1ub", "l1ub_b"):
+            if variant in ("l1ub", "l1ub_a", "l1ub_w", "l1ub_b"):
                 kname = "l1ub_kernel_mix_aic"
             elif variant == "l1ub_single":
                 # kname = f"{variant}_kernel"  # 错误：拼成 l1ub_single_kernel，.o 中无此符号 -> 0x7bc78

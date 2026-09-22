@@ -246,6 +246,64 @@ def l1ub_a(M, K, N, REPEAT, dtype="bfloat16"):
 
 
 # --------------------------------------------------------------------------
+# 3a-w) UB->L1 写方向消融-W：循环内只有 UB->L1 一跳（无 L1->UB、无 gemm）。
+#     与 l1ub_a（循环内只 L1->UB）成对：若 A(读)崩、W(写)过 => 工具链未使能
+#     L1->UB 回读（mov.l1.to.ub.v310）；若 W 也崩 => L1 访问整体未使能。
+#     与 l1ub_a 相同，两个 prim_func 均命名为 l1ub_kernel。
+# --------------------------------------------------------------------------
+def l1ub_w(M, K, N, REPEAT, dtype="bfloat16"):
+    @T.prim_func
+    def l1ub_kernel(
+        X: T.Buffer((M, K), dtype),
+        W1: T.Buffer((K, N), dtype),
+        W2: T.Buffer((K, N), dtype),
+        OUT1: T.Buffer((M, N), "float32"),
+        OUT2: T.Buffer((M, N), "float32"),
+    ):
+        with T.Kernel(1) as bx:
+            buf_a = T.alloc_shared((M, K), dtype)  # GM -> L1
+            buf_b = T.alloc_shared((M, K), dtype)  # 被测 UB->L1 写目标 -> L1
+            ub_tmp = T.alloc_shared((M, K), dtype)  # 被测源 -> UB
+            w1_shared = T.alloc_shared((K, N), dtype)  # gemm B -> L1
+            w2_shared = T.alloc_shared((K, N), dtype)  # gemm B -> L1
+            acc1 = T.alloc_fragment((M, N), "float32")
+            acc2 = T.alloc_fragment((M, N), "float32")
+            out1_ub = T.alloc_shared((M, N), "float32")
+            out2_ub = T.alloc_shared((M, N), "float32")
+
+            T.copy(X[0:M, 0:K], buf_a)  # GM -> L1 (CUBE)
+            T.copy(W1[0:K, 0:N], w1_shared)  # GM -> L1 (CUBE)
+            T.copy(W2[0:K, 0:N], w2_shared)  # GM -> L1 (CUBE)
+            T.copy(buf_a, ub_tmp)  # L1 -> UB（const，填被测源）
+
+            for r in T.serial(REPEAT):
+                T.copy(ub_tmp, buf_b)  # UB -> L1（被测唯一一跳，写方向）
+
+            # 循环外恒定：给 buf_a/buf_b 保 L1、ub_tmp 保 UB（未计量）
+            T.gemm(
+                buf_a,
+                w1_shared,
+                acc1,
+                transpose_B=False,
+                clear_accum=True,
+            )
+            T.gemm(
+                buf_b,
+                w2_shared,
+                acc2,
+                transpose_B=False,
+                clear_accum=True,
+            )
+
+            T.copy(acc1, out1_ub)
+            T.copy(out1_ub, OUT1[0:M, 0:N])
+            T.copy(acc2, out2_ub)
+            T.copy(out2_ub, OUT2[0:M, 0:N])
+
+    return l1ub_kernel
+
+
+# --------------------------------------------------------------------------
 # 3b) L1->UB + UB->L1 消融-B：循环内两跳（跳 1 为被测值，跳 2 把复制的中间结果
 #     搬回 L1），无 gemm。与 l1ub 对照隔离"完整往返"是否触发 AICORE_EXCEPTION。
 # --------------------------------------------------------------------------
@@ -339,6 +397,7 @@ VARIANTS = {
     "l12l1": l12l1,
     "l1ub": l1ub,
     "l1ub_a": l1ub_a,
+    "l1ub_w": l1ub_w,
     "l1ub_b": l1ub_b,
     "baseline": baseline,
 }
