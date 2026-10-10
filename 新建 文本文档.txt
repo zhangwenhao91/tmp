@@ -1,0 +1,281 @@
+OPname	OP分类	入参	返回值	"支持的 Attribute 规格
+（不含内部生成的 operandSegmentSizes）"	i1	i4	i8	i16	i32	i64	f4E2M1FN	f8E4M3FN	f8E5M2	f8E8M0FNU	f16	bf16	tf32	f32	f64	特殊限制	NPU Dialect 降级支持	CCE Dialect 降级支持	责任人	测试结果	修复进度
+open_tile.module (ModuleOp)	程序结构类	"sym_name: SymbolNameAttr（符号名）
+body: Region（MaxSizedRegion<1>）"	无	sym_name: SymbolNameAttr，必选；模块符号名（@name）	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	顶层符号表容器；至多 1 个 body region，单块且无 terminator。	完全支持	完全支持	朱秋成	
+open_tile.entry (EntryOp)	程序结构类	"sym_name: SymbolNameAttr（符号名）
+function_type: FunctionType 属性
+arg_attrs: 可选属性 DictionaryAttr 数组
+res_attrs: 可选属性 DictionaryAttr 数组
+optimization_hints: 可选属性 optimization_hints 属性
+body: Region（SizedRegion<1>）"	无	"sym_name: SymbolNameAttr，必选；入口符号名（@name）
+function_type: TypeAttr<FunctionType>，必选；返回类型列表必须为空
+arg_attrs: Array<DictionaryAttr>，可选；逐参数附加属性
+res_attrs: Array<DictionaryAttr>，可选；逐结果附加属性（当前 entry 无结果）
+optimization_hints: OptimizationHintsAttr，可选；语法 optimization_hints=<arch = {key = value}>；典型键 num_cta_in_cga"	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	内核入口不可变参；function_type 的返回列表必须为空；body 为单块并隐式以 return 结束。	完全支持	完全支持	朱秋成	
+open_tile.return (ReturnOp)	控制类	operands: 可变长 任意 MLIR 类型	无	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	只能位于 entry 或 if；当前 verifier 要求 0 个返回操作数。	支持某部分类型：仅支持无返回操作数；if 内提前返回受 CFG 形态限制	支持某部分类型：仅无返回值及受支持的提前返回 CFG	朱秋成	
+open_tile.constant (ConstantOp)	数据构造与查询类	value: DenseIntOrFPElementsAttr	result: Tile<任意合法元素类型>	value: DenseIntOrFPElementsAttr，必选；元素类型、rank、shape 必须与结果 Tile 一致	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✓	✓	✗	✓	✓	Dense 常量的元素类型、rank 和各维 shape 必须与结果 Tile 完全一致；整数值须落在目标位宽可表示的有符号/无符号并集范围内。	支持某部分类型：标量常量，以及任意合法类型的 ranked splat 常量；非 splat ranked 常量不支持	支持某部分类型：后端可表示类型的标量常量和 ranked splat 常量	武高磊	=DISPIMG("ID_BD1628CB09A348A5827DF98C6A39914D",1)	待验证
+open_tile.addf (AddFOp)	计算类	"lhs: Tile<f16|bf16|f32|f64>
+rhs: Tile<f16|bf16|f32|f64>
+rounding_mode: rounding 属性
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	"rounding_mode: RoundingModeAttr，必选；rounding<nearest_even | zero | negative_inf | positive_inf>
+flush_to_zero: UnitAttr，可选；仅 f32，出现即启用"	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	lhs/rhs/result 类型完全相同；rounding 仅支持 nearest_even/zero/negative_inf/positive_inf；flush_to_zero 仅支持 f32。	支持某部分类型：f16/bf16/f32；f64 及后端不可实现的 rounding 组合不支持	支持某部分类型：f16、bf16、f32；f64 不支持	武高磊	=DISPIMG("ID_F14ED22F4FA64D5CB0885305C880A9D8",1)	已合并
+open_tile.subf (SubFOp)	计算类	"lhs: Tile<f16|bf16|f32|f64>
+rhs: Tile<f16|bf16|f32|f64>
+rounding_mode: rounding 属性
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	"rounding_mode: RoundingModeAttr，必选；rounding<nearest_even | zero | negative_inf | positive_inf>
+flush_to_zero: UnitAttr，可选；仅 f32，出现即启用"	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	lhs/rhs/result 类型完全相同；rounding 仅支持 nearest_even/zero/negative_inf/positive_inf；flush_to_zero 仅支持 f32。	支持某部分类型：f16/bf16/f32；f64 及后端不可实现的 rounding 组合不支持	支持某部分类型：f16、bf16、f32；f64 不支持	武高磊	=DISPIMG("ID_7B94D717013A45139579FFC4BAD087A3",1)	已合并
+open_tile.mulf (MulFOp)	计算类	"lhs: Tile<f16|bf16|f32|f64>
+rhs: Tile<f16|bf16|f32|f64>
+rounding_mode: rounding 属性
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	"rounding_mode: RoundingModeAttr，必选；rounding<nearest_even | zero | negative_inf | positive_inf>
+flush_to_zero: UnitAttr，可选；仅 f32，出现即启用"	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	lhs/rhs/result 类型完全相同；rounding 仅支持 nearest_even/zero/negative_inf/positive_inf；flush_to_zero 仅支持 f32。	支持某部分类型：f16/bf16/f32；f64 及后端不可实现的 rounding 组合不支持	支持某部分类型：f16、bf16、f32；f64 不支持	武高磊	=DISPIMG("ID_37A124721EDD4571A8643A245DB8840C",1)	已合并	
+open_tile.divf (DivFOp)	计算类	"lhs: Tile<f16|bf16|f32|f64>
+rhs: Tile<f16|bf16|f32|f64>
+rounding_mode: rounding 属性
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	"rounding_mode: RoundingModeAttr，必选；rounding<nearest_even | zero | negative_inf | positive_inf | approx>；approx 最大误差 2 ULP（正规数输入）
+flush_to_zero: UnitAttr，可选；仅 f32，出现即启用"	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	lhs/rhs/result 类型完全相同；rounding 支持 nearest_even/zero/negative_inf/positive_inf/approx；flush_to_zero 仅支持 f32；approx 最大误差为 2 ULP（正规数输入）。	支持某部分类型：f16/bf16/f32；approx 仅 f32；f64 不支持	支持某部分类型：f16、bf16、f32；f64 不支持，部分 rounding 通过组合指令实现	武高磊	=DISPIMG("ID_739FA438DE95470187EA109D4064976F",1)	已合并
+open_tile.remf (RemFOp)	计算类	"lhs: Tile<f16|bf16|f32|f64>
+rhs: Tile<f16|bf16|f32|f64>"	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	lhs/rhs/result 类型完全相同；结果符号与被除数 lhs 相同。	完全支持	暂不支持	朱秋成	cce.vmod未支持
+open_tile.maxf (MaxFOp)	计算类	"lhs: Tile<f16|bf16|f32|f64>
+rhs: Tile<f16|bf16|f32|f64>
+propagate_nan: UnitAttr（可选开关）
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	"propagate_nan: UnitAttr，可选；出现时任一输入为 NaN 即传播 NaN
+flush_to_zero: UnitAttr，可选；仅 f32，出现即启用"	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	lhs/rhs/result 类型完全相同；propagate_nan 控制 NaN 传播；flush_to_zero 仅支持 f32。	完全支持	支持某部分类型：f16、bf16、f32；f64 不支持	朱秋成	https://gitcode.com/OpenTileIR/OpenTileAS/issues/60
+open_tile.minf (MinFOp)	计算类	"lhs: Tile<f16|bf16|f32|f64>
+rhs: Tile<f16|bf16|f32|f64>
+propagate_nan: UnitAttr（可选开关）
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	"propagate_nan: UnitAttr，可选；出现时任一输入为 NaN 即传播 NaN
+flush_to_zero: UnitAttr，可选；仅 f32，出现即启用"	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	lhs/rhs/result 类型完全相同；propagate_nan 控制 NaN 传播；flush_to_zero 仅支持 f32。	完全支持	支持某部分类型：f16、bf16、f32；f64 不支持	朱秋成	https://gitcode.com/OpenTileIR/OpenTileAS/issues/60
+open_tile.negf (NegFOp)	计算类	source: Tile<f16|bf16|f32|f64>	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型完全相同。	完全支持	支持某部分类型：f16、f32；bf16/f64 不支持	武高磊	=DISPIMG("ID_15F1BDBEF37D4C8BB0420917833062D8",1)	待合并
+open_tile.fma (FmaOp)	计算类	"lhs: Tile<f16|bf16|f32|f64>
+rhs: Tile<f16|bf16|f32|f64>
+acc: Tile<f16|bf16|f32|f64>
+rounding_mode: rounding 属性
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	"rounding_mode: RoundingModeAttr，必选；rounding<nearest_even | zero | negative_inf | positive_inf>
+flush_to_zero: UnitAttr，可选；仅 f32，出现即启用"	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	lhs/rhs/acc/result 类型完全相同；rounding 仅支持 nearest_even/zero/negative_inf/positive_inf；flush_to_zero 仅支持 f32。	支持某部分类型：f16/bf16/f32；f64 或不可实现的 rounding 组合不支持	支持某部分类型：f16、f32；其余类型不支持	武高磊	=DISPIMG("ID_BA51ABFA68C0408481998B0EF230BA74",1)	待合并
+open_tile.absf (AbsFOp)	计算类	source: Tile<f16|bf16|f32|f64>	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型完全相同。	完全支持	支持某部分类型：f16、f32；bf16/f64 不支持	武高磊	=DISPIMG("ID_FEC006CF02B4498391BA7DEA8A2CB3E2",1)	待验证
+open_tile.log (LogOp)	计算类	source: Tile<f16|bf16|f32|f64>	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型相同。	完全支持	支持某部分类型：f16、bf16、f32；f64 不支持	武高磊	=DISPIMG("ID_1754503A99B64ADC90D58A34ADC5F8E4",1)	待验证
+open_tile.log2 (Log2Op)	计算类	source: Tile<f16|bf16|f32|f64>	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型相同。	完全支持	支持某部分类型：仅 f32	武高磊	=DISPIMG("ID_F36A701D6CB94F10A35638E5B6209D81",1)	暂不需要修改
+open_tile.sin (SinOp)	计算类	source: Tile<f16|bf16|f32|f64>	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型相同。	完全支持	暂不支持	朱秋成	
+open_tile.sinh (SinHOp)	计算类	source: Tile<f16|bf16|f32|f64>	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型相同。	完全支持	暂不支持	朱秋成	
+open_tile.cos (CosOp)	计算类	source: Tile<f16|bf16|f32|f64>	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型相同。	完全支持	暂不支持	朱秋成	
+open_tile.cosh (CosHOp)	计算类	source: Tile<f16|bf16|f32|f64>	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型相同。	完全支持	暂不支持	朱秋成	
+open_tile.tan (TanOp)	计算类	source: Tile<f16|bf16|f32|f64>	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型相同。	完全支持	暂不支持	朱秋成	
+open_tile.atan2 (Atan2Op)	计算类	"x: Tile<f16|bf16|f32|f64>
+y: Tile<f16|bf16|f32|f64>"	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	x/y/result 类型相同。	完全支持	暂不支持	朱秋成	CCE未支持，编译失败，规格符合预期
+open_tile.ceil (CeilOp)	计算类	"source: Tile<f16|bf16|f32|f64>
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	flush_to_zero: UnitAttr，可选；仅 f32，出现即启用	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型完全相同；flush_to_zero 仅支持 f32。	完全支持	暂不支持	朱秋成	CCE Dialect未支持
+open_tile.floor (FloorOp)	计算类	"source: Tile<f16|bf16|f32|f64>
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	flush_to_zero: UnitAttr，可选；仅 f32，出现即启用	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型完全相同；flush_to_zero 仅支持 f32。	完全支持	暂不支持	朱秋成	
+open_tile.exp2 (Exp2Op)	计算类	"source: Tile<f16|bf16|f32|f64>
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	flush_to_zero: UnitAttr，可选；仅 f32，出现即启用	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型完全相同；flush_to_zero 仅支持 f32。	完全支持	支持某部分类型：仅 f32	朱秋成	
+open_tile.rsqrt (RsqrtOp)	计算类	"source: Tile<f16|bf16|f32|f64>
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	flush_to_zero: UnitAttr，可选；仅 f32，出现即启用	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型完全相同；flush_to_zero 仅支持 f32。	完全支持	支持某部分类型：f16、f32；按 sqrt+div 组合降级，shape 还需满足向量 tail 约束	朱秋成	
+open_tile.exp (ExpOp)	计算类	"source: Tile<f16|bf16|f32|f64>
+rounding_mode: 可选（有默认值） rounding 属性"	result: Tile<f16|bf16|f32|f64>	rounding_mode: RoundingModeAttr，可选，默认 full；rounding<full | approx>；approx 仅 f32	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型完全相同；rounding 仅支持 full/approx（默认 full）；approx 仅支持 f32。	支持某部分类型：f16/bf16/f32；approx 仅 f32；f64 不支持	支持某部分类型：f16、bf16、f32；full 模式使用组合指令，f64 不支持	朱秋成	
+open_tile.tanh (TanHOp)	计算类	"source: Tile<f16|bf16|f32|f64>
+rounding_mode: 可选（有默认值） rounding 属性"	result: Tile<f16|bf16|f32|f64>	rounding_mode: RoundingModeAttr，可选，默认 full；rounding<full | approx>；approx 仅 f32	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型完全相同；rounding 仅支持 full/approx（默认 full）；approx 仅支持 f32。	支持某部分类型：f16/bf16/f32；approx 仅 f32；f64 不支持	支持某部分类型：f16、bf16、f32；使用组合指令，f64 不支持	朱秋成	
+open_tile.sqrt (SqrtOp)	计算类	"source: Tile<f16|bf16|f32|f64>
+rounding_mode: rounding 属性
+flush_to_zero: UnitAttr（可选开关）"	result: Tile<f16|bf16|f32|f64>	"rounding_mode: RoundingModeAttr，必选；rounding<nearest_even | zero | negative_inf | positive_inf | approx>；approx 仅 f32
+flush_to_zero: UnitAttr，可选；仅 f32，出现即启用"	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result 类型完全相同；rounding 支持 nearest_even/zero/negative_inf/positive_inf/approx；approx 与 flush_to_zero 均仅支持 f32。	支持某部分类型：f16/bf16/f32；approx 仅 f32；f64 不支持	支持某部分类型：f16、bf16、f32；bf16/定向 rounding 使用组合指令，f64 不支持	朱秋成	
+open_tile.pow (PowOp)	计算类	"source: Tile<f16|bf16|f32|f64>
+exponent: Tile<f16|bf16|f32|f64>"	result: Tile<f16|bf16|f32|f64>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/exponent/result 类型完全相同。	完全支持	暂不支持	朱秋成	
+open_tile.libdevice (LibDeviceOp)	计算类	"inputs: 可变长 Tile<任意合法元素类型>
+symbol: StringAttr"	results: 可变长 Tile<任意合法元素类型>	symbol: StringAttr，必选；目标 libdevice 函数符号名	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	symbol 决定设备函数及其可变长签名；ODS 不校验具体函数名、参数个数或类型组合。	支持某部分类型：仅支持已实现的 SIMT/设备函数 symbol 及其签名	支持某部分类型：仅 NPU-to-CCE 已识别的 libdevice/SIMT symbol	朱秋成	
+open_tile.absi (AbsIOp)	计算类	source: Tile<i1|i8|i16|i32|i64>	result: Tile<i1|i8|i16|i32|i64>	无 OP-level Attribute	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	source/result 类型完全相同；输入按有符号解释，输出按无符号解释。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 不支持，i64 使用 paired-i32 carrier	朱秋成	已解决
+open_tile.cmpf (CmpFOp)	计算类	"comparison_predicate: comparison_predicate 属性
+comparison_ordering: comparison_ordering 属性
+lhs: Tile<f16|bf16|f32|f64>
+rhs: Tile<f16|bf16|f32|f64>"	result: Tile<i1>	"comparison_predicate: ComparisonPredicateAttr，必选；equal | not_equal | less_than | less_than_or_equal | greater_than | greater_than_or_equal
+comparison_ordering: ComparisonOrderingAttr，必选；ordered | unordered"	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	lhs/rhs 类型完全相同，result 为同形状 i1 Tile；ordering 可为 ordered/unordered，用于规定 NaN 行为。	完全支持	支持某部分类型：f16、bf16、f32；f64 不支持	朱秋成	已解决
+open_tile.cmpi (CmpIOp)	计算类	"comparison_predicate: comparison_predicate 属性
+lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>
+signedness: signedness 属性"	result: Tile<i1>	"comparison_predicate: ComparisonPredicateAttr，必选；equal | not_equal | less_than | less_than_or_equal | greater_than | greater_than_or_equal
+signedness: SignednessAttr，必选；signed | unsigned"	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lhs/rhs 类型完全相同，result 为同形状 i1 Tile；整数按 signedness 指定方式解释。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 仅部分 predicate 场景	朱秋成	已解决
+open_tile.for (ForOp)	控制类	"lowerBound: 标量 Tile<i1|i8|i16|i32|i64>
+upperBound: 标量 Tile<i1|i8|i16|i32|i64>
+step: 标量 Tile<i1|i8|i16|i32|i64>
+initArgs: 可变长 任意 MLIR 类型
+unsignedCmp: UnitAttr（可选开关）
+body: Region（SizedRegion<1>）"	results: 可变长 任意 MLIR 类型	unsignedCmp: UnitAttr，可选；自定义语法为 unsigned；缺省按 signed 比较	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lowerBound/upperBound/step 必须为同类型标量整数 Tile；区间为 [lower, upper)，默认有符号比较；initArgs 与 results 数量/类型对应，body 以 continue 终结。	支持某部分类型：支持可转换的标量整数边界和标量/张量 loop-carried 值	支持某部分类型：可转换为 scf/cf 的标量整数边界和标量/张量状态	朱秋成	
+open_tile.if (IfOp)	控制类	"condition: 标量 Tile<i1>
+thenRegion: Region（SizedRegion<1>）
+elseRegion: Region（MaxSizedRegion<1>）"	results: 可变长 任意 MLIR 类型	无 OP-level Attribute	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	condition 必须是标量 i1 Tile；产生结果时必须存在 else，then/else 均须 yield 与结果匹配的值。	支持某部分类型：支持标量 i1 条件；带结果分支及提前退出需满足 CFG lowering 约束	支持某部分类型：标量 i1 条件及受支持的 CFG 形态	朱秋成	
+open_tile.yield (YieldOp)	控制类	values: 可变长 任意 MLIR 类型	无	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	仅可终结 if/reduce/scan region；yield 的数量和类型必须与父 OP 结果/region 契约匹配。	支持某部分类型：作为受支持 if/reduce/scan region 的 terminator	支持某部分类型：仅受支持的 if/reduce/scan/scf region	朱秋成	
+open_tile.continue (ContinueOp)	控制类	operands: 可变长 任意 MLIR 类型	无	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	仅可用于 for/if/loop；控制回到最内层循环；携带值须与循环迭代参数逐项匹配。	支持某部分类型：作为受支持 for/loop/if 控制流的 terminator	支持某部分类型：仅受支持的 for/loop CFG 形态	朱秋成	
+open_tile.break (BreakOp)	控制类	operands: 可变长 任意 MLIR 类型	无	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	仅可用于 if/loop；退出最内层 loop；携带值须与 loop 结果逐项匹配。	支持某部分类型：作为受支持 loop/if 控制流的 terminator	支持某部分类型：仅受支持的 loop CFG 形态	朱秋成	已解决
+open_tile.loop (LoopOp)	控制类	"initValues: 可变长 任意 MLIR 类型
+region: Region（SizedRegion<1>）"	resultValues: 可变长 任意 MLIR 类型	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	无限循环直到 break；所有控制路径必须以 continue 或 break 结束；initValues、region 参数、resultValues 数量和类型对应。	支持某部分类型：支持可转换的标量/张量状态及受支持的 break/continue CFG 形态	支持某部分类型：仅可转换为 scf.while/cf 的受支持 CFG 形态	朱秋成	
+open_tile.assert (AssertOp)	控制类	"condition: Tile<i1>
+message: StringAttr"	无	message: StringAttr，必选；断言失败消息	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	condition 任一元素为 false 即终止 kernel 并向 host 报错；仅建议调试使用，会影响性能。	支持某部分类型：仅消除编译器生成的 int32 overflow 检查；用户 assert 不支持	支持某部分类型：仅编译器生成的 int32 overflow 检查会被消除	朱秋成	已解决
+open_tile.mmaf (MmaFOp)	计算类	"lhs: Tile<任意合法元素类型>
+rhs: Tile<任意合法元素类型>
+acc: Tile<任意合法元素类型>"	result: Tile<任意合法元素类型>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	所有操作数/结果必须为 2D Tile；lhs=M×K、rhs=K×N、acc/result=M×N；当前 verifier 未进一步限制元素类型组合。	支持某部分类型：静态 2D、可映射到 NPU MAD 的类型/布局；常用组合为 f16/bf16/f32 输入、f32 累加	支持某部分类型：静态 rank-2；f16/bf16/f32 或 FP8 输入，f32 累加，且满足 L0A/L0B/L0C 布局	武高磊	=DISPIMG("ID_CF22B32BA39A49BAA4F8B21FEFB6181F",1)		
+open_tile.mmai (MmaIOp)	计算类	"lhs: Tile<i8>
+rhs: Tile<i8>
+acc: Tile<i32>
+signedness_lhs: signedness 属性
+signedness_rhs: signedness 属性"	result: Tile<i32>	"signedness_lhs: SignednessAttr，必选；signed | unsigned
+signedness_rhs: SignednessAttr，必选；signed | unsigned"	✗	✗	✓	✗	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	支持 2D 或 3D batch；lhs/rhs=i8，acc/result=i32；形状分别为 M×K/K×N/M×N 或 B×M×K/B×K×N/B×M×N；lhs/rhs signedness 独立指定。	支持某部分类型：仅静态 2D i8×i8→i32 路径；OpenTileIR 允许的 3D batch 暂不支持	暂不支持	武高磊	=DISPIMG("ID_E4E47C07095446A2A910335F34900889",1)		
+open_tile.mmaf_scaled (MmafScaledOp)	计算类	"lhs: Tile<f8E4M3FN|f8E5M2|f4E2M1FN>
+rhs: Tile<f8E4M3FN|f8E5M2|f4E2M1FN>
+acc: Tile<f32>
+lhs_scale: Tile<f8E4M3FN|f8E8M0FNU>
+rhs_scale: Tile<f8E4M3FN|f8E8M0FNU>"	result: Tile<f32>	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✓	✓	✓	✓	✗	✗	✗	✓	✗	所有操作数同 rank（2D/3D）并满足 MMA 形状；lhs/rhs 同类型，scale 两侧同类型；f4E2M1FN 输入时 scale 必须为 f8E4M3FN。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_2A283BA698CA4D368140458D8FFCA877",1)
+open_tile.addi (AddIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>
+overflow: 可选（有默认值） overflow 属性"	result: Tile<i1|i8|i16|i32|i64>	overflow: IntegerOverflowAttr，可选，默认 none；overflow<none | no_signed_wrap | no_unsigned_wrap | no_wrap>	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lhs/rhs/result 类型完全相同；overflow 可为 none（默认）/no_signed_wrap/no_unsigned_wrap/no_wrap。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 不支持	武高磊	=DISPIMG("ID_4296319A530E4F94B70B025C724E0F50",1)
+open_tile.subi (SubIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>
+overflow: 可选（有默认值） overflow 属性"	result: Tile<i1|i8|i16|i32|i64>	overflow: IntegerOverflowAttr，可选，默认 none；overflow<none | no_signed_wrap | no_unsigned_wrap | no_wrap>	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lhs/rhs/result 类型完全相同；overflow 可为 none（默认）/no_signed_wrap/no_unsigned_wrap/no_wrap。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 不支持	武高磊	=DISPIMG("ID_48500449902348A187E63E332874B584",1)
+open_tile.muli (MulIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>
+overflow: 可选（有默认值） overflow 属性"	result: Tile<i1|i8|i16|i32|i64>	overflow: IntegerOverflowAttr，可选，默认 none；overflow<none | no_signed_wrap | no_unsigned_wrap | no_wrap>	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lhs/rhs/result 类型完全相同；overflow 可为 none（默认）/no_signed_wrap/no_unsigned_wrap/no_wrap。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 不支持	武高磊	=DISPIMG("ID_EBD6D09BB2544D159E2036B309C13697",1)
+open_tile.divi (DivIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>
+signedness: signedness 属性
+rounding: 可选（有默认值） rounding 属性"	result: Tile<i1|i8|i16|i32|i64>	"signedness: SignednessAttr，必选；signed | unsigned
+rounding: RoundingModeAttr，可选，默认 zero；rounding<zero | negative_inf | positive_inf>；unsigned 禁止 negative_inf"	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lhs/rhs/result 类型相同；rounding 仅 zero/negative_inf/positive_inf；unsigned 不允许 negative_inf。	完全支持	支持某部分类型：i8、i16、i32，且 directed rounding 须先 normalize；i1/i64 不支持	武高磊	=DISPIMG("ID_22424D6BB20646BFA0FE002E5B6FD367",1)		i1/i8/i64
+open_tile.maxi (MaxIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>
+signedness: signedness 属性"	result: Tile<i1|i8|i16|i32|i64>	signedness: SignednessAttr，必选；signed | unsigned	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lhs/rhs/result 类型完全相同；signedness 必须指定 signed 或 unsigned 比较语义。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 不支持	武高磊	=DISPIMG("ID_B7766399BA8A4484892EB59FB832C781",1)		i1预期不支持CCE降级，实际通过CCE降级；降级NUP失败
+open_tile.mini (MinIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>
+signedness: signedness 属性"	result: Tile<i1|i8|i16|i32|i64>	signedness: SignednessAttr，必选；signed | unsigned	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lhs/rhs/result 类型完全相同；signedness 必须指定 signed 或 unsigned 比较语义。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 不支持	武高磊	=DISPIMG("ID_9C91C45CFF154CDFB9114E02E150B706",1)		降级NUP失败
+open_tile.remi (RemIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>
+signedness: signedness 属性
+rounding: 可选（有默认值） rounding 属性"	result: Tile<i1|i8|i16|i32|i64>	"signedness: SignednessAttr，必选；signed | unsigned
+rounding: RoundingModeAttr，可选，默认 zero；rounding<zero | negative_inf | positive_inf>；unsigned 禁止 negative_inf"	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lhs/rhs/result 类型相同；rounding 仅 zero/negative_inf/positive_inf；unsigned 不允许 negative_inf。	完全支持	支持某部分类型：i8、i16、i32，且 directed rounding 须先 normalize；i1/i64 不支持	武高磊	=DISPIMG("ID_30E7FDC3D6414939A24E7BE4C041349E",1)		降级NUP失败
+open_tile.negi (NegIOp)	计算类	"source: Tile<i1|i8|i16|i32|i64>
+overflow: 可选（有默认值） overflow 属性"	result: Tile<i1|i8|i16|i32|i64>	overflow: IntegerOverflowAttr，可选，默认 none；overflow<none | no_signed_wrap | no_wrap>；禁止 no_unsigned_wrap	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	source/result 类型相同；overflow 不支持 no_unsigned_wrap。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 不支持	武高磊->叶梓发	=DISPIMG("ID_B9F8419ADDA84EE496A1514CB16AE532",1)
+open_tile.mulhii (MulhiIOp)	计算类	"x: Tile<i1|i8|i16|i32|i64>
+y: Tile<i1|i8|i16|i32|i64>"	result: Tile<i1|i8|i16|i32|i64>	无 OP-level Attribute	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	操作数/结果类型相同；仅定义无符号语义，返回 2N 位乘积的高 N 位。	完全支持	暂不支持	武高磊->叶梓发	=DISPIMG("ID_72C3670E4AD840DDAC9D92F8F335C92F",1)
+open_tile.andi (AndIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>"	result: Tile<i1|i8|i16|i32|i64>	无 OP-level Attribute	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	所有操作数与结果类型（含 shape）完全相同。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 仅部分 predicate 场景	武高磊->叶梓发	=DISPIMG("ID_73BF0465F88F48638FD26AEA2ABE91BF",1)		
+open_tile.ori (OrIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>"	result: Tile<i1|i8|i16|i32|i64>	无 OP-level Attribute	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	所有操作数与结果类型（含 shape）完全相同。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 仅部分 predicate 场景	武高磊->叶梓发	=DISPIMG("ID_3DA786A5740F4028A7A19F94C4DA5DFD",1)		
+open_tile.xori (XorIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>"	result: Tile<i1|i8|i16|i32|i64>	无 OP-level Attribute	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	所有操作数与结果类型（含 shape）完全相同。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 仅部分 predicate 场景	武高磊->叶梓发	=DISPIMG("ID_D042FC57B2AB478299D3441C5C18AE73",1)		
+open_tile.shli (ShlIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>
+overflow: 可选（有默认值） overflow 属性"	result: Tile<i1|i8|i16|i32|i64>	overflow: IntegerOverflowAttr，可选，默认 none；overflow<none | no_signed_wrap | no_unsigned_wrap | no_wrap>	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lhs/rhs/result 类型完全相同；rhs 按无符号解释；overflow 可为 none（默认）/no_signed_wrap/no_unsigned_wrap/no_wrap。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 不支持	武高磊->叶梓发	=DISPIMG("ID_CA9E341DF9254B699DDC792033FBAD4D",1)		
+open_tile.shri (ShrIOp)	计算类	"lhs: Tile<i1|i8|i16|i32|i64>
+rhs: Tile<i1|i8|i16|i32|i64>
+signedness: signedness 属性"	result: Tile<i1|i8|i16|i32|i64>	signedness: SignednessAttr，必选；signed | unsigned	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	lhs/rhs/result 类型相同；signedness 决定算术右移或逻辑右移。	完全支持	支持某部分类型：i8、i16、i32、i64；i1 不支持	朱秋成->叶梓发
+open_tile.alloca (AllocaOp)	内存与同步类	"num_elem: 受限属性 i64 属性
+alignment: 受限属性 i64 属性
+global: UnitAttr（可选开关）"	result: 标量 Tile<ptr<T>>	"num_elem: I64Attr，必选；值 >= 0
+alignment: I64Attr，必选；非零 2 的幂，且不小于元素自然字节大小
+global: UnitAttr，可选；出现时内存可由其他 tile thread 访问"	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	num_elem/alignment ≥ 0；alignment 必须为非零 2 的幂，且不小于元素自然字节大小；结果必须为标量指针 Tile；生命周期限于所在 block。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_0FECA611AEBA4669B9B2B5BA81719FEB",1)	暂不需要修改
+open_tile.load_ptr_tko (LoadPtrTkoOp)	内存与同步类	"memory_ordering_semantics: memory_ordering 属性
+memory_scope: 可选属性 memory_scope 属性
+source: Tile<ptr<T>>
+mask: 可选 Tile<i1>
+paddingValue: 可选 Tile<任意合法元素类型>
+token: 可选 !open_tile.token
+optimization_hints: 可选属性 optimization_hints 属性"	"result: Tile<任意合法元素类型>
+result_token: !open_tile.token"	"memory_ordering_semantics: MemoryOrderingSemanticsAttr，必选；weak | relaxed | acquire
+memory_scope: MemoryScopeAttr，条件可选；tl_blk | device | sys；weak 禁止 scope，relaxed/acquire 必须 scope
+optimization_hints: OptimizationHintsAttr，可选；optimization_hints=<arch = {key = value}>；典型键 latency"	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	mask/padding shape 必须匹配 source，padding/result 元素类型等于指针 pointee；weak 禁止 scope，relaxed/acquire 必须指定 scope；当前 verifier 未校验 result shape，也未要求 padding 必须伴随 mask。	支持某部分类型：标量/规则连续/可分析 mask 的 pointer load；类型、shape、对齐和 tail 受 NPU memory lowering 限制	支持某部分类型：i8/i16/i32/i64、f16/bf16/f32 及部分 FP8；需满足 GM/UB、对齐、mask 和 tail 约束	武高磊	=DISPIMG("ID_3CF3D99698AF49618C83C5CAE4CAD2F0",1)
+open_tile.store_ptr_tko (StorePtrTkoOp)	内存与同步类	"memory_ordering_semantics: memory_ordering 属性
+memory_scope: 可选属性 memory_scope 属性
+destination: Tile<ptr<T>>
+value: Tile<任意合法元素类型>
+mask: 可选 Tile<i1>
+token: 可选 !open_tile.token
+optimization_hints: 可选属性 optimization_hints 属性"	result_token: !open_tile.token	"memory_ordering_semantics: MemoryOrderingSemanticsAttr，必选；weak | relaxed | release
+memory_scope: MemoryScopeAttr，条件可选；tl_blk | device | sys；weak 禁止 scope，relaxed/release 必须 scope
+optimization_hints: OptimizationHintsAttr，可选；optimization_hints=<arch = {key = value}>；典型键 latency"	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	destination/value/mask shape 必须匹配，value 元素类型等于指针 pointee；weak 禁止 scope，relaxed/release 必须指定 scope。	支持某部分类型：标量/规则连续/可分析 mask 的 pointer store；类型、shape、对齐和 tail 受 NPU memory lowering 限制	支持某部分类型：i8/i16/i32/i64、f16/bf16/f32 及部分 FP8；需满足 GM/UB、对齐、mask 和 tail 约束	武高磊	=DISPIMG("ID_C64B35128CCC490B9836EBC0808F25E1",1)
+open_tile.atomic_rmw_tko (AtomicRMWTkoOp)	内存与同步类	"memory_ordering_semantics: memory_ordering 属性
+memory_scope: memory_scope 属性
+pointers: Tile<ptr<T>>
+mode: atomic mode 属性
+arg: Tile<任意合法元素类型>
+mask: 可选 Tile<i1>
+token: 可选 !open_tile.token"	"result: Tile<任意合法元素类型>
+result_token: !open_tile.token"	"memory_ordering_semantics: MemoryOrderingSemanticsAttr，必选；relaxed | acquire | release | acq_rel
+memory_scope: MemoryScopeAttr，必选；tl_blk | device | sys
+mode: AtomicRMWModeAttr，必选；and | or | xor | add | addf | max | min | umax | umin | xchg
+mode/type：and/or/xor/add/max/min/umax/umin→i32|i64；addf→f16|f32|f64；xchg→i32|i64|f32|f64"	✗	✗	✗	✗	✓	✓	✗	✗	✗	✗	✓	✗	✗	✓	✓	pointers/arg/result shape 匹配，pointee/arg/result 类型一致；禁止 weak，支持 relaxed/acquire/release/acq_rel；scope 必填；mode 与数据类型组合受限；当前 ODS 未将可选 mask 纳入 shape 一致性 trait。	支持某部分类型：i32/i64 的整数 mode，f16/f32/f64 的 addf，以及 i32/i64/f32/f64 的 xchg；需可分析地址/mask	支持某部分类型：当前可落到 CCE/SIMT atomic 的整数和浮点 mode/type 组合；需满足 scope/address/mask 约束	武高磊	=DISPIMG("ID_553FE7090F744243A0C0732F3747837C",1)
+open_tile.atomic_cas_tko (AtomicCASTkoOp)	内存与同步类	"memory_ordering_semantics: memory_ordering 属性
+memory_scope: memory_scope 属性
+pointers: Tile<ptr<T>>
+cmp: Tile<任意合法元素类型>
+val: Tile<任意合法元素类型>
+mask: 可选 Tile<i1>
+token: 可选 !open_tile.token"	"result: Tile<任意合法元素类型>
+result_token: !open_tile.token"	"memory_ordering_semantics: MemoryOrderingSemanticsAttr，必选；relaxed | acquire | release | acq_rel
+memory_scope: MemoryScopeAttr，必选；tl_blk | device | sys"	✗	✗	✗	✗	✓	✓	✗	✗	✗	✗	✗	✗	✗	✓	✓	pointers/cmp/val/result shape 和元素类型匹配；禁止 weak，支持 relaxed/acquire/release/acq_rel；scope 必填；浮点比较采用逐位相等；当前 ODS 未将可选 mask 纳入 shape 一致性 trait。	支持某部分类型：i32/i64，且需可分析地址/mask；浮点 CAS 未进入当前 NPU verifier 路径	支持某部分类型：i32/i64 及当前 CCE/SIMT CAS 可选类型；需满足 scope/address/mask 约束	武高磊	=DISPIMG("ID_BC8FBC4A77DE49D881EE9B84FC726316",1)
+open_tile.global (GlobalOp)	内存与同步类	"sym_name: SymbolNameAttr（符号名）
+value: DenseIntOrFPElementsAttr
+alignment: 可选（有默认值） i64 属性"	无	"sym_name: SymbolNameAttr，必选；全局符号名（@name）
+value: DenseIntOrFPElementsAttr，必选；全局初始值
+alignment: I64Attr，可选，默认 0；值 >= 0"	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✓	✓	✗	✓	✓	必须直接嵌套在 open_tile.module 中且符号全局唯一；alignment 默认为 0 且必须非负（当前 verifier 不要求 2 的幂）；初始化值必须为 Dense 数值 Tile。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_041F906AF478452A85747C8FFBCC1BC2",1)	暂不需要修改
+open_tile.get_global (GetGlobalOp)	内存与同步类	name: FlatSymbolRefAttr（符号引用）	result: Tile<ptr<T>>	name: FlatSymbolRefAttr，必选；必须引用同一符号表内有效的 open_tile.global	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✓	✓	✗	✓	✓	引用必须解析到 open_tile.global；结果指针的 pointee 类型和 shape 必须与 global 初值元素类型及 shape 对应。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_F61E3930E0EE4F4B9D239634E9E2F7FF",1)	暂不需要修改
+open_tile.bitcast (BitcastOp)	类型转换类	source: Tile<i1|i4|i8|i16|i32|i64|f4E2M1FN|f8E4M3FN|f8E5M2|f8E8M0FNU|f16|bf16|tf32|f32|f64>	result: Tile<i1|i4|i8|i16|i32|i64|f4E2M1FN|f8E4M3FN|f8E5M2|f8E8M0FNU|f16|bf16|tf32|f32|f64>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	source/result shape 相同，元素位宽必须相等；禁止指针类型（应使用 int_to_ptr/ptr_to_int）。	支持某部分类型：标量或可转换的 tensor cast；后续 bufferization/backend 仍限制具体类型组合	支持某部分类型：后端可表示的同位宽标量/向量类型；部分场景由 arith/LLVM 完成	朱秋成	已解决
+open_tile.exti (ExtIOp)	类型转换类	"from: Tile<i1|i8|i16|i32|i64>
+signedness: signedness 属性"	to: Tile<i1|i8|i16|i32|i64>	signedness: SignednessAttr，必选；signed | unsigned	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	source/result shape 相同；目标整数位宽必须严格大于源位宽；signedness 决定符号扩展或零扩展。	支持某部分类型：标量整数及 NPU cvt 可覆盖的 tensor 整数类型组合	支持某部分类型：CCE cvt 支持的 i8/i16/i32 组合及部分 i64 标量路径	朱秋成
+open_tile.trunci (TrunciOp)	类型转换类	"from: Tile<i1|i8|i16|i32|i64>
+overflow: 可选（有默认值） overflow 属性"	to: Tile<i1|i8|i16|i32|i64>	overflow: IntegerOverflowAttr，可选，默认 none；overflow<none | no_signed_wrap | no_unsigned_wrap | no_wrap>	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	source/result shape 相同；目标整数位宽必须严格小于源位宽；overflow 可声明 wrap 语义。	支持某部分类型：标量整数及 NPU cvt 可覆盖的 tensor 整数类型组合	支持某部分类型：CCE cvt 支持的 i8/i16/i32 组合及部分 i64 标量路径	朱秋成
+open_tile.itof (IToFOp)	类型转换类	"from: Tile<i1|i8|i16|i32|i64>
+signedness: signedness 属性
+rounding_mode: 可选（有默认值） rounding 属性"	to: Tile<f16|bf16|f32|f64>	"signedness: SignednessAttr，必选；signed | unsigned
+rounding_mode: RoundingModeAttr，可选，默认 nearest_even；rounding<nearest_even | zero | negative_inf | positive_inf>"	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result shape 相同；rounding 仅 nearest_even/zero/negative_inf/positive_inf；signedness 指定输入整数解释。	支持某部分类型：标量整数转浮点，及 NPU cvt 覆盖的 tensor 组合；f64 目标不支持	支持某部分类型：CCE cvt 已实现的 i8/i16/i32 ↔ f16/bf16/f32 子集	朱秋成
+open_tile.ftoi (FToIOp)	类型转换类	"from: Tile<f16|bf16|f32|f64>
+signedness: signedness 属性
+rounding_mode: rounding 属性"	to: Tile<i1|i8|i16|i32|i64>	"signedness: SignednessAttr，必选；signed | unsigned
+rounding_mode: RoundingModeAttr，必选；仅 rounding<nearest_int_to_zero>"	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✓	✓	✗	✓	✓	source/result shape 相同；仅支持 nearest_int_to_zero；输入越过目标整数范围时行为未定义。	支持某部分类型：标量浮点转整数，及 NPU cvt 覆盖的 tensor 组合；f64 源不支持	支持某部分类型：CCE cvt 已实现的 f16/bf16/f32 ↔ i8/i16/i32 子集	朱秋成
+open_tile.ftof (FToFOp)	类型转换类	"from: Tile<f8E4M3FN|f8E5M2|f16|bf16|f32|f64>
+rounding_mode: 可选（有默认值） rounding 属性"	to: Tile<f8E4M3FN|f8E5M2|f16|bf16|f32|f64>	rounding_mode: RoundingModeAttr，可选，默认 nearest_even；仅支持 rounding<nearest_even>	✗	✗	✗	✗	✗	✗	✗	✓	✓	✗	✓	✓	✗	✓	✓	source/result shape 相同且元素类型必须不同；仅支持 nearest_even。	支持某部分类型：标量/张量的 f16、bf16、f32 互转；涉及 f64 不支持	支持某部分类型：f16、bf16、f32 间已实现的转换；f64 不支持	朱秋成
+open_tile.int_to_ptr (IntToPtrOp)	类型转换类	source: Tile<i64>	result: Tile<ptr<T>>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	source/result shape 相同；source 必须为 i64，按无符号地址解释。	支持某部分类型：仅可转换的 i64 地址到 pointer/memref 表示	支持某部分类型：仅最终可合法化为 LLVM/memref 地址的 i64 场景	朱秋成
+open_tile.ptr_to_int (PtrToIntOp)	类型转换类	source: Tile<ptr<T>>	result: Tile<i64>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	source/result shape 相同；result 必须为 i64，按无符号地址解释。	支持某部分类型：仅 pointer/memref 地址到 i64 的可转换场景	支持某部分类型：仅最终可合法化为 LLVM/memref 地址的 i64 场景	朱秋成
+open_tile.ptr_to_ptr (PtrToPtrOp)	类型转换类	source: Tile<ptr<T>>	result: Tile<ptr<T>>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	source/result shape 相同；两侧均须为指针且 pointee 类型必须不同；不改变地址。	支持某部分类型：仅可表示为 NPU cast/指针链分析的 pointee 转换	支持某部分类型：仅后端可表示的 pointee/address cast 场景	朱秋成
+open_tile.make_token (MakeTokenOp)	内存与同步类	无	result: !open_tile.token	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	无额外 verifier 限制；遵循入参/返回值类型约束及 OpenTileIR 类型自身约束。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_59691CA86B9E44929E91CA8C6DD792F6",1)	暂不需要修改
+open_tile.join_tokens (JoinTokensOp)	内存与同步类	tokens: 可变长 !open_tile.token	result: !open_tile.token	无 OP-level Attribute	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	至少需要 2 个输入 token；结果依赖全部输入 token。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_B978D5F342AB4270A7930BF50DB0C75E",1)	暂不需要修改
+open_tile.broadcast (BroadcastOp)	数据变换类	source: Tile<任意合法元素类型>	result: Tile<任意合法元素类型>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	source/result 元素类型和 rank 相同；各维必须为正静态常量；每个源维度只能为 1 或等于对应结果维度。	完全支持	支持某部分类型：后端可表示元素类型；静态/规则 row broadcast 和标量 broadcast	武高磊	=DISPIMG("ID_6705B6221B8244AB839931DF68DB796B",1)
+open_tile.reshape (ReshapeOp)	数据变换类	source: Tile<任意合法元素类型>	result: Tile<任意合法元素类型>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	source/result 元素类型和总元素数相同；仅改变 row-major 索引；0D 标量可与单元素 shape 互转。	完全支持	支持某部分类型：可表示为 view/重解释且满足静态布局约束的类型/shape	武高磊	=DISPIMG("ID_D14CAC22DFAB48C99D657E496E686548",1)
+open_tile.permute (PermuteOp)	数据变换类	"source: Tile<任意合法元素类型>
+permutation: DenseI32ArrayAttr"	result: Tile<任意合法元素类型>	permutation: DenseI32ArrayAttr，必选；必须是 [0, rank) 的完整排列，如 [1, 0]	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	permutation 必须是 [0, rank-1] 的合法排列；结果 shape 必须等于按该排列重排后的源 shape，元素类型不变。	支持某部分类型：identity、rank-2 [1,0]，或保持非空连续尾维的静态高阶 permutation	支持某部分类型：rank-2 transpose，或受支持的静态连续尾维 block permutation	武高磊	=DISPIMG("ID_915EA8ECA7784316A49C892B88BD3283",1)
+open_tile.extract (ExtractOp)	数据变换类	"source: Tile<任意合法元素类型>
+indices: 可变长 标量 Tile<i1|i8|i16|i32|i64>"	result: Tile<任意合法元素类型>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	result rank/元素类型与 source 相同；result 每维必须整除 source 对应维；indices 数量等于 rank 且为标量整数 Tile；越界 slice 行为未定义。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_16541F9CE8204BB9BB32B11F65C1B454",1)	暂不需要修改
+open_tile.cat (CatOp)	数据变换类	"lhs: Tile<任意合法元素类型>
+rhs: Tile<任意合法元素类型>
+dim: i64 属性"	result: Tile<任意合法元素类型>	dim: I64Attr，必选；0 <= dim < rank	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	lhs/rhs/result 元素类型与 rank 相同；dim 在合法范围；非拼接维完全相同，拼接维 result=lhs+rhs。	支持某部分类型：静态 ranked tensor；通过 UB 暂存和逐元素插入实现	支持某部分类型：静态 ranked tensor，且元素类型可由 CCE memory/arith 路径承载	武高磊	=DISPIMG("ID_2AE9C958D15A4E9BACA30602CE685484",1)	暂不需要修改
+open_tile.pack (PackOp)	数据变换类	source: Tile<i1|i4|i8|i16|i32|i64|f4E2M1FN|f8E4M3FN|f8E5M2|f8E8M0FNU|f16|bf16|f32|f64>	result: Tile<i8>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✗	✓	✓	source/result 均为 rank-1 且字节对齐，总字节数相等，元素位宽必须不同；结果为 i8。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_97C68140B3104303A5E9E3345D31580B",1)	暂不需要修改
+open_tile.unpack (UnpackOp)	数据变换类	source: Tile<i8>	result: Tile<i1|i4|i8|i16|i32|i64|f4E2M1FN|f8E4M3FN|f8E5M2|f8E8M0FNU|f16|bf16|f32|f64>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✗	✓	✓	source/result 均为 rank-1 且字节对齐，总字节数相等，元素位宽必须不同；源为 i8。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_D1B465CB7D0D45E98ACF9E4CB5B3C43F",1)	暂不需要修改
+open_tile.select (SelectOp)	计算类	"cond: Tile<i1>
+val_if_true: Tile<任意合法元素类型>
+val_if_false: Tile<任意合法元素类型>"	result: Tile<任意合法元素类型>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	cond、true/false 值及 result shape 全部相同；true/false/result 类型相同；cond 元素为 i1。	完全支持	支持某部分类型：i8/i16/i32/i64、f16/bf16/f32；i64 使用 paired-i32 carrier，其他低精度类型受限	朱秋成->叶梓发
+open_tile.iota (IotaOp)	数据构造与查询类	无	result: Tile<i1|i8|i16|i32|i64>	无 OP-level Attribute	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	结果必须为 rank-1 整数 Tile；生成 [0,n-1] 并按无符号解释；元素数不得超过元素类型可表达的最大值。	完全支持	支持某部分类型：i8/i16/i32/i64；i32/i64 有向量路径，其余走标量循环；i1 不支持	武高磊	=DISPIMG("ID_FC02B14245314A06968669E9ACBEFC2A",1)
+open_tile.offset (OffsetOp)	内存与同步类	"ptr: Tile<ptr<T>>
+offset: Tile<i1|i8|i16|i32|i64>"	result: Tile<ptr<T>>	无 OP-level Attribute	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	ptr/offset/result shape 相同，ptr/result 指针类型相同；offset 按有符号解释；乘法有符号溢出或加法无符号溢出时行为未定义。	支持某部分类型：作为可分析 pointer load/store/atomic 地址链的一部分；独立 offset 不会单独降级	支持某部分类型：仅作为成功降级的 pointer memory/atomic 地址链	武高磊	=DISPIMG("ID_4A1E541A34E144049AF343CF59E17A53",1)	暂不需要修改
+open_tile.reduce (ReduceOp)	计算类	"operands: 可变长 Tile<任意合法元素类型>
+dim: i32 属性
+identities: ArrayAttr
+body: Region（SizedRegion<1>）"	results: 可变长 Tile<任意合法元素类型>	"dim: I32Attr，必选；0 <= dim < 输入 rank
+identities: ArrayAttr，必选；数量与 operands 一致，元素类型逐一匹配"	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	dim 必须在 rank 内；全部输入 shape 相同；每个结果删除规约维；identities 数量/类型对应输入；body 为结合操作，接收 2N 个标量参数并 yield N 个标量。	支持某部分类型：仅单输入单结果，combine 为 add/mul/max/min 的规约	支持某部分类型：单输入单结果的 sum/max/min；常用 i8/i16/i32/i64、f16/bf16/f32，prod 暂不支持	朱秋成->叶梓发
+open_tile.scan (ScanOp)	计算类	"operands: 可变长 Tile<任意合法元素类型>
+dim: i32 属性
+reverse: bool 属性
+identities: ArrayAttr
+body: Region（SizedRegion<1>）"	results: 可变长 Tile<任意合法元素类型>	"dim: I32Attr，必选；0 <= dim < 输入 rank
+reverse: BoolAttr，必选；false 为正向，true 为反向
+identities: ArrayAttr，必选；数量与 operands 一致，元素类型逐一匹配"	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	dim 必须在 rank 内；输入/输出 shape 相同；identities 数量/类型对应输入；body 为结合操作，接收 2N 个标量参数并 yield N 个标量；reverse 控制方向。	支持某部分类型：仅静态正维 rank-1/rank-2 f32、dim=0、单输入单结果的 add/mul/max/min	支持某部分类型：仅静态 rank-1/rank-2 f32、dim=0 的单输入单结果 add/mul/max/min	朱秋成->叶梓发
+open_tile.get_tile_block_id (GetTileBlockIdOp)	数据构造与查询类	无	"blockId_x: 标量 Tile<i32>
+blockId_y: 标量 Tile<i32>
+blockId_z: 标量 Tile<i32>"	无 OP-level Attribute	✗	✗	✗	✗	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	固定返回 x/y/z 三个标量 i32；未使用的 grid 维坐标为 0。	支持某部分类型：i32；使用 y/z 时需静态 grid_shape 或动态 grid ABI	支持某部分类型：i32；grid 元数据/ABI 满足约束时降到 CCE block index	武高磊	=DISPIMG("ID_8A66F2DED3544007AAF06838756D2C0A",1)
+open_tile.get_num_tile_blocks (GetNumTileBlocksOp)	数据构造与查询类	无	"gridSize_x: 标量 Tile<i32>
+gridSize_y: 标量 Tile<i32>
+gridSize_z: 标量 Tile<i32>"	无 OP-level Attribute	✗	✗	✗	✗	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	✗	固定返回 x/y/z 三个标量 i32；未使用的 grid 维大小为 1。	支持某部分类型：i32；使用 y/z 时需静态 grid_shape 或动态 grid ABI	支持某部分类型：i32；grid 元数据/ABI 满足约束时降到 CCE block count	武高磊	=DISPIMG("ID_4A269490809B442F811EBEEDFC1CC76D",1)
+open_tile.assume (AssumeOp)	辅助与调试类	辅助与调试类	result: Tile<任意合法元素类型>	"predicate: AssumePredicateAttrInterface，必选；以下三种之一：
+• div_by<2^n> 或 div_by<2^n, every N along D>；仅整数/指针 Tile，every 与 along 必须同时出现
+• bounded<lb, ub>（任一端可为 ?）；仅整数 Tile，界限须可表示且 lb <= ub
+• same_elements<[d0, ...]>；仅整数/指针 Tile，数组长度等于 rank，各值位于对应维度范围内"	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	value/result 类型完全相同；predicate 必须实现 AssumePredicateAttrInterface；运行时不验证假设，错误假设可能导致误编译/未定义行为。	完全支持	完全支持	朱秋成	已解决
+open_tile.print_tko (PrintTkoOp)	辅助与调试类	"str: StringAttr
+args: 可变长 Tile<任意合法元素类型>
+token: 可选 !open_tile.token"	result_token: !open_tile.token	str: StringAttr，必选；C printf 风格格式串，格式说明符须与 args 数量和类型兼容	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	格式说明符数量必须与 args 数量一致且类型兼容；仅用于调试，输出不保证原子性；无 token 时编译器可重排。	暂不支持	暂不支持	朱秋成
+open_tile.get_tensor_shape (GetTensorShapeOp)	数据构造与查询类	src: !open_tile.tensor_view<T>	result: 可变长 标量 Tile<i1|i8|i16|i32|i64>	无 OP-level Attribute	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	结果数量等于 tensor_view rank，均为同类型标量整数 Tile；维度超出结果元素类型范围时行为未定义。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_4B2AB0E0D8FB4A7BADFDB71A56A8E123",1)
+open_tile.get_index_space_shape (GetIndexSpaceShapeOp)	数据构造与查询类	src: !open_tile.partition_view / strided_view / gather_scatter_view	result: 可变长 标量 Tile<i1|i8|i16|i32|i64>	无 OP-level Attribute	✓	✗	✓	✓	✓	✓	✗	✗	✗	✗	✗	✗	✗	✗	✗	结果数量等于 view 的 index-space rank，均为同类型标量整数 Tile；维度超出结果元素类型范围时行为未定义。	暂不支持	暂不支持	武高磊	=DISPIMG("ID_63C8783F41F042719BB6269A3476044D",1)
