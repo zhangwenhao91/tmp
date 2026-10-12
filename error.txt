@@ -1,7 +1,9 @@
+子类型	OP	详细前端OP	优先级（P0/P1/P2/P3）	目标闭环时间	责任人	进展	备注	PR链接
 归约	T.reduce_*	T.reduce_* / T.reduce（线程域内）	P0	2026/10/24	章文浩			
 		T.reduce_*（SimdVF 内 shared→shared）	P0	2026/10/24				
 	T.print	T.print(buf/expr/msg)	P0	2026/10/24				
 	/	标量 GM 访问（自动改写）	P0	2026/10/24				
+		
 
 
 
