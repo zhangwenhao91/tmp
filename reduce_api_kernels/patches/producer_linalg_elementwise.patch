@@ -1,0 +1,71 @@
+diff --git a/tilelangir/translator.py b/tilelangir/translator.py
+index 34ac23e..efc6aba 100644
+--- a/tilelangir/translator.py
++++ b/tilelangir/translator.py
+@@ -438,13 +438,23 @@ class TileLangIRTranslator(PyStmtExprVisitor):
+             kept_strides.append(stride)
+         return sizes, kept_strides
+ 
++    def _emit_linalg_elementwise(self, kind: str, ins: list, dst: Any) -> None:
++        """Emit ``linalg.elementwise`` with the given ``ElementwiseKind``.
++
++        The installed mlir-python-bindings (20260927) no longer expose the legacy
++        named ops (``linalg.add``/``mul``/``sub``/``div``/``exp``); they were
++        unified into ``linalg.elementwise`` carrying an ``ElementwiseKind``.
++        """
++        elementwise_kind = getattr(self._linalg.ElementwiseKind, kind)
++        self._linalg.elementwise(*ins, outs=[dst], kind=elementwise_kind)
++
+     def _emit_vadd(self, call: tirx.Call) -> None:
+         if len(call.args) != 3:
+             raise ValueError(f"tl.tileop.vadd expects 3 arguments, but received {len(call.args)}")
+         src0 = self._get_or_create_expr_value(call.args[0])
+         src1 = self._get_or_create_expr_value(call.args[1])
+         dst = self._get_or_create_expr_value(call.args[2])
+-        self._linalg.add(src0, src1, outs=[dst])
++        self._emit_linalg_elementwise("add", [src0, src1], dst)
+ 
+     def _emit_vmul(self, call: tirx.Call) -> None:
+         if len(call.args) != 3:
+@@ -452,7 +462,7 @@ class TileLangIRTranslator(PyStmtExprVisitor):
+         src0 = self._get_or_create_expr_value(call.args[0])
+         src1 = self._get_or_create_expr_value(call.args[1])
+         dst = self._get_or_create_expr_value(call.args[2])
+-        self._linalg.mul(src0, src1, outs=[dst])
++        self._emit_linalg_elementwise("mul", [src0, src1], dst)
+ 
+     def _emit_broadcast(self, call: tirx.Call) -> None:
+         if len(call.args) != 2:
+@@ -492,9 +502,9 @@ class TileLangIRTranslator(PyStmtExprVisitor):
+                 outs=[broadcasted_src1],
+                 dimensions=broadcast_dims,
+             )
+-            self._linalg.div(src0, broadcasted_src1, outs=[dst])
++            self._emit_linalg_elementwise("div", [src0, broadcasted_src1], dst)
+         else:
+-            self._linalg.div(src0, src1, outs=[dst])
++            self._emit_linalg_elementwise("div", [src0, src1], dst)
+ 
+     def _emit_vsub(self, call: tirx.Call) -> None:
+         if len(call.args) != 3:
+@@ -516,9 +526,9 @@ class TileLangIRTranslator(PyStmtExprVisitor):
+                 outs=[broadcasted_src1],
+                 dimensions=broadcast_dims,
+             )
+-            self._linalg.sub(src0, broadcasted_src1, outs=[dst])
++            self._emit_linalg_elementwise("sub", [src0, broadcasted_src1], dst)
+         else:
+-            self._linalg.sub(src0, src1, outs=[dst])
++            self._emit_linalg_elementwise("sub", [src0, src1], dst)
+ 
+     def _emit_vreduce_max(self, call: tirx.Call) -> None:
+         if len(call.args) < 2:
+@@ -898,7 +908,7 @@ class TileLangIRTranslator(PyStmtExprVisitor):
+                 "tl.tileop.vexp expects src and dst to have the same shape, "
+                 f"but received {src_type.shape} and {dst_type.shape}"
+             )
+-        self._linalg.exp(src, outs=[dst])
++        self._emit_linalg_elementwise("exp", [src], dst)
+ 
+     def _emit_vmax(self, call: tirx.Call) -> None:
+         if len(call.args) < 3:

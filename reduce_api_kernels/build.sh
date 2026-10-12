@@ -47,7 +47,13 @@ for op in "${OPS[@]}"; do
       cd "$d" || exit 1
       set -e
       echo "-- [$b] TileLangIR -> NPU IR"
-      "$OPT" "1_${b}_tilelangir.mlir" --convert-tilelang-to-npu --npu-normalize -o "2_${b}_npu.mlir"
+      # 适配格式差异：producer 的 mlir-python-bindings(20260927) 只提供新 API
+      #   linalg.elementwise <mul> ins(...) outs(...)
+      # 而 toolchain 的 --convert-tilelang-to-npu 只识别旧命名 op
+      #   linalg.mul ins(...) outs(...)
+      sed -E 's/linalg\.elementwise <([a-zA-Z_]+)>/linalg.\1/' \
+        "1_${b}_tilelangir.mlir" > "1_${b}_tilelangir.norm.mlir"
+      "$OPT" "1_${b}_tilelangir.norm.mlir" --convert-tilelang-to-npu --npu-normalize -o "2_${b}_npu.mlir"
 
       echo "-- [$b] NPU IR -> MIX 拆分"
       "$OPT" "2_${b}_npu.mlir" --npu-split-scope --npu-plan-memory --npu-split-mix-kernel --npu-sync-pipeline -o "3_${b}_mix_npu.mlir"
