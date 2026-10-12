@@ -1,10 +1,9 @@
-"""reduce_absmax 端到端 DSL（两种形态）。
-
-形态 A（线程域内）: fragment -> fragment，直接调用 T.reduce_absmax(frag, frag)
-形态 B（SimdVF 内）: shared  -> shared，在 with T.SimdVF() 内调用 T.reduce_absmax(shared, shared)
+"""reduce_absmax 端到端 DSL（vreduce 路线）。
 
     A(M, K) -> OUT(M)，dim=1 每行 |x| 的最大值；grid = M/BR，每 block 处理 BR 行。
-SimdVF 内不写循环（行并行交给 T.Kernel 网格）。
+形态：SimdVF 内用 abs(x) = max(x, -x) 合成，再 vreduce_max。
+    -x -> vmax 得 abs -> vreduce_max，reduce 为 scope 内最后一个计算。
+SimdVF 内不写循环（行并行由 T.Kernel 网格承担）。
 """
 
 import os
@@ -30,38 +29,23 @@ def reduce_absmax_frag(M, K, BR=16):
             out_shared = T.alloc_shared((BR,), dtype)
             T.copy(A[bx * BR : (bx + 1) * BR, 0:K], a_shared)
 
-            a_frag = T.alloc_frag((BR, K), dtype)
-            out_frag = T.alloc_frag((BR,), dtype)
-            T.copy(a_shared[0:BR, 0:K], a_frag)
-            T.reduce_absmax(a_frag, out_frag, dim=1, clear=True)
-            T.copy(out_frag, out_shared[0:BR])
+            with T.SimdVF():
+                a_frag = T.alloc_frag((BR, K), dtype)
+                neg_frag = T.alloc_frag((BR, K), dtype)
+                abs_frag = T.alloc_frag((BR, K), dtype)
+                minus_one_2d = T.alloc_frag((BR, K), dtype)
+                partial = T.alloc_frag((BR,), dtype)
+
+                T.fill(minus_one_2d, -1.0)
+                T.copy(a_shared[0:BR, 0:K], a_frag)
+                T.vmul(a_frag, minus_one_2d, neg_frag)
+                T.vmax(a_frag, neg_frag, abs_frag)
+                T.vreduce_max(abs_frag, partial)
+                T.copy(partial, out_shared[0:BR])
 
             T.copy(out_shared, OUT[bx * BR : (bx + 1) * BR])
 
     return reduce_absmax_frag_kernel
-
-
-def reduce_absmax_shared(M, K, BR=16):
-    assert M % BR == 0, f"M must be a multiple of BR ({BR}), got M={M}"
-    num_blocks = M // BR
-    dtype = "float32"
-
-    @T.prim_func
-    def reduce_absmax_shared_kernel(
-        A: T.Buffer((M, K), dtype),
-        OUT: T.Buffer((M,), dtype),
-    ):
-        with T.Kernel(num_blocks) as bx:
-            a_shared = T.alloc_shared((BR, K), dtype)
-            out_shared = T.alloc_shared((BR,), dtype)
-            T.copy(A[bx * BR : (bx + 1) * BR, 0:K], a_shared)
-
-            with T.SimdVF():
-                T.reduce_absmax(a_shared, out_shared, dim=1, clear=True)
-
-            T.copy(out_shared, OUT[bx * BR : (bx + 1) * BR])
-
-    return reduce_absmax_shared_kernel
 
 
 def _lower(program, out_name):
@@ -75,4 +59,3 @@ def _lower(program, out_name):
 if __name__ == "__main__":
     M, K = 32, 128
     _lower(reduce_absmax_frag(M, K, BR=16), "1_reduce_absmax_frag_tilelangir.mlir")
-    _lower(reduce_absmax_shared(M, K, BR=16), "1_reduce_absmax_shared_tilelangir.mlir")

@@ -2,11 +2,11 @@
 # reduce_api_kernels 逐级降级驱动：DSL -> TileLangIR -> NPU IR -> MIX -> CCE -> LLVM -> .o
 #
 # 用法:
-#   ./build.sh                 # 构建全部算子 × 两种形态（frag / shared）
+#   ./build.sh                 # 构建全部算子
 #   ./build.sh reduce_sum      # 只构建指定算子
 #
-# 覆盖的 6 个算子: reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax reduce_generic
-# 每个算子产出两种形态: <op>_frag（线程域内 frag->frag）、<op>_shared（SimdVF 内 shared->shared）
+# 覆盖的 5 个算子: reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax
+# 形态: SimdVF 内 frag->frag（vreduce 的输入必须是 fragment，无 shared->shared 形态）
 #
 # 依赖（可用环境变量覆盖）:
 #   TILELANG_PYTHON  默认 /home/zwh/work/venv/bin/python3
@@ -25,7 +25,7 @@ CCEC="${CCEC:-/home/zwh/work/cann/9.1.0/toolkit/cann-9.1.0/tools/bisheng_compile
 
 OPS=("$@")
 if [ ${#OPS[@]} -eq 0 ]; then
-  OPS=(reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax reduce_generic)
+  OPS=(reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax)
 fi
 
 for v in "$PY" "$OPT" "$TRANS" "$CCEC"; do
@@ -38,8 +38,11 @@ for op in "${OPS[@]}"; do
   echo "############ $op ############"
   ( cd "$d" && "$PY" "0_${op}.py" ) || { echo "FAIL stage0: $op" >&2; rc=1; continue; }
 
-  for form in frag shared; do
-    b="${op}_${form}"
+  for mlir in "$d"/1_${op}_*_tilelangir.mlir; do
+    [ -e "$mlir" ] || continue
+    base="$(basename "$mlir")"   # 1_<op>_<form>_tilelangir.mlir
+    base="${base#1_}"
+    b="${base%_tilelangir.mlir}" # <op>_<form>
     (
       cd "$d" || exit 1
       set -e
@@ -61,7 +64,7 @@ for op in "${OPS[@]}"; do
     ) || { echo "FAIL lower: $b" >&2; rc=1; continue; }
 
     if ! grep -q 'linalg.reduce' "$d/1_${b}_tilelangir.mlir"; then
-      echo "WARN [$b]: stage1 未见 linalg.reduce —— T.reduce_* 未降级，.o 不含归约语义" >&2
+      echo "WARN [$b]: stage1 未见 linalg.reduce —— 归约未降级，.o 不含归约语义" >&2
     fi
     echo "OK: $d/6_${b}.o"
   done
