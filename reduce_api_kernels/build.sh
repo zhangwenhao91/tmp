@@ -10,9 +10,9 @@
 # 形态: SimdVF 内 frag->frag（vreduce 的输入必须是 fragment，无 shared->shared 形态）
 #
 # 工具解析顺序（环境变量 > 本地绝对路径 > PATH 上的裸名），因此在本机与 NPU 机都能跑：
-#   TILE_OPT        默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-opt  否则 PATH 上 tile-opt
+#   TILE_OPT        默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-opt      否则 PATH 上 tile-opt
 #   TILE_TRANSLATE  默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-translate 否则 PATH 上 tile-translate
-#   CCEC            默认 CANN 9.1.0 下的 ccec  否则 PATH 上 ccec
+#   CCEC            默认 CANN 9.1.0 下的 ccec   否则 PATH 上 ccec
 #   TILELANG_PYTHON 默认 python3（仅 stage0 需要）
 #
 # 降级参数（环境变量可覆盖，默认与 NPU 机上实测通过的链路一致）：
@@ -20,6 +20,9 @@
 #   NPU_NORMALIZE   默认 --npu-normalize（置空可关闭）
 #   CCEC_ARCH       默认 dav-c310-cube（纯向量可用 dav-c310-vec）
 #   CCEC_EXTRA      默认 -cce-enable-mix（置空可关闭）
+#
+# 注意：任一阶段失败即中止该算子并置 rc=1；失败的算子其 6_*.o 不会被更新
+#       （仓里可能仍有上一次的旧 .o，不要当成本次结果）。
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -51,6 +54,43 @@ for spec in "TILE_OPT:$OPT" "TILE_TRANSLATE:$TRANS" "CCEC:$CCEC"; do
   if ! is_exec "$val"; then echo "ERROR: $name 不可用: $val" >&2; exit 1; fi
 done
 
+# 单算子的 1->6 降级。注意：这里刻意不依赖 `set -e`——本函数在 `if ( ... )` 语境下
+# 执行时 -e 会被忽略，必须逐条显式 `|| return 1`，否则失败会一路穿透到最后。
+lower_one() { # $1=算子目录 $2=<op>_<form>
+  local d="$1" b="$2"
+  cd "$d" || { echo "FAIL [$b] cd $d" >&2; return 1; }
+
+  echo "-- [$b] TileLangIR -> NPU IR"
+  # 适配格式差异：producer 的 mlir-python-bindings(20260927) 只提供新 API
+  #   linalg.elementwise <mul> ins(...) outs(...)
+  # 而 toolchain 的 --convert-tilelang-to-npu 只识别旧命名 op
+  #   linalg.mul ins(...) outs(...)
+  sed -E 's/linalg\.elementwise <([a-zA-Z_]+)>/linalg.\1/' \
+    "1_${b}_tilelangir.mlir" > "1_${b}_tilelangir.norm.mlir" \
+    || { echo "FAIL [$b] sed 归一化" >&2; return 1; }
+  "$OPT" "1_${b}_tilelangir.norm.mlir" --convert-tilelang-to-npu $NORMALIZE -o "2_${b}_npu.mlir" \
+    || { echo "FAIL [$b] stage1 convert-tilelang-to-npu" >&2; return 1; }
+
+  echo "-- [$b] NPU IR -> MIX 拆分 ($SPLIT_PASS)"
+  "$OPT" "2_${b}_npu.mlir" $SPLIT_PASS --npu-plan-memory --npu-split-mix-kernel --npu-sync-pipeline \
+    -o "3_${b}_mix_npu.mlir" \
+    || { echo "FAIL [$b] stage2 $SPLIT_PASS" >&2; return 1; }
+
+  echo "-- [$b] MIX NPU -> CCE"
+  "$OPT" --cce-pipeline="target=dav-351x" "3_${b}_mix_npu.mlir" -o "4_${b}_cce.mlir" \
+    || { echo "FAIL [$b] stage3 cce-pipeline" >&2; return 1; }
+
+  echo "-- [$b] CCE -> LLVM .ll"
+  "$TRANS" --cce-to-backend -allow-unregistered-dialect "4_${b}_cce.mlir" -o "5_${b}.ll" \
+    || { echo "FAIL [$b] stage4 cce-to-backend" >&2; return 1; }
+
+  echo "-- [$b] ccec -> .o (arch=$CCEC_ARCH $CCEC_EXTRA)"
+  "$CCEC" --cce-aicore-arch="$CCEC_ARCH" --cce-aicore-only $CCEC_EXTRA -O2 \
+    -cce-bitcode-is-aicore -c "5_${b}.ll" -o "6_${b}.o" \
+    || { echo "FAIL [$b] stage5 ccec" >&2; return 1; }
+  return 0
+}
+
 OPS=("$@")
 if [ ${#OPS[@]} -eq 0 ]; then
   OPS=(reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax)
@@ -77,31 +117,11 @@ for op in "${OPS[@]}"; do
     base="$(basename "$mlir")"   # 1_<op>_<form>_tilelangir.mlir
     base="${base#1_}"
     b="${base%_tilelangir.mlir}" # <op>_<form>
-    (
-      cd "$d" || exit 1
-      set -e
-      echo "-- [$b] TileLangIR -> NPU IR"
-      # 适配格式差异：producer 的 mlir-python-bindings(20260927) 只提供新 API
-      #   linalg.elementwise <mul> ins(...) outs(...)
-      # 而 toolchain 的 --convert-tilelang-to-npu 只识别旧命名 op
-      #   linalg.mul ins(...) outs(...)
-      sed -E 's/linalg\.elementwise <([a-zA-Z_]+)>/linalg.\1/' \
-        "1_${b}_tilelangir.mlir" > "1_${b}_tilelangir.norm.mlir"
-      "$OPT" "1_${b}_tilelangir.norm.mlir" --convert-tilelang-to-npu $NORMALIZE -o "2_${b}_npu.mlir"
 
-      echo "-- [$b] NPU IR -> MIX 拆分 ($SPLIT_PASS)"
-      "$OPT" "2_${b}_npu.mlir" $SPLIT_PASS --npu-plan-memory --npu-split-mix-kernel --npu-sync-pipeline -o "3_${b}_mix_npu.mlir"
-
-      echo "-- [$b] MIX NPU -> CCE"
-      "$OPT" --cce-pipeline="target=dav-351x" "3_${b}_mix_npu.mlir" -o "4_${b}_cce.mlir"
-
-      echo "-- [$b] CCE -> LLVM .ll"
-      "$TRANS" --cce-to-backend -allow-unregistered-dialect "4_${b}_cce.mlir" -o "5_${b}.ll"
-
-      echo "-- [$b] ccec -> .o (arch=$CCEC_ARCH $CCEC_EXTRA)"
-      "$CCEC" --cce-aicore-arch="$CCEC_ARCH" --cce-aicore-only $CCEC_EXTRA -O2 \
-        -cce-bitcode-is-aicore -c "5_${b}.ll" -o "6_${b}.o"
-    ) || { echo "FAIL lower: $b" >&2; rc=1; continue; }
+    if ! ( lower_one "$d" "$b" ); then
+      echo "FAIL lower: $b（该算子的 6_${b}.o 未更新，勿用旧产物）" >&2
+      rc=1; continue
+    fi
 
     if ! grep -q 'linalg.reduce' "$d/1_${b}_tilelangir.mlir"; then
       echo "WARN [$b]: stage1 未见 linalg.reduce —— 归约未降级，.o 不含归约语义" >&2
