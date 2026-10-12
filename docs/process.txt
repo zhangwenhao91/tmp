@@ -24,3 +24,7 @@ ccec --cce-aicore-arch=dav-c310-cube --cce-aicore-only -cce-enable-mix -O2 -cce-
 export KERNEL_PATH=xxx_kernel.o
 # step 7
 python xxx.py
+# step 8
+git add .
+git commit -m "2"
+git push origin main
