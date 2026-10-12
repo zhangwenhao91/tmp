@@ -1,2 +1,7 @@
 __pycache__/
 *.norm.mlir
+# 降级中间产物（build.sh 可重新生成，不入库）
+2_*_npu.mlir
+3_*_mix_npu.mlir
+4_*_cce.mlir
+5_*.ll

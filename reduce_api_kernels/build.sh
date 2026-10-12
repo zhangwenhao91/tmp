@@ -9,6 +9,9 @@
 # 覆盖的 5 个算子: reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax
 # 形态: SimdVF 内 frag->frag（vreduce 的输入必须是 fragment，无 shared->shared 形态）
 #
+# 仓内产物约定：0_*.py 是 DSL 源；1_*_tilelangir.mlir 是降级输入；6_*.o 是 run_on_npu.sh 的输入。
+# 这三类入库；2_/3_/4_/5_ 是可重生成的中间产物，已在 .gitignore 中忽略。
+#
 # 工具解析顺序（环境变量 > 本地绝对路径 > PATH 上的裸名），因此在本机与 NPU 机都能跑：
 #   TILE_OPT        默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-opt      否则 PATH 上 tile-opt
 #   TILE_TRANSLATE  默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-translate 否则 PATH 上 tile-translate
