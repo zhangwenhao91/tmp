@@ -23,6 +23,12 @@
 #
 # 注意：任一阶段失败即中止该算子并置 rc=1；失败的算子其 6_*.o 不会被更新
 #       （仓里可能仍有上一次的旧 .o，不要当成本次结果）。
+#
+# 工具链版本要求：abssum/absmax 的 DSL 用到 `tilelang.vmax`，该 op 由
+#       gitcode OpenTileIR/OpenTileAS 的 78f11fb (2026-09-14 "feat(npu): compute ops refactor")
+#       引入。早于它的 tile-opt 会在 stage1 报：
+#         error: unregistered operation 'tilelang.vmax' found in dialect ('tilelang')
+#       校验：strings "$(command -v tile-opt)" | grep -x tilelang.vmax
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
