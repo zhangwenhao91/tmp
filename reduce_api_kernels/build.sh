@@ -2,12 +2,17 @@
 # reduce_api_kernels 逐级降级驱动：TileLangIR -> NPU IR -> MIX -> CCE -> LLVM -> .o
 #
 # 用法:
-#   ./build.sh                 # 构建全部算子（5 个，从已提交的 1_*.mlir 开始）
+#   ./build.sh                 # 构建全部算子（8 个，从已提交的 1_*.mlir 开始）
 #   ./build.sh reduce_sum      # 只构建指定算子
 #   FORCE_STAGE0=1 ./build.sh  # 强制从 DSL(0_*.py) 重新生成 1_*.mlir（需可用的 tilelang python）
 #
-# 覆盖的 5 个算子: reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax
-# 形态: SimdVF 内 frag->frag（vreduce 的输入必须是 fragment，无 shared->shared 形态）
+# 覆盖的 8 个算子: reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax
+#                  reduce_bitand reduce_bitor reduce_bitxor
+# 形态（由 0_<op>.py 产出的 1_<op>_<form>_tilelangir.mlir 决定）:
+#   frag    SimdVF 内 frag->frag（vreduce 路线；位运算无 frag 原语，故 bit* 无 frag 形态）
+#   shared  SimdVF 内 shared->shared（T.reduce 宏经 fragment 中转）
+#   thread  线程域内 shared->shared（translator 自动把 reduce 岛包进 simd scope）
+# sum/max/min/abssum/absmax 有 frag+shared+thread 三形态；bitand/bitor/bitxor 有 shared+thread 两形态。
 #
 # 仓内产物约定：0_*.py 是 DSL 源；1_*_tilelangir.mlir 是降级输入；6_*.o 是 run_on_npu.sh 的输入。
 # 这三类入库；2_/3_/4_/5_ 是可重生成的中间产物，已在 .gitignore 中忽略。
@@ -27,11 +32,28 @@
 # 注意：任一阶段失败即中止该算子并置 rc=1；失败的算子其 6_*.o 不会被更新
 #       （仓里可能仍有上一次的旧 .o，不要当成本次结果）。
 #
-# 工具链版本要求：abssum/absmax 的 DSL 用到 `tilelang.vmax`，该 op 由
-#       gitcode OpenTileIR/OpenTileAS 的 78f11fb (2026-09-14 "feat(npu): compute ops refactor")
-#       引入。早于它的 tile-opt 会在 stage1 报：
-#         error: unregistered operation 'tilelang.vmax' found in dialect ('tilelang')
-#       校验：strings "$(command -v tile-opt)" | grep -x tilelang.vmax
+# 工具链版本要求：
+#   1) abssum/absmax 的 frag 形态 DSL 用到 `tilelang.vmax`，该 op 由
+#      gitcode OpenTileIR/OpenTileAS 的 78f11fb (2026-09-14 "feat(npu): compute ops refactor")
+#      引入。早于它的 tile-opt 会在 stage1 报：
+#        error: unregistered operation 'tilelang.vmax' found in dialect ('tilelang')
+#      校验：strings "$(command -v tile-opt)" | grep -x tilelang.vmax
+#   2) min/abssum/absmax 的 shared/thread 形态需要 TilelangToNPU 转换支持
+#      min combiner（arith.minimumf/minui/minsi -> npu.reduce min）与
+#      linalg.abs -> npu.abs。缺失时 stage1 报 reduce combiner 不是 add/max/min，
+#      或 linalg.abs 无对应降级。
+#   3) bitand/bitor/bitxor 的 shared/thread 形态需要 TilelangToNPU 转换支持
+#      位运算 combiner（arith.andi/ori/xori -> npu.reduce andi/ori/xori，
+#      identity 分别为全 1/0/0）。缺失时 stage1 报 reduce combiner 不受支持。
+#
+# 已知缺口（bit reduce 未打通到底）：
+#   translator 与 TilelangToNPU 已能正确产出 npu.reduce<andi/ori/xori>，stage1~stage4 全通；
+#   但 NpuToCCE 的 VectorValueLowering::lowerReduce 对位运算没有 horizontalName，
+#   会退化为逐元素 splat 路径（16 行 x 127 次 = 2032 个 cce.vand），stage5 ccec 因
+#   “stack object size 超过 vf stack size” 报错。CCE 方言只有逐元素 vand/vor/vxor，
+#   没有横向位归约原语（vcand/vcor/vcxor 不存在，只有 vcadd/vcmax/vcmin）。
+#   因此 bit* 的 6_*.o 目前无法产出；run_on_npu.sh 会对其 SKIP。规格与 Stack B 验收
+#   均未覆盖 bit reduce（CCE 降级支持仅列 sum/max/min）。
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -102,7 +124,8 @@ lower_one() { # $1=算子目录 $2=<op>_<form>
 
 OPS=("$@")
 if [ ${#OPS[@]} -eq 0 ]; then
-  OPS=(reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax)
+  OPS=(reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax
+       reduce_bitand reduce_bitor reduce_bitxor)
 fi
 
 shopt -s nullglob

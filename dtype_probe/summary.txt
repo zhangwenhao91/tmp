@@ -1,0 +1,28 @@
+CASE                     s1       s2       s3       s4       s5      
+absmax_bfloat16          ok       ok       ok       FAIL    
+absmax_float16           ok       ok       ok       ok       PASS    
+absmax_float32           ok       ok       ok       ok       PASS    
+abssum_bfloat16          ok       ok       ok       ok       PASS    
+abssum_float16           ok       ok       ok       ok       PASS    
+abssum_float32           ok       ok       ok       ok       PASS    
+max_bfloat16             ok       ok       ok       FAIL    
+max_float16              ok       ok       ok       ok       PASS    
+max_float32              ok       ok       ok       ok       PASS    
+max_int16                ok       ok       ok       ok       PASS    
+max_int32                ok       ok       ok       ok       PASS    
+max_int64                ok       ok       FAIL    
+max_int8                 ok       ok       ok       ok       PASS    
+min_bfloat16             ok       ok       ok       FAIL    
+min_float16              ok       ok       ok       ok       PASS    
+min_float32              ok       ok       ok       ok       PASS    
+min_int16                ok       ok       ok       ok       PASS    
+min_int32                ok       ok       ok       ok       PASS    
+min_int64                ok       ok       FAIL    
+min_int8                 ok       ok       ok       ok       PASS    
+sum_bfloat16             ok       ok       ok       ok       PASS    
+sum_float16              ok       ok       ok       ok       PASS    
+sum_float32              ok       ok       ok       ok       PASS    
+sum_int16                ok       ok       ok       ok       FAIL    
+sum_int32                ok       ok       ok       ok       PASS    
+sum_int64                ok       ok       FAIL    
+sum_int8                 ok       ok       ok       ok       FAIL    
