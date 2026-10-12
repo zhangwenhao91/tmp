@@ -1,0 +1,5 @@
+__pycache__/
+# 降级中间产物（build_print.sh --device 可重新生成，不入库）
+work/
+# 本机/NPU 机构建出的 host 可执行文件（build_print.sh 重新生成，不入库）
+print_host

@@ -1,0 +1,58 @@
+// print 上机载体：host 侧 ACL 驱动（配合 device 侧 6_print.o）
+//
+// 对应 DSL（0_print.py）:
+//   T.Kernel(4) as bx; shared_buf = T.alloc_shared((16,16), "float16")
+//   T.print(shared_buf); T.print(bx, msg="block id"); T.print(msg="hello")
+// 降级后 device kernel 签名:
+//   func.func @print_kernel(%arg0: memref<?xf16>, %arg1: i32)
+// tile-translate --enable-print 会追加 .DTData 参数并改名:
+//   _Z12print_kernelPviPN3cce8internal15DebugTunnelDataE_mix_aiv
+//
+// 编译：见 build_print.sh（host 侧必须带 --cce-enable-print -cce-enable-mix，
+//       否则 launch stub 不会追加 .DTData、也不会打开 DebugTunnel，设备侧无打印）。
+// 运行：./print_host [deviceId]   （默认 device 0）
+
+#include "acl/acl.h"
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <vector>
+
+#define BLOCKS 4
+
+// Kernel 声明：参数类型必须与 .mlir 中 kernel 参数一致（决定 mangled name）。
+//   memref<?xf16> -> __gm__ void* ; i32 -> int32_t
+// 第三个 .DTData 参数由 --cce-enable-print 在 host stub 内自动追加，用户不写。
+__global__[aicore] void print_kernel(__gm__ void *buf, int32_t bx) {
+}
+
+int main(int argc, char *argv[]) {
+  int devId = (argc > 1) ? atoi(argv[1]) : 0;
+
+  aclInit(nullptr);
+  aclrtSetDevice(devId);
+
+  aclrtStream stream;
+  aclrtCreateStream(&stream);
+
+  // 16x16 float16 tile -> 512 bytes
+  size_t size = 16 * 16 * sizeof(uint16_t);
+  void *devBuf = nullptr;
+  aclrtMalloc(&devBuf, size, ACL_MEM_MALLOC_HUGE_FIRST);
+
+  std::vector<uint16_t> host(16 * 16, 0);
+  aclrtMemcpy(devBuf, size, host.data(), size, ACL_MEMCPY_HOST_TO_DEVICE);
+
+  printf("[host] launching print_kernel with %d blocks on device %d\n", BLOCKS, devId);
+
+  print_kernel<<<BLOCKS, nullptr, stream>>>(devBuf, 0);
+  aclrtSynchronizeStream(stream);
+
+  aclrtFree(devBuf);
+  aclrtDestroyStream(stream);
+  aclrtResetDevice(devId);
+  aclFinalize();
+
+  printf("[host] done\n");
+  return 0;
+}
