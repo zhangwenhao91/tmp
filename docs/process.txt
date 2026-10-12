@@ -26,5 +26,5 @@ export KERNEL_PATH=xxx_kernel.o
 python xxx.py
 # step 8
 git add .
-git commit -m "2"
+git commit -m " "
 git push origin main
