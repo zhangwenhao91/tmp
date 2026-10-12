@@ -5,10 +5,10 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %2 = llvm.mlir.constant(48 : i64) : i64
     %3 = llvm.mlir.constant(60 : i64) : i64
     %4 = llvm.mlir.constant(0 : i64) : i64
-    %5 = llvm.mlir.constant(0 : index) {block_id = 3 : i32, core_type = "VECTOR"} : i64
-    %6 = llvm.mlir.constant(16 : i32) {block_id = 3 : i32, core_type = "VECTOR"} : i32
-    %7 = llvm.mlir.constant(128 : index) {block_id = 3 : i32, core_type = "VECTOR"} : i64
-    %8 = llvm.mlir.constant(-1.000000e+00 : f32) {block_id = 3 : i32, core_type = "VECTOR"} : f32
+    %5 = llvm.mlir.constant(0 : index) : i64
+    %6 = llvm.mlir.constant(16 : i32) : i32
+    %7 = llvm.mlir.constant(128 : index) : i64
+    %8 = llvm.mlir.constant(-1.000000e+00 : f32) : f32
     %9 = llvm.mlir.constant(8192 : i64) : i64
     %10 = llvm.mlir.constant(8256 : i64) : i64
     %11 = llvm.mlir.constant(288230377225457664 : i64) : i64
@@ -33,11 +33,11 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     %28 = llvm.icmp "eq" %27, %4 : i64
     llvm.cond_br %28, ^bb1, ^bb2
   ^bb1:  // pred: ^bb0
-    %29 = cce.get_block_idx -> i64 {block_id = 3 : i32, core_type = "VECTOR"}
-    %30 = llvm.trunc %29 {block_id = 3 : i32, core_type = "VECTOR"} : i64 to i32
-    %31 = llvm.mul %30, %6 {block_id = 3 : i32, core_type = "VECTOR"} : i32
+    %29 = cce.get_block_idx -> i64
+    %30 = llvm.trunc %29 : i64 to i32
+    %31 = llvm.mul %30, %6 : i32
     %32 = llvm.sext %31 : i32 to i64
-    %33 = llvm.mul %32, %7 {block_id = 3 : i32, core_type = "VECTOR"} : i64
+    %33 = llvm.mul %32, %7 : i64
     %34 = llvm.inttoptr %4 : i64 to !llvm.ptr<6>
     %35 = llvm.ptrtoint %arg0 : !llvm.ptr<1> to i64
     %36 = llvm.mul %33, %22 : i64
@@ -111,15 +111,13 @@ module attributes {cce.target = "dav-351x", npu.module_core_type = #npu.module_c
     llvm.br ^bb10(%78 : i32) {cce.vec_scope = #cce.vec_scope}
   ^bb13:  // pred: ^bb10
     cce.set_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
-    %79 = llvm.mul %30, %6 {block_id = 4 : i32, core_type = "VECTOR"} : i32
-    %80 = llvm.sext %79 : i32 to i64
     cce.wait_flag pipe = <PIPE_V> tpipe = <PIPE_MTE3> pipeID = <EVENT_ID0>
-    %81 = llvm.ptrtoint %arg1 : !llvm.ptr<1> to i64
-    %82 = llvm.mul %80, %22 : i64
-    %83 = llvm.add %81, %82 : i64
-    %84 = llvm.inttoptr %83 : i64 to !llvm.ptr<1>
-    %85 = llvm.inttoptr %10 : i64 to !llvm.ptr<6>
-    cce.intr.mov.ub.to.out.align.v2.dv(%84, %85, %20, %12) : (<1>, <6>, i64, i64)
+    %79 = llvm.ptrtoint %arg1 : !llvm.ptr<1> to i64
+    %80 = llvm.mul %32, %22 : i64
+    %81 = llvm.add %79, %80 : i64
+    %82 = llvm.inttoptr %81 : i64 to !llvm.ptr<1>
+    %83 = llvm.inttoptr %10 : i64 to !llvm.ptr<6>
+    cce.intr.mov.ub.to.out.align.v2.dv(%82, %83, %20, %12) : (<1>, <6>, i64, i64)
     cce.barrier pipe = <PIPE_ALL>
     llvm.br ^bb2
   }

@@ -103,14 +103,12 @@ define dso_local ptc_kernel void @reduce_min_frag_kernel(ptr addrspace(1) %0, pt
 
 69:                                               ; preds = %54
   call void @llvm.hivm.SET.FLAG.IMM(i64 1, i64 5, i64 0)
-  %70 = mul i32 %12, 16
-  %71 = sext i32 %70 to i64
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 1, i64 5, i64 0)
-  %72 = ptrtoint ptr addrspace(1) %1 to i64
-  %73 = mul i64 %71, 4
-  %74 = add i64 %72, %73
-  %75 = inttoptr i64 %74 to ptr addrspace(1)
-  call void @llvm.hivm.MOV.UB.TO.OUT.ALIGN.V2.DV(ptr addrspace(1) %75, ptr addrspace(6) inttoptr (i64 8256 to ptr addrspace(6)), i64 288230377225453600, i64 35184372088864)
+  %70 = ptrtoint ptr addrspace(1) %1 to i64
+  %71 = mul i64 %14, 4
+  %72 = add i64 %70, %71
+  %73 = inttoptr i64 %72 to ptr addrspace(1)
+  call void @llvm.hivm.MOV.UB.TO.OUT.ALIGN.V2.DV(ptr addrspace(1) %73, ptr addrspace(6) inttoptr (i64 8256 to ptr addrspace(6)), i64 288230377225453600, i64 35184372088864)
   call void @llvm.hivm.BARRIER(i64 6)
   br label %20
 }

@@ -1,45 +1,79 @@
 #!/usr/bin/env bash
-# reduce_api_kernels 逐级降级驱动：DSL -> TileLangIR -> NPU IR -> MIX -> CCE -> LLVM -> .o
+# reduce_api_kernels 逐级降级驱动：TileLangIR -> NPU IR -> MIX -> CCE -> LLVM -> .o
 #
 # 用法:
-#   ./build.sh                 # 构建全部算子
+#   ./build.sh                 # 构建全部算子（5 个，从已提交的 1_*.mlir 开始）
 #   ./build.sh reduce_sum      # 只构建指定算子
+#   FORCE_STAGE0=1 ./build.sh  # 强制从 DSL(0_*.py) 重新生成 1_*.mlir（需可用的 tilelang python）
 #
 # 覆盖的 5 个算子: reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax
 # 形态: SimdVF 内 frag->frag（vreduce 的输入必须是 fragment，无 shared->shared 形态）
 #
-# 依赖（可用环境变量覆盖）:
-#   TILELANG_PYTHON  默认 /home/zwh/work/venv/bin/python3
-#   TILE_OPT         默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-opt
-#   TILE_TRANSLATE   默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-translate
-#   CCEC             默认 CANN 9.1.0 下的 ccec
+# 工具解析顺序（环境变量 > 本地绝对路径 > PATH 上的裸名），因此在本机与 NPU 机都能跑：
+#   TILE_OPT        默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-opt  否则 PATH 上 tile-opt
+#   TILE_TRANSLATE  默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-translate 否则 PATH 上 tile-translate
+#   CCEC            默认 CANN 9.1.0 下的 ccec  否则 PATH 上 ccec
+#   TILELANG_PYTHON 默认 python3（仅 stage0 需要）
+#
+# 降级参数（环境变量可覆盖，默认与 NPU 机上实测通过的链路一致）：
+#   NPU_SPLIT_PASS  默认 --npu-split-dataflow（备选 --npu-split-scope）
+#   NPU_NORMALIZE   默认 --npu-normalize（置空可关闭）
+#   CCEC_ARCH       默认 dav-c310-cube（纯向量可用 dav-c310-vec）
+#   CCEC_EXTRA      默认 -cce-enable-mix（置空可关闭）
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE" || exit 1
 
-PY="${TILELANG_PYTHON:-/home/zwh/work/venv/bin/python3}"
-OPT="${TILE_OPT:-/home/zwh/work/tilelang-toolchain/build/bin/tile-opt}"
-TRANS="${TILE_TRANSLATE:-/home/zwh/work/tilelang-toolchain/build/bin/tile-translate}"
-CCEC="${CCEC:-/home/zwh/work/cann/9.1.0/toolkit/cann-9.1.0/tools/bisheng_compiler/bin/ccec}"
+# 可执行性判断：绝对/相对路径看 -x，裸名看 PATH
+is_exec() { [ -x "$1" ] || command -v "$1" >/dev/null 2>&1; }
+
+# 工具解析：env 覆盖 > 本地绝对路径 > PATH 裸名
+pick() { # $1=env值 $2=本地默认绝对路径 $3=PATH 裸名
+  if [ -n "${1:-}" ]; then printf '%s' "$1"; return; fi
+  if [ -x "$2" ]; then printf '%s' "$2"; return; fi
+  printf '%s' "$3"
+}
+
+OPT="$(pick "${TILE_OPT:-}"       /home/zwh/work/tilelang-toolchain/build/bin/tile-opt       tile-opt)"
+TRANS="$(pick "${TILE_TRANSLATE:-}" /home/zwh/work/tilelang-toolchain/build/bin/tile-translate tile-translate)"
+CCEC="$(pick "${CCEC:-}"          /home/zwh/work/cann/9.1.0/toolkit/cann-9.1.0/tools/bisheng_compiler/bin/ccec ccec)"
+PY="${TILELANG_PYTHON:-python3}"
+
+SPLIT_PASS="${NPU_SPLIT_PASS:---npu-split-dataflow}"
+NORMALIZE="${NPU_NORMALIZE:---npu-normalize}"
+CCEC_ARCH="${CCEC_ARCH:-dav-c310-cube}"
+CCEC_EXTRA="${CCEC_EXTRA:--cce-enable-mix}"
+FORCE_STAGE0="${FORCE_STAGE0:-0}"
+
+for spec in "TILE_OPT:$OPT" "TILE_TRANSLATE:$TRANS" "CCEC:$CCEC"; do
+  name="${spec%%:*}"; val="${spec#*:}"
+  if ! is_exec "$val"; then echo "ERROR: $name 不可用: $val" >&2; exit 1; fi
+done
 
 OPS=("$@")
 if [ ${#OPS[@]} -eq 0 ]; then
   OPS=(reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax)
 fi
 
-for v in "$PY" "$OPT" "$TRANS" "$CCEC"; do
-  if [ ! -x "$v" ]; then echo "ERROR: not executable: $v" >&2; exit 1; fi
-done
-
+shopt -s nullglob
 rc=0
 for op in "${OPS[@]}"; do
   d="$HERE/$op"
   echo "############ $op ############"
-  ( cd "$d" && "$PY" "0_${op}.py" ) || { echo "FAIL stage0: $op" >&2; rc=1; continue; }
 
-  for mlir in "$d"/1_${op}_*_tilelangir.mlir; do
-    [ -e "$mlir" ] || continue
+  srcs=( "$d"/1_${op}_*_tilelangir.mlir )
+  if [ "$FORCE_STAGE0" = 1 ] || [ ${#srcs[@]} -eq 0 ]; then
+    if ! is_exec "$PY"; then
+      echo "ERROR: stage0 需要可用的 TILELANG_PYTHON，当前不可用: $PY" >&2
+      echo "       若已有 1_*.mlir 则不设 FORCE_STAGE0 即可跳过 stage0" >&2
+      rc=1; continue
+    fi
+    ( cd "$d" && "$PY" "0_${op}.py" ) || { echo "FAIL stage0: $op" >&2; rc=1; continue; }
+    srcs=( "$d"/1_${op}_*_tilelangir.mlir )
+  fi
+
+  for mlir in "${srcs[@]}"; do
     base="$(basename "$mlir")"   # 1_<op>_<form>_tilelangir.mlir
     base="${base#1_}"
     b="${base%_tilelangir.mlir}" # <op>_<form>
@@ -53,10 +87,10 @@ for op in "${OPS[@]}"; do
       #   linalg.mul ins(...) outs(...)
       sed -E 's/linalg\.elementwise <([a-zA-Z_]+)>/linalg.\1/' \
         "1_${b}_tilelangir.mlir" > "1_${b}_tilelangir.norm.mlir"
-      "$OPT" "1_${b}_tilelangir.norm.mlir" --convert-tilelang-to-npu --npu-normalize -o "2_${b}_npu.mlir"
+      "$OPT" "1_${b}_tilelangir.norm.mlir" --convert-tilelang-to-npu $NORMALIZE -o "2_${b}_npu.mlir"
 
-      echo "-- [$b] NPU IR -> MIX 拆分"
-      "$OPT" "2_${b}_npu.mlir" --npu-split-scope --npu-plan-memory --npu-split-mix-kernel --npu-sync-pipeline -o "3_${b}_mix_npu.mlir"
+      echo "-- [$b] NPU IR -> MIX 拆分 ($SPLIT_PASS)"
+      "$OPT" "2_${b}_npu.mlir" $SPLIT_PASS --npu-plan-memory --npu-split-mix-kernel --npu-sync-pipeline -o "3_${b}_mix_npu.mlir"
 
       echo "-- [$b] MIX NPU -> CCE"
       "$OPT" --cce-pipeline="target=dav-351x" "3_${b}_mix_npu.mlir" -o "4_${b}_cce.mlir"
@@ -64,8 +98,8 @@ for op in "${OPS[@]}"; do
       echo "-- [$b] CCE -> LLVM .ll"
       "$TRANS" --cce-to-backend -allow-unregistered-dialect "4_${b}_cce.mlir" -o "5_${b}.ll"
 
-      echo "-- [$b] ccec -> .o (arch=dav-c310-vec)"
-      "$CCEC" --cce-aicore-arch=dav-c310-vec --cce-aicore-only -O2 \
+      echo "-- [$b] ccec -> .o (arch=$CCEC_ARCH $CCEC_EXTRA)"
+      "$CCEC" --cce-aicore-arch="$CCEC_ARCH" --cce-aicore-only $CCEC_EXTRA -O2 \
         -cce-bitcode-is-aicore -c "5_${b}.ll" -o "6_${b}.o"
     ) || { echo "FAIL lower: $b" >&2; rc=1; continue; }
 
