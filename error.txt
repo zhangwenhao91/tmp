@@ -1,90 +1,14 @@
-root@localhost:/home/zwh/tmp/reduce_api_kernels# git pull
-remote: Enumerating objects: 43, done.
-remote: Counting objects: 100% (43/43), done.
-remote: Compressing objects: 100% (12/12), done.
-remote: Total 28 (delta 20), reused 20 (delta 16), pack-reused 0 (from 0)
-Unpacking objects: 100% (28/28), 8.50 KiB | 8.50 MiB/s, done.
-From https://github.com/zhangwenhao91/tmp
-   9d83997..329e88d  main       -> origin/main
-Updating 9d83997..329e88d
-Fast-forward
- error.txt                                                      |   3 +++
- reduce_api_kernels/build.sh                                    |  80 +++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------
- reduce_api_kernels/reduce_absmax/2_reduce_absmax_frag_npu.mlir |  34 ++++++++++++++++++++++++++++++++++
- reduce_api_kernels/reduce_absmax/6_reduce_absmax_frag.o        | Bin 2296 -> 2296 bytes
- reduce_api_kernels/reduce_abssum/2_reduce_abssum_frag_npu.mlir |  34 ++++++++++++++++++++++++++++++++++
- reduce_api_kernels/reduce_abssum/6_reduce_abssum_frag.o        | Bin 2296 -> 2296 bytes
- reduce_api_kernels/reduce_max/6_reduce_max_frag.o              | Bin 2264 -> 2264 bytes
- reduce_api_kernels/reduce_min/4_reduce_min_frag_cce.mlir       |  40 ++++++++++++++++++++++------------------
- reduce_api_kernels/reduce_min/5_reduce_min_frag.ll             |  65 ++++++++++++++++++++++++++++++++++++++++++-----------------------
- reduce_api_kernels/reduce_min/6_reduce_min_frag.o              | Bin 2320 -> 2568 bytes
- reduce_api_kernels/reduce_sum/6_reduce_sum_frag.o              | Bin 2264 -> 2264 bytes
- 11 files changed, 188 insertions(+), 68 deletions(-)
- create mode 100644 error.txt
- create mode 100644 reduce_api_kernels/reduce_absmax/2_reduce_absmax_frag_npu.mlir
- create mode 100644 reduce_api_kernels/reduce_abssum/2_reduce_abssum_frag_npu.mlir
-root@localhost:/home/zwh/tmp/reduce_api_kernels# ./build.sh 
-############ reduce_sum ############
--- [reduce_sum_frag] TileLangIR -> NPU IR
--- [reduce_sum_frag] NPU IR -> MIX 拆分 (--npu-split-dataflow)
--- [reduce_sum_frag] MIX NPU -> CCE
--- [reduce_sum_frag] CCE -> LLVM .ll
--- [reduce_sum_frag] ccec -> .o (arch=dav-c310-cube -cce-enable-mix)
-OK: /home/zwh/tmp/reduce_api_kernels/reduce_sum/6_reduce_sum_frag.o
-############ reduce_max ############
--- [reduce_max_frag] TileLangIR -> NPU IR
--- [reduce_max_frag] NPU IR -> MIX 拆分 (--npu-split-dataflow)
--- [reduce_max_frag] MIX NPU -> CCE
--- [reduce_max_frag] CCE -> LLVM .ll
--- [reduce_max_frag] ccec -> .o (arch=dav-c310-cube -cce-enable-mix)
-OK: /home/zwh/tmp/reduce_api_kernels/reduce_max/6_reduce_max_frag.o
-############ reduce_min ############
--- [reduce_min_frag] TileLangIR -> NPU IR
--- [reduce_min_frag] NPU IR -> MIX 拆分 (--npu-split-dataflow)
--- [reduce_min_frag] MIX NPU -> CCE
--- [reduce_min_frag] CCE -> LLVM .ll
--- [reduce_min_frag] ccec -> .o (arch=dav-c310-cube -cce-enable-mix)
-OK: /home/zwh/tmp/reduce_api_kernels/reduce_min/6_reduce_min_frag.o
-############ reduce_abssum ############
--- [reduce_abssum_frag] TileLangIR -> NPU IR
--- [reduce_abssum_frag] NPU IR -> MIX 拆分 (--npu-split-dataflow)
--- [reduce_abssum_frag] MIX NPU -> CCE
--- [reduce_abssum_frag] CCE -> LLVM .ll
--- [reduce_abssum_frag] ccec -> .o (arch=dav-c310-cube -cce-enable-mix)
-OK: /home/zwh/tmp/reduce_api_kernels/reduce_abssum/6_reduce_abssum_frag.o
-############ reduce_absmax ############
--- [reduce_absmax_frag] TileLangIR -> NPU IR
--- [reduce_absmax_frag] NPU IR -> MIX 拆分 (--npu-split-dataflow)
--- [reduce_absmax_frag] MIX NPU -> CCE
--- [reduce_absmax_frag] CCE -> LLVM .ll
--- [reduce_absmax_frag] ccec -> .o (arch=dav-c310-cube -cce-enable-mix)
-OK: /home/zwh/tmp/reduce_api_kernels/reduce_absmax/6_reduce_absmax_frag.o
-root@localhost:/home/zwh/tmp/reduce_api_kernels# ./run_on_npu.sh 
-===== reduce_sum =====
-[RUNTIME_COMPILE] compiling OpenTile runtime extension, source len: 3744
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_sum/6_reduce_sum_frag.o (2264 bytes) for kernel 'reduce_sum_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_sum  diff=2.384e-06  kernel=6_reduce_sum_frag.o
-===== reduce_max =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_max/6_reduce_max_frag.o (2264 bytes) for kernel 'reduce_max_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_max  diff=0.000e+00  kernel=6_reduce_max_frag.o
-===== reduce_min =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_min/6_reduce_min_frag.o (2320 bytes) for kernel 'reduce_min_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_min  diff=0.000e+00  kernel=6_reduce_min_frag.o
-===== reduce_abssum =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_abssum/6_reduce_abssum_frag.o (2296 bytes) for kernel 'reduce_abssum_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_abssum  diff=1.526e-05  kernel=6_reduce_abssum_frag.o
-===== reduce_absmax =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_absmax/6_reduce_absmax_frag.o (2296 bytes) for kernel 'reduce_absmax_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_absmax  diff=0.000e+00  kernel=6_reduce_absmax_frag.o
-============================================
-SUMMARY: 5 PASS / 0 FAIL / 0 SKIP
-root@localhost:/home/zwh/tmp/reduce_api_kernels# 
+归约	T.reduce_*	T.reduce_* / T.reduce（线程域内）	P0	2026/10/24	章文浩			
+		T.reduce_*（SimdVF 内 shared→shared）	P0	2026/10/24				
+	T.print	T.print(buf/expr/msg)	P0	2026/10/24				
+	/	标量 GM 访问（自动改写）	P0	2026/10/24				
+
+
+
+OPname	OP分类	入参	返回值	"支持的 Attribute 规格
+（不含内部生成的 operandSegmentSizes）"	i1	i4	i8	i16	i32	i64	f4E2M1FN	f8E4M3FN	f8E5M2	f8E8M0FNU	f16	bf16	tf32	f32	f64	特殊限制	NPU Dialect 降级支持	CCE Dialect 降级支持	责任人	测试结果	修复进度	
+open_tile.reduce (ReduceOp)	计算类	"operands: 可变长 Tile<任意合法元素类型>
+dim: i32 属性
+identities: ArrayAttr
+body: Region（SizedRegion<1>）"	results: 可变长 Tile<任意合法元素类型>	"dim: I32Attr，必选；0 <= dim < 输入 rank
+identities: ArrayAttr，必选；数量与 operands 一致，元素类型逐一匹配"	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	dim 必须在 rank 内；全部输入 shape 相同；每个结果删除规约维；identities 数量/类型对应输入；body 为结合操作，接收 2N 个标量参数并 yield N 个标量。	支持某部分类型：仅单输入单结果，combine 为 add/mul/max/min 的规约	支持某部分类型：单输入单结果的 sum/max/min；常用 i8/i16/i32/i64、f16/bf16/f32，prod 暂不支持	朱秋成->叶梓发			
