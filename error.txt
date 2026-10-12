@@ -1,81 +1,13 @@
-root@localhost:/home/zwh/tmp/reduce_api_kernels# ./run_on_npu.sh 
-===== reduce_sum/frag =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_sum/6_reduce_sum_frag.o (2264 bytes) for kernel 'reduce_sum_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_sum/frag  diff=2.384e-06  kernel=6_reduce_sum_frag.o
-===== reduce_sum/shared =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_sum/6_reduce_sum_shared.o (2280 bytes) for kernel 'reduce_sum_shared_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_sum/shared  diff=2.384e-06  kernel=6_reduce_sum_shared.o
-===== reduce_sum/thread =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_sum/6_reduce_sum_thread.o (2280 bytes) for kernel 'reduce_sum_thread_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_sum/thread  diff=2.384e-06  kernel=6_reduce_sum_thread.o
-===== reduce_max/frag =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_max/6_reduce_max_frag.o (2264 bytes) for kernel 'reduce_max_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_max/frag  diff=0.000e+00  kernel=6_reduce_max_frag.o
-===== reduce_max/shared =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared.o (2280 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_max/shared  diff=0.000e+00  kernel=6_reduce_max_shared.o
-===== reduce_max/thread =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_max/6_reduce_max_thread.o (2280 bytes) for kernel 'reduce_max_thread_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_max/thread  diff=0.000e+00  kernel=6_reduce_max_thread.o
-===== reduce_min/frag =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_min/6_reduce_min_frag.o (2568 bytes) for kernel 'reduce_min_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_min/frag  diff=0.000e+00  kernel=6_reduce_min_frag.o
-===== reduce_min/shared =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_min/6_reduce_min_shared.o (2280 bytes) for kernel 'reduce_min_shared_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_min/shared  diff=0.000e+00  kernel=6_reduce_min_shared.o
-===== reduce_min/thread =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_min/6_reduce_min_thread.o (2280 bytes) for kernel 'reduce_min_thread_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_min/thread  diff=0.000e+00  kernel=6_reduce_min_thread.o
-===== reduce_abssum/frag =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_abssum/6_reduce_abssum_frag.o (2296 bytes) for kernel 'reduce_abssum_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_abssum/frag  diff=1.526e-05  kernel=6_reduce_abssum_frag.o
-===== reduce_abssum/shared =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_abssum/6_reduce_abssum_shared.o (2304 bytes) for kernel 'reduce_abssum_shared_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_abssum/shared  diff=1.526e-05  kernel=6_reduce_abssum_shared.o
-===== reduce_abssum/thread =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_abssum/6_reduce_abssum_thread.o (2304 bytes) for kernel 'reduce_abssum_thread_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_abssum/thread  diff=1.526e-05  kernel=6_reduce_abssum_thread.o
-===== reduce_absmax/frag =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_absmax/6_reduce_absmax_frag.o (2296 bytes) for kernel 'reduce_absmax_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_absmax/frag  diff=0.000e+00  kernel=6_reduce_absmax_frag.o
-===== reduce_absmax/shared =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_absmax/6_reduce_absmax_shared.o (2304 bytes) for kernel 'reduce_absmax_shared_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_absmax/shared  diff=0.000e+00  kernel=6_reduce_absmax_shared.o
-===== reduce_absmax/thread =====
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/zwh/tmp/reduce_api_kernels/reduce_absmax/6_reduce_absmax_thread.o (2304 bytes) for kernel 'reduce_absmax_thread_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_absmax/thread  diff=0.000e+00  kernel=6_reduce_absmax_thread.o
-SKIP (no .o): reduce_bitand
-SKIP (no .o): reduce_bitor
-SKIP (no .o): reduce_bitxor
-============================================
-SUMMARY: 15 PASS / 0 FAIL / 3 SKIP
+root@localhost:/home/zwh/tmp/print_api_kernels# ./build_print.sh 
+OK: device kernel = _Z12print_kernelPviPN3cce8internal15DebugTunnelDataE_mix_aiv
+-- [host] ccec 编译 print_host.cce 并内嵌 6_print.o
+bisheng: error: unable to make temporary file: No such file or directory
+FAIL: host 编译/链接
+root@localhost:/home/zwh/tmp/print_api_kernels# ./run_on_npu.sh 
+ERROR: ./print_host 不存在，请先执行 ./build_print.sh
+root@localhost:/home/zwh/tmp/print_api_kernels# ./build_print.sh 
+OK: device kernel = _Z12print_kernelPviPN3cce8internal15DebugTunnelDataE_mix_aiv
+-- [host] ccec 编译 print_host.cce 并内嵌 6_print.o
+bisheng: error: unable to make temporary file: No such file or directory
+FAIL: host 编译/链接
+root@localhost:/home/zwh/tmp/print_api_kernels# 
