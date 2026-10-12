@@ -28,7 +28,7 @@ define dso_local ptc_kernel void @reduce_min_frag_kernel(ptr addrspace(1) %0, pt
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 4, i64 1, i64 0)
   br label %21
 
-20:                                               ; preds = %69, %3
+20:                                               ; preds = %65, %3
   ret void
 
 21:                                               ; preds = %51, %10
@@ -79,36 +79,32 @@ define dso_local ptc_kernel void @reduce_min_frag_kernel(ptr addrspace(1) %0, pt
 53:                                               ; preds = %21
   br label %54
 
-54:                                               ; preds = %67, %53
-  %55 = phi i32 [ %68, %67 ], [ 0, %53 ]
+54:                                               ; preds = %63, %53
+  %55 = phi i32 [ %64, %63 ], [ 0, %53 ]
   %56 = icmp sle i32 %55, 0
-  br i1 %56, label %57, label %69
+  br i1 %56, label %57, label %65
 
 57:                                               ; preds = %54
-  %58 = call { <256 x i1>, i32 } @llvm.hivm.plt.b32.v300(i32 16)
-  %59 = extractvalue { <256 x i1>, i32 } %58, 0
-  %60 = extractvalue { <256 x i1>, i32 } %58, 1
-  %61 = call <64 x i32> @llvm.hivm.vci.v64i32(i32 0, i32 0)
-  %62 = call <64 x float> @llvm.hivm.vgather2.v300.v64f32(ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), <64 x i32> %61, <256 x i1> %59)
-  %63 = call <64 x float> @llvm.hivm.vmuls.s.x.v64f32(<64 x float> %62, float -1.000000e+00, <256 x i1> %59)
-  %64 = call <32 x i8> @llvm.hivm.init.vector.align.data()
-  %65 = bitcast <64 x float> %63 to <256 x i8>
-  %66 = call <32 x i8> @llvm.hivm.vstus(<256 x i8> %65, ptr addrspace(6) inttoptr (i64 8256 to ptr addrspace(6)), i32 64, <32 x i8> %64)
-  call void @llvm.hivm.vstas(<32 x i8> %66, ptr addrspace(6) inttoptr (i64 8256 to ptr addrspace(6)), i32 64, i32 0)
-  br label %67
+  %58 = call <64 x float> @llvm.hivm.vldsx1.v64f32(ptr addrspace(6) inttoptr (i64 8192 to ptr addrspace(6)), i32 0, i32 0, i32 0)
+  %59 = call { <256 x i1>, i32 } @llvm.hivm.plt.b32.v300(i32 16)
+  %60 = extractvalue { <256 x i1>, i32 } %59, 0
+  %61 = extractvalue { <256 x i1>, i32 } %59, 1
+  %62 = call <64 x float> @llvm.hivm.vmuls.s.x.v64f32(<64 x float> %58, float -1.000000e+00, <256 x i1> %60)
+  call void @llvm.hivm.vstsx1.v64f32(<64 x float> %62, ptr addrspace(6) inttoptr (i64 8256 to ptr addrspace(6)), i32 0, i32 2, i32 0, <256 x i1> %60)
+  br label %63
 
-67:                                               ; preds = %57
-  %68 = add i32 %55, 1
+63:                                               ; preds = %57
+  %64 = add i32 %55, 1
   br label %54, !llvm.loop !4
 
-69:                                               ; preds = %54
+65:                                               ; preds = %54
   call void @llvm.hivm.SET.FLAG.IMM(i64 1, i64 5, i64 0)
   call void @llvm.hivm.WAIT.FLAG.IMM(i64 1, i64 5, i64 0)
-  %70 = ptrtoint ptr addrspace(1) %1 to i64
-  %71 = mul i64 %14, 4
-  %72 = add i64 %70, %71
-  %73 = inttoptr i64 %72 to ptr addrspace(1)
-  call void @llvm.hivm.MOV.UB.TO.OUT.ALIGN.V2.DV(ptr addrspace(1) %73, ptr addrspace(6) inttoptr (i64 8256 to ptr addrspace(6)), i64 288230377225453600, i64 35184372088864)
+  %66 = ptrtoint ptr addrspace(1) %1 to i64
+  %67 = mul i64 %14, 4
+  %68 = add i64 %66, %67
+  %69 = inttoptr i64 %68 to ptr addrspace(1)
+  call void @llvm.hivm.MOV.UB.TO.OUT.ALIGN.V2.DV(ptr addrspace(1) %69, ptr addrspace(6) inttoptr (i64 8256 to ptr addrspace(6)), i64 288230377225453600, i64 35184372088864)
   call void @llvm.hivm.BARRIER(i64 6)
   br label %20
 }
@@ -147,40 +143,25 @@ declare void @llvm.hivm.MOV.UB.TO.OUT.ALIGN.V2.DV(ptr addrspace(1), ptr addrspac
 declare void @llvm.hivm.BARRIER(i64)
 
 ; Unknown intrinsic
+declare <64 x float> @llvm.hivm.vldsx1.v64f32(ptr addrspace(6), i32, i32, i32)
+
+; Unknown intrinsic
 declare { <256 x i1>, i32 } @llvm.hivm.plt.b32.v300(i32)
-
-; Unknown intrinsic
-declare <64 x i32> @llvm.hivm.vci.v64i32(i32, i32)
-
-; Unknown intrinsic
-declare <64 x float> @llvm.hivm.vgather2.v300.v64f32(ptr addrspace(6), <64 x i32>, <256 x i1>)
 
 ; Unknown intrinsic
 declare <64 x float> @llvm.hivm.vmuls.s.x.v64f32(<64 x float>, float, <256 x i1>)
 
 ; Unknown intrinsic
-declare <32 x i8> @llvm.hivm.init.vector.align.data()
-
-; Unknown intrinsic
-declare <32 x i8> @llvm.hivm.vstus(<256 x i8>, ptr addrspace(6), i32, <32 x i8>)
-
-; Unknown intrinsic
-declare void @llvm.hivm.vstas(<32 x i8>, ptr addrspace(6), i32, i32)
+declare void @llvm.hivm.vstsx1.v64f32(<64 x float>, ptr addrspace(6), i32, i32, i32, <256 x i1>)
 
 ; Unknown intrinsic
 declare <256 x i1> @llvm.hivm.pset.b32(i32)
-
-; Unknown intrinsic
-declare <64 x float> @llvm.hivm.vldsx1.v64f32(ptr addrspace(6), i32, i32, i32)
 
 ; Unknown intrinsic
 declare <64 x float> @llvm.hivm.vmax.s.x.v64f32(<64 x float>, <64 x float>, <256 x i1>)
 
 ; Unknown intrinsic
 declare <64 x float> @llvm.hivm.vcmax.s.x.v64f32(<64 x float>, <256 x i1>)
-
-; Unknown intrinsic
-declare void @llvm.hivm.vstsx1.v64f32(<64 x float>, ptr addrspace(6), i32, i32, i32, <256 x i1>)
 
 
 attributes #0 = { "target-cpu"="dav-c310-vec" }
