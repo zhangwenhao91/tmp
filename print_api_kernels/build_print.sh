@@ -24,16 +24,22 @@
 #   TILE_TRANSLATE  默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-translate
 #   CCEC            默认 CANN 9.1.0 下的 ccec（NPU 机可用 $CANN_HOME/tools/bisheng_compiler/bin/ccec）
 #   PRINT_BC        默认 /home/zwh/work/tilelang-toolchain/build/lib/print.bc
-#   CANN_HOME       默认 /home/zwh/work/cann/9.1.0/toolkit/cann-9.1.0
+#   CANN_HOME       自动探测：$ASCEND_HOME_PATH > $CANN_HOME > /usr/local/Ascend/ascend-toolkit/latest
+#                   > /home/zwh/work/cann/9.1.0/toolkit/cann-9.1.0（host 头/库目录按 x86_64-linux|aarch64-linux 自动选）
 # 可调参数:
 #   AICORE_ARCH     默认 dav-c310-vec（纯 AIV print；置为 dav-c310-cube 会改用 cube 侧编译）
 #   CCEC_EXTRA      默认 -cce-enable-mix（置空可关闭）
+#
+# 环境健壮性（NPU 机上踩过的坑）:
+#   ccec host 编译要求可写的临时目录；若 $TMPDIR 指向不存在的目录，bisheng 会报
+#     error: unable to make temporary file: No such file or directory
+#   本脚本检测到 $TMPDIR 非可用目录时会自动改用 <脚本目录>/.tmp（不存在则创建）。
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE" || exit 1
 
-usage() { sed -n '2,30p' "$0"; }
+usage() { sed -n '2,36p' "$0"; }
 
 DO_DEVICE=0
 for a in "$@"; do
@@ -61,7 +67,39 @@ pick_file() { # $1=env值 $2=本地默认绝对路径 $3=PATH 裸名
   command -v "$3" >/dev/null 2>&1 && printf '%s' "$(command -v "$3")" || printf '%s' "$3"
 }
 PRINT_BC="$(pick_file "${PRINT_BC:-}" /home/zwh/work/tilelang-toolchain/build/lib/print.bc print.bc)"
-CANN_HOME="${CANN_HOME:-/home/zwh/work/cann/9.1.0/toolkit/cann-9.1.0}"
+
+# CANN 探测：ASCEND_HOME_PATH > CANN_HOME > 常见安装路径（本机与 NPU 机通用）
+detect_cann() {
+  local c
+  for c in "${ASCEND_HOME_PATH:-}" "${CANN_HOME:-}" \
+           /usr/local/Ascend/ascend-toolkit/latest \
+           /home/zwh/work/cann/9.1.0/toolkit/cann-9.1.0; do
+    [ -n "$c" ] && [ -d "$c" ] && { printf '%s' "$c"; return; }
+  done
+  local d
+  for d in /usr/local/Ascend/ascend-toolkit/*; do
+    [ -d "$d" ] && { printf '%s' "$d"; return; }
+  done
+  printf '%s' "${CANN_HOME:-/usr/local/Ascend/ascend-toolkit/latest}"
+}
+CANN_HOME="$(detect_cann)"
+
+# host 侧 acl 头/库目录：x86_64-linux 或 aarch64-linux（按实际存在者）
+HOST_LIB=""
+for d in "$CANN_HOME/$(uname -m)-linux" "$CANN_HOME/x86_64-linux" "$CANN_HOME/aarch64-linux"; do
+  [ -d "$d" ] && { HOST_LIB="$d"; break; }
+done
+[ -n "$HOST_LIB" ] || HOST_LIB="$CANN_HOME/$(uname -m)-linux"
+
+# ccec host 编译需要可写的临时目录；若 TMPDIR 缺失/不可写会报
+#   bisheng: error: unable to make temporary file: No such file or directory
+if [ -z "${TMPDIR:-}" ] || [ ! -d "${TMPDIR:-/nonexistent}" ] || [ ! -w "${TMPDIR:-/nonexistent}" ]; then
+  TMPDIR_ORIG="${TMPDIR:-<unset>}"
+  mkdir -p "$HERE/.tmp" 2>/dev/null
+  export TMPDIR="$HERE/.tmp"
+else
+  TMPDIR_ORIG="$TMPDIR"
+fi
 
 AICORE_ARCH="${AICORE_ARCH:-dav-c310-vec}"
 CCEC_EXTRA="${CCEC_EXTRA:--cce-enable-mix}"
@@ -72,6 +110,9 @@ WORK="$HERE/work"
 mkdir -p "$WORK"
 
 if ! is_exec "$CCEC"; then echo "ERROR: CCEC 不可用: $CCEC" >&2; exit 1; fi
+
+echo "tool:   CCEC=$CCEC"
+echo "env:    arch=$(uname -m) CANN_HOME=$CANN_HOME HOST_LIB=$HOST_LIB TMPDIR(orig)=$TMPDIR_ORIG -> $TMPDIR"
 
 # ---------- device: 可选重新降级 ----------
 if [ "$DO_DEVICE" = 1 ]; then
@@ -120,17 +161,27 @@ fi
 [ -f "$HERE/print_host.cce" ] || { echo "ERROR: 缺少 print_host.cce" >&2; exit 1; }
 
 echo "-- [host] ccec 编译 print_host.cce 并内嵌 6_print.o"
-[ -n "${ASCEND_HOME_PATH:-}" ] || export ASCEND_HOME_PATH="$CANN_HOME"
+
+[ -d "$HOST_LIB/include" ] || { echo "ERROR: 未找到 acl 头目录: $HOST_LIB/include（可用 CANN_HOME=... 指定 CANN）" >&2; exit 1; }
+[ -d "$HOST_LIB/lib64" ]   || { echo "ERROR: 未找到 host 库目录: $HOST_LIB/lib64" >&2; exit 1; }
+
+# 让 ccec 能找到 CANN 运行时声明（否则会有 -Wcce-cann-runtime 警告并走内置声明）
+export ASCEND_HOME_PATH="$CANN_HOME"
+
+set -x
 "$CCEC" --cce-host-only -x cce --cce-enable-print -cce-enable-mix \
-  -I"$CANN_HOME/x86_64-linux/include" \
+  -I"$HOST_LIB/include" \
   -Xclang -fcce-include-aibinary -Xclang "$DEV_O" \
   "$HERE/print_host.cce" \
-  -L"$CANN_HOME/x86_64-linux/lib64" -lascendcl -lruntime -lstdc++ -lm \
+  -L"$HOST_LIB/lib64" -lascendcl -lruntime -lstdc++ -lm \
   -Wl,--allow-multiple-definition \
-  -o "$OUT" || { echo "FAIL: host 编译/链接" >&2; exit 1; }
+  -o "$OUT"
+rc=$?
+set +x
+[ "$rc" -eq 0 ] || { echo "FAIL: host 编译/链接 (rc=$rc)" >&2; exit 1; }
 
 chmod +x "$OUT" 2>/dev/null
 echo
 echo "OK: $OUT"
-echo "    运行: ./run_on_npu.sh [deviceId]   （或 LD_LIBRARY_PATH=$CANN_HOME/x86_64-linux/lib64 ./print_host 0）"
+echo "    运行: ./run_on_npu.sh [deviceId]   （或 LD_LIBRARY_PATH=$HOST_LIB/lib64 ./print_host 0）"
 echo "    预期: stdout 出现 'buffer<shared_buf, float16>' 数据块、'block id'=0..3、'hello' 三处打印"
