@@ -1,22 +1,45 @@
-for c in 4 5 6; do
+root@ubuntu162:/# for c in 4 5 6; do
   export ASCEND_RT_VISIBLE_DEVICES=$c
   echo "===== card $c ====="
   timeout 60 python -c "import torch, torch_npu; x=torch.tensor([1.0],device='npu'); print('ok', x.cpu().tolist())" 2>&1 | tail -4
   echo "exit=$?"
 done
-
-
-# 1) 找到 9.x 的 set_env.sh
-find /home/CANN -maxdepth 4 -name 'set_env.sh' 2>/dev/null
-ls /home/CANN/9.3.0.weekly.20260930/
-
-# 2) source 最新的（换成上一步找到的真实路径）
-source /home/CANN/9.3.0.weekly.20260930/<子目录>/set_env.sh
-echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"       # 应指向 9.3.x 而非 8.3.RC1
-
-# 3) 再测设备
-export ASCEND_RT_VISIBLE_DEVICES=4
+===== card 4 =====
+Terminated
+exit=143
+===== card 5 =====
+Terminated
+exit=143
+===== card 6 =====
+Terminated
+exit=143
+root@ubuntu162:/# [200~find /home/CANN -maxdepth 4 -name 'set_env.sh' 2>/dev/null
+root@ubuntu162:/# ls /home/CANN/9.3.0.weekly.20260930/~
+ls: cannot access '/home/CANN/9.3.0.weekly.20260930/~': No such file or directory
+root@ubuntu162:/# find /home/CANN -maxdepth 4 -name 'set_env.sh' 2>/dev/null
+/home/CANN/9.2.0.weekly.20260909/ascend-toolkit/set_env.sh
+/home/CANN/9.2.0.weekly.20260909/cann-9.2.0/set_env.sh
+/home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/set_env.sh
+/home/CANN/toolbox/26.1.0/script/set_env.sh
+/home/CANN/toolbox/set_env.sh
+/home/CANN/9.2.0-beta.1/ascend-toolkit/set_env.sh
+/home/CANN/9.2.0-beta.1/cann-9.2.0/set_env.sh
+/home/CANN/9.2.0-beta.1/cann-9.2.0-beta.1/set_env.sh
+/home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
+/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
+/home/CANN/9.1.0-beta.3/ascend-toolkit/set_env.sh
+/home/CANN/9.1.0-beta.3/cann-9.1.0-beta.3/set_env.sh
+root@ubuntu162:/# ls /home/CANN/9.3.0.weekly.20260930/
+ascend-toolkit  cann  cann-9.3.0
+root@ubuntu162:/# source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
+bash: �ascend-toolkit/set_env.sh: No such file or directory
+root@ubuntu162:/# source //home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
+root@ubuntu162:/# source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh 
+root@ubuntu162:/# echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"
+ASCEND_HOME_PATH=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+root@ubuntu162:/# export ASCEND_RT_VISIBLE_DEVICES=4
 timeout 60 python -c "import torch, torch_npu; x=torch.tensor([1.0],device='npu'); print('ok', x.cpu().tolist())" 2>&1 | tail -4
-
-
-ldd $(python -c "import torch_npu,os;print(os.path.join(os.path.dirname(torch_npu.__file__),'_C.so'))") 2>/dev/null | grep -iE 'ascendcl|runtime'
+ok [1.0]
+root@ubuntu162:/# ldd $(python -c "import torch_npu,os;print(os.path.join(os.path.dirname(torch_npu.__file__),'_C.so'))") 2>/dev/null | grep -iE 'ascendcl|runtime'
+root@ubuntu162:/# 
