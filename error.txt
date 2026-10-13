@@ -1,38 +1,15 @@
-root@ubuntu162:/home/z30086261/tmp# W=/home/z00957040/pack/triton_ascend-3.6.0+dev20260818221400-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
-echo "=== dist 名 ==="
-unzip -l "$W" | grep 'dist-info/METADATA'
-echo "=== 顶层包目录 ==="
-unzip -l "$W" | awk '{print $4}' | grep -oE '^[^/]+/' | sort -u | head -20
-echo "=== 有没有 opentile 后端 ==="
-unzip -l "$W" | grep -iE 'opentile|backends/' | head -30
-=== dist 名 ===
-bash: unzip: command not found
-=== 顶层包目录 ===
-bash: unzip: command not found
-=== 有没有 opentile 后端 ===
-bash: unzip: command not found
-root@ubuntu162:/home/z30086261/tmp# W=/home/z00957040/pack/triton_ascend-3.6.0+dev20260818221400-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
-echo "=== dist 名 ==="
-unzip -l "$W" | grep 'dist-info/METADATA'
-echo "=== 顶层包目录 ==="
-unzip -l "$W" | awk '{print $4}' | grep -oE '^[^/]+/' | sort -u | head -20
-echo "=== 有没有 opentile 后端 ==="
-unzip -l "$W" | grep -iE 'opentile|backends/' | head -30
-=== dist 名 ===
-bash: unzip: command not found
-=== 顶层包目录 ===
-bash: unzip: command not found
-=== 有没有 opentile 后端 ===
-bash: unzip: command not found
-root@ubuntu162:/home/z30086261/tmp# find /home /data -maxdepth 14 -iname '*opentile*.whl' 2>/dev/null | head
-find /home /data -maxdepth 14 -iname 'triton*opentile*' 2>/dev/null | head
-/home/s00958582/OpenTile/OpenTileAS/test/Integration/FullPipeline/test_reduce_sum/triton_sum_pr.opentile.mlir
-/home/s00958582/OpenTile/OpenTileAS/test/Integration/FullPipeline/test_xor/triton_elementwise_binary.opentile.mlir
-/home/s00958582/OpenTile/OpenTileAS/test/Integration/FullPipeline/test_lshift/triton_elementwise_unary.opentile.mlir
-/home/s00958582/OpenTile/OpenTileAS/test/Integration/FullPipeline/test_eq/triton_elementwise_binary.opentile.mlir
-/home/s00958582/OpenTile/OpenTileAS/test/Integration/FullPipeline/test_assume/triton_assume.opentile.mlir
-/home/s00958582/OpenTile/OpenTileAS/test/Integration/FullPipeline/test_log2/triton_log2.opentile.mlir
-/home/s00958582/OpenTile/OpenTileAS/test/Integration/FullPipeline/test_3Dgrid/triton_.opentile.mlir
-/home/s00958582/OpenTile/OpenTileAS/test/Integration/FullPipeline/test_rsqrt/triton_rsqrt.opentile.mlir
-/home/s00958582/OpenTile/OpenTileAS/test/Integration/FullPipeline/test_unused_func_arg/triton_unused_func_arg_kernel.opentile.mlir
-/home/s00958582/OpenTile/OpenTileAS/test/Integration/FullPipeline/test_index_select_inductor/triton_unk_fused_embedding_0.opentile.mlir
+W=/home/z00957040/pack/triton_ascend-3.6.0+dev20260818221400-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+
+echo "=== 前 20 条 ==="
+python -m zipfile --list "$W" | head -20
+echo "=== 有没有 opentile 后端 / backends ==="
+python -m zipfile --list "$W" | grep -iE 'opentile|backends/'
+echo "=== dist-info ==="
+python -m zipfile --list "$W" | grep dist-info
+
+
+
+
+pip uninstall -y triton triton-ascend triton-opentile
+pip install "$W"
+python -c "import triton.backends.opentile; print('OK')"
