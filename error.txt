@@ -1,1 +1,17 @@
-   docker run -u 0 -dit --shm-size=512g --name=容器名称 --net=host --privileged=true --shm-size='300g' --ulimit memlock=150000000000:150000000000 -e ASCEND_RT_VISIBLE_DEVICES=7 -v /data:/data -v /home:/home -v /root/.ssh:/root/.ssh -v /usr/local/Ascend/driver/:/usr/local/Ascend/driver/ -v /etc/ascend_install.info:/etc/ascend_install.info triton_op_pipeline:v1.0 /bin/bash
+docker stop <容器名> && docker rm <容器名>
+
+docker run -u 0 -dit --name=<容器名> --net=host --privileged=true \
+  --shm-size=300g --ulimit memlock=150000000000:150000000000 \
+  -e ASCEND_RT_VISIBLE_DEVICES=4 \
+  -v /data:/data -v /home:/home -v /root/.ssh:/root/.ssh \
+  -v /usr/local/Ascend/driver/:/usr/local/Ascend/driver/ \
+  -v /etc/ascend_install.info:/etc/ascend_install.info \
+  triton_op_pipeline:v1.0 /bin/bash
+
+docker exec -it <容器名> /bin/bash
+
+
+
+# 容器内
+echo "VISIBLE=$ASCEND_RT_VISIBLE_DEVICES"          # 期望 4
+python -c "import torch, torch_npu; print('count:', torch.npu.device_count()); x=torch.tensor([1.0],device='npu'); print('alloc ok:', x.cpu().tolist())"
