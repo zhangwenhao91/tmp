@@ -1,4 +1,4 @@
-echo "=== 1) 环境里已有的线索 ==="
+root@ubuntu162:/home/z30086261# echo "=== 1) 环境里已有的线索 ==="
 echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"
 echo "CANN_HOME=$CANN_HOME"
 env | grep -iE 'ascend|cann|atc' 
@@ -19,3 +19,42 @@ find / -maxdepth 6 $ -name 'set_env.sh' -o -name 'setenv.bash' $ 2>/dev/null | g
 echo "=== 5) 驱动 & 设备自检 ==="
 cat /usr/local/Ascend/driver/version.info 2>/dev/null
 npu-smi info 2>/dev/null | head -20
+=== 1) 环境里已有的线索 ===
+ASCEND_HOME_PATH=/usr/local/Ascend/ascend-toolkit/latest
+CANN_HOME=
+ASCEND_RT_VISIBLE_DEVICES=7
+ASCEND_VISIBLE_DEVICES=1
+ASCEND_OPP_KERNEL_PATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1
+TOOLCHAIN_HOME=/usr/local/Ascend/ascend-toolkit/latest/toolkit
+PYTHONPATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
+ASCEND_OPP_PATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp
+LD_LIBRARY_PATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
+ASCEND_AICPU_PATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1
+PATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
+ASCEND_HOME_PATH=/usr/local/Ascend/ascend-toolkit/latest
+=== 2) 标准安装位置 ===
+total 24
+drwxr-xr-x  5 root root 4096 Oct 13  2025 8.2.RC1.alpha002
+drwxr-xr-x  8 root root 4096 Sep 10  2025 8.3.RC1
+drwxr-xr-x  5 root root 4096 Jan 29  2026 8.5.0
+drwxr-xr-x  4 root root 4096 Sep 10  2025 ascend-toolkit
+drwxr-xr-x 12 root root 4096 Jul  9 14:42 driver
+drwxr-xr-x  1 root root 4096 Jan 29  2026 latest
+drwxr-xr-x 14 root root 4096 Sep 10  2025 /usr/local/Ascend/ascend-toolkit/8.3.RC1
+drwxr-xr-x  6 root root 4096 Sep 10  2025 /usr/local/Ascend/ascend-toolkit/latest
+=== 3) set_env.sh 候选 ===
+=== 4) 全盘兜底搜（非标准/手动安装包）===
+=== 5) 驱动 & 设备自检 ===
+Version=25.7.rc1.b086
+ascendhal_version=7.35.23
+aicpu_version=1.0
+tdt_version=1.0
+log_version=1.0
+prof_version=2.0
+dvppkernels_version=1.1
+tsfw_version=1.0
+Innerversion=V100R001C11B771
+compatible_version=[V100R001C22],[V100R001C23],[V100R001C25],[V100R001C10],[V100R001C11]
+compatible_version_fw=[7.0.0,8.9.9]
+package_version=25.7.rc1.b086
+root@ubuntu162:/home/z30086261# 
