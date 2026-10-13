@@ -1,4 +1,12 @@
-/home/s00958582/miniforge3/bin/conda-pack -p /home/s00958582/miniforge3/envs/opentile -o ~/opentile.tar.gz
+root@ubuntu162:/home/z30086261/tmp# /home/s00958582/miniforge3/bin/conda-pack -p /home/s00958582/miniforge3/envs/opentile -o ~/opentile.tar.gz
 mkdir -p ~/opentile && tar -xzf ~/opentile.tar.gz -C ~/opentile
 source ~/opentile/bin/activate && conda-unpack
 ~/opentile/bin/python -c "import triton.backends.opentile; print('OK')"
+bash: /home/s00958582/miniforge3/bin/conda-pack: No such file or directory
+tar (child): /root/opentile.tar.gz: Cannot open: No such file or directory
+tar (child): Error is not recoverable: exiting now
+tar: Child returned status 2
+tar: Error is not recoverable: exiting now
+bash: /root/opentile/bin/activate: No such file or directory
+bash: /root/opentile/bin/python: No such file or directory
+root@ubuntu162:/home/z30086261/tmp# 
