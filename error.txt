@@ -1,58 +1,19 @@
-root@ubuntu162:/home/z30086261/tmp# echo "=== 1) 精确路径 ==="
-find /home /data -maxdepth 14 -type d -path '*/triton/backends/opentile' 2>/dev/null
+W=/home/z00957040/pack/triton_ascend-3.6.0+dev20260818221400-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+echo "=== dist 名 ==="
+unzip -l "$W" | grep 'dist-info/METADATA'
+echo "=== 顶层包目录 ==="
+unzip -l "$W" | awk '{print $4}' | grep -oE '^[^/]+/' | sort -u | head -20
+echo "=== 有没有 opentile 后端 ==="
+unzip -l "$W" | grep -iE 'opentile|backends/' | head -30
 
-echo "=== 2) 所有 triton 安装（dist-info）==="
-find /home /data -maxdepth 14 -type d -name 'triton-*.dist-info' 2>/dev/null | head -20
 
-echo "=== 3) 找 whl ==="
-find /home /data -maxdepth 14 -iname '*.whl' 2>/dev/null | grep -i triton | head -20
 
-echo "=== 4) 两个可疑目录 ==="
-ls -l /home/y00897153/opentile | head -30
-ls -l /home/test_triton | head -30
 
-echo "=== 5) triton_lwd.tar 内容 ==="
-tar -tf /home/triton_lwd.tar 2>/dev/null | head -40
-=== 1) 精确路径 ===
-=== 2) 所有 triton 安装（dist-info）===
-/home/g00946757/tilelang-deepseek/.ci-venv/lib/python3.11/site-packages/triton-3.7.1.dist-info
-/home/s00958582/miniforge3/envs/opentile/lib/python3.12/site-packages/triton-3.8.0.dist-info
-/home/h00932613/tilelang-ori/.ci-venv/lib/python3.11/site-packages/triton-3.7.1.dist-info
-=== 3) 找 whl ===
-/home/test_triton/triton_ascend-3.6.0+dev20260814215900-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
-/home/z00957040/pack/triton_ascend-3.6.0+dev20260818221400-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
-/home/y00897153/triton_ascend-3.2.2-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
-=== 4) 两个可疑目录 ===
-total 569064
-drwxr-xr-x 2 root root      4096 Aug 18 22:08 test_nd2nz_assemble
--rw-r--r-- 1 root root 342270504 Aug 18 22:10 tile-opt
--rw-r--r-- 1 root root 240439168 Aug 18 22:09 tile-translate
-total 285168
-drwxr-xr-x 10 root root      4096 Aug 17 19:51 test_res
-drwxr-xr-x  9 root root      4096 Jul 29 11:58 triton-ops-master
--rw-r--r--  1 root root    358028 Aug 17 17:05 triton-ops-master.zip
--rw-r--r--  1 root root 291635281 Aug 17 17:05 triton_ascend-3.6.0+dev20260814215900-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
-=== 5) triton_lwd.tar 内容 ===
-645ffbca8839aab04758225df2a4bf0c279755a152c0c5512cd348d185d15feb/
-645ffbca8839aab04758225df2a4bf0c279755a152c0c5512cd348d185d15feb/VERSION
-645ffbca8839aab04758225df2a4bf0c279755a152c0c5512cd348d185d15feb/json
-645ffbca8839aab04758225df2a4bf0c279755a152c0c5512cd348d185d15feb/layer.tar
-a16cd871a8c3ec75a0ee46a726c62cafb89811655bcbdf9535e478d298787989/
-a16cd871a8c3ec75a0ee46a726c62cafb89811655bcbdf9535e478d298787989/VERSION
-a16cd871a8c3ec75a0ee46a726c62cafb89811655bcbdf9535e478d298787989/json
-a16cd871a8c3ec75a0ee46a726c62cafb89811655bcbdf9535e478d298787989/layer.tar
-b2cc2b6353f40bb4270713707af44861e2c722a36ee26abfb7a8de0a4ae02f99/
-b2cc2b6353f40bb4270713707af44861e2c722a36ee26abfb7a8de0a4ae02f99/VERSION
-b2cc2b6353f40bb4270713707af44861e2c722a36ee26abfb7a8de0a4ae02f99/json
-b2cc2b6353f40bb4270713707af44861e2c722a36ee26abfb7a8de0a4ae02f99/layer.tar
-b2e2cafab265fcc739889799e5b391569df1d9cb0ba10c38d6e4ef2a85d5ee9a.json
-d7144429cac780ec0eb19ad0907e16c0045eac2f5071b0152dc2012e8760c86b/
-d7144429cac780ec0eb19ad0907e16c0045eac2f5071b0152dc2012e8760c86b/VERSION
-d7144429cac780ec0eb19ad0907e16c0045eac2f5071b0152dc2012e8760c86b/json
-d7144429cac780ec0eb19ad0907e16c0045eac2f5071b0152dc2012e8760c86b/layer.tar
-e125cf226893265e337fcbecaca2ba87bcb7f047bb376b949a9376894771ab60/
-e125cf226893265e337fcbecaca2ba87bcb7f047bb376b949a9376894771ab60/VERSION
-e125cf226893265e337fcbecaca2ba87bcb7f047bb376b949a9376894771ab60/json
-e125cf226893265e337fcbecaca2ba87bcb7f047bb376b949a9376894771ab60/layer.tar
-manifest.json
-root@ubuntu162:/home/z30086261/tmp# 
+find /home /data -maxdepth 14 -iname '*opentile*.whl' 2>/dev/null | head
+find /home /data -maxdepth 14 -iname 'triton*opentile*' 2>/dev/null | head
+
+
+
+pip uninstall -y triton triton-ascend triton-opentile
+pip install /home/z00957040/pack/triton_ascend-3.6.0+dev20260818221400-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+python -c "import triton.backends.opentile; print('OK')"
