@@ -1,4 +1,4 @@
-echo "=== A) 定位 set_env.sh（全盘）==="
+root@ubuntu162:/home/z30086261# echo "=== A) 定位 set_env.sh（全盘）==="
 find /usr/local/Ascend -name 'set_env.sh' 2>/dev/null
 find / -maxdepth 7 -name 'set_env.sh' 2>/dev/null | grep -v '^/proc'
 find / -maxdepth 7 -name 'setenv*' 2>/dev/null | grep -v '^/proc'
@@ -16,3 +16,88 @@ echo "=== D) 运行时库是否可加载（验证真正的刚需）==="
 find /usr/local/Ascend -name 'libascendcl.so' 2>/dev/null | head
 find /usr/local/Ascend -name 'libruntime.so'  2>/dev/null | head
 ldd $(find /usr/local/Ascend -name 'libascendcl.so' 2>/dev/null | head -1) 2>/dev/null | grep 'not found'
+=== A) 定位 set_env.sh（全盘）===
+/data/pri/Ascend/9.1.0.B095/ascend-toolkit/set_env.sh
+/data/pri/Ascend/9.1.0.B095/cann-9.1.0/set_env.sh
+/home/g00946757/bisheng-827/set_env.sh
+/home/g00946757/bisheng_mmap/cann/set_env.sh
+/home/s00958582/miniforge3/Ascend/ascend-toolkit/set_env.sh
+/home/CANN/9.2.0.weekly.20260909/ascend-toolkit/set_env.sh
+/home/CANN/9.2.0.weekly.20260909/cann-9.2.0/tools/msmemscope/set_env.sh
+/home/CANN/9.2.0.weekly.20260909/cann-9.2.0/set_env.sh
+/home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/tools/msmemscope/set_env.sh
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/set_env.sh
+/home/CANN/toolbox/26.1.0/script/set_env.sh
+/home/CANN/toolbox/set_env.sh
+/home/CANN/9.2.0-beta.1/ascend-toolkit/set_env.sh
+/home/CANN/9.2.0-beta.1/cann-9.2.0/tools/msmemscope/set_env.sh
+/home/CANN/9.2.0-beta.1/cann-9.2.0/set_env.sh
+/home/CANN/9.2.0-beta.1/cann-9.2.0-beta.1/tools/msmemscope/set_env.sh
+/home/CANN/9.2.0-beta.1/cann-9.2.0-beta.1/set_env.sh
+/home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
+/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/msmemscope/set_env.sh
+/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
+/home/CANN/9.1.0-beta.3/ascend-toolkit/set_env.sh
+/home/CANN/9.1.0-beta.3/cann-9.1.0-beta.3/tools/msmemscope/set_env.sh
+/home/CANN/9.1.0-beta.3/cann-9.1.0-beta.3/set_env.sh
+/data/dependency_file/data/setenv.bash
+/usr/share/man/man3/setenv.3.gz
+/usr/local/Ascend/8.3.RC1/compiler/bin/setenv.csh
+/usr/local/Ascend/8.3.RC1/compiler/bin/setenv.fish
+/usr/local/Ascend/8.3.RC1/compiler/bin/setenv.bash
+/usr/local/Ascend/8.3.RC1/runtime/bin/setenv.csh
+/usr/local/Ascend/8.3.RC1/runtime/bin/setenv.fish
+/usr/local/Ascend/8.3.RC1/runtime/bin/setenv.bash
+/usr/local/Ascend/8.3.RC1/hccl/bin/setenv.csh
+/usr/local/Ascend/8.3.RC1/hccl/bin/setenv.fish
+/usr/local/Ascend/8.3.RC1/hccl/bin/setenv.bash
+/usr/local/Ascend/8.3.RC1/x86_64-linux/bin/setenv.csh
+/usr/local/Ascend/8.3.RC1/x86_64-linux/bin/setenv.fish
+/usr/local/Ascend/8.3.RC1/x86_64-linux/bin/setenv.bash
+/usr/local/Ascend/driver/bin/setenv.bash
+/usr/local/Ascend/latest/x86_64-linux/bin/setenv.csh
+/usr/local/Ascend/latest/x86_64-linux/bin/setenv.fish
+/usr/local/Ascend/latest/x86_64-linux/bin/setenv.bash
+/usr/local/Ascend/8.5.0/bisheng_toolkit/setenv.bash
+/usr/local/Ascend/8.2.RC1.alpha002/bisheng_toolkit/setenv.bash
+/home/g00946757/bisheng-827/x86_64-linux/bin/setenv.bash
+/home/g00946757/bisheng_mmap/cann/x86_64-linux/bin/setenv.bash
+/home/d00957057/setenv
+/home/z00957040/setenv
+/home/CANN/9.2.0.weekly.20260909/cann-9.2.0/x86_64-linux/bin/setenv.bash
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/bin/setenv.bash
+/home/CANN/9.2.0-beta.1/cann-9.2.0/x86_64-linux/bin/setenv.bash
+/home/CANN/9.2.0-beta.1/cann-9.2.0-beta.1/x86_64-linux/bin/setenv.bash
+/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/x86_64-linux/bin/setenv.bash
+/home/CANN/9.1.0-beta.3/cann-9.1.0-beta.3/x86_64-linux/bin/setenv.bash
+=== B) 是谁设置的这些变量 ===
+/root/.bashrc
+=== C) latest 到底指向哪个版本 ===
+total 8
+drwxr-xr-x 14 root root 4096 Sep 10  2025 8.3.RC1
+drwxr-xr-x  6 root root 4096 Sep 10  2025 latest
+/usr/local/Ascend/ascend-toolkit/latest
+acllib  compiler   hccl     opp         platform.ini               runtime  var
+atc     conf       include  opp_kernel  python                     toolkit  version.cfg
+bin     fwkacllib  lib64    ops         remove_latest_softlink.sh  tools    x86_64-linux
+ascend_install.info  ascendc  bin  inc  lib64  scene.info  script  toolchain  tools  version.info
+=== D) 运行时库是否可加载（验证真正的刚需）===
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64/libascendcl.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64/stub/libascendcl.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64/stub/linux/x86_64/libascendcl.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64/stub/linux/aarch64/libascendcl.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/lib64/libascendcl.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/devlib/libascendcl.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/devlib/linux/x86_64/libascendcl.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/devlib/linux/aarch64/libascendcl.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/atc/lib64/libascendcl.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/fwkacllib/lib64/libascendcl.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64/libruntime.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/x86_64-linux/lib64/libruntime.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/atc/lib64/libruntime.so
+/usr/local/Ascend/ascend-toolkit/8.3.RC1/fwkacllib/lib64/libruntime.so
+/usr/local/Ascend/ascend-toolkit/latest/x86_64-linux/lib64/libruntime.so
+/usr/local/Ascend/8.3.RC1/runtime/lib64/libruntime.so
+/usr/local/Ascend/8.3.RC1/x86_64-linux/lib64/libruntime.so
+/usr/local/Ascend/latest/x86_64-linux/lib64/libruntime.so
