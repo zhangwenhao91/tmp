@@ -1,12 +1,19 @@
-root@ubuntu162:/home/z30086261/tmp# /home/s00958582/miniforge3/bin/conda-pack -p /home/s00958582/miniforge3/envs/opentile -o ~/opentile.tar.gz
-mkdir -p ~/opentile && tar -xzf ~/opentile.tar.gz -C ~/opentile
-source ~/opentile/bin/activate && conda-unpack
-~/opentile/bin/python -c "import triton.backends.opentile; print('OK')"
-bash: /home/s00958582/miniforge3/bin/conda-pack: No such file or directory
-tar (child): /root/opentile.tar.gz: Cannot open: No such file or directory
-tar (child): Error is not recoverable: exiting now
-tar: Child returned status 2
-tar: Error is not recoverable: exiting now
-bash: /root/opentile/bin/activate: No such file or directory
-bash: /root/opentile/bin/python: No such file or directory
-root@ubuntu162:/home/z30086261/tmp# 
+# ===== A) 原地探测（最关键，先跑这三行）=====
+P=/home/s00958582/miniforge3/envs/opentile/bin/python
+$P -V
+$P -c "import triton, triton.backends.opentile; print('OPENTILE OK', triton.__file__)"
+$P -c "import torch, torch_npu; print('torch', torch.__version__, 'torch_npu', torch_npu.__version__)"
+
+# ===== 顺便找 conda-pack / conda_pack 模块 =====
+find /home/s00958582/miniforge3 -maxdepth 4 -name 'conda-pack*' 2>/dev/null | head
+/home/s00958582/miniforge3/envs/opentile/bin/python -m conda_pack --version 2>&1 | tail -1
+
+
+
+
+export TILELANG_PYTHON=/home/s00958582/miniforge3/envs/opentile/bin/python
+
+
+
+cp -a /home/s00958582/miniforge3/envs/opentile /home/z30086261/opentile
+/home/z30086261/opentile/bin/python -c "import triton.backends.opentile; print('OK')"
