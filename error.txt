@@ -1,13 +1,90 @@
-root@localhost:/home/zwh/tmp/print_api_kernels# ./build_print.sh 
-OK: device kernel = _Z12print_kernelPviPN3cce8internal15DebugTunnelDataE_mix_aiv
--- [host] ccec 编译 print_host.cce 并内嵌 6_print.o
-bisheng: error: unable to make temporary file: No such file or directory
-FAIL: host 编译/链接
-root@localhost:/home/zwh/tmp/print_api_kernels# ./run_on_npu.sh 
-ERROR: ./print_host 不存在，请先执行 ./build_print.sh
-root@localhost:/home/zwh/tmp/print_api_kernels# ./build_print.sh 
-OK: device kernel = _Z12print_kernelPviPN3cce8internal15DebugTunnelDataE_mix_aiv
--- [host] ccec 编译 print_host.cce 并内嵌 6_print.o
-bisheng: error: unable to make temporary file: No such file or directory
-FAIL: host 编译/链接
-root@localhost:/home/zwh/tmp/print_api_kernels# 
+(base) root@ubuntu162:~# ll
+total 468
+drwx------ 78 root root 24576 Oct 13 11:27 ./
+drwxr-xr-x 27 root root  4096 Sep 21 19:10 ../
+drwxr-xr-x  2 root root  4096 Jul 22 16:24 .anaconda/
+drwxr-x---  4 root root  4096 Jul 22 21:07 ascend/
+dr-x------  2 root root  4096 Jul  9 14:39 ascend_check/
+-rw-------  1 root root 62587 Oct 13 11:19 .bash_history
+-rw-r--r--  1 root root  3953 Sep 10 19:19 .bashrc
+drwx------ 17 root root  4096 Sep 10 20:07 .cache/
+drwxr-xr-x  3 root root  4096 Aug 13 21:51 .cmake/
+drwxr-xr-x  3 root root  4096 Aug 19 14:53 .codegraph/
+drwxr-xr-x  4 root root  4096 Sep  9 15:24 .codemate/
+drwxr-xr-x  3 root root  4096 Jul 22 16:24 .conda/
+-rw-r--r--  1 root root   213 Aug 17 19:28 .condarc
+drwx------  6 root root  4096 Sep  9 15:24 .config/
+drwxr-xr-x  3 root root  4096 Aug  8 14:32 Desktop/
+drwx------  3 root root  4096 Sep  3 15:55 extra-info/
+-rw-r--r--  1 root root   114 Oct 13 10:23 .gitconfig
+-rw-------  1 root root    57 Oct 13 11:27 .git-credentials
+drwx------  2 root root  4096 Sep  2 17:43 .gnupg/
+drwxr-xr-x  3 root root  4096 Jul 23 16:11 .java/
+drwxr-xr-x  4 root root  4096 Jul 30 11:18 .local/
+drwxr-xr-x  3 root root  4096 Jul  9 14:38 log/
+drwxr-xr-x 18 root root  4096 Jul 22 16:23 miniconda3/
+drwxr-xr-x  3 root root  4096 Jul 23 16:23 .nuget/
+drwxr-xr-x  4 root root  4096 Aug 19 14:53 .opencode/
+drwxr-x---  3 root root  4096 Sep  3 15:55 OPPROF_20260903155456_GLKWRQJFRBFKOEOJ/
+drwxr-x---  3 root root  4096 Sep  3 15:55 OPPROF_20260903155522_RPJAXCCNMNUHKPHD/
+drwxr-x---  3 root root  4096 Sep  3 15:56 OPPROF_20260903155617_LPLDSSPTFVITRCMZ/
+drwxr-x---  2 root root  4096 Sep  3 16:11 OPPROF_20260903161130_WBKAQHNVSLFVAGMI/
+drwxr-x---  3 root root  4096 Sep  3 16:23 OPPROF_20260903162306_MSZDIMVMLHEEKPVZ/
+drwxr-x---  3 root root  4096 Sep  3 16:24 OPPROF_20260903162358_IVMSBANQTTBIEQXG/
+drwxr-x---  3 root root  4096 Sep  3 16:25 OPPROF_20260903162510_UZURJLUIHDSYSIDN/
+drwxr-x---  3 root root  4096 Sep  3 16:25 OPPROF_20260903162528_UZIPLQKGMIROCZBF/
+drwxr-x---  3 root root  4096 Sep  3 16:26 OPPROF_20260903162557_CHLRMWGHYLDYHKWI/
+drwxr-x---  3 root root  4096 Sep  3 16:29 OPPROF_20260903162838_VWPRMEDFQPTYEJHB/
+drwxr-x---  3 root root  4096 Sep  3 16:29 OPPROF_20260903162910_HYEJTNXAHSPZCOTJ/
+drwxr-x---  3 root root  4096 Sep  3 16:30 OPPROF_20260903162943_KDKVFXUEMPJEUVSX/
+drwxr-x---  3 root root  4096 Sep  3 16:30 OPPROF_20260903163026_KTJTEXDOCCGCEPIF/
+drwxr-x---  2 root root  4096 Sep  3 16:33 OPPROF_20260903163324_UOCFREAKLQOZGKKU/
+drwxr-x---  3 root root  4096 Sep  3 16:37 OPPROF_20260903163339_AJNGVMPOJQKZWUDQ/
+drwxr-x---  3 root root  4096 Sep  3 19:41 OPPROF_20260903193744_TDUPAUSKUTRJONAR/
+drwxr-x---  3 root root  4096 Sep  3 19:48 OPPROF_20260903194516_KVFDWIRKOSKEOOZG/
+drwxr-x---  3 root root  4096 Sep  3 19:59 OPPROF_20260903195603_SRZBSJLUUMONOQNZ/
+drwxr-x---  3 root root  4096 Sep  3 20:16 OPPROF_20260903201230_HLRCFJSAZVVMOPCZ/
+drwxr-x---  3 root root  4096 Sep  3 20:28 OPPROF_20260903202430_UCRXQDMTLFECUBWY/
+drwxr-x---  3 root root  4096 Sep  3 20:48 OPPROF_20260903204529_HUTMDAQSAGSADMIK/
+drwxr-x---  3 root root  4096 Sep  3 20:52 OPPROF_20260903204835_IRDTNHPLCVNLIEDN/
+drwxr-x---  3 root root  4096 Sep  3 21:06 OPPROF_20260903210612_WWMQDFEDNDWEVREQ/
+drwxr-x---  3 root root  4096 Sep  3 21:08 OPPROF_20260903210735_KHXJYUUBMTFLJZXE/
+drwxr-x---  3 root root  4096 Sep  3 21:08 OPPROF_20260903210824_RYSSVXNGRTTFJRCN/
+drwxr-x---  3 root root  4096 Sep  3 21:09 OPPROF_20260903210929_RHENTSABBBYQQCEP/
+drwxr-x---  3 root root  4096 Sep  3 21:10 OPPROF_20260903210956_YNNBCGALWGHAJGWI/
+drwxr-x---  3 root root  4096 Sep  3 21:11 OPPROF_20260903211036_YHEJMSCMOLSTPPFR/
+drwxr-x---  3 root root  4096 Sep  3 21:11 OPPROF_20260903211134_GOAXQMHMNJZQYPWO/
+drwxr-x---  3 root root  4096 Sep  3 21:16 OPPROF_20260903211223_INNPXILQZCKZXCJC/
+drwxr-x---  3 root root  4096 Sep  4 09:38 OPPROF_20260904093639_WESIAZCOGOFZWUNB/
+drwxr-x---  3 root root  4096 Sep  4 09:54 OPPROF_20260904094954_ONXYWYVIIOJLZTNT/
+drwxr-x---  3 root root  4096 Sep  4 16:39 OPPROF_20260904163544_GBLPYGQSKNLYOGIQ/
+drwxr-x---  3 root root  4096 Sep  4 16:46 OPPROF_20260904164227_NKUUAUKCTSXMAORY/
+drwxr-x---  3 root root  4096 Sep  4 17:05 OPPROF_20260904170539_WZXAPJCIKJTMTNHU/
+drwxr-x---  3 root root  4096 Sep  4 17:07 OPPROF_20260904170644_QFOHDRRMYIEVCZQB/
+drwxr-x---  3 root root  4096 Sep  4 17:07 OPPROF_20260904170738_ZKGHRMHWKYAQTBET/
+drwxr-x---  3 root root  4096 Sep  4 17:08 OPPROF_20260904170801_MFXAMIJUBOQXCWLV/
+drwxr-x---  3 root root  4096 Sep  4 17:08 OPPROF_20260904170835_SYDIDHTHSMWURWIW/
+drwxr-x---  3 root root  4096 Sep  4 17:09 OPPROF_20260904170909_BWMIFRXUISIAKZZQ/
+drwxr-x---  3 root root  4096 Sep  4 17:10 OPPROF_20260904170941_HPFNXPHYRXOGEYWG/
+drwxr-x---  3 root root  4096 Sep  4 17:18 OPPROF_20260904171457_HNDVVDRQBYVZJZEC/
+drwxr-x---  3 root root  4096 Sep  5 16:12 OPPROF_20260905160840_FVIMUIUANAMGMVGW/
+drwxr-x---  2 root root  4096 Sep  8 17:54 OPPROF_20260908175408_UFWBQCCSGDOYEUYO/
+drwxr-x---  3 root root  4096 Sep  8 17:57 OPPROF_20260908175444_IWNAFPJITCELDNNQ/
+drwxr-x---  2 root root  4096 Sep 23 17:17 OPPROF_20260923171712_RHMQITGXQNKYWLUS/
+drwxr-xr-x  2 root root  4096 Sep 10 16:30 .pkl_memoize_py3/
+-rw-r--r--  1 root root   161 Dec  5  2019 .profile
+drwxr-xr-x  3 root root  4096 Aug 22 15:10 .pypto/
+-rw-------  1 root root  5368 Sep 23 15:41 .python_history
+drwxr-xr-x  5 root root  4096 Oct 13 11:43 .remotedev-server/
+drwxr-xr-x  3 root root  4096 Aug  8 16:12 setenv/
+drwx------  3 root root  4096 Jul  9 11:55 snap/
+drwx------  3 root root  4096 Sep 16 21:06 .ssh/
+drwxr-xr-x  3 root root  4096 Sep 29 14:26 .tilelang/
+drwxr-xr-x  2 root root  4096 Aug 22 15:10 torchinductor_root/
+drwxr-xr-x  3 root root  4096 Jul 29 15:04 .triton/
+drwxr-xr-x  2 root root  4096 Sep 10 08:08 .tvm_test_data/
+drwxr-xr-x  2 root root  4096 Aug 20 20:37 .vim/
+-rw-------  1 root root 29278 Oct 12 17:07 .viminfo
+-rw-r--r--  1 root root   221 Oct  9 12:49 .wget-hsts
+drwxr-xr-x  3 root root  4096 Jul 30 21:23 .whitzard/
+-rw-------  1 root root  1100 Oct 12 17:04 .Xauthority
