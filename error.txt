@@ -1,8 +1,7 @@
-export ASCEND_RT_VISIBLE_DEVICES=4     # 4、5、6 任一，1 号别用（别人在跑）
-python -c "import torch, torch_npu; x=torch.tensor([1.0,2.0],device='npu'); print('alloc ok:', x.cpu().tolist())"
-
-
-export ASCEND_RT_VISIBLE_DEVICES=4
-cd /home/z30086261/tmp/reduce_api_kernels
-python verify_precision.py reduce_sum shared float16 32 128 \
-  KERNEL_PATH=...   # 需先装 triton-opentile
+(base) root@ubuntu162:~# export ASCEND_RT_VISIBLE_DEVICES=4     # 4、5、6 任一，1 号别用（别人在跑）
+(base) root@ubuntu162:~# python -c "import torch, torch_npu; x=torch.tensor([1.0,2.0],device='npu'); print('alloc ok:', x.cpu().tolist())"
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import torch, torch_npu; x=torch.tensor([1.0,2.0],device='npu'); print('alloc ok:', x.cpu().tolist())
+    ^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'torch'
