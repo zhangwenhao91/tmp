@@ -1,23 +1,25 @@
-grep -rn 'ascend-toolkit\|ASCEND_HOME_PATH' /root/.bashrc /etc/profile.d/ /etc/bash.bashrc /etc/profile 2>/dev/null
+echo "=== 1) 找安装包（whl/tar.gz/zip）==="
+find /home /data /root /opt /usr/local /tmp -iname '*triton*' \
+     $ -name '*.whl' -o -name '*.tar.gz' -o -name '*.tgz' -o -name '*.zip' $ 2>/dev/null | head -50
+
+echo "=== 2) 找已经装好的 opentile 后端（可能是别的 python/conda 环境）==="
+find / -maxdepth 9 -type d -name 'opentile' 2>/dev/null | head -20
+
+echo "=== 3) pip 缓存 ==="
+pip cache dir 2>/dev/null
+pip cache list 2>/dev/null | grep -i triton
+find /root/.cache/pip -type f -iname '*triton*' 2>/dev/null | head
+
+echo "=== 4) conda 环境 ==="
+conda env list 2>/dev/null
+ls -d /opt/conda/envs/* /root/miniconda3/envs/* 2>/dev/null
+
+echo "=== 5) 目录/构建线索 ==="
+ls /home /data 2>/dev/null
+find /home /data -maxdepth 3 -iname 'Dockerfile*' 2>/dev/null | head
 
 
 
-echo 'source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh' > /etc/profile.d/99-cann.sh
-# 新开 shell 验证
-echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"    # 期望指向 9.3.0.weekly.20260930
 
-
-
-pip uninstall -y triton triton-ascend triton-opentile
-#   从云盘链接下载指定版本（无法脚本化，需手动下）
-pip install /path/to/<下载下来的 triton-opentile 包>
-python -c "import triton.backends.opentile; print('opentile OK')"
-
-
-
-cd /home/z30086261/tmp
-python misc/patch_installed_kernel_path.py
-
-
-
-bash misc/env_check.sh --e2e
+docker images | grep -iE 'triton|pipeline'
+docker history triton_op_pipeline:v1.0 --no-trunc | head -40   # 能看到构建时装了什么
