@@ -1,1 +1,12 @@
-ls -l /dev/ | grep -iE 'davinci|devmm|svm|hdc|drv'
+root@ubuntu162:/home/z30086261/tmp# ls -l /dev/ | grep -iE 'davinci|devmm|svm|hdc|drv'
+crw-rw----   1  114     118 235,   0 Oct 13 15:35 davinci0
+crw-rw----   1  114     118 235,   1 Oct 13 15:35 davinci1
+crw-rw----   1  114     118 235,   2 Oct 13 15:35 davinci2
+crw-rw----   1  114     118 235,   3 Oct 13 15:35 davinci3
+crw-rw----   1  114     118 235,   4 Oct 13 15:35 davinci4
+crw-rw----   1  114     118 235,   5 Oct 13 15:35 davinci5
+crw-rw----   1  114     118 235,   6 Oct 13 15:35 davinci6
+crw-rw----   1  114     118 235,   7 Oct 13 15:35 davinci7
+crw-rw----   1  114     118 236,   0 Oct 13 15:35 davinci_manager
+crw-rw----   1  114     118 234,   0 Oct 13 15:35 hisi_hdc
+root@ubuntu162:/home/z30086261/tmp# 
