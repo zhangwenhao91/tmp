@@ -1,77 +1,50 @@
-补丁脚本自带一个 verify() ，我把它并进来。下面这整段 直接复制粘贴 即可（跑在你要用来做验证的那个 shell 里）。
-
-```
-echo "===== 1) 解释器 ====="
-which python python3
-python -c "import sys; print('python:', sys.executable, sys.version.split()[0])"
+root@ubuntu162:/home/z30086261# echo "===== 1) 解释器 ====="
+which python python3
+python -c "import sys; print('python:', sys.executable, sys.version.split()[0])"
 
 echo
-echo "===== 2) torch / torch_npu ====="
-python - <<'PY'
-import torch
-print("torch:", torch.__version__)
+echo "===== 2) torch / torch_npu ====="
+python - <<'PY'
+import torch
+print("torch:", torch.__version__)
 try:
-    import torch_npu
-    print("torch_npu:", torch_npu.__version__)
-    n = torch.npu.device_count()
-    print("npu device_count:", n)
-    if n > 0:
-        x = torch.ones(4, device="npu")
-        print("npu smoke:", (x + 1).sum().item(), "(expect 8.0)")
-except Exception as e:
-    print("torch_npu FAIL:", type(e).__name__, e)
+    import torch_npu
+    print("torch_npu:", torch_npu.__version__)
+    n = torch.npu.device_count()
+    print("npu device_count:", n)
+    if n > 0:
+        x = torch.ones(4, device="npu")
+        print("npu smoke:", (x + 1).sum().item(), "(expect 8.0)")
+except Exception as e:
+    print("torch_npu FAIL:", type(e).__name__, e)
 PY
 
 echo
-echo "===== 3) triton / triton-opentile ====="
-python - <<'PY'
+echo "===== 3) triton / triton-opentile ====="
+python - <<'PY'
 try:
-    import triton
-    print("triton:", triton.__version__)
-    print("triton file:", triton.__file__)
-    from triton.backends.opentile.conf import OpenTileEnvConf
-    from triton.backends.opentile.targets.ascend.compiler import 
-    OpenTileNPUOptions, make_npubin
-    print("opentile: import OK")
-except Exception as e:
-    print("triton-opentile FAIL:", type(e).__name__, e)
-    raise SystemExit(1)
+    import triton
+    print("triton:", triton.__version__)
+    print("triton file:", triton.__file__)
+    from triton.backends.opentile.conf import OpenTileEnvConf
+    from triton.backends.opentile.targets.ascend.compiler import 
+    OpenTileNPUOptions, make_npubin
+    print("opentile: import OK")
+except Exception as e:
+    print("triton-opentile FAIL:", type(e).__name__, e)
+    raise SystemExit(1)
 PY
 
-echo
-echo "===== 4) KERNEL_PATH 补丁是否生效 ====="
-python - <<'PY'
-from triton.backends.opentile.conf import OpenTileEnvConf
-from triton.backends.opentile.targets.ascend.compiler import OpenTileNPUOptions, 
-make_npubin
-ok = all([
-    callable(getattr(OpenTileEnvConf, "kernel_path", None)),
-    callable(getattr(OpenTileEnvConf, "kernel_cv_mode", None)),
-    "kernel_path" in getattr(OpenTileNPUOptions, "__dataclass_fields__", {}),
-    "if opt.kernel_path" in open(make_npubin.__code__.co_filename).read(),
-])
-print("KERNEL_PATH patch:", "verified" if ok else "NOT applied -> run: python misc/
-patch_installed_kernel_path.py")
-PY
-```
-## 判读
-- 2) 要看到 torch_npu: x.y.z + npu device_count: >=1 + npu smoke: 8.0 。少了说明 torch_npu 没装/没注册。
-- 3) 要看到 opentile: import OK 。报 No module named 'triton.backends.opentile' 说明装的是普通 triton 或 triton-ascend， 不是 triton-opentile 。
-- 4) 必须 verified 。若是 NOT applied ，就在 同一个解释器 下跑：
-  ```
-  python misc/patch_installed_kernel_path.py
-  ``` （补丁脚本自己会打印 KERNEL_PATH patch verified ，等价。）
-## 再加一步端到端（最有说服力）
-前三步都绿了，就直接跑一个现成 .o ，能出 PASS 才算真通：
+PYtch_installed_kernel_path.py")ified" if ok else "NOT applied -> run: python misc/
+bash: $'echo\302\240=====\302\2401)\302\240\350\247\243\351\207\212\345\231\250\302\240=====': command not found
+bash: $'which\302\240python\302\240python3': command not found
+bash: $'python\302\240-c\302\240import\302\240sys;\302\240print(\'python:\',\302\240sys.executable,\302\240sys.version.split()[0])': command not found
 
-```
-cd /home/z30086261/tmp/reduce_api_kernels
-KERNEL_PATH="$PWD/reduce_sum/6_reduce_sum_shared_float16_32x128.o" \
-  python verify_precision.py reduce_sum shared float16 32 128
-```
-期望输出： [PASS] reduce_sum/shared/float16/32x128  diff=...  kernel=...
+bash: echo ===== 2) torch / torch_npu =====: No such file or directory
+bash: $'python\302\240-\302\240': command not found
 
-## 两个可能的坑（提前说）
-- import torch_npu 缺失 ： verify_precision.py 里只 import torch ，没有 import torch_npu 。如果上面第 2 步 smoke 通过、但端到端报 npu device not found ，就在脚本顶部加一行 import torch_npu （或在环境里 export 时让它被 import）。第 2 步之所以先 import torch_npu ，就是为了确认这项。
-- 端到端用的 python 必须是第 3/4 步的那个解释器； run_on_npu.sh 默认走 python3 ，必要时 export TILELANG_PYTHON=$(which python) 。
-把输出贴回来（或照旧放 error.txt ），有红的地方我给它修。
+bash: echo ===== 3) triton / triton-opentile =====: No such file or directory
+bash: $'python\302\240-\302\240': command not found
+
+bash: $'echo\302\240=====\302\2404)\302\240KERNEL_PATH\302\240\350\241\245\344\270\201\346\230\257\345\220\246\347\224\237\346\225\210\302\240=====': command not found
+bash: $'python\302\240-\302\240': command not found
