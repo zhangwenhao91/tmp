@@ -1,4 +1,4 @@
-echo "=== 1) 找安装包（whl/tar.gz/zip）==="
+root@ubuntu162:/home/z30086261/tmp# echo "=== 1) 找安装包（whl/tar.gz/zip）==="
 find /home /data /root /opt /usr/local /tmp -iname '*triton*' \
      $ -name '*.whl' -o -name '*.tar.gz' -o -name '*.tgz' -o -name '*.zip' $ 2>/dev/null | head -50
 
@@ -17,9 +17,36 @@ ls -d /opt/conda/envs/* /root/miniconda3/envs/* 2>/dev/null
 echo "=== 5) 目录/构建线索 ==="
 ls /home /data 2>/dev/null
 find /home /data -maxdepth 3 -iname 'Dockerfile*' 2>/dev/null | head
+=== 1) 找安装包（whl/tar.gz/zip）===
+=== 2) 找已经装好的 opentile 后端（可能是别的 python/conda 环境）===
+/home/s00958582/OpenTile/tilelang-tileir-ascend/tilelang/opentile
+/home/s00958582/miniforge3/envs/opentile
+/home/y00897153/opentile
+/home/y00897153/tilelang-tileir-ascend/tilelang/opentile
+=== 3) pip 缓存 ===
+/root/.cache/pip
+=== 4) conda 环境 ===
+=== 5) 目录/构建线索 ===
+/data:
+PytorchFile  RecModelZoo.tar.gz  aliccp_out.tar.gz  bert-torch-fp32      criteo         dependency_file      docker              docker_image  hstu3B.bin  precision      pri                  resnet50-torch-fp32.tar  set_proxy_huawei.bash  taobao_data.tar         txGR_norab.bin
+RecModelZoo  aliccp_out          autotest           bert-torch-fp32.tar  criteo.tar.gz  dependency_file.tar  docker-18.09.0.tgz  hstu.bin      hstu7B.bin  precision.tar  resnet50-torch-fp32  set_proxy.bash           taobao_data            triton_op_pipeline.tar  txGR_rab.bin
+
+/home:
+CANN  DeepSeek  HwHiAiUser  d00957057  g00946757  h00932613  j00992656  s00958582  test1  test_triton  triton_lwd.tar  w00987212  y00897153  z00910011  z00957040  z30086261
+root@ubuntu162:/home/z30086261/tmp# 
 
 
 
 
-docker images | grep -iE 'triton|pipeline'
-docker history triton_op_pipeline:v1.0 --no-trunc | head -40   # 能看到构建时装了什么
+
+
+(base) root@ubuntu162:~# docker images | grep -iE 'triton|pipeline'
+triton_op_pipeline                                                          v1.0                                        b2e2cafab265        8 months ago        33.7GB
+(base) root@ubuntu162:~# docker history triton_op_pipeline:v1.0 --no-trunc | head -40
+IMAGE                                                                     CREATED             CREATED BY          SIZE                COMMENT
+sha256:b2e2cafab265fcc739889799e5b391569df1d9cb0ba10c38d6e4ef2a85d5ee9a   8 months ago        /bin/bash           1.27GB              
+<missing>                                                                 12 months ago       /bin/bash           4.48GB              
+<missing>                                                                 12 months ago       /bin/bash           252MB               
+<missing>                                                                 12 months ago       /bin/bash           6.28GB              
+<missing>                                                                 13 months ago                           21.4GB              Imported from -
+(base) root@ubuntu162:~# 
