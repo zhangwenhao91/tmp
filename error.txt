@@ -1,35 +1,14 @@
-(base) root@ubuntu162:~# docker stop z30086261 && docker rm z30086261
-z30086261
-z30086261
-(base) root@ubuntu162:~# docker run -u 0 -dit --name=z30086261 --net=host --privileged=true \
->   --shm-size=300g --ulimit memlock=150000000000:150000000000 \
->   -e ASCEND_RT_VISIBLE_DEVICES=4 \
->   -v /data:/data -v /home:/home -v /root/.ssh:/root/.ssh \
->   -v /usr/local/Ascend/driver/:/usr/local/Ascend/driver/ \
->   -v /etc/ascend_install.info:/etc/ascend_install.info \
->   triton_op_pipeline:v1.0 /bin/bash
-ca3fcdd848290407f5e9947000261f8654d3e802db26ac8ea2c3dfb1f5b119df
-(base) root@ubuntu162:~# docker exec -it z30086261 bash
-root@ubuntu162:/# echo "VISIBLE=$ASCEND_RT_VISIBLE_DEVICES"
-VISIBLE=4
-root@ubuntu162:/# python -c "import torch, torch_npu; print('count:', torch.npu.device_count()); x=torch.tensor([1.0],device='npu'); print('alloc ok:', x.cpu().tolist())"
-count: 1
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-RuntimeError: LazyInitialize:torch_npu/csrc/core/npu/sys_ctrl/npu_sys_ctrl.cpp:243 NPU function error: c10_npu::acl::AclrtSetOpExecuteTimeOut(kMaxOpExecuteTimeOut), error code is 507001
-[ERROR] 2026-10-13-17:35:00 (PID:399, Device:0, RankID:-1) ERR00100 PTA call acl api failed
-[Error]: An internal error occurs in the task scheduler module on the device. 
-        Rectify the fault based on the error information in the ascend log.
-EE9999: Inner Error!
-EE9999: [PID: 399] 2026-10-13-17:35:00.087.133 Task execute failed, device_id=4, stream_id=0, task_id=0, flip_num=0, task_type=83.[FUNC:GetError][FILE:stream.cc][LINE:1183]
-        TraceBack (most recent call last):
-       stream_id=0 failed to synchronize retCode=0x7150062.[FUNC:SetTimeoutConfigTaskSubmitDavid][FILE:stream_c.cc][LINE:814]
-       Failed to exe SetTimeoutConfigTaskSubmit, retCode=0x7150062.[FUNC:SetTimeoutConfig][FILE:runtime.cc][LINE:5275]
-       rtSetOpExecuteTimeOut execute failed, reason=[tsfw unknown error][FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:53]
-       set op execute timeout failed, runtime result = 507001[FUNC:ReportCallError][FILE:log_inner.cpp][LINE:162]
+for c in 5 6; do
+  export ASCEND_RT_VISIBLE_DEVICES=$c
+  echo "===== card $c ====="
+  python -c "import torch, torch_npu; x=torch.tensor([1.0],device='npu'); print('ok', x.cpu().tolist())" 2>&1 | tail -3
+done
 
 
+find /home/CANN/9.3.0.weekly.20260930 /home/CANN/9.2.0.weekly.20260909 -maxdepth 3 -name 'set_env.sh'
 
 
-
-^C
+source /home/CANN/9.3.0.weekly.20260930/<...>/set_env.sh   # ← 换成上一步找到的真实路径
+echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"
+export ASCEND_RT_VISIBLE_DEVICES=4
+python -c "import torch, torch_npu; x=torch.tensor([1.0],device='npu'); print('ok', x.cpu().tolist())"
