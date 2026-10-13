@@ -8,14 +8,24 @@
 #
 # 覆盖的 8 个算子: reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax
 #                  reduce_bitand reduce_bitor reduce_bitxor
-# 形态（由 0_<op>.py 产出的 1_<op>_<form>_tilelangir.mlir 决定）:
-#   frag    SimdVF 内 frag->frag（vreduce 路线；位运算无 frag 原语，故 bit* 无 frag 形态）
-#   shared  SimdVF 内 shared->shared（T.reduce 宏经 fragment 中转）
-#   thread  线程域内 shared->shared（translator 自动把 reduce 岛包进 simd scope）
-# sum/max/min/abssum/absmax 有 frag+shared+thread 三形态；bitand/bitor/bitxor 有 shared+thread 两形态。
 #
-# 仓内产物约定：0_*.py 是 DSL 源；1_*_tilelangir.mlir 是降级输入；6_*.o 是 run_on_npu.sh 的输入。
-# 这三类入库；2_/3_/4_/5_ 是可重生成的中间产物，已在 .gitignore 中忽略。
+# 覆盖矩阵（由 _dsl.py 的 MATRIX x SHAPES 决定，5 个浮点/整型算子共 610 个用例）:
+#   形态 x dtype（每形态 x 每 dtype 各跑 SHAPES 里的 10 组 M,K）:
+#     sum    frag/shared/thread x {f16, bf16, f32, i32}
+#     max    frag/shared/thread x {f16, f32, i8, i16, i32}
+#     min    frag/shared/thread x {f16, f32, i8, i16, i32}
+#     abssum frag x {f16, bf16, f32, i32}; shared/thread x {f16, bf16, f32}
+#     absmax frag x {f16, f32, i8, i16, i32}; shared/thread x {f16, f32}
+#   SHAPES = (16,64)(16,128)(32,64)(32,128)(32,256)(64,128)(64,256)(64,512)(128,256)(128,512)
+#   形态含义:
+#     frag    SimdVF 内 frag->frag（vreduce 路线；位运算无 frag 原语，故 bit* 无 frag 形态）
+#     shared  SimdVF 内 shared->shared（T.reduce 宏经 fragment 中转）
+#     thread  线程域内 shared->shared（translator 自动把 reduce 岛包进 simd scope）
+#   bitand/bitor/bitxor 有 shared+thread 两形态（当前无法出 .o，见下“已知缺口”）。
+#
+# 仓内产物约定：0_*.py + _dsl.py 是 DSL 源；1_<op>_<form>_<dtype>_<M>x<K>_tilelangir.mlir
+# 是降级输入；6_<...>.o 是 run_on_npu.sh 的输入。这三类入库；
+# 2_/3_/4_/5_ 与 *.norm.mlir 是可重生成的中间产物，已在 .gitignore 中忽略。
 #
 # 工具解析顺序（环境变量 > 本地绝对路径 > PATH 上的裸名），因此在本机与 NPU 机都能跑：
 #   TILE_OPT        默认 /home/zwh/work/tilelang-toolchain/build/bin/tile-opt      否则 PATH 上 tile-opt
@@ -46,7 +56,15 @@
 #      位运算 combiner（arith.andi/ori/xori -> npu.reduce andi/ori/xori，
 #      identity 分别为全 1/0/0）。缺失时 stage1 报 reduce combiner 不受支持。
 #
-# 已知缺口（bit reduce 未打通到底）：
+# 已知缺口 A（未纳入矩阵的组合，均为后端能力限制，本仓无法绕过）：
+#   - f64/i64：位宽 > 32，工具链整体不支持（dtype 约束为位宽 <=32 且非 i1）。
+#   - i8/i16 的 sum：CCE 缺 vcadd.s 类半字/字节横向累加，sum 无法出 .o。
+#   - bf16 的 max/min/absmax：CCE 缺 bf16 的 vcmax/vcmin，横向极值不可用。
+#   - abssum/absmax 的 int shared/thread 形态：producer 在 linalg.reduce 校验处
+#     abort（"unsupported non numeric type"），stage0 即无法产出。
+#   - bitand/bitor/bitxor 的 frag 形态：SimdVF 无位归约 vreduce 原语。
+#
+# 已知缺口 B（bit reduce 未打通到底）：
 #   translator 与 TilelangToNPU 已能正确产出 npu.reduce<andi/ori/xori>，stage1~stage4 全通；
 #   但 NpuToCCE 的 VectorValueLowering::lowerReduce 对位运算没有 horizontalName，
 #   会退化为逐元素 splat 路径（16 行 x 127 次 = 2032 个 cce.vand），stage5 ccec 因

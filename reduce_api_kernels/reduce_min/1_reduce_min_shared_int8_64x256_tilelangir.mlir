@@ -1,0 +1,51 @@
+module {
+  func.func @reduce_min_shared_kernel(%arg0: memref<?xi8>, %arg1: memref<?xi8>, %arg2: i32) attributes {BlockIdx = 2 : i64} {
+    %reinterpret_cast = memref.reinterpret_cast %arg0 to offset: [0], sizes: [64, 256], strides: [256, 1] : memref<?xi8> to memref<64x256xi8, strided<[256, 1]>>
+    %reinterpret_cast_0 = memref.reinterpret_cast %arg1 to offset: [0], sizes: [64], strides: [1] : memref<?xi8> to memref<64xi8, strided<[1]>>
+    %alloc = memref.alloc() : memref<4096xi8, 1>
+    %c0 = arith.constant 0 : index
+    %view = memref.view %alloc[%c0][] : memref<4096xi8, 1> to memref<16x256xi8, 1>
+    %alloc_1 = memref.alloc() : memref<16xi8, 1>
+    %c0_2 = arith.constant 0 : index
+    %view_3 = memref.view %alloc_1[%c0_2][] : memref<16xi8, 1> to memref<16xi8, 1>
+    %c0_i32 = arith.constant 0 : i32
+    %0 = arith.index_cast %c0_i32 : i32 to index
+    %c16_i32 = arith.constant 16 : i32
+    %1 = arith.muli %arg2, %c16_i32 : i32
+    %2 = arith.index_cast %1 : i32 to index
+    %c256 = arith.constant 256 : index
+    %3 = arith.muli %2, %c256 : index
+    %4 = arith.addi %0, %3 : index
+    %c0_i32_4 = arith.constant 0 : i32
+    %5 = arith.index_cast %c0_i32_4 : i32 to index
+    %c1 = arith.constant 1 : index
+    %6 = arith.muli %5, %c1 : index
+    %7 = arith.addi %4, %6 : index
+    %reinterpret_cast_5 = memref.reinterpret_cast %reinterpret_cast to offset: [%7], sizes: [16, 256], strides: [256, 1] : memref<64x256xi8, strided<[256, 1]>> to memref<16x256xi8, strided<[256, 1], offset: ?>>
+    "tilelang.copy"(%reinterpret_cast_5, %view) : (memref<16x256xi8, strided<[256, 1], offset: ?>>, memref<16x256xi8, 1>) -> ()
+    "tilelang.scope"() ({
+      %alloc_10 = memref.alloc() : memref<16x256xi8, 2>
+      %alloc_11 = memref.alloc() : memref<16xi8, 2>
+      "tilelang.copy"(%view, %alloc_10) : (memref<16x256xi8, 1>, memref<16x256xi8, 2>) -> ()
+      %c127_i8 = arith.constant 127 : i8
+      linalg.fill ins(%c127_i8 : i8) outs(%alloc_11 : memref<16xi8, 2>)
+      linalg.reduce ins(%alloc_10 : memref<16x256xi8, 2>) outs(%alloc_11 : memref<16xi8, 2>) dimensions = [1] 
+        (%in: i8, %init: i8) {
+          %13 = arith.minsi %in, %init : i8
+          linalg.yield %13 : i8
+        }
+      "tilelang.copy"(%alloc_11, %view_3) : (memref<16xi8, 2>, memref<16xi8, 1>) -> ()
+    }) {mode = #tilelang.scope_mode<simd>} : () -> ()
+    %c0_i32_6 = arith.constant 0 : i32
+    %8 = arith.index_cast %c0_i32_6 : i32 to index
+    %c16_i32_7 = arith.constant 16 : i32
+    %9 = arith.muli %arg2, %c16_i32_7 : i32
+    %10 = arith.index_cast %9 : i32 to index
+    %c1_8 = arith.constant 1 : index
+    %11 = arith.muli %10, %c1_8 : index
+    %12 = arith.addi %8, %11 : index
+    %reinterpret_cast_9 = memref.reinterpret_cast %reinterpret_cast_0 to offset: [%12], sizes: [16], strides: [1] : memref<64xi8, strided<[1]>> to memref<16xi8, strided<[1], offset: ?>>
+    "tilelang.copy"(%view_3, %reinterpret_cast_9) : (memref<16xi8, 1>, memref<16xi8, strided<[1], offset: ?>>) -> ()
+    return
+  }
+}
