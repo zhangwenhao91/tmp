@@ -1,2 +1,14 @@
-ls -l /dev/devmm_svm
-ls -l /dev/ | grep -iE 'davinci|devmm|svm|hdc'
+(base) root@ubuntu162:~# ls -l /dev/devmm_svm
+ls: cannot access '/dev/devmm_svm': No such file or directory
+(base) root@ubuntu162:~# ls -l /dev/ | grep -iE 'davinci|devmm|svm|hdc'
+crw-rw----   1 HwHiAiUser HwHiAiUser 235,   0 Oct  4 10:16 davinci0
+crw-rw----   1 HwHiAiUser HwHiAiUser 235,   1 Oct  4 10:16 davinci1
+crw-rw----   1 HwHiAiUser HwHiAiUser 235,   2 Oct  4 10:16 davinci2
+crw-rw----   1 HwHiAiUser HwHiAiUser 235,   3 Oct  4 10:16 davinci3
+crw-rw----   1 HwHiAiUser HwHiAiUser 235,   4 Oct  4 10:16 davinci4
+crw-rw----   1 HwHiAiUser HwHiAiUser 235,   5 Oct  4 10:16 davinci5
+crw-rw----   1 HwHiAiUser HwHiAiUser 235,   6 Oct  4 10:16 davinci6
+crw-rw----   1 HwHiAiUser HwHiAiUser 235,   7 Oct  4 10:16 davinci7
+crw-rw----   1 HwHiAiUser HwHiAiUser 236,   0 Oct  4 10:16 davinci_manager
+crw-rw----   1 HwHiAiUser HwHiAiUser 234,   0 Oct  4 10:16 hisi_hdc
+(base) root@ubuntu162:~# 
