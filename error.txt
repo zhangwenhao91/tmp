@@ -1,50 +1,69 @@
-root@ubuntu162:/home/z30086261# echo "===== 1) 解释器 ====="
-which python python3
-python -c "import sys; print('python:', sys.executable, sys.version.split()[0])"
+root@ubuntu162:/home/z30086261/tmp# git pull
+remote: Enumerating objects: 28, done.
+remote: Counting objects: 100% (28/28), done.
+remote: Compressing objects: 100% (23/23), done.
+remote: Total 25 (delta 11), reused 4 (delta 2), pack-reused 0 (from 0)
+Unpacking objects: 100% (25/25), 13.51 KiB | 76.00 KiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   a2f388c..80e4817  main       -> origin/main
+Updating a2f388c..80e4817
+Fast-forward
+ error.txt         | 140 ++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------------------------------------------------------
+ misc/env_check.sh | 116 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 166 insertions(+), 90 deletions(-)
+ create mode 100755 misc/env_check.sh
+root@ubuntu162:/home/z30086261/tmp# bash misc/env_check.sh --e2e
 
-echo
-echo "===== 2) torch / torch_npu ====="
-python - <<'PY'
-import torch
-print("torch:", torch.__version__)
-try:
-    import torch_npu
-    print("torch_npu:", torch_npu.__version__)
-    n = torch.npu.device_count()
-    print("npu device_count:", n)
-    if n > 0:
-        x = torch.ones(4, device="npu")
-        print("npu smoke:", (x + 1).sum().item(), "(expect 8.0)")
-except Exception as e:
-    print("torch_npu FAIL:", type(e).__name__, e)
-PY
+===== 1) 解释器 =====
+python: /usr/bin/python 3.11.0
 
-echo
-echo "===== 3) triton / triton-opentile ====="
-python - <<'PY'
-try:
-    import triton
-    print("triton:", triton.__version__)
-    print("triton file:", triton.__file__)
-    from triton.backends.opentile.conf import OpenTileEnvConf
-    from triton.backends.opentile.targets.ascend.compiler import 
-    OpenTileNPUOptions, make_npubin
-    print("opentile: import OK")
-except Exception as e:
-    print("triton-opentile FAIL:", type(e).__name__, e)
-    raise SystemExit(1)
-PY
+===== 2) torch / torch_npu =====
+torch: 2.7.1+cpu
+torch_npu: 2.7.1.post3.dev20260129
+npu device_count: 1
+FAIL npu smoke: RuntimeError Current device only support aclnn operator, and current operator ones do not support internal format.
+[ERROR] 2026-10-13-16:17:53 (PID:721, Device:0, RankID:-1) ERR00007 PTA feature not supported
 
-PYtch_installed_kernel_path.py")ified" if ok else "NOT applied -> run: python misc/
-bash: $'echo\302\240=====\302\2401)\302\240\350\247\243\351\207\212\345\231\250\302\240=====': command not found
-bash: $'which\302\240python\302\240python3': command not found
-bash: $'python\302\240-c\302\240import\302\240sys;\302\240print(\'python:\',\302\240sys.executable,\302\240sys.version.split()[0])': command not found
+===== 3) triton / triton-opentile =====
+triton: 3.2.0
+triton: /usr/local/python3.11.0/lib/python3.11/site-packages/triton/__init__.py
+FAIL triton-opentile: ModuleNotFoundError No module named 'triton.backends.opentile'
 
-bash: echo ===== 2) torch / torch_npu =====: No such file or directory
-bash: $'python\302\240-\302\240': command not found
+===== 4) KERNEL_PATH 补丁是否生效 =====
+FAIL import opentile: ModuleNotFoundError No module named 'triton.backends.opentile'
 
-bash: echo ===== 3) triton / triton-opentile =====: No such file or directory
-bash: $'python\302\240-\302\240': command not found
+===== 5) 端到端：跑一个 .o =====
+Traceback (most recent call last):
+  File "/home/z30086261/tmp/reduce_api_kernels/verify_precision.py", line 284, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/z30086261/tmp/reduce_api_kernels/verify_precision.py", line 252, in main
+    a = make_input(op, dtype, M, K)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z30086261/tmp/reduce_api_kernels/verify_precision.py", line 239, in make_input
+    base = torch.randn((M, K), device="npu", dtype=torch.float32)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: LazySetDevice:torch_npu/csrc/core/npu/NPUFunctions.cpp:327 NPU function error: err, error code is 507033
+[ERROR] 2026-10-13-16:17:58 (PID:930, Device:0, RankID:-1) ERR00100 PTA call acl api failed
+[Error]: Failed to start the device. 
+        Rectify the fault based on the error information in the ascend log.
+EE1001: [PID: 930] 2026-10-13-16:17:58.470.594 The argument is invalid.Reason: rtGetDevMsg execute failed, reason=[context pointer null]
+        Solution: 1.Check the input parameter range of the function. 2.Check the function invocation relationship.
+        TraceBack (most recent call last):
+        TsdOpen failed. devId=7, tdt error=34[FUNC:PrintfTsdError][FILE:runtime.cc][LINE:3108]
+        Check param failed, dev can not be NULL![FUNC:DeviceRetain][FILE:runtime.cc][LINE:3975]
+        Check param failed, dev can not be NULL![FUNC:PrimaryContextRetain][FILE:runtime.cc][LINE:3631]
+        Check param failed, ctx can not be NULL![FUNC:PrimaryContextRetain][FILE:runtime.cc][LINE:3662]
+        Check param failed, context can not be null.[FUNC:NewDevice][FILE:api_impl.cc][LINE:3183]
+        New device failed, retCode=0x7010006[FUNC:SetDevice][FILE:api_impl.cc][LINE:3207]
+        rtSetDevice execute failed, reason=[device retain error][FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:53]
+        open device 0 failed, runtime result = 507033.[FUNC:ReportCallError][FILE:log_inner.cpp][LINE:162]
+        ctx is NULL![FUNC:GetDevErrMsg][FILE:api_impl_david.cc][LINE:779]
+        The argument is invalid.Reason: rtGetDevMsg execute failed, reason=[context pointer null]
+        ctx is NULL![FUNC:CheckCurCtxValid][FILE:api_impl.cc][LINE:216]
+        The argument is invalid.Reason: rtGetFaultEvent execute failed, reason=[context pointer null]
 
-bash: $'echo\302\240=====\302\2404)\302\240KERNEL_PATH\302\240\350\241\245\344\270\201\346\230\257\345\220\246\347\224\237\346\225\210\302\240=====': command not found
-bash: $'python\302\240-\302\240': command not found
+  (若报 'npu device not found'：verify_precision.py 缺 import torch_npu，可在其顶部补一行)
+
+SOME CHECKS FAILED (see above)
+root@ubuntu162:/home/z30086261/tmp# 
