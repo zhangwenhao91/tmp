@@ -1,42 +1,19 @@
-root@ubuntu162:/home/z30086261/tmp# unset ASCEND_RT_VISIBLE_DEVICES
-unset ASCEND_VISIBLE_DEVICES
+echo "=== 驱动 ==="
+cat /usr/local/Ascend/driver/version.info
+echo "=== 设备节点 ==="
+ls -l /dev/davinci* /dev/devmm_svm /dev/hisi_hdc 2>/dev/null | head
+echo "=== 机器上所有 CANN 版本 ==="
+ls -d /data/*/Ascend/*/ascend-toolkit 2>/dev/null
+ls -d /home/CANN/*/ 2>/dev/null
+ls -d /usr/local/Ascend/ascend-toolkit/*/ 2>/dev/null
+echo "=== 是否容器 ==="
+[ -f /.dockerenv ] && echo "IN DOCKER" || echo "not docker"
+
+
+
+source /data/pri/Ascend/9.1.0.B095/ascend-toolkit/set_env.sh     # ← 换成实际存在的 9.x 路径
 python - <<'PY'
 import torch, torch_npu
-print("count:", torch.npu.device_count())
-for i in range(torch.npu.device_count()):
-    print(i, torch.npu.get_device_name(i))
 x = torch.tensor([1.0, 2.0], device="npu")
 print("alloc ok:", x.cpu().tolist())
 PY
-count: 8
-0 Ascend950PR_9579
-1 Ascend950PR_9579
-2 Ascend950PR_9579
-3 Ascend950PR_9579
-4 Ascend950PR_9579
-5 Ascend950PR_9579
-6 Ascend950PR_9579
-7 Ascend950PR_9579
-Traceback (most recent call last):
-  File "<stdin>", line 5, in <module>
-RuntimeError: LazySetDevice:torch_npu/csrc/core/npu/NPUFunctions.cpp:327 NPU function error: err, error code is 507033
-[ERROR] 2026-10-13-16:30:47 (PID:1553, Device:0, RankID:-1) ERR00100 PTA call acl api failed
-[Error]: Failed to start the device. 
-        Rectify the fault based on the error information in the ascend log.
-EE1001: [PID: 1553] 2026-10-13-16:30:47.369.794 The argument is invalid.Reason: rtGetDevMsg execute failed, reason=[context pointer null]
-        Solution: 1.Check the input parameter range of the function. 2.Check the function invocation relationship.
-        TraceBack (most recent call last):
-        TsdOpen failed. devId=0, tdt error=34[FUNC:PrintfTsdError][FILE:runtime.cc][LINE:3108]
-        Check param failed, dev can not be NULL![FUNC:DeviceRetain][FILE:runtime.cc][LINE:3975]
-        Check param failed, dev can not be NULL![FUNC:PrimaryContextRetain][FILE:runtime.cc][LINE:3631]
-        Check param failed, ctx can not be NULL![FUNC:PrimaryContextRetain][FILE:runtime.cc][LINE:3662]
-        Check param failed, context can not be null.[FUNC:NewDevice][FILE:api_impl.cc][LINE:3183]
-        New device failed, retCode=0x7010006[FUNC:SetDevice][FILE:api_impl.cc][LINE:3207]
-        rtSetDevice execute failed, reason=[device retain error][FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:53]
-        open device 0 failed, runtime result = 507033.[FUNC:ReportCallError][FILE:log_inner.cpp][LINE:162]
-        ctx is NULL![FUNC:GetDevErrMsg][FILE:api_impl_david.cc][LINE:779]
-        The argument is invalid.Reason: rtGetDevMsg execute failed, reason=[context pointer null]
-        ctx is NULL![FUNC:CheckCurCtxValid][FILE:api_impl.cc][LINE:216]
-        The argument is invalid.Reason: rtGetFaultEvent execute failed, reason=[context pointer null]
-
-root@ubuntu162:/home/z30086261/tmp# 
