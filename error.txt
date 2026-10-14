@@ -1,7 +1,180 @@
-L=/home/z30086261/reduce_all.log
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# L=/home/z30086261/reduce_all.log
 echo "=== PASS 组合计数（op/form/dtype） ==="
 grep PASS "$L" | awk '{print $2}' | cut -d/ -f1-3 | sort | uniq -c
 echo "=== FAIL 组合计数 ==="
 grep FAIL "$L" | awk '{print $2}' | cut -d/ -f1-3 | sort | uniq -c
 echo "=== reduce_max 目录下的 .o ==="
 ls /home/z30086261/tmp/reduce_api_kernels/reduce_max/
+=== PASS 组合计数（op/form/dtype） ===
+     10 reduce_max/frag/float16
+     10 reduce_max/frag/float32
+     10 reduce_max/frag/int16
+     10 reduce_max/frag/int32
+     10 reduce_sum/frag/bfloat16
+     10 reduce_sum/frag/float16
+     10 reduce_sum/frag/float32
+     10 reduce_sum/frag/int32
+     10 reduce_sum/shared/bfloat16
+     10 reduce_sum/shared/float16
+     10 reduce_sum/shared/float32
+     10 reduce_sum/shared/int32
+     10 reduce_sum/thread/bfloat16
+     10 reduce_sum/thread/float16
+     10 reduce_sum/thread/float32
+     10 reduce_sum/thread/int32
+=== FAIL 组合计数 ===
+     10 reduce_max/frag/int8
+     17 reduce_max/shared/float16
+=== reduce_max 目录下的 .o ===
+0_reduce_max.py                                      6_reduce_max_frag_float16_128x256.o
+1_reduce_max_frag_float16_128x256_tilelangir.mlir    6_reduce_max_frag_float16_128x512.o
+1_reduce_max_frag_float16_128x512_tilelangir.mlir    6_reduce_max_frag_float16_16x128.o
+1_reduce_max_frag_float16_16x128_tilelangir.mlir     6_reduce_max_frag_float16_16x64.o
+1_reduce_max_frag_float16_16x64_tilelangir.mlir      6_reduce_max_frag_float16_32x128.o
+1_reduce_max_frag_float16_32x128_tilelangir.mlir     6_reduce_max_frag_float16_32x256.o
+1_reduce_max_frag_float16_32x256_tilelangir.mlir     6_reduce_max_frag_float16_32x64.o
+1_reduce_max_frag_float16_32x64_tilelangir.mlir      6_reduce_max_frag_float16_64x128.o
+1_reduce_max_frag_float16_64x128_tilelangir.mlir     6_reduce_max_frag_float16_64x256.o
+1_reduce_max_frag_float16_64x256_tilelangir.mlir     6_reduce_max_frag_float16_64x512.o
+1_reduce_max_frag_float16_64x512_tilelangir.mlir     6_reduce_max_frag_float32_128x256.o
+1_reduce_max_frag_float32_128x256_tilelangir.mlir    6_reduce_max_frag_float32_128x512.o
+1_reduce_max_frag_float32_128x512_tilelangir.mlir    6_reduce_max_frag_float32_16x128.o
+1_reduce_max_frag_float32_16x128_tilelangir.mlir     6_reduce_max_frag_float32_16x64.o
+1_reduce_max_frag_float32_16x64_tilelangir.mlir      6_reduce_max_frag_float32_32x128.o
+1_reduce_max_frag_float32_32x128_tilelangir.mlir     6_reduce_max_frag_float32_32x256.o
+1_reduce_max_frag_float32_32x256_tilelangir.mlir     6_reduce_max_frag_float32_32x64.o
+1_reduce_max_frag_float32_32x64_tilelangir.mlir      6_reduce_max_frag_float32_64x128.o
+1_reduce_max_frag_float32_64x128_tilelangir.mlir     6_reduce_max_frag_float32_64x256.o
+1_reduce_max_frag_float32_64x256_tilelangir.mlir     6_reduce_max_frag_float32_64x512.o
+1_reduce_max_frag_float32_64x512_tilelangir.mlir     6_reduce_max_frag_int16_128x256.o
+1_reduce_max_frag_int16_128x256_tilelangir.mlir      6_reduce_max_frag_int16_128x512.o
+1_reduce_max_frag_int16_128x512_tilelangir.mlir      6_reduce_max_frag_int16_16x128.o
+1_reduce_max_frag_int16_16x128_tilelangir.mlir       6_reduce_max_frag_int16_16x64.o
+1_reduce_max_frag_int16_16x64_tilelangir.mlir        6_reduce_max_frag_int16_32x128.o
+1_reduce_max_frag_int16_32x128_tilelangir.mlir       6_reduce_max_frag_int16_32x256.o
+1_reduce_max_frag_int16_32x256_tilelangir.mlir       6_reduce_max_frag_int16_32x64.o
+1_reduce_max_frag_int16_32x64_tilelangir.mlir        6_reduce_max_frag_int16_64x128.o
+1_reduce_max_frag_int16_64x128_tilelangir.mlir       6_reduce_max_frag_int16_64x256.o
+1_reduce_max_frag_int16_64x256_tilelangir.mlir       6_reduce_max_frag_int16_64x512.o
+1_reduce_max_frag_int16_64x512_tilelangir.mlir       6_reduce_max_frag_int32_128x256.o
+1_reduce_max_frag_int32_128x256_tilelangir.mlir      6_reduce_max_frag_int32_128x512.o
+1_reduce_max_frag_int32_128x512_tilelangir.mlir      6_reduce_max_frag_int32_16x128.o
+1_reduce_max_frag_int32_16x128_tilelangir.mlir       6_reduce_max_frag_int32_16x64.o
+1_reduce_max_frag_int32_16x64_tilelangir.mlir        6_reduce_max_frag_int32_32x128.o
+1_reduce_max_frag_int32_32x128_tilelangir.mlir       6_reduce_max_frag_int32_32x256.o
+1_reduce_max_frag_int32_32x256_tilelangir.mlir       6_reduce_max_frag_int32_32x64.o
+1_reduce_max_frag_int32_32x64_tilelangir.mlir        6_reduce_max_frag_int32_64x128.o
+1_reduce_max_frag_int32_64x128_tilelangir.mlir       6_reduce_max_frag_int32_64x256.o
+1_reduce_max_frag_int32_64x256_tilelangir.mlir       6_reduce_max_frag_int32_64x512.o
+1_reduce_max_frag_int32_64x512_tilelangir.mlir       6_reduce_max_frag_int8_128x256.o
+1_reduce_max_frag_int8_128x256_tilelangir.mlir       6_reduce_max_frag_int8_128x512.o
+1_reduce_max_frag_int8_128x512_tilelangir.mlir       6_reduce_max_frag_int8_16x128.o
+1_reduce_max_frag_int8_16x128_tilelangir.mlir        6_reduce_max_frag_int8_16x64.o
+1_reduce_max_frag_int8_16x64_tilelangir.mlir         6_reduce_max_frag_int8_32x128.o
+1_reduce_max_frag_int8_32x128_tilelangir.mlir        6_reduce_max_frag_int8_32x256.o
+1_reduce_max_frag_int8_32x256_tilelangir.mlir        6_reduce_max_frag_int8_32x64.o
+1_reduce_max_frag_int8_32x64_tilelangir.mlir         6_reduce_max_frag_int8_64x128.o
+1_reduce_max_frag_int8_64x128_tilelangir.mlir        6_reduce_max_frag_int8_64x256.o
+1_reduce_max_frag_int8_64x256_tilelangir.mlir        6_reduce_max_frag_int8_64x512.o
+1_reduce_max_frag_int8_64x512_tilelangir.mlir        6_reduce_max_shared_float16_128x256.o
+1_reduce_max_shared_float16_128x256_tilelangir.mlir  6_reduce_max_shared_float16_128x512.o
+1_reduce_max_shared_float16_128x512_tilelangir.mlir  6_reduce_max_shared_float16_16x128.o
+1_reduce_max_shared_float16_16x128_tilelangir.mlir   6_reduce_max_shared_float16_16x64.o
+1_reduce_max_shared_float16_16x64_tilelangir.mlir    6_reduce_max_shared_float16_32x128.o
+1_reduce_max_shared_float16_32x128_tilelangir.mlir   6_reduce_max_shared_float16_32x256.o
+1_reduce_max_shared_float16_32x256_tilelangir.mlir   6_reduce_max_shared_float16_32x64.o
+1_reduce_max_shared_float16_32x64_tilelangir.mlir    6_reduce_max_shared_float16_64x128.o
+1_reduce_max_shared_float16_64x128_tilelangir.mlir   6_reduce_max_shared_float16_64x256.o
+1_reduce_max_shared_float16_64x256_tilelangir.mlir   6_reduce_max_shared_float16_64x512.o
+1_reduce_max_shared_float16_64x512_tilelangir.mlir   6_reduce_max_shared_float32_128x256.o
+1_reduce_max_shared_float32_128x256_tilelangir.mlir  6_reduce_max_shared_float32_128x512.o
+1_reduce_max_shared_float32_128x512_tilelangir.mlir  6_reduce_max_shared_float32_16x128.o
+1_reduce_max_shared_float32_16x128_tilelangir.mlir   6_reduce_max_shared_float32_16x64.o
+1_reduce_max_shared_float32_16x64_tilelangir.mlir    6_reduce_max_shared_float32_32x128.o
+1_reduce_max_shared_float32_32x128_tilelangir.mlir   6_reduce_max_shared_float32_32x256.o
+1_reduce_max_shared_float32_32x256_tilelangir.mlir   6_reduce_max_shared_float32_32x64.o
+1_reduce_max_shared_float32_32x64_tilelangir.mlir    6_reduce_max_shared_float32_64x128.o
+1_reduce_max_shared_float32_64x128_tilelangir.mlir   6_reduce_max_shared_float32_64x256.o
+1_reduce_max_shared_float32_64x256_tilelangir.mlir   6_reduce_max_shared_float32_64x512.o
+1_reduce_max_shared_float32_64x512_tilelangir.mlir   6_reduce_max_shared_int16_128x256.o
+1_reduce_max_shared_int16_128x256_tilelangir.mlir    6_reduce_max_shared_int16_128x512.o
+1_reduce_max_shared_int16_128x512_tilelangir.mlir    6_reduce_max_shared_int16_16x128.o
+1_reduce_max_shared_int16_16x128_tilelangir.mlir     6_reduce_max_shared_int16_16x64.o
+1_reduce_max_shared_int16_16x64_tilelangir.mlir      6_reduce_max_shared_int16_32x128.o
+1_reduce_max_shared_int16_32x128_tilelangir.mlir     6_reduce_max_shared_int16_32x256.o
+1_reduce_max_shared_int16_32x256_tilelangir.mlir     6_reduce_max_shared_int16_32x64.o
+1_reduce_max_shared_int16_32x64_tilelangir.mlir      6_reduce_max_shared_int16_64x128.o
+1_reduce_max_shared_int16_64x128_tilelangir.mlir     6_reduce_max_shared_int16_64x256.o
+1_reduce_max_shared_int16_64x256_tilelangir.mlir     6_reduce_max_shared_int16_64x512.o
+1_reduce_max_shared_int16_64x512_tilelangir.mlir     6_reduce_max_shared_int32_128x256.o
+1_reduce_max_shared_int32_128x256_tilelangir.mlir    6_reduce_max_shared_int32_128x512.o
+1_reduce_max_shared_int32_128x512_tilelangir.mlir    6_reduce_max_shared_int32_16x128.o
+1_reduce_max_shared_int32_16x128_tilelangir.mlir     6_reduce_max_shared_int32_16x64.o
+1_reduce_max_shared_int32_16x64_tilelangir.mlir      6_reduce_max_shared_int32_32x128.o
+1_reduce_max_shared_int32_32x128_tilelangir.mlir     6_reduce_max_shared_int32_32x256.o
+1_reduce_max_shared_int32_32x256_tilelangir.mlir     6_reduce_max_shared_int32_32x64.o
+1_reduce_max_shared_int32_32x64_tilelangir.mlir      6_reduce_max_shared_int32_64x128.o
+1_reduce_max_shared_int32_64x128_tilelangir.mlir     6_reduce_max_shared_int32_64x256.o
+1_reduce_max_shared_int32_64x256_tilelangir.mlir     6_reduce_max_shared_int32_64x512.o
+1_reduce_max_shared_int32_64x512_tilelangir.mlir     6_reduce_max_shared_int8_128x256.o
+1_reduce_max_shared_int8_128x256_tilelangir.mlir     6_reduce_max_shared_int8_128x512.o
+1_reduce_max_shared_int8_128x512_tilelangir.mlir     6_reduce_max_shared_int8_16x128.o
+1_reduce_max_shared_int8_16x128_tilelangir.mlir      6_reduce_max_shared_int8_16x64.o
+1_reduce_max_shared_int8_16x64_tilelangir.mlir       6_reduce_max_shared_int8_32x128.o
+1_reduce_max_shared_int8_32x128_tilelangir.mlir      6_reduce_max_shared_int8_32x256.o
+1_reduce_max_shared_int8_32x256_tilelangir.mlir      6_reduce_max_shared_int8_32x64.o
+1_reduce_max_shared_int8_32x64_tilelangir.mlir       6_reduce_max_shared_int8_64x128.o
+1_reduce_max_shared_int8_64x128_tilelangir.mlir      6_reduce_max_shared_int8_64x256.o
+1_reduce_max_shared_int8_64x256_tilelangir.mlir      6_reduce_max_shared_int8_64x512.o
+1_reduce_max_shared_int8_64x512_tilelangir.mlir      6_reduce_max_thread_float16_128x256.o
+1_reduce_max_thread_float16_128x256_tilelangir.mlir  6_reduce_max_thread_float16_128x512.o
+1_reduce_max_thread_float16_128x512_tilelangir.mlir  6_reduce_max_thread_float16_16x128.o
+1_reduce_max_thread_float16_16x128_tilelangir.mlir   6_reduce_max_thread_float16_16x64.o
+1_reduce_max_thread_float16_16x64_tilelangir.mlir    6_reduce_max_thread_float16_32x128.o
+1_reduce_max_thread_float16_32x128_tilelangir.mlir   6_reduce_max_thread_float16_32x256.o
+1_reduce_max_thread_float16_32x256_tilelangir.mlir   6_reduce_max_thread_float16_32x64.o
+1_reduce_max_thread_float16_32x64_tilelangir.mlir    6_reduce_max_thread_float16_64x128.o
+1_reduce_max_thread_float16_64x128_tilelangir.mlir   6_reduce_max_thread_float16_64x256.o
+1_reduce_max_thread_float16_64x256_tilelangir.mlir   6_reduce_max_thread_float16_64x512.o
+1_reduce_max_thread_float16_64x512_tilelangir.mlir   6_reduce_max_thread_float32_128x256.o
+1_reduce_max_thread_float32_128x256_tilelangir.mlir  6_reduce_max_thread_float32_128x512.o
+1_reduce_max_thread_float32_128x512_tilelangir.mlir  6_reduce_max_thread_float32_16x128.o
+1_reduce_max_thread_float32_16x128_tilelangir.mlir   6_reduce_max_thread_float32_16x64.o
+1_reduce_max_thread_float32_16x64_tilelangir.mlir    6_reduce_max_thread_float32_32x128.o
+1_reduce_max_thread_float32_32x128_tilelangir.mlir   6_reduce_max_thread_float32_32x256.o
+1_reduce_max_thread_float32_32x256_tilelangir.mlir   6_reduce_max_thread_float32_32x64.o
+1_reduce_max_thread_float32_32x64_tilelangir.mlir    6_reduce_max_thread_float32_64x128.o
+1_reduce_max_thread_float32_64x128_tilelangir.mlir   6_reduce_max_thread_float32_64x256.o
+1_reduce_max_thread_float32_64x256_tilelangir.mlir   6_reduce_max_thread_float32_64x512.o
+1_reduce_max_thread_float32_64x512_tilelangir.mlir   6_reduce_max_thread_int16_128x256.o
+1_reduce_max_thread_int16_128x256_tilelangir.mlir    6_reduce_max_thread_int16_128x512.o
+1_reduce_max_thread_int16_128x512_tilelangir.mlir    6_reduce_max_thread_int16_16x128.o
+1_reduce_max_thread_int16_16x128_tilelangir.mlir     6_reduce_max_thread_int16_16x64.o
+1_reduce_max_thread_int16_16x64_tilelangir.mlir      6_reduce_max_thread_int16_32x128.o
+1_reduce_max_thread_int16_32x128_tilelangir.mlir     6_reduce_max_thread_int16_32x256.o
+1_reduce_max_thread_int16_32x256_tilelangir.mlir     6_reduce_max_thread_int16_32x64.o
+1_reduce_max_thread_int16_32x64_tilelangir.mlir      6_reduce_max_thread_int16_64x128.o
+1_reduce_max_thread_int16_64x128_tilelangir.mlir     6_reduce_max_thread_int16_64x256.o
+1_reduce_max_thread_int16_64x256_tilelangir.mlir     6_reduce_max_thread_int16_64x512.o
+1_reduce_max_thread_int16_64x512_tilelangir.mlir     6_reduce_max_thread_int32_128x256.o
+1_reduce_max_thread_int32_128x256_tilelangir.mlir    6_reduce_max_thread_int32_128x512.o
+1_reduce_max_thread_int32_128x512_tilelangir.mlir    6_reduce_max_thread_int32_16x128.o
+1_reduce_max_thread_int32_16x128_tilelangir.mlir     6_reduce_max_thread_int32_16x64.o
+1_reduce_max_thread_int32_16x64_tilelangir.mlir      6_reduce_max_thread_int32_32x128.o
+1_reduce_max_thread_int32_32x128_tilelangir.mlir     6_reduce_max_thread_int32_32x256.o
+1_reduce_max_thread_int32_32x256_tilelangir.mlir     6_reduce_max_thread_int32_32x64.o
+1_reduce_max_thread_int32_32x64_tilelangir.mlir      6_reduce_max_thread_int32_64x128.o
+1_reduce_max_thread_int32_64x128_tilelangir.mlir     6_reduce_max_thread_int32_64x256.o
+1_reduce_max_thread_int32_64x256_tilelangir.mlir     6_reduce_max_thread_int32_64x512.o
+1_reduce_max_thread_int32_64x512_tilelangir.mlir     6_reduce_max_thread_int8_128x256.o
+1_reduce_max_thread_int8_128x256_tilelangir.mlir     6_reduce_max_thread_int8_128x512.o
+1_reduce_max_thread_int8_128x512_tilelangir.mlir     6_reduce_max_thread_int8_16x128.o
+1_reduce_max_thread_int8_16x128_tilelangir.mlir      6_reduce_max_thread_int8_16x64.o
+1_reduce_max_thread_int8_16x64_tilelangir.mlir       6_reduce_max_thread_int8_32x128.o
+1_reduce_max_thread_int8_32x128_tilelangir.mlir      6_reduce_max_thread_int8_32x256.o
+1_reduce_max_thread_int8_32x256_tilelangir.mlir      6_reduce_max_thread_int8_32x64.o
+1_reduce_max_thread_int8_32x64_tilelangir.mlir       6_reduce_max_thread_int8_64x128.o
+1_reduce_max_thread_int8_64x128_tilelangir.mlir      6_reduce_max_thread_int8_64x256.o
+1_reduce_max_thread_int8_64x256_tilelangir.mlir      6_reduce_max_thread_int8_64x512.o
+1_reduce_max_thread_int8_64x512_tilelangir.mlir
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
