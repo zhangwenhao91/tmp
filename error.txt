@@ -1,16 +1,6 @@
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# # 1) CANN 环境（9.3+）
-source /usr/local/Ascend/ascend-toolkit/set_env.sh
-# 2) 选一个可用设备（4/5/6）
-export ASCEND_RT_VISIBLE_DEVICES=4
-# 3) 拉取交接包
-cd ~/tmp && git pull
-# 4) 跑全部 8 例
-TOOLCHAIN=$HOME/OpenTileAS bash opentile_e2e/run_all.sh
-bash: /usr/local/Ascend/ascend-toolkit/set_env.sh: No such file or directory
-bash: cd: /root/tmp: No such file or directory
-bash: opentile_e2e/run_all.sh: No such file or directory
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# source /usr/local/Ascend/ascend-toolkit/set_env.sh
-bash: /usr/local/Ascend/ascend-toolkit/set_env.sh: No such file or directory
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# source /usr/local/Ascend/ascend-toolkit/set_env.sh
-bash: /usr/local/Ascend/ascend-toolkit/set_env.sh: No such file or directory
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+# 找 CANN 的 set_env.sh（常见位置）
+ls /etc/profile.d/ | grep -i -E 'cann|ascend'
+find /usr/local /home /opt -maxdepth 5 -name 'set_env.sh' 2>/dev/null | head
+
+# 确认 tmp 仓根并拉到最新（含 opentile_e2e/）
+cd /home/z30086261/tmp && git rev-parse --show-toplevel && git pull && ls opentile_e2e
