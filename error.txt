@@ -1,24 +1,18 @@
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# cd /home/z30086261/tmp/reduce_api_kernels
-echo "=== bf16 K=512，默认容差 ==="
-KERNEL_PATH=reduce_sum/6_reduce_sum_frag_bfloat16_64x512.o python verify_precision.py reduce_sum frag bfloat16 64 512; echo "exit=$?"
-echo "=== bf16 K=512，ATOL=0.5 ==="
-KERNEL_PATH=reduce_sum/6_reduce_sum_frag_bfloat16_64x512.o ATOL=0.5 python verify_precision.py reduce_sum frag bfloat16 64 512; echo "exit=$?"
-echo "=== fp16 abssum K=512（大真值场景，应仍 PASS） ==="
-KERNEL_PATH=reduce_abssum/6_reduce_abssum_frag_float16_64x512.o python verify_precision.py reduce_abssum frag float16 64 512; echo "exit=$?"
-=== bf16 K=512，默认容差 ===
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_sum/frag/bfloat16/64x512  diff=6.734e-02  kernel=6_reduce_sum_frag_bfloat16_64x512.o
-exit=0
-=== bf16 K=512，ATOL=0.5 ===
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_sum/frag/bfloat16/64x512  diff=6.734e-02  kernel=6_reduce_sum_frag_bfloat16_64x512.o
-exit=0
-=== fp16 abssum K=512（大真值场景，应仍 PASS） ===
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_abssum/6_reduce_abssum_frag_float16_64x512.o (2328 bytes) for kernel 'reduce_abssum_frag_kernel' cv_mode=aiv
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[PASS] reduce_abssum/frag/float16/64x512  diff=3.029e-01  kernel=6_reduce_abssum_frag_float16_64x512.o
-exit=0
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+cd /home/z30086261/tmp && git pull
+
+cd /home/z30086261/tmp/reduce_api_kernels
+source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
+export ASCEND_RT_VISIBLE_DEVICES=4
+export TILELANG_PYTHON=/usr/bin/python
+
+# 全量用例较多，后台跑 + 实时看
+nohup ./run_on_npu.sh > /home/z30086261/reduce_all.log 2>&1 &
+tail -f /home/z30086261/reduce_all.log
+
+
+cd /home/z30086261/tmp/reduce_api_kernels
+tail -3 /home/z30086261/reduce_all.log
+echo "--- FAIL ---"
+grep -n FAIL /home/z30086261/reduce_all.log
+echo "--- SKIP ---"
+grep -n SKIP /home/z30086261/reduce_all.log
