@@ -1,4 +1,5 @@
-echo "===== 0) /home/z30086261 下的包 + 当前解释器 ====="
+(base) root@ubuntu162:/home/z30086261# docker exec -it z30086261 bash
+root@ubuntu162:/# echo "===== 0) /home/z30086261 下的包 + 当前解释器 ====="
 ls -la /home/z30086261/
 echo
 which python pip
@@ -28,3 +29,36 @@ print("opentile: import OK")
 print("conf module:", OpenTileEnvConf.__module__)
 print("compiler file:", make_npubin.__code__.co_filename)
 PY
+===== 0) /home/z30086261 下的包 + 当前解释器 =====
+total 656688
+drwxr-xr-x  3 root root      4096 Oct 14 10:02 .
+drwxr-xr-x 19 root root      4096 Oct 13 14:09 ..
+drwxr-xr-x 15 root root      4096 Oct 13 20:02 tmp
+-rw-r--r--  1 root root 433774938 Oct 14 09:55 triton_ascend-3.6.0.dev0+dev20260726001834-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+-rw-r--r--  1 root root 238645867 Oct 14 09:54 triton_opentile-3.6.0+git3c8359a2-cp311-cp311-linux_x86_64.whl
+
+/usr/bin/python
+/usr/local/python3.11.0/bin/pip
+Python 3.11.0
+pip 25.2 from /usr/local/python3.11.0/lib/python3.11/site-packages/pip (python 3.11)
+--- 已装 triton ---
+
+===== 1) 卸载旧 triton（TO_process 第 1、2 步） =====
+WARNING: Skipping triton as it is not installed.
+WARNING: Skipping triton-ascend as it is not installed.
+WARNING: Skipping triton-opentile as it is not installed.
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+===== 2) 安装 triton-opentile =====
+WHL=/home/z30086261/triton_opentile-3.6.0+git3c8359a2-cp311-cp311-linux_x86_64.whl
+Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
+Processing /home/z30086261/triton_opentile-3.6.0+git3c8359a2-cp311-cp311-linux_x86_64.whl
+Installing collected packages: triton-opentile
+Successfully installed triton-opentile-3.6.0+git3c8359a2
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+===== 3) 验证 opentile 后端能导入 =====
+triton: 3.6.0 /usr/local/python3.11.0/lib/python3.11/site-packages/triton/__init__.py
+opentile: import OK
+conf module: triton.backends.opentile.conf
+compiler file: /usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py
