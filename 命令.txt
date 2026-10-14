@@ -1,0 +1,1 @@
+grep -c 'PASS' /home/z30086261/final2.log; grep -E 'OP |SUMMARY|STOP_ON_FAIL|FAIL' /home/z30086261/final2.log
