@@ -1,13 +1,43 @@
-L=/home/z30086261/reduce_all.log
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# git pull
+Current branch main is up to date.
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# L=/home/z30086261/reduce_all.log
 echo "PASS:"; grep -c PASS "$L"
 echo "FAIL:"; grep -c FAIL "$L"
 echo "SKIP:"; grep -c SKIP "$L"
 echo "=== 全部 FAIL 列表 ==="
 grep -n FAIL "$L"
-
-
-
-source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
+PASS:
+160
+FAIL:
+24
+SKIP:
+0
+=== 全部 FAIL 列表 ===
+484:[FAIL] reduce_max/frag/int8/128x256  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+527:[FAIL] reduce_max/frag/int8/128x512  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+570:[FAIL] reduce_max/frag/int8/16x128  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+601:[FAIL] reduce_max/frag/int8/16x64  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+626:[FAIL] reduce_max/frag/int8/32x128  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+669:[FAIL] reduce_max/frag/int8/32x256  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+712:[FAIL] reduce_max/frag/int8/32x64  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+743:[FAIL] reduce_max/frag/int8/64x128  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+774:[FAIL] reduce_max/frag/int8/64x256  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+805:[FAIL] reduce_max/frag/int8/64x512  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+836:[FAIL] reduce_max/shared/float16/128x256  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+867:[FAIL] reduce_max/shared/float16/128x512  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+898:[FAIL] reduce_max/shared/float16/16x128  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+929:[FAIL] reduce_max/shared/float16/16x64  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+954:[FAIL] reduce_max/shared/float16/32x128  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+997:[FAIL] reduce_max/shared/float16/32x256  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+1040:[FAIL] reduce_max/shared/float16/32x64  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+1071:[FAIL] reduce_max/shared/float16/64x128  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+1148:[FAIL] reduce_max/shared/float16/16x128  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+1180:[FAIL] reduce_max/shared/float16/16x64  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+1206:[FAIL] reduce_max/shared/float16/32x128  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+1250:[FAIL] reduce_max/shared/float16/32x256  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+1294:[FAIL] reduce_max/shared/float16/32x64  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+1326:[FAIL] reduce_max/shared/float16/64x128  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
 export TILELANG_PYTHON=/usr/bin/python
 export ASCEND_RT_VISIBLE_DEVICES=4
 cd /home/z30086261/tmp/reduce_api_kernels
@@ -17,3 +47,36 @@ KERNEL_PATH=reduce_sum/6_reduce_sum_frag_float16_32x128.o python verify_precisio
 
 echo "=== B) 卡4 单跑会挂的 int8 max（预计 ~10 分钟后 507034） ==="
 timeout 780 env KERNEL_PATH=reduce_max/6_reduce_max_frag_int8_32x64.o python verify_precision.py reduce_max frag int8 32 64; echo "exit=$?"
+=== A) 卡4 跑已知 PASS 的（应秒出 PASS） ===
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_sum/frag/float16/32x128  diff=1.424e-02  kernel=6_reduce_sum_frag_float16_32x128.o
+exit=0
+=== B) 卡4 单跑会挂的 int8 max（预计 ~10 分钟后 507034） ===
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[FAIL] reduce_max/frag/int8/32x64  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+[W1014 14:53:04.550219135 NPUStream.cpp:595] Warning: NPU warning, error code is 507034[Error]: 
+[Error]: Vector core execution timed out. 
+        Rectify the fault based on the error information in the ascend log.
+EZ9999: Internal error!
+EZ9999[PID: 100950] 2026-10-14-14:53:04.350.905 (EZ9999):  An error occurs on the device(chipId:0, dieId:0), the serial number is 39, the error is aivec error, core id is 8, error code = 0, dump info: pc start: 0x120041004000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x7fbffd0e3c4efd37,0xfff2ff8f6800f77f, mte error info: 0xfd5df84a0001ff3b, vec error info: 0xf877fffa006df448, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c6001f8, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+TraceBack (most recent call last):
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 39, the error is aivec error, core id is 44, error code = 0, dump info: pc start: 0x120041004000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xffcfd3bd2bfc45ff,0xf4eff54f7800ff73, mte error info: 0xfbf9efcc0007ff3f, vec error info: 0x75e7b5dd004f0ed9, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c6001f8, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurred in the kernel task, retCode=0x30, [vector core timeout].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1030]
+       rtStreamSynchronize execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+       rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+ (function npuSynchronizeUsedDevices)
+[W1014 14:53:04.550597182 NPUStream.cpp:577] Warning: NPU warning, error code is 507034[Error]: 
+[Error]: Vector core execution timed out. 
+        Rectify the fault based on the error information in the ascend log.
+EE9999: Internal error!
+EE9999[PID: 100950] 2026-10-14-14:53:04.354.982 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+TraceBack (most recent call last):
+ (function npuSynchronizeDevice)
+exit=1
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
