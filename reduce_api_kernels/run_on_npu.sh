@@ -21,6 +21,9 @@ PY="${TILELANG_PYTHON:-python3}"
 # 每个用例的墙钟上限（秒）。坏 kernel 会让 vector core 挂死、约 10 分钟才报 507034；
 # 这里用 host 侧 timeout 把等待压短。设 0 关闭（退回原来"一直等到 device 自己超时"）。
 CASE_TIMEOUT="${CASE_TIMEOUT:-120}"
+# 命中第一个失败/超时就中止当前算子剩余的用例。坏 kernel 会把卡"焊死"，
+# 之后的用例会成片假失败；开启本开关可快速定位坏组合。1=开启，0=关闭。
+STOP_ON_FAIL="${STOP_ON_FAIL:-0}"
 
 OPS=("$@")
 ALL_OPS=(reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax
@@ -69,6 +72,10 @@ for op in "${ALL_OPS[@]}"; do
       *)
         fail=$((fail + 1)); op_fail=$((op_fail + 1)) ;;
     esac
+    if [ "$rc" -ne 0 ] && [ "$STOP_ON_FAIL" -eq 1 ]; then
+      echo "STOP_ON_FAIL: 中止 $op 剩余用例（坏用例=${base}）"
+      break
+    fi
   done
   if [ "$found" -eq 0 ]; then
     # bit* 因 NpuToCCE 无横向位归约原语，其 6_*.o 无法产出（详见 build.sh 头注释）
