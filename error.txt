@@ -1,15 +1,49 @@
-# 先停掉当前前台循环：Ctrl-C
-
-cd /home/z30086261/tmp/reduce_api_kernels
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# cd /home/z30086261/tmp/reduce_api_kernels
 export PYTHONUNBUFFERED=1
 export CASE_TIMEOUT=60
-
-nohup bash -c 'cd /home/z30086261/tmp/reduce_api_kernels && for op in reduce_max reduce_sum reduce_min reduce_abssum reduce_absmax; do echo "########## $op ##########"; ./run_on_npu.sh "$op"; done' > /home/z30086261/reduce_all2.log 2>&1 &
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# nohup bash -c 'cd /home/z30086261/tmp/reduce_api_kernels && for op in reduce_max reduce_sum reduce_min reduce_abssum reduce_absmax; do echo "########## $op ##########"; ./run_on_npu.sh "$op"; done' > /home/z30086261/reduce_all2.log 2>&1 &
 
 tail -f /home/z30086261/reduce_all2.log
-
-
-
-
-cd /home/z30086261/tmp/reduce_api_kernels
-./run_on_npu.sh reduce_max          # 直接输出到终端，天然实时
+[3] 107515
+nohup: ignoring input
+########## reduce_max ##########
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float16_128x256
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float16_128x512
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float16_16x128
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float16_16x64
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float16_32x128
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float16_32x256
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float16_32x64
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float16_64x128
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float16_64x256
+TIMEOUT(60s): reduce_max_frag_float16_64x512
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float32_128x256
+TIMEOUT(60s): reduce_max_frag_float32_128x512
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float32_16x128
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+TIMEOUT(60s): reduce_max_frag_float32_16x64
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
