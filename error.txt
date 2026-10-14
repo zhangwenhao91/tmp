@@ -1,4 +1,4 @@
-source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
+root@ubuntu162:/home/z30086261/tmp# source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
 export ASCEND_RT_VISIBLE_DEVICES=4
 export TILELANG_PYTHON=/usr/bin/python
 cd /home/z30086261/tmp/reduce_api_kernels
@@ -8,3 +8,4 @@ python3 -c "import triton; print('python3 sees triton', triton.__version__)"
 
 # 单算子冒烟（不设 KERNEL_CV_MODE）
 ./run_on_npu.sh reduce_sum 2>&1 | tail -25
+python3 sees triton 3.6.0
