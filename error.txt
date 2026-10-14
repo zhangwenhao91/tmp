@@ -1,29 +1,16 @@
-pkill -9 -f 'run_on_npu|verify_precision'; sleep 2; pgrep -af 'run_on_npu|verify_precision'; echo "--- 上面应为空 ---"
-
-
-
-
-npu-smi set -t reset -i 4 -m 1
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# pkill -9 -f 'run_on_npu|verify_precision'; sleep 2; pgrep -af 'run_on_npu|verify_precision'; echo "--- 上面应为空 ---"
+--- 上面应为空 ---
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# npu-smi set -t reset -i 4 -m 1
 npu-smi info | grep -A2 'NPU 4'
-
-
-
-
-cd /home/z30086261/tmp/reduce_api_kernels
-source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
-export TILELANG_PYTHON=/usr/bin/python
-export ASCEND_RT_VISIBLE_DEVICES=4
-export PYTHONUNBUFFERED=1
-export CASE_TIMEOUT=0
-export STOP_ON_FAIL=1
-
-mkdir -p /home/z30086261/bad_o
-mv reduce_max/*int8*.o reduce_min/*int8*.o reduce_absmax/*int8*.o /home/z30086261/bad_o/ 2>/dev/null
-ls /home/z30086261/bad_o/*.o | wc -l    # 期望 70
-
-# 先单例确认卡真的好了
-KERNEL_PATH=reduce_sum/6_reduce_sum_shared_float16_32x128.o python verify_precision.py reduce_sum shared float16 32 128; echo "exit=$?"
-
-# 确认 PASS 后再起批量
-nohup bash -c 'cd /home/z30086261/tmp/reduce_api_kernels && for op in reduce_max reduce_sum reduce_min reduce_abssum reduce_absmax; do echo "########## $op ##########"; ./run_on_npu.sh "$op"; done' > /home/z30086261/final2.log 2>&1 &
+bash: npu-smi: command not found
+bash: npu-smi: command not found
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# KERNEL_PATH=reduce_sum/6_reduce_sum_shared_float16_32x128.o python verify_precision.py reduce_sum shared float16 32 128; echo "exit=$?"
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_sum/shared/float16/32x128  diff=1.424e-02  kernel=6_reduce_sum_shared_float16_32x128.o
+exit=0
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# nohup bash -c 'cd /home/z30086261/tmp/reduce_api_kernels && for op in reduce_max reduce_sum reduce_min reduce_abssum reduce_absmax; do echo "########## $op ##########"; ./run_on_npu.sh "$op"; done' > /home/z30086261/final2.log 2>&1 &
 echo "started"
+[1] 121571
+started
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
