@@ -1,14 +1,10 @@
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# grep -A3 'reduce_abssum/frag/bfloat16/128x256' /home/z30086261/final2.log
-[FAIL] reduce_abssum/frag/bfloat16/128x256  diff=1.160e+02  kernel=6_reduce_abssum_frag_bfloat16_128x256.o
-  got[:8]: [96.5, 94.5, 105.5, 111.0, 104.0, 105.0, 97.5, 90.5]
-  ref[:8]: [202.87628173828125, 193.35696411132812, 214.7021484375, 226.710205078125, 212.91424560546875, 208.6350860595703, 191.89996337890625, 193.3360595703125]
-STOP_ON_FAIL: 中止 reduce_abssum 剩余用例（坏用例=reduce_abssum_frag_bfloat16_128x256）
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# cd /home/z30086261/tmp/reduce_api_kernels
-KERNEL_PATH=reduce_abssum/6_reduce_abssum_frag_bfloat16_128x256.o python verify_precision.py reduce_abssum frag bfloat16 128 256; echo "exit=$?"
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[RUNTIME_CACHE] using cached OpenTile runtime extension
-[FAIL] reduce_abssum/frag/bfloat16/128x256  diff=1.160e+02  kernel=6_reduce_abssum_frag_bfloat16_128x256.o
-  got[:8]: [96.5, 94.5, 105.5, 111.0, 104.0, 105.0, 97.5, 90.5]
-  ref[:8]: [202.87628173828125, 193.35696411132812, 214.7021484375, 226.710205078125, 212.91424560546875, 208.6350860595703, 191.89996337890625, 193.3360595703125]
-exit=1
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+cd /home/z30086261/tmp/reduce_api_kernels
+export CASE_TIMEOUT=0
+export STOP_ON_FAIL=0
+
+# 对照：f16 的 frag 单例（同样走 _frag_abs，看是否也错）
+KERNEL_PATH=reduce_abssum/6_reduce_abssum_frag_float16_128x256.o python verify_precision.py reduce_abssum frag float16 128 256; echo "exit=$?"
+
+# 全量跑
+./run_on_npu.sh reduce_abssum > /home/z30086261/abssum.log 2>&1; echo "done"
+grep -E 'FAIL|got|ref|OP |SUMMARY|TIMEOUT' /home/z30086261/abssum.log
