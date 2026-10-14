@@ -1,11 +1,30 @@
-echo "=== 1) 全盘找已安装的 opentile 后端目录（不是 whl） ==="
-find /usr /opt /home /data /root -maxdepth 14 -type d -path '*triton/backends/opentile' 2>/dev/null
+echo "===== 0) /home/z30086261 下的包 + 当前解释器 ====="
+ls -la /home/z30086261/
+echo
+which python pip
+python -V
+pip -V
+echo "--- 已装 triton ---"
+pip list 2>/dev/null | grep -i triton
 
-echo "=== 2) 找 triton_opentile 的发行信息 ==="
-find /usr /opt /home /data /root -maxdepth 14 -iname 'triton_opentile*' 2>/dev/null
+echo
+echo "===== 1) 卸载旧 triton（TO_process 第 1、2 步） ====="
+pip uninstall -y triton triton-ascend triton-opentile
 
-echo "=== 3) 那个名字就叫 opentile 的 env，triton 里到底有哪些后端 ==="
-ls -d /home/s00958582/miniforge3/envs/opentile/lib/python*/site-packages/triton/backends/* 2>/dev/null
+echo
+echo "===== 2) 安装 triton-opentile ====="
+WHL=$(ls -1 /home/z30086261/*opentile*.whl 2>/dev/null | head -1)
+echo "WHL=$WHL"
+pip install "$WHL"
 
-echo "=== 4) 那个 env 里 triton 相关的包 ==="
-ls -d /home/s00958582/miniforge3/envs/opentile/lib/python*/site-packages/*triton* 2>/dev/null
+echo
+echo "===== 3) 验证 opentile 后端能导入 ====="
+python - <<'PY'
+import triton
+print("triton:", triton.__version__, triton.__file__)
+from triton.backends.opentile.conf import OpenTileEnvConf
+from triton.backends.opentile.targets.ascend.compiler import OpenTileNPUOptions, make_npubin
+print("opentile: import OK")
+print("conf module:", OpenTileEnvConf.__module__)
+print("compiler file:", make_npubin.__code__.co_filename)
+PY
