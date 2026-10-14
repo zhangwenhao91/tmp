@@ -1,4 +1,4 @@
-cd /home/z30086261/tmp && git pull
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# cd /home/z30086261/tmp && git pull
 
 source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
 export TILELANG_PYTHON=/usr/bin/python
@@ -9,10 +9,19 @@ cd /home/z30086261/tmp/reduce_api_kernels
 pgrep -af 'run_on_npu|verify_precision'        # 必须为空
 
 KERNEL_PATH=reduce_sum/6_reduce_sum_shared_float16_32x128.o python verify_precision.py reduce_sum shared float16 32 128; echo "exit=$?"
-
-
-
-cd /home/z30086261/tmp/reduce_api_kernels
+remote: Enumerating objects: 44, done.
+remote: Counting objects: 100% (44/44), done.
+remote: Compressing objects: 100% (37/37), done.
+remote: Total 40 (delta 22), reused 4 (delta 3), pack-reused 0 (from 0)
+Unpacking objects: 100% (40/40), 15.49 KiB | 480.00 KiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   8e6b3e5..9742ccc  main       -> origin/main
+Successfully rebased and updated refs/heads/main.
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_sum/shared/float16/32x128  diff=1.424e-02  kernel=6_reduce_sum_shared_float16_32x128.o
+exit=0
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# cd /home/z30086261/tmp/reduce_api_kernels
 export CASE_TIMEOUT=0        # 不掐进程（掐进程会把卡焊死）
 export STOP_ON_FAIL=1        # 撞到坏用例立即中止该算子，不再产生成片假失败
 
@@ -22,3 +31,424 @@ mv reduce_max/6_reduce_max_frag_int8_*.o /home/z30086261/bad_o/ 2>/dev/null
 
 nohup bash -c 'cd /home/z30086261/tmp/reduce_api_kernels && for op in reduce_max reduce_sum reduce_min reduce_abssum reduce_absmax; do echo "########## $op ##########"; ./run_on_npu.sh "$op"; done' > /home/z30086261/final.log 2>&1 &
 tail -f /home/z30086261/final.log
+[1] 110113
+tail: inotify resources exhausted
+tail: inotify cannot be used, reverting to polling
+nohup: ignoring input
+########## reduce_max ##########
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float16/128x256  diff=0.000e+00  kernel=6_reduce_max_frag_float16_128x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float16/128x512  diff=0.000e+00  kernel=6_reduce_max_frag_float16_128x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float16/16x128  diff=0.000e+00  kernel=6_reduce_max_frag_float16_16x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float16/16x64  diff=0.000e+00  kernel=6_reduce_max_frag_float16_16x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float16/32x128  diff=0.000e+00  kernel=6_reduce_max_frag_float16_32x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float16/32x256  diff=0.000e+00  kernel=6_reduce_max_frag_float16_32x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float16/32x64  diff=0.000e+00  kernel=6_reduce_max_frag_float16_32x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float16/64x128  diff=0.000e+00  kernel=6_reduce_max_frag_float16_64x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float16/64x256  diff=0.000e+00  kernel=6_reduce_max_frag_float16_64x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float16/64x512  diff=0.000e+00  kernel=6_reduce_max_frag_float16_64x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float32/128x256  diff=0.000e+00  kernel=6_reduce_max_frag_float32_128x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float32/128x512  diff=0.000e+00  kernel=6_reduce_max_frag_float32_128x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float32/16x128  diff=0.000e+00  kernel=6_reduce_max_frag_float32_16x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float32/16x64  diff=0.000e+00  kernel=6_reduce_max_frag_float32_16x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float32/32x128  diff=0.000e+00  kernel=6_reduce_max_frag_float32_32x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float32/32x256  diff=0.000e+00  kernel=6_reduce_max_frag_float32_32x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float32/32x64  diff=0.000e+00  kernel=6_reduce_max_frag_float32_32x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float32/64x128  diff=0.000e+00  kernel=6_reduce_max_frag_float32_64x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float32/64x256  diff=0.000e+00  kernel=6_reduce_max_frag_float32_64x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/float32/64x512  diff=0.000e+00  kernel=6_reduce_max_frag_float32_64x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int16/128x256  diff=0.000e+00  kernel=6_reduce_max_frag_int16_128x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int16/128x512  diff=0.000e+00  kernel=6_reduce_max_frag_int16_128x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int16/16x128  diff=0.000e+00  kernel=6_reduce_max_frag_int16_16x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int16/16x64  diff=0.000e+00  kernel=6_reduce_max_frag_int16_16x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int16/32x128  diff=0.000e+00  kernel=6_reduce_max_frag_int16_32x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int16/32x256  diff=0.000e+00  kernel=6_reduce_max_frag_int16_32x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int16/32x64  diff=0.000e+00  kernel=6_reduce_max_frag_int16_32x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int16/64x128  diff=0.000e+00  kernel=6_reduce_max_frag_int16_64x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int16/64x256  diff=0.000e+00  kernel=6_reduce_max_frag_int16_64x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int16/64x512  diff=0.000e+00  kernel=6_reduce_max_frag_int16_64x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int32/128x256  diff=0.000e+00  kernel=6_reduce_max_frag_int32_128x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int32/128x512  diff=0.000e+00  kernel=6_reduce_max_frag_int32_128x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int32/16x128  diff=0.000e+00  kernel=6_reduce_max_frag_int32_16x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int32/16x64  diff=0.000e+00  kernel=6_reduce_max_frag_int32_16x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int32/32x128  diff=0.000e+00  kernel=6_reduce_max_frag_int32_32x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int32/32x256  diff=0.000e+00  kernel=6_reduce_max_frag_int32_32x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int32/32x64  diff=0.000e+00  kernel=6_reduce_max_frag_int32_32x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int32/64x128  diff=0.000e+00  kernel=6_reduce_max_frag_int32_64x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int32/64x256  diff=0.000e+00  kernel=6_reduce_max_frag_int32_64x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/frag/int32/64x512  diff=0.000e+00  kernel=6_reduce_max_frag_int32_64x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float16/128x256  diff=0.000e+00  kernel=6_reduce_max_shared_float16_128x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float16/128x512  diff=0.000e+00  kernel=6_reduce_max_shared_float16_128x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float16/16x128  diff=0.000e+00  kernel=6_reduce_max_shared_float16_16x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float16/16x64  diff=0.000e+00  kernel=6_reduce_max_shared_float16_16x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float16/32x128  diff=0.000e+00  kernel=6_reduce_max_shared_float16_32x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float16/32x256  diff=0.000e+00  kernel=6_reduce_max_shared_float16_32x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float16/32x64  diff=0.000e+00  kernel=6_reduce_max_shared_float16_32x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float16/64x128  diff=0.000e+00  kernel=6_reduce_max_shared_float16_64x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float16/64x256  diff=0.000e+00  kernel=6_reduce_max_shared_float16_64x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float16/64x512  diff=0.000e+00  kernel=6_reduce_max_shared_float16_64x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float32/128x256  diff=0.000e+00  kernel=6_reduce_max_shared_float32_128x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float32/128x512  diff=0.000e+00  kernel=6_reduce_max_shared_float32_128x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float32/16x128  diff=0.000e+00  kernel=6_reduce_max_shared_float32_16x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float32/16x64  diff=0.000e+00  kernel=6_reduce_max_shared_float32_16x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float32/32x128  diff=0.000e+00  kernel=6_reduce_max_shared_float32_32x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_float32_32x256.o (2312 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float32/32x256  diff=0.000e+00  kernel=6_reduce_max_shared_float32_32x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_float32_32x64.o (2264 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float32/32x64  diff=0.000e+00  kernel=6_reduce_max_shared_float32_32x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_float32_64x128.o (2280 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float32/64x128  diff=0.000e+00  kernel=6_reduce_max_shared_float32_64x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_float32_64x256.o (2312 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float32/64x256  diff=0.000e+00  kernel=6_reduce_max_shared_float32_64x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_float32_64x512.o (2312 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/float32/64x512  diff=0.000e+00  kernel=6_reduce_max_shared_float32_64x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int16_128x256.o (2280 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int16/128x256  diff=0.000e+00  kernel=6_reduce_max_shared_int16_128x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int16_128x512.o (2312 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int16/128x512  diff=0.000e+00  kernel=6_reduce_max_shared_int16_128x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int16_16x128.o (2264 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int16/16x128  diff=0.000e+00  kernel=6_reduce_max_shared_int16_16x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int16_16x64.o (2272 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int16/16x64  diff=0.000e+00  kernel=6_reduce_max_shared_int16_16x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int16_32x128.o (2264 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int16/32x128  diff=0.000e+00  kernel=6_reduce_max_shared_int16_32x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int16_32x256.o (2280 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int16/32x256  diff=0.000e+00  kernel=6_reduce_max_shared_int16_32x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int16_32x64.o (2272 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int16/32x64  diff=0.000e+00  kernel=6_reduce_max_shared_int16_32x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int16_64x128.o (2264 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int16/64x128  diff=0.000e+00  kernel=6_reduce_max_shared_int16_64x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int16_64x256.o (2280 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int16/64x256  diff=0.000e+00  kernel=6_reduce_max_shared_int16_64x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int16_64x512.o (2312 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int16/64x512  diff=0.000e+00  kernel=6_reduce_max_shared_int16_64x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int32_128x256.o (2312 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int32/128x256  diff=0.000e+00  kernel=6_reduce_max_shared_int32_128x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int32_128x512.o (2312 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int32/128x512  diff=0.000e+00  kernel=6_reduce_max_shared_int32_128x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int32_16x128.o (2280 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int32/16x128  diff=0.000e+00  kernel=6_reduce_max_shared_int32_16x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int32_16x64.o (2264 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int32/16x64  diff=0.000e+00  kernel=6_reduce_max_shared_int32_16x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int32_32x128.o (2280 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int32/32x128  diff=0.000e+00  kernel=6_reduce_max_shared_int32_32x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int32_32x256.o (2312 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int32/32x256  diff=0.000e+00  kernel=6_reduce_max_shared_int32_32x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int32_32x64.o (2264 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int32/32x64  diff=0.000e+00  kernel=6_reduce_max_shared_int32_32x64.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int32_64x128.o (2280 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int32/64x128  diff=0.000e+00  kernel=6_reduce_max_shared_int32_64x128.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int32_64x256.o (2312 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int32/64x256  diff=0.000e+00  kernel=6_reduce_max_shared_int32_64x256.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int32_64x512.o (2312 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[PASS] reduce_max/shared/int32/64x512  diff=0.000e+00  kernel=6_reduce_max_shared_int32_64x512.o
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_max/6_reduce_max_shared_int8_128x256.o (2264 bytes) for kernel 'reduce_max_shared_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[FAIL] reduce_max/shared/int8/128x256  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+[W1014 16:35:16.020764835 NPUStream.cpp:595] Warning: NPU warning, error code is 507034[Error]: 
+[Error]: Vector core execution timed out. 
+        Rectify the fault based on the error information in the ascend log.
+EZ9999: Internal error!
+EZ9999[PID: 120952] 2026-10-14-16:35:16.821.419 (EZ9999):  An error occurs on the device(chipId:0, dieId:0), the serial number is 1, the error is aivec error, core id is 0, error code = 0, dump info: pc start: 0x120041004000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x66fefc7d39aefb97,0xdffdffda7800f7f8, mte error info: 0xffd343e30007f4fd, vec error info: 0xf3ecab7e0075ef77, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c6001f8, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+TraceBack (most recent call last):
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 1, the error is aivec error, core id is 1, error code = 0, dump info: pc start: 0x120041004000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x7baf87ef3ffcfc39,0x6f6f74ccc8007dbf, mte error info: 0xfedefff70007ef9f, vec error info: 0xff7debdd007addfd, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c6001f8, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 1, the error is aivec error, core id is 2, error code = 0, dump info: pc start: 0x120041004000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x6e8eff753cfc77ca,0xcefd4dcc8000fd9e, mte error info: 0xb69f6f8f00077bf9, vec error info: 0x77732ff7005ffff5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c6001f8, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 1, the error is aivec error, core id is 3, error code = 0, dump info: pc start: 0x120041004000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xcfffd7f62fd2fe93,0xffd3cdd73000ff9c, mte error info: 0xeb3df07b0003f2cb, vec error info: 0x75f7fef70071c6c5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c6001f8, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 1, the error is aivec error, core id is 36, error code = 0, dump info: pc start: 0x120041004000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xae77d7fd3dd66ffc,0xcff7f34578002fdd, mte error info: 0x3bdcdd8d0003bfa7, vec error info: 0xf1ff78fd005caecf, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c6001f8, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 1, the error is aivec error, core id is 37, error code = 0, dump info: pc start: 0x120041004000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x7ff7fdbd3cfeff4e,0xd5fd0639a0007777, mte error info: 0xc535e5d900033bff, vec error info: 0xb9f6fb9300356ffa, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c6001f8, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 1, the error is aivec error, core id is 38, error code = 0, dump info: pc start: 0x120041004000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xb83ff1bf1fc22dbf,0xcfd2d9fc70007c8d, mte error info: 0x3037f1fc00066e8d, vec error info: 0x75c778fe007d3cad, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c6001f8, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 1, the error is aivec error, core id is 39, error code = 0, dump info: pc start: 0x120041004000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xfc7fb3ef3f888d67,0x8f1c2d1ff8008376, mte error info: 0x3ea5dfdf0005bdee, vec error info: 0x5d63bcfb001d39dd, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c6001f8, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurred in the kernel task, retCode=0x30, [vector core timeout].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1030]
+       rtStreamSynchronize execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+       rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+ (function npuSynchronizeUsedDevices)
+[W1014 16:35:16.021155942 NPUStream.cpp:577] Warning: NPU warning, error code is 507034[Error]: 
+[Error]: Vector core execution timed out. 
+        Rectify the fault based on the error information in the ascend log.
+EE9999: Internal error!
+EE9999[PID: 120952] 2026-10-14-16:35:16.825.538 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+TraceBack (most recent call last):
+ (function npuSynchronizeDevice)
+STOP_ON_FAIL: 中止 reduce_max 剩余用例（坏用例=reduce_max_shared_int8_128x256）
+OP reduce_max: 80 PASS / 1 FAIL / 0 TIMEOUT
+============================================
+SUMMARY: 80 PASS / 1 FAIL / 0 TIMEOUT
+########## reduce_sum ##########
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[FAIL] reduce_sum/frag/bfloat16/128x256  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+[W1014 16:44:58.005670770 NPUStream.cpp:595] Warning: NPU warning, error code is 507034[Error]: 
+[Error]: Vector core execution timed out. 
+        Rectify the fault based on the error information in the ascend log.
+EZ9999: Internal error!
+EZ9999[PID: 121053] 2026-10-14-16:44:58.800.173 (EZ9999):  An error occurs on the device(chipId:0, dieId:0), the serial number is 2, the error is aivec error, core id is 0, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x66fefc7d39aefb97,0xdffdffda7800f7f8, mte error info: 0xffd343e30007f4fd, vec error info: 0xf3ecab7e0075ef77, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+TraceBack (most recent call last):
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 2, the error is aivec error, core id is 1, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x7baf87ef3ffcfc39,0x6f6f74ccc8007dbf, mte error info: 0xfedefff70007ef9f, vec error info: 0xff7debdd007addfd, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 2, the error is aivec error, core id is 2, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x6e8eff753cfc77ca,0xcefd4dcc8000fd9e, mte error info: 0xb69f6f8f00077bf9, vec error info: 0x77732ff7005ffff5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 2, the error is aivec error, core id is 3, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xcfffd7f62fd2fe93,0xffd3cdd73000ff9c, mte error info: 0xeb3df07b0003f2cb, vec error info: 0x75f7fef70071c6c5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 2, the error is aivec error, core id is 36, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xae77d7fd3dd66ffc,0xcff7f34578002fdd, mte error info: 0x3bdcdd8d0003bfa7, vec error info: 0xf1ff78fd005caecf, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 2, the error is aivec error, core id is 37, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x7ff7fdbd3cfeff4e,0xd5fd0639a0007777, mte error info: 0xc535e5d900033bff, vec error info: 0xb9f6fb9300356ffa, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 2, the error is aivec error, core id is 38, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xb83ff1bf1fc22dbf,0xcfd2d9fc70007c8d, mte error info: 0x3037f1fc00066e8d, vec error info: 0x75c778fe007d3cad, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 2, the error is aivec error, core id is 39, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xfc7fb3ef3f888d67,0x8f1c2d1ff8008376, mte error info: 0x3ea5dfdf0005bdee, vec error info: 0x5d63bcfb001d39dd, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurred in the kernel task, retCode=0x30, [vector core timeout].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1030]
+       rtStreamSynchronize execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+       rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+ (function npuSynchronizeUsedDevices)
+[W1014 16:44:58.006555958 NPUStream.cpp:577] Warning: NPU warning, error code is 507034[Error]: 
+[Error]: Vector core execution timed out. 
+        Rectify the fault based on the error information in the ascend log.
+EE9999: Internal error!
+EE9999[PID: 121053] 2026-10-14-16:44:58.810.727 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+TraceBack (most recent call last):
+ (function npuSynchronizeDevice)
+STOP_ON_FAIL: 中止 reduce_sum 剩余用例（坏用例=reduce_sum_frag_bfloat16_128x256）
+OP reduce_sum: 0 PASS / 1 FAIL / 0 TIMEOUT
+============================================
+SUMMARY: 0 PASS / 1 FAIL / 0 TIMEOUT
+########## reduce_min ##########
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_min/6_reduce_min_frag_float16_128x256.o (2568 bytes) for kernel 'reduce_min_frag_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[FAIL] reduce_min/frag/float16/128x256  launch error: RuntimeError: rtStreamSynchronize failed, error code: 0x7bc9a
+[W1014 16:54:40.056604954 NPUStream.cpp:595] Warning: NPU warning, error code is 507034[Error]: 
+[Error]: Vector core execution timed out. 
+        Rectify the fault based on the error information in the ascend log.
+EZ9999: Internal error!
+EZ9999[PID: 121154] 2026-10-14-16:54:40.854.350 (EZ9999):  An error occurs on the device(chipId:0, dieId:0), the serial number is 3, the error is aivec error, core id is 0, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x66fefc7d39aefb97,0xdffdffda7800f7f8, mte error info: 0xffd343e30007f4fd, vec error info: 0xf3ecab7e0075ef77, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+TraceBack (most recent call last):
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 3, the error is aivec error, core id is 1, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x7baf87ef3ffcfc39,0x6f6f74ccc8007dbf, mte error info: 0xfedefff70007ef9f, vec error info: 0xff7debdd007addfd, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 3, the error is aivec error, core id is 2, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x6e8eff753cfc77ca,0xcefd4dcc8000fd9e, mte error info: 0xb69f6f8f00077bf9, vec error info: 0x77732ff7005ffff5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 3, the error is aivec error, core id is 3, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xcfffd7f62fd2fe93,0xffd3cdd73000ff9c, mte error info: 0xeb3df07b0003f2cb, vec error info: 0x75f7fef70071c6c5, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 3, the error is aivec error, core id is 36, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xae77d7fd3dd66ffc,0xcff7f34578002fdd, mte error info: 0x3bdcdd8d0003bfa7, vec error info: 0xf1ff78fd005caecf, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 3, the error is aivec error, core id is 37, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0x7ff7fdbd3cfeff4e,0xd5fd0639a0007777, mte error info: 0xc535e5d900033bff, vec error info: 0xb9f6fb9300356ffa, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 3, the error is aivec error, core id is 38, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xb83ff1bf1fc22dbf,0xcfd2d9fc70007c8d, mte error info: 0x3037f1fc00066e8d, vec error info: 0x75c778fe007d3cad, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurs on the device(chipId:0, dieId:0), the serial number is 3, the error is aivec error, core id is 39, error code = 0, dump info: pc start: 0x120041000000, current: 0x12004100411c, sc error info: 0xffffffffffff, su error info: 0xfc7fb3ef3f888d67,0x8f1c2d1ff8008376, mte error info: 0x3ea5dfdf0005bdee, vec error info: 0x5d63bcfb001d39dd, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x12004c600000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:PrintDavidCoreInfo][FILE:device_error_proc_c.cc][LINE:721]
+       An error occurred in the kernel task, retCode=0x30, [vector core timeout].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1030]
+       rtStreamSynchronize execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+       rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+ (function npuSynchronizeUsedDevices)
+[W1014 16:54:40.057106366 NPUStream.cpp:577] Warning: NPU warning, error code is 507034[Error]: 
+[Error]: Vector core execution timed out. 
+        Rectify the fault based on the error information in the ascend log.
+EE9999: Internal error!
+EE9999[PID: 121154] 2026-10-14-16:54:40.861.440 (EE9999):  rtDeviceSynchronizeWithTimeout execution failed, reason=vector core timeout[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:76]
+TraceBack (most recent call last):
+ (function npuSynchronizeDevice)
+STOP_ON_FAIL: 中止 reduce_min 剩余用例（坏用例=reduce_min_frag_float16_128x256）
+OP reduce_min: 0 PASS / 1 FAIL / 0 TIMEOUT
+============================================
+SUMMARY: 0 PASS / 1 FAIL / 0 TIMEOUT
+########## reduce_abssum ##########
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+[KERNEL_PATH] replacing compiled npubin with /home/z30086261/tmp/reduce_api_kernels/reduce_abssum/6_reduce_abssum_frag_bfloat16_128x256.o (2360 bytes) for kernel 'reduce_abssum_frag_kernel' cv_mode=aiv
+[RUNTIME_CACHE] using cached OpenTile runtime extension
+^C
+root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
