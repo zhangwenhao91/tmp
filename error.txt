@@ -1,26 +1,12 @@
-root@ubuntu162:/home/z30086261/tmp# # 找 CANN 的 set_env.sh（常见位置）
-ls /etc/profile.d/ | grep -i -E 'cann|ascend'
-find /usr/local /home /opt -maxdepth 5 -name 'set_env.sh' 2>/dev/null | head
+source /home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
+export ASCEND_RT_VISIBLE_DEVICES=4
 
-# 确认 tmp 仓根并拉到最新（含 opentile_e2e/）
-cd /home/z30086261/tmp && git rev-parse --show-toplevel && git pull && ls opentile_e2e
-99-cann.sh
-/home/g00946757/bisheng-827/set_env.sh
-/home/g00946757/bisheng_mmap/cann/set_env.sh
-/home/s00958582/miniforge3/Ascend/ascend-toolkit/set_env.sh
-/home/CANN/9.2.0.weekly.20260909/ascend-toolkit/set_env.sh
-/home/CANN/9.2.0.weekly.20260909/cann-9.2.0/set_env.sh
-/home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
-/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/set_env.sh
-/home/CANN/toolbox/26.1.0/script/set_env.sh
-/home/CANN/toolbox/set_env.sh
-/home/CANN/9.2.0-beta.1/ascend-toolkit/set_env.sh
-/home/z30086261/tmp
-Current branch main is up to date.
-check.py                       triton_max_dim1.opentile.json   triton_min_dim1.opentile.json
-golden_impl.py                 triton_mean_dim0.opentile.json  triton_sum_dim0.opentile.json
-run_all.sh                     triton_mean_dim1.opentile.json  triton_sum_dim1.opentile.json
-triton_max_dim0.opentile.json  triton_min_dim0.opentile.json
-root@ubuntu162:/home/z30086261/tmp# git pull
-Current branch main is up to date.
-root@ubuntu162:/home/z30086261/tmp# 
+# 确认工具链、ccec、python(带 numpy/torch)
+ls -d /home/z30086261/OpenTileAS /root/OpenTileAS 2>/dev/null
+command -v tile-opt ccec python3
+python3 -c 'import numpy, torch; print("numpy", numpy.__version__, "torch", torch.__version__)'
+
+
+
+cd /home/z30086261/tmp
+TOOLCHAIN=/home/z30086261/OpenTileAS bash opentile_e2e/run_all.sh
