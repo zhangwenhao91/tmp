@@ -1,12 +1,14 @@
-source /home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
+root@ubuntu162:/home/z30086261/tmp# source /home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
 export ASCEND_RT_VISIBLE_DEVICES=4
 
 # 确认工具链、ccec、python(带 numpy/torch)
 ls -d /home/z30086261/OpenTileAS /root/OpenTileAS 2>/dev/null
 command -v tile-opt ccec python3
 python3 -c 'import numpy, torch; print("numpy", numpy.__version__, "torch", torch.__version__)'
-
-
-
-cd /home/z30086261/tmp
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/bin/ccec
+/usr/local/python3.11.0/bin/python3
+numpy 1.23.5 torch 2.7.1+cpu
+root@ubuntu162:/home/z30086261/tmp# cd /home/z30086261/tmp
 TOOLCHAIN=/home/z30086261/OpenTileAS bash opentile_e2e/run_all.sh
+error: run.sh not found: /home/z30086261/OpenTileAS/tools/kernel_runner/run.sh (set TOOLCHAIN=...)
+root@ubuntu162:/home/z30086261/tmp# 
