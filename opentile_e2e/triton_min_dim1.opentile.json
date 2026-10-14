@@ -1,0 +1,12 @@
+{
+  "kernel_o": "triton_min_dim1.o",
+  "kernel_name": "triton_min_dim1",
+  "device": 0,
+  "mix_mode": "aiv",
+  "blocknum": 1,
+  "golden": { "module_path": "golden_impl.py", "function": "min_dim1" },
+  "args": [
+    { "name": "x", "kind": "input", "shape": [2048], "dtype": "float16", "generate": "random", "seed": 0 },
+    { "name": "out", "kind": "output", "shape": [64], "dtype": "float16" }
+  ]
+}
