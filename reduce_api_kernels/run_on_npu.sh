@@ -18,6 +18,9 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE" || exit 1
 
 PY="${TILELANG_PYTHON:-python3}"
+# 每个用例的墙钟上限（秒）。坏 kernel 会让 vector core 挂死、约 10 分钟才报 507034；
+# 这里用 host 侧 timeout 把等待压短。设 0 关闭（退回原来"一直等到 device 自己超时"）。
+CASE_TIMEOUT="${CASE_TIMEOUT:-120}"
 
 OPS=("$@")
 ALL_OPS=(reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax
@@ -32,9 +35,13 @@ in_filter() { # $1=op；无过滤参数时恒真
 
 pass=0
 fail=0
+timeout_n=0
 for op in "${ALL_OPS[@]}"; do
   in_filter "$op" || continue
   found=0
+  op_pass=0
+  op_fail=0
+  op_timeout=0
   for o in "$HERE/$op"/6_${op}_*.o ; do
     [ -f "$o" ] || continue
     found=1
@@ -47,18 +54,30 @@ for op in "${ALL_OPS[@]}"; do
     pop="${rest2%_*}"          # <op>
     M="${shape%x*}"; K="${shape#*x}"
     # 纯向量 reduce 用 aiv；若 .o 为 mix 拆分产物，设 KERNEL_CV_MODE=mix
-    if KERNEL_PATH="$o" "$PY" verify_precision.py "$pop" "$form" "$dtype" "$M" "$K"; then
-      pass=$((pass + 1))
+    rc=0
+    if [ "$CASE_TIMEOUT" -gt 0 ]; then
+      KERNEL_PATH="$o" timeout -k 10 "$CASE_TIMEOUT" "$PY" verify_precision.py "$pop" "$form" "$dtype" "$M" "$K" || rc=$?
     else
-      fail=$((fail + 1))
+      KERNEL_PATH="$o" "$PY" verify_precision.py "$pop" "$form" "$dtype" "$M" "$K" || rc=$?
     fi
+    case "$rc" in
+      0)
+        pass=$((pass + 1)); op_pass=$((op_pass + 1)) ;;
+      124|137)   # 被 timeout 墙钟掐掉 / -k 强杀：坏 kernel 在 device 侧挂死
+        timeout_n=$((timeout_n + 1)); op_timeout=$((op_timeout + 1))
+        echo "TIMEOUT(${CASE_TIMEOUT}s): ${base}" ;;
+      *)
+        fail=$((fail + 1)); op_fail=$((op_fail + 1)) ;;
+    esac
   done
   if [ "$found" -eq 0 ]; then
     # bit* 因 NpuToCCE 无横向位归约原语，其 6_*.o 无法产出（详见 build.sh 头注释）
     echo "SKIP (no .o): $op"
+  else
+    echo "OP $op: $op_pass PASS / $op_fail FAIL / $op_timeout TIMEOUT"
   fi
 done
 
 echo "============================================"
-echo "SUMMARY: $pass PASS / $fail FAIL"
-[ "$fail" -eq 0 ]
+echo "SUMMARY: $pass PASS / $fail FAIL / $timeout_n TIMEOUT"
+[ "$fail" -eq 0 ] && [ "$timeout_n" -eq 0 ]
