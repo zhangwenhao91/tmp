@@ -13,3 +13,34 @@ Options:
        -f             License (1-255) or path of SoC certificate files
                       or path of all device logs are continuously collected
        -m             By in-band reset, only can input 1
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# npu-smi set -t reset -i 4 -m 1
+Resetting the standard PCIe card or NPU chip may cause a system hang or abnormal reset during service running.
+Are you sure you want to continue resetting?(Y/N)
+y
+        Message                        : resetting ...
+        Status                         : OK
+        Message                        : Reset chip successfully.
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# npu-smi info | head -22
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.b086                            Version: 25.7.rc1.b086                         |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | AICore(%)   Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | Critical      | 0.0         0                 0     / 0             |
+|        |                  | 0000:0D:00.0  | 0           0    / 0          0     / 0             |
++========+==================+===============+=====================================================+
+| 1      | Ascend950PR      | OK            | 196.6       55                0     / 0             |
+|        |                  | 0000:0E:00.0  | 0           0    / 0          5902  / 131072        |
++========+==================+===============+=====================================================+
+| 3      | Ascend950PR      | Critical      | 0.0         0                 0     / 0             |
+|        |                  | 0000:57:00.0  | 0           0    / 0          0     / 0             |
++========+==================+===============+=====================================================+
+| 4      | Ascend950PR      | OK            | 190.0       56                0     / 0             |
+|        |                  | 0000:8B:00.0  | 0           0    / 0          5016  / 131072        |
++========+==================+===============+=====================================================+
+| 5      | Ascend950PR      | OK            | 194.0       58                0     / 0             |
+|        |                  | 0000:8C:00.0  | 0           0    / 0          5239  / 131072        |
++========+==================+===============+=====================================================+
+| 6      | Ascend950PR      | OK            | 191.8       58                0     / 0             |
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
