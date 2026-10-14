@@ -1,0 +1,12 @@
+{
+  "kernel_o": "triton_mean_dim0.o",
+  "kernel_name": "triton_mean_dim0",
+  "device": 0,
+  "mix_mode": "aiv",
+  "blocknum": 1,
+  "golden": { "module_path": "golden_impl.py", "function": "mean_dim0" },
+  "args": [
+    { "name": "x", "kind": "input", "shape": [2048], "dtype": "float16", "generate": "random", "seed": 0 },
+    { "name": "out", "kind": "output", "shape": [3], "dtype": "float16" }
+  ]
+}
