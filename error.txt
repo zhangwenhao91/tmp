@@ -1,6 +1,61 @@
-pkill -9 -f verify_precision
-pkill -9 -f run_on_npu
-sleep 3
-pgrep -af 'verify_precision|run_on_npu'                  # 期望空
-npu-smi info | sed -n '/Process id/,$p'                  # 期望卡4不再列 python
-npu-smi info | head -22                                  # 看卡4是否回到 OK / AICore 0%
+base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# pkill -9 -f verify_precision
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# pkill -9 -f run_on_npu
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# sleep 3
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# pgrep -af 'verify_precision|run_on_npu'                  # 期望空
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# npu-smi info | sed -n '/Process id/,$p'                  # 期望卡4不再列 python
+
+
+
+
+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+| 1                          | 622606        | python                   | 303                     |
+| 1                          | 622597        | python                   | 303                     |
++===========================+===============+=====================================================+
+| No running processes found in NPU 3                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 4                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 5                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 6                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 7                                                             |
++===========================+===============+=====================================================+
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# npu-smi info | head -22                                  # 看卡4是否回到 OK / AICore 0%
+
+
+
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.b086                            Version: 25.7.rc1.b086                         |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | AICore(%)   Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | Critical      | 0.0         0                 0     / 0             |
+|        |                  | 0000:0D:00.0  | 0           0    / 0          0     / 0             |
++========+==================+===============+=====================================================+
+| 1      | Ascend950PR      | OK            | 196.7       56                0     / 0             |
+|        |                  | 0000:0E:00.0  | 0           0    / 0          5902  / 131072        |
++========+==================+===============+=====================================================+
+| 3      | Ascend950PR      | Critical      | 0.0         0                 0     / 0             |
+|        |                  | 0000:57:00.0  | 0           0    / 0          0     / 0             |
++========+==================+===============+=====================================================+
+| 4      | Ascend950PR      | Alarm         | 189.9       55                0     / 0             |
+|        |                  | 0000:8B:00.0  | 100         0    / 0          5271  / 131072        |
++========+==================+===============+=====================================================+
+| 5      | Ascend950PR      | OK            | 193.8       58                0     / 0             |
+|        |                  | 0000:8C:00.0  | 0           0    / 0          5239  / 131072        |
++========+==================+===============+=====================================================+
+| 6      | Ascend950PR      | OK            | 191.8       58                0     / 0             |
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
