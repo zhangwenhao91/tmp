@@ -12,6 +12,10 @@
 #   ./run_on_npu.sh reduce_sum reduce_max # 只跑指定若干算子
 #
 # 文件名约定：6_<op>_<form>_<dtype>_<M>x<K>.o（由 build.sh 从同名 1_*.mlir 产出）。
+#
+# 输出：每个用例一行进度 [已跑/总数 时间] <用例> PASS|FAIL|TIMEOUT  diff=...，
+#       并抑制 runtime 的 RUNTIME_CACHE 噪音；只在失败时附上该用例的详细输出。
+#       要边跑边存日志请用 tee：./run_on_npu.sh reduce_sum 2>&1 | tee run.log
 set -uo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -36,9 +40,25 @@ in_filter() { # $1=op；无过滤参数时恒真
   return 1
 }
 
+# ---- 先统计本次要跑的用例总数，用于进度显示 ----
+total=0
+nop=0
+for op in "${ALL_OPS[@]}"; do
+  in_filter "$op" || continue
+  n=0
+  for o in "$HERE/$op"/6_${op}_*.o ; do
+    [ -f "$o" ] || continue
+    n=$((n + 1))
+  done
+  [ "$n" -gt 0 ] && nop=$((nop + 1))
+  total=$((total + n))
+done
+echo "== $total cases over $nop ops (CASE_TIMEOUT=$CASE_TIMEOUT, STOP_ON_FAIL=$STOP_ON_FAIL) =="
+
 pass=0
 fail=0
 timeout_n=0
+idx=0
 for op in "${ALL_OPS[@]}"; do
   in_filter "$op" || continue
   found=0
@@ -56,21 +76,27 @@ for op in "${ALL_OPS[@]}"; do
     form="${rest2##*_}"        # <form>
     pop="${rest2%_*}"          # <op>
     M="${shape%x*}"; K="${shape#*x}"
+    idx=$((idx + 1))
     # 纯向量 reduce 用 aiv；若 .o 为 mix 拆分产物，设 KERNEL_CV_MODE=mix
+    # 捕获本用例输出：进度行只显示状态，RUNTIME_CACHE 噪音被丢弃，失败时才附详情
     rc=0
     if [ "$CASE_TIMEOUT" -gt 0 ]; then
-      KERNEL_PATH="$o" timeout -k 10 "$CASE_TIMEOUT" "$PY" verify_precision.py "$pop" "$form" "$dtype" "$M" "$K" || rc=$?
+      out="$(KERNEL_PATH="$o" timeout -k 10 "$CASE_TIMEOUT" "$PY" verify_precision.py "$pop" "$form" "$dtype" "$M" "$K" 2>&1)" || rc=$?
     else
-      KERNEL_PATH="$o" "$PY" verify_precision.py "$pop" "$form" "$dtype" "$M" "$K" || rc=$?
+      out="$(KERNEL_PATH="$o" "$PY" verify_precision.py "$pop" "$form" "$dtype" "$M" "$K" 2>&1)" || rc=$?
     fi
+    diff="$(printf '%s\n' "$out" | sed -n 's/.*diff=\([^ ]*\).*/\1/p' | tail -n 1)"
     case "$rc" in
       0)
-        pass=$((pass + 1)); op_pass=$((op_pass + 1)) ;;
+        pass=$((pass + 1)); op_pass=$((op_pass + 1))
+        printf '[%3d/%3d %s] %-40s PASS  diff=%s\n' "$idx" "$total" "$(date +%H:%M:%S)" "$base" "${diff:-?}" ;;
       124|137)   # 被 timeout 墙钟掐掉 / -k 强杀：坏 kernel 在 device 侧挂死
         timeout_n=$((timeout_n + 1)); op_timeout=$((op_timeout + 1))
-        echo "TIMEOUT(${CASE_TIMEOUT}s): ${base}" ;;
+        printf '[%3d/%3d %s] %-40s TIMEOUT(%ss)\n' "$idx" "$total" "$(date +%H:%M:%S)" "$base" "$CASE_TIMEOUT" ;;
       *)
-        fail=$((fail + 1)); op_fail=$((op_fail + 1)) ;;
+        fail=$((fail + 1)); op_fail=$((op_fail + 1))
+        printf '[%3d/%3d %s] %-40s FAIL  diff=%s\n' "$idx" "$total" "$(date +%H:%M:%S)" "$base" "${diff:-?}"
+        printf '%s\n' "$out" | grep -v 'RUNTIME_CACHE' | head -n 20 | sed 's/^/      | /' ;;
     esac
     if [ "$rc" -ne 0 ] && [ "$STOP_ON_FAIL" -eq 1 ]; then
       echo "STOP_ON_FAIL: 中止 $op 剩余用例（坏用例=${base}）"
