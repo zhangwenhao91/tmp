@@ -1,11 +1,13 @@
-root@ubuntu162:/home/z30086261/tmp# source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
-export ASCEND_RT_VISIBLE_DEVICES=4
-export TILELANG_PYTHON=/usr/bin/python
+ps -ef | grep -E 'verify_precision|run_on_npu' | grep -v grep
+npu-smi info | head -15
+
+
 cd /home/z30086261/tmp/reduce_api_kernels
+export PYTHONUNBUFFERED=1
+./run_on_npu.sh reduce_sum > /home/z30086261/smoke.log 2>&1 &
+tail -f /home/z30086261/smoke.log
 
-# 确认 python3 也看得到 triton-opentile（run_on_npu.sh 默认 python3）
-python3 -c "import triton; print('python3 sees triton', triton.__version__)"
 
-# 单算子冒烟（不设 KERNEL_CV_MODE）
-./run_on_npu.sh reduce_sum 2>&1 | tail -25
-python3 sees triton 3.6.0
+cd /home/z30086261/tmp/reduce_api_kernels
+timeout 120 env KERNEL_PATH=reduce_sum/6_reduce_sum_shared_float16_32x128.o \
+  python verify_precision.py reduce_sum shared float16 32 128; echo "exit=$?"
