@@ -1,18 +1,2 @@
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# cd /home/z30086261/tmp/reduce_api_kernels
-./run_on_npu.sh reduce_sum > /home/z30086261/smoke_reduce_sum.log 2>&1; echo "exit=$?"
-echo "=== FAIL 明细（带后 2 行） ==="
-grep -nEA2 '$$FAIL$$' /home/z30086261/smoke_reduce_sum.log
-exit=1
-=== FAIL 明细（带后 2 行） ===
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# cd /home/z30086261/tmp/reduce_api_kernels
-./run_on_npu.sh reduce_sum > /home/z30086261/smoke_reduce_sum.log 2>&1; echo "exit=$?"
-echo "=== FAIL 明细（带后 2 行） ==="
-grep -nEA2 '$$FAIL$$' /home/z30086261/smoke_reduce_sum.log
-    
-exit=1
-=== FAIL 明细（带后 2 行） ===
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+wc -l /home/z30086261/smoke_reduce_sum.log
+grep -n FAIL /home/z30086261/smoke_reduce_sum.log
