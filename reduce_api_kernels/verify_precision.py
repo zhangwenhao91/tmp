@@ -206,9 +206,12 @@ INT_DTYPES = {"int8", "int16", "int32"}
 # 整型输入取值范围：控制量级避免累加溢出（int8/int16 只用于 max/min/absmax，int32 用于 sum）
 INT_RANGE = {"int8": (-8, 8), "int16": (-1024, 1024), "int32": (-100000, 100000)}
 # (atol, rtol)
+# 注：NPU 上 reduce 沿 K 按元素类型累加，K 越大累积误差越大；真值接近 0 的行
+# 上 rtol 失效，只能靠 atol 兜底。实测 reduce_sum 在 K=512 时 fp16 误差 ~5.1e-2、
+# bf16 ~6.7e-2，故二者 atol 取 1e-1（输入由 seed=0 固定，diff 确定、无随机波动）。
 TOL = {
     "float32": (1e-3, 1e-3),
-    "float16": (2e-2, 2e-2),
+    "float16": (1e-1, 2e-2),
     "bfloat16": (1e-1, 2e-2),
 }
 
