@@ -1,10 +1,4 @@
-cd /home/z30086261/tmp/reduce_api_kernels
-export CASE_TIMEOUT=0
-export STOP_ON_FAIL=0
-
-# 对照：f16 的 frag 单例（同样走 _frag_abs，看是否也错）
-KERNEL_PATH=reduce_abssum/6_reduce_abssum_frag_float16_128x256.o python verify_precision.py reduce_abssum frag float16 128 256; echo "exit=$?"
-
-# 全量跑
-./run_on_npu.sh reduce_abssum > /home/z30086261/abssum.log 2>&1; echo "done"
-grep -E 'FAIL|got|ref|OP |SUMMARY|TIMEOUT' /home/z30086261/abssum.log
+wc -l /home/z30086261/abssum.log
+tail -5 /home/z30086261/abssum.log
+grep -c PASS /home/z30086261/abssum.log
+pgrep -af 'run_on_npu|verify_precision'
