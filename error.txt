@@ -1,13 +1,15 @@
-npu-smi set -h                    # 先确认 reset 子命令的实际语法
-# 常见写法（二选一，按 -h 结果）：
-npu-smi set -t reset -i 4 -c 0
-npu-smi set -t reset -d 4
+(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# npu-smi set -h
+Usage: npu-smi set <-h|-t type> [Options...]
 
+Commands:
+       -h, --help     Show this help text and exit
+       -t type        The set type for device
+                      type: reset, clear-ecc-info, key-manage.
 
-export ASCEND_RT_VISIBLE_DEVICES=5
-
-cd /home/z30086261/tmp/reduce_api_kernels
-pgrep -af 'run_on_npu|verify_precision'                 # 必须为空
-
-# 用"之前 100% PASS 的用例"确认新卡可用
-KERNEL_PATH=reduce_sum/6_reduce_sum_shared_float16_32x128.o timeout 120 python verify_precision.py reduce_sum shared float16 32 128; echo "exit=$?"
+Options:
+       -i %d          NPU ID
+       -d %d          Config value
+       -s             String format configuration
+       -f             License (1-255) or path of SoC certificate files
+                      or path of all device logs are continuously collected
+       -m             By in-band reset, only can input 1
