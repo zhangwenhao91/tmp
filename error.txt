@@ -1,15 +1,13 @@
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# grep -c 'PASS' /home/z30086261/final2.log; grep -E 'OP |SUMMARY|STOP_ON_FAIL|FAIL' /home/z30086261/final2.log
-450
-[1]+  Done                    nohup bash -c 'cd /home/z30086261/tmp/reduce_api_kernels && for op in reduce_max reduce_sum reduce_min reduce_abssum reduce_absmax; do echo "########## $op ##########"; ./run_on_npu.sh "$op"; done' > /home/z30086261/final2.log 2>&1
-OP reduce_max: 120 PASS / 0 FAIL / 0 TIMEOUT
-SUMMARY: 120 PASS / 0 FAIL / 0 TIMEOUT
-OP reduce_sum: 120 PASS / 0 FAIL / 0 TIMEOUT
-SUMMARY: 120 PASS / 0 FAIL / 0 TIMEOUT
-OP reduce_min: 120 PASS / 0 FAIL / 0 TIMEOUT
-SUMMARY: 120 PASS / 0 FAIL / 0 TIMEOUT
-[FAIL] reduce_abssum/frag/bfloat16/128x256  diff=1.160e+02  kernel=6_reduce_abssum_frag_bfloat16_128x256.o
-STOP_ON_FAIL: 中止 reduce_abssum 剩余用例（坏用例=reduce_abssum_frag_bfloat16_128x256）
-OP reduce_abssum: 0 PASS / 1 FAIL / 0 TIMEOUT
-SUMMARY: 0 PASS / 1 FAIL / 0 TIMEOUT
-OP reduce_absmax: 80 PASS / 0 FAIL / 0 TIMEOUT
-SUMMARY: 80 PASS / 0 FAIL / 0 TIMEOUT
+grep -A3 'reduce_abssum/frag/bfloat16/128x256' /home/z30086261/final2.log
+
+
+
+cd /home/z30086261/tmp/reduce_api_kernels
+KERNEL_PATH=reduce_abssum/6_reduce_abssum_frag_bfloat16_128x256.o python verify_precision.py reduce_abssum frag bfloat16 128 256; echo "exit=$?"
+
+
+
+export CASE_TIMEOUT=0
+export STOP_ON_FAIL=0
+./run_on_npu.sh reduce_abssum > /home/z30086261/abssum.log 2>&1; echo "done"
+grep -E 'FAIL|got|ref|OP |SUMMARY|TIMEOUT' /home/z30086261/abssum.log
