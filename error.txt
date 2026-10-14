@@ -1,11 +1,6 @@
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# wc -l /home/z30086261/smoke_reduce_sum.log
-grep -n FAIL /home/z30086261/smoke_reduce_sum.log
-374 /home/z30086261/smoke_reduce_sum.log
-36:[FAIL] reduce_sum/frag/float16/128x512  diff=5.121e-02  kernel=6_reduce_sum_frag_float16_128x512.o
-62:[FAIL] reduce_sum/frag/float16/64x512  diff=5.121e-02  kernel=6_reduce_sum_frag_float16_64x512.o
-160:[FAIL] reduce_sum/shared/float16/128x512  diff=5.121e-02  kernel=6_reduce_sum_shared_float16_128x512.o
-186:[FAIL] reduce_sum/shared/float16/64x512  diff=5.121e-02  kernel=6_reduce_sum_shared_float16_64x512.o
-284:[FAIL] reduce_sum/thread/float16/128x512  diff=5.121e-02  kernel=6_reduce_sum_thread_float16_128x512.o
-310:[FAIL] reduce_sum/thread/float16/64x512  diff=5.121e-02  kernel=6_reduce_sum_thread_float16_64x512.o
-374:SUMMARY: 114 PASS / 6 FAIL
-root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+cd /home/z30086261/tmp/reduce_api_kernels
+echo "=== 失败行的 got/ref（看是不是 ref 接近 0） ==="
+grep -nA2 FAIL /home/z30086261/smoke_reduce_sum.log | head -30
+echo
+echo "=== 放松 ATOL 复跑其中一个 ==="
+KERNEL_PATH=reduce_sum/6_reduce_sum_frag_float16_64x512.o ATOL=0.1 python verify_precision.py reduce_sum frag float16 64 512; echo "exit=$?"
