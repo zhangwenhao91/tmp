@@ -1,46 +1,24 @@
-(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# npu-smi set -h
-Usage: npu-smi set <-h|-t type> [Options...]
+cd /home/z30086261/tmp && git pull
 
-Commands:
-       -h, --help     Show this help text and exit
-       -t type        The set type for device
-                      type: reset, clear-ecc-info, key-manage.
+source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
+export TILELANG_PYTHON=/usr/bin/python
+export ASCEND_RT_VISIBLE_DEVICES=4
+export PYTHONUNBUFFERED=1
 
-Options:
-       -i %d          NPU ID
-       -d %d          Config value
-       -s             String format configuration
-       -f             License (1-255) or path of SoC certificate files
-                      or path of all device logs are continuously collected
-       -m             By in-band reset, only can input 1
-(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# npu-smi set -t reset -i 4 -m 1
-Resetting the standard PCIe card or NPU chip may cause a system hang or abnormal reset during service running.
-Are you sure you want to continue resetting?(Y/N)
-y
-        Message                        : resetting ...
-        Status                         : OK
-        Message                        : Reset chip successfully.
-(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# npu-smi info | head -22
-+-------------------------------------------------------------------------------------------------+
-| npu-smi 25.7.rc1.b086                            Version: 25.7.rc1.b086                         |
-+--------+------------------+---------------+-----------------------------------------------------+
-| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
-|        |                  | Bus-Id        | AICore(%)   Memory-Usage(MB)  HBM-Usage(MB)         |
-+========+==================+===============+=====================================================+
-| 0      | Ascend950PR      | Critical      | 0.0         0                 0     / 0             |
-|        |                  | 0000:0D:00.0  | 0           0    / 0          0     / 0             |
-+========+==================+===============+=====================================================+
-| 1      | Ascend950PR      | OK            | 196.6       55                0     / 0             |
-|        |                  | 0000:0E:00.0  | 0           0    / 0          5902  / 131072        |
-+========+==================+===============+=====================================================+
-| 3      | Ascend950PR      | Critical      | 0.0         0                 0     / 0             |
-|        |                  | 0000:57:00.0  | 0           0    / 0          0     / 0             |
-+========+==================+===============+=====================================================+
-| 4      | Ascend950PR      | OK            | 190.0       56                0     / 0             |
-|        |                  | 0000:8B:00.0  | 0           0    / 0          5016  / 131072        |
-+========+==================+===============+=====================================================+
-| 5      | Ascend950PR      | OK            | 194.0       58                0     / 0             |
-|        |                  | 0000:8C:00.0  | 0           0    / 0          5239  / 131072        |
-+========+==================+===============+=====================================================+
-| 6      | Ascend950PR      | OK            | 191.8       58                0     / 0             |
-(base) root@ubuntu162:/home/z30086261/tmp/reduce_api_kernels# 
+cd /home/z30086261/tmp/reduce_api_kernels
+pgrep -af 'run_on_npu|verify_precision'        # 必须为空
+
+KERNEL_PATH=reduce_sum/6_reduce_sum_shared_float16_32x128.o python verify_precision.py reduce_sum shared float16 32 128; echo "exit=$?"
+
+
+
+cd /home/z30086261/tmp/reduce_api_kernels
+export CASE_TIMEOUT=0        # 不掐进程（掐进程会把卡焊死）
+export STOP_ON_FAIL=1        # 撞到坏用例立即中止该算子，不再产生成片假失败
+
+# 排除已单独复现确认坏的组合
+mkdir -p /home/z30086261/bad_o
+mv reduce_max/6_reduce_max_frag_int8_*.o /home/z30086261/bad_o/ 2>/dev/null
+
+nohup bash -c 'cd /home/z30086261/tmp/reduce_api_kernels && for op in reduce_max reduce_sum reduce_min reduce_abssum reduce_absmax; do echo "########## $op ##########"; ./run_on_npu.sh "$op"; done' > /home/z30086261/final.log 2>&1 &
+tail -f /home/z30086261/final.log
