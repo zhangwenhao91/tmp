@@ -1,23 +1,15 @@
-cd /home/z30086261/tmp && git pull
-
-source /home/CANN/9.3.0.weekly.20260930/ascend-toolkit/set_env.sh
-export TILELANG_PYTHON=/usr/bin/python
-export ASCEND_RT_VISIBLE_DEVICES=4
-export CASE_TIMEOUT=60
+# 先停掉当前前台循环：Ctrl-C
 
 cd /home/z30086261/tmp/reduce_api_kernels
-# reduce_max 放第一个，用来验证"60s 掐掉坏 kernel"这套机制是否管用
-for op in reduce_max reduce_sum reduce_min reduce_abssum reduce_absmax; do
-  echo "########## $op ##########"
-  ./run_on_npu.sh "$op" > /home/z30086261/run_$op.log 2>&1
-  tail -1 /home/z30086261/run_$op.log
-done
+export PYTHONUNBUFFERED=1
+export CASE_TIMEOUT=60
+
+nohup bash -c 'cd /home/z30086261/tmp/reduce_api_kernels && for op in reduce_max reduce_sum reduce_min reduce_abssum reduce_absmax; do echo "########## $op ##########"; ./run_on_npu.sh "$op"; done' > /home/z30086261/reduce_all2.log 2>&1 &
+
+tail -f /home/z30086261/reduce_all2.log
 
 
 
-for op in reduce_sum reduce_max reduce_min reduce_abssum reduce_absmax; do
-  L=/home/z30086261/run_$op.log
-  echo "===== $op ====="; tail -1 "$L"
-  grep TIMEOUT "$L"
-  grep FAIL "$L"
-done
+
+cd /home/z30086261/tmp/reduce_api_kernels
+./run_on_npu.sh reduce_max          # 直接输出到终端，天然实时
