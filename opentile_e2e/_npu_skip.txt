@@ -1,0 +1,12 @@
+# NPU 上机跳过清单（一行一个 stem，行尾可跟原因；# 开头为注释）
+#
+# 用法：run_npu.sh 自动选批次时跳过这里的用例；命令行显式点名仍会执行；--force 可全部忽略。
+#
+# --- 已 PASS，无需重跑（2026-10-15 batch=i8 第 1-2 例，device 4）---
+otr_sum_d0_i8  已PASS@device4 10:28:42
+otr_max_d0_i8  已PASS@device4 10:28:48
+#
+# --- 已知设备级 trap：i8 横向归约（dim=1）会让 device 挂死 ---
+# batch=i8 第 3 例，卡 1099s 后 rtStreamSynchronize failed 0x7bc9a；此后每例都卡 1099s 级联报错。
+# CCE 侧该用例走 cce.vcmax over vector<256xi8>（dim0 走 cce.vmax，正常），怀疑是 i8 横向归约配方缺陷。
+otr_max_d1_i8  设备级trap@device4 10:47:07 (rtStreamSynchronize 0x7bc9a)
