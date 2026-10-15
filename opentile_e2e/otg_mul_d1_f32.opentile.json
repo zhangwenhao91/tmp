@@ -1,0 +1,31 @@
+{
+  "kernel_o": "otg_mul_d1_f32.o",
+  "kernel_name": "otg_mul_d1_f32",
+  "device": 0,
+  "mix_mode": "aiv",
+  "blocknum": 1,
+  "golden": {
+    "module_path": "golden_impl.py",
+    "function": "otg_mul_d1_f32"
+  },
+  "args": [
+    {
+      "name": "x",
+      "kind": "input",
+      "shape": [
+        2048
+      ],
+      "dtype": "float32",
+      "generate": "random",
+      "seed": 0
+    },
+    {
+      "name": "out",
+      "kind": "output",
+      "shape": [
+        64
+      ],
+      "dtype": "float32"
+    }
+  ]
+}

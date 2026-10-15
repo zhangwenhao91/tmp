@@ -1,0 +1,33 @@
+{
+  "kernel_o": "otg_min_d0_i64.o",
+  "kernel_name": "otg_min_d0_i64",
+  "device": 0,
+  "mix_mode": "aiv",
+  "blocknum": 1,
+  "golden": {
+    "module_path": "golden_impl.py",
+    "function": "otg_min_d0_i64"
+  },
+  "args": [
+    {
+      "name": "x",
+      "kind": "input",
+      "shape": [
+        2048
+      ],
+      "dtype": "int64",
+      "generate": "random",
+      "seed": 0,
+      "low": -1000,
+      "high": 1000
+    },
+    {
+      "name": "out",
+      "kind": "output",
+      "shape": [
+        16
+      ],
+      "dtype": "int64"
+    }
+  ]
+}

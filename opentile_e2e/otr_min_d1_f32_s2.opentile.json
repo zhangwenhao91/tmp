@@ -1,0 +1,31 @@
+{
+  "kernel_o": "otr_min_d1_f32_s2.o",
+  "kernel_name": "otr_min_d1_f32_s2",
+  "device": 0,
+  "mix_mode": "aiv",
+  "blocknum": 1,
+  "golden": {
+    "module_path": "golden_impl.py",
+    "function": "otr_min_d1_f32_s2"
+  },
+  "args": [
+    {
+      "name": "x",
+      "kind": "input",
+      "shape": [
+        4096
+      ],
+      "dtype": "float32",
+      "generate": "random",
+      "seed": 0
+    },
+    {
+      "name": "out",
+      "kind": "output",
+      "shape": [
+        100
+      ],
+      "dtype": "float32"
+    }
+  ]
+}

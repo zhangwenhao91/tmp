@@ -1,0 +1,9 @@
+otg_mul_d1_i64.npu.mlir:144:13: error: typed i64 vector lowering is not implemented
+      %13 = npu.reduce %12, %c1_i64 : vector<64x32xi64>, i64 -> vector<64xi64> #npu.reduce_op<prod> identities=[1 : i64]
+            ^
+otg_mul_d1_i64.npu.mlir:144:13: note: see current operation: %46 = "npu.reduce"(%45, %10) <{identities = [1], reduce_op = #npu.reduce_op<prod>}> : (vector<64x32xi64>, i64) -> vector<64xi64>
+otg_mul_d1_i64.npu.mlir:145:7: error: typed i64 vector lowering is not implemented
+      npu.vstore %13, %11 : (vector<64xi64>, memref<64xi64, #npu.address_space<ub>>) -> ()
+      ^
+otg_mul_d1_i64.npu.mlir:145:7: note: see current operation: "npu.vstore"(%46, %43) : (vector<64xi64>, memref<64xi64, #cce.address_space<ub>>) -> ()
+FAIL cce-pipeline

@@ -1,0 +1,33 @@
+{
+  "kernel_o": "otr_sum_d0_i32_s2.o",
+  "kernel_name": "otr_sum_d0_i32_s2",
+  "device": 0,
+  "mix_mode": "aiv",
+  "blocknum": 1,
+  "golden": {
+    "module_path": "golden_impl.py",
+    "function": "otr_sum_d0_i32_s2"
+  },
+  "args": [
+    {
+      "name": "x",
+      "kind": "input",
+      "shape": [
+        4096
+      ],
+      "dtype": "int32",
+      "generate": "random",
+      "seed": 0,
+      "low": -1000,
+      "high": 1000
+    },
+    {
+      "name": "out",
+      "kind": "output",
+      "shape": [
+        20
+      ],
+      "dtype": "int32"
+    }
+  ]
+}

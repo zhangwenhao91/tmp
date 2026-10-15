@@ -1,0 +1,33 @@
+{
+  "kernel_o": "otr_max_d0_i16.o",
+  "kernel_name": "otr_max_d0_i16",
+  "device": 0,
+  "mix_mode": "aiv",
+  "blocknum": 1,
+  "golden": {
+    "module_path": "golden_impl.py",
+    "function": "otr_max_d0_i16"
+  },
+  "args": [
+    {
+      "name": "x",
+      "kind": "input",
+      "shape": [
+        2048
+      ],
+      "dtype": "int16",
+      "generate": "random",
+      "seed": 0,
+      "low": -32768,
+      "high": 32768
+    },
+    {
+      "name": "out",
+      "kind": "output",
+      "shape": [
+        16
+      ],
+      "dtype": "int16"
+    }
+  ]
+}

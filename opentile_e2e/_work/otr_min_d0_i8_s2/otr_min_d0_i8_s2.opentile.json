@@ -1,0 +1,33 @@
+{
+  "kernel_o": "otr_min_d0_i8_s2.o",
+  "kernel_name": "otr_min_d0_i8_s2",
+  "device": 0,
+  "mix_mode": "aiv",
+  "blocknum": 1,
+  "golden": {
+    "module_path": "golden_impl.py",
+    "function": "otr_min_d0_i8_s2"
+  },
+  "args": [
+    {
+      "name": "x",
+      "kind": "input",
+      "shape": [
+        4096
+      ],
+      "dtype": "int8",
+      "generate": "random",
+      "seed": 0,
+      "low": -128,
+      "high": 128
+    },
+    {
+      "name": "out",
+      "kind": "output",
+      "shape": [
+        20
+      ],
+      "dtype": "int8"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+otg_mul_d0_i8	FAIL ccec | fatal error: error in backend: The total stack object size (516416) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d1_i8	FAIL ccec | fatal error: error in backend: The total stack object size (516416) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d0_i16	FAIL ccec | fatal error: error in backend: The total stack object size (516384) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d1_i16	FAIL ccec | fatal error: error in backend: The total stack object size (516384) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d0_i32	FAIL ccec | fatal error: error in backend: The total stack object size (516384) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d1_i32	FAIL ccec | fatal error: error in backend: The total stack object size (516384) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d0_i64	FAIL cce-pipeline | otg_mul_d0_i64.npu.mlir:145:13: error: typed i64 vector lowering is not implemented
+otg_mul_d1_i64	FAIL cce-pipeline | otg_mul_d1_i64.npu.mlir:144:13: error: typed i64 vector lowering is not implemented
+otg_mul_d0_f16	FAIL ccec | fatal error: error in backend: The total stack object size (516384) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d1_f16	FAIL ccec | fatal error: error in backend: The total stack object size (516384) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d0_bf16	FAIL ccec | fatal error: error in backend: The total stack object size (516384) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d1_bf16	FAIL ccec | fatal error: error in backend: The total stack object size (516384) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d0_f32	FAIL ccec | fatal error: error in backend: The total stack object size (516384) exceeded vf stack size (6144). The spilled objects are: 
+otg_mul_d1_f32	FAIL ccec | fatal error: error in backend: The total stack object size (516384) exceeded vf stack size (6144). The spilled objects are: 
+otg_sum_d0_i64	FAIL cce-pipeline | otg_sum_d0_i64.npu.mlir:25:12: error: typed i64 vector lowering is not implemented
+otg_sum_d1_i64	FAIL cce-pipeline | otg_sum_d1_i64.npu.mlir:26:12: error: typed i64 vector lowering is not implemented
+otg_max_d0_i64	FAIL cce-pipeline | otg_max_d0_i64.npu.mlir:145:13: error: typed i64 vector lowering is not implemented
+otg_max_d1_i64	FAIL cce-pipeline | otg_max_d1_i64.npu.mlir:145:13: error: typed i64 vector lowering is not implemented
+otg_min_d0_i64	FAIL cce-pipeline | otg_min_d0_i64.npu.mlir:145:13: error: typed i64 vector lowering is not implemented
+otg_min_d1_i64	FAIL cce-pipeline | otg_min_d1_i64.npu.mlir:145:13: error: typed i64 vector lowering is not implemented
+otg_sum_d0_bf16	COMPILED -> 该组合已可降级（规格声称落空的部分已打通）
+otg_sum_d1_bf16	FAIL ccec | fatal error: error in backend: The total stack object size (16928) exceeded vf stack size (6144). The spilled objects are: 
+otg_max_d0_bf16	COMPILED -> 该组合已可降级（规格声称落空的部分已打通）
+otg_max_d1_bf16	FAIL cce-to-backend | otg_max_d1_bf16.cce.mlir:488:12: error: LLVM Translation failed for operation: cce.vcmax
+otg_min_d0_bf16	COMPILED -> 该组合已可降级（规格声称落空的部分已打通）
+otg_min_d1_bf16	FAIL cce-to-backend | otg_min_d1_bf16.cce.mlir:488:12: error: LLVM Translation failed for operation: cce.vcmin

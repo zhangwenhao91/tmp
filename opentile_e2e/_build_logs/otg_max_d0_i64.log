@@ -1,0 +1,9 @@
+otg_max_d0_i64.npu.mlir:145:13: error: typed i64 vector lowering is not implemented
+      %13 = npu.reduce %12, %c0_i64 : vector<64x32xi64>, i64 -> vector<32xi64> #npu.reduce_op<max> identities=[-9223372036854775808 : i64] {integer_signedness = #npu.integer_signedness<signed>}
+            ^
+otg_max_d0_i64.npu.mlir:145:13: note: see current operation: %48 = "npu.reduce"(%47, %5) <{identities = [-9223372036854775808], integer_signedness = #npu.integer_signedness<signed>, reduce_op = #npu.reduce_op<max>}> : (vector<64x32xi64>, i64) -> vector<32xi64>
+otg_max_d0_i64.npu.mlir:146:7: error: typed i64 vector lowering is not implemented
+      npu.vstore %13, %11 : (vector<32xi64>, memref<32xi64, #npu.address_space<ub>>) -> ()
+      ^
+otg_max_d0_i64.npu.mlir:146:7: note: see current operation: "npu.vstore"(%48, %44) : (vector<32xi64>, memref<32xi64, #cce.address_space<ub>>) -> ()
+FAIL cce-pipeline

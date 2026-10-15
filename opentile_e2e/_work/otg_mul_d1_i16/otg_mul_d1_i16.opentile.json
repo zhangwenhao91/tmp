@@ -1,0 +1,33 @@
+{
+  "kernel_o": "otg_mul_d1_i16.o",
+  "kernel_name": "otg_mul_d1_i16",
+  "device": 0,
+  "mix_mode": "aiv",
+  "blocknum": 1,
+  "golden": {
+    "module_path": "golden_impl.py",
+    "function": "otg_mul_d1_i16"
+  },
+  "args": [
+    {
+      "name": "x",
+      "kind": "input",
+      "shape": [
+        2048
+      ],
+      "dtype": "int16",
+      "generate": "random",
+      "seed": 0,
+      "low": 1,
+      "high": 2
+    },
+    {
+      "name": "out",
+      "kind": "output",
+      "shape": [
+        64
+      ],
+      "dtype": "int16"
+    }
+  ]
+}

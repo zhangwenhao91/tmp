@@ -1,0 +1,5 @@
+otg_max_d1_bf16.cce.mlir:488:12: error: LLVM Translation failed for operation: cce.vcmax
+    %282 = cce.vcmax(%281, %dst_14) : (vector<128xbf16>, vector<256xi1>) -> vector<128xbf16>
+           ^
+otg_max_d1_bf16.cce.mlir:488:12: note: see current operation: %291 = "cce.vcmax"(%290, %281#0) : (vector<128xbf16>, vector<256xi1>) -> vector<128xbf16>
+FAIL cce-to-backend
