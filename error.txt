@@ -1,4 +1,10 @@
-source /home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
+root@ubuntu162:/home/z30086261/tmp# source /home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
 export ASCEND_RT_VISIBLE_DEVICES=4
 cd /home/z30086261/tmp && git pull
 python3 opentile_e2e/run_npu.sh
+Current branch main is up to date.
+  File "/home/z30086261/tmp/opentile_e2e/run_npu.sh", line 14
+    set -uo pipefail
+            ^^^^^^^^
+SyntaxError: invalid syntax
+root@ubuntu162:/home/z30086261/tmp# 
