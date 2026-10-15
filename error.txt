@@ -1,9 +1,7 @@
-# 1) 环境
-source /home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
-export ASCEND_RT_VISIBLE_DEVICES=4          # 4/5/6 之一
-
-# 2) 拉取扩样包
-cd /home/z30086261/tmp && git pull
-
-# 3) 跑全部 24 例（基线 6 + 新 18）
-bash opentile_e2e/run_npu.sh
+OPname	OP分类	入参	返回值	"支持的 Attribute 规格
+（不含内部生成的 operandSegmentSizes）"	i1	i4	i8	i16	i32	i64	f4E2M1FN	f8E4M3FN	f8E5M2	f8E8M0FNU	f16	bf16	tf32	f32	f64	特殊限制	NPU Dialect 降级支持	CCE Dialect 降级支持	责任人	测试结果	修复进度	
+open_tile.reduce (ReduceOp)	计算类	"operands: 可变长 Tile<任意合法元素类型>
+dim: i32 属性
+identities: ArrayAttr
+body: Region（SizedRegion<1>）"	results: 可变长 Tile<任意合法元素类型>	"dim: I32Attr，必选；0 <= dim < 输入 rank
+identities: ArrayAttr，必选；数量与 operands 一致，元素类型逐一匹配"	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	✓	dim 必须在 rank 内；全部输入 shape 相同；每个结果删除规约维；identities 数量/类型对应输入；body 为结合操作，接收 2N 个标量参数并 yield N 个标量。	支持某部分类型：仅单输入单结果，combine 为 add/mul/max/min 的规约	支持某部分类型：单输入单结果的 sum/max/min；常用 i8/i16/i32/i64、f16/bf16/f32，prod 暂不支持	朱秋成->叶梓发			
