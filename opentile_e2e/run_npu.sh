@@ -27,6 +27,7 @@
 #                    所以默认止损。设 0 可跑完全部再汇总）
 #   PYTHON=<python>  指定解释器（默认 python3）
 #   DEVICE=<id>      健康检查用物理卡号；默认取 ASCEND_RT_VISIBLE_DEVICES 的第一项
+#   SKIP_HEALTH_CHECK=1  跳过开跑前的设备健康闸门（仅在 npu-smi 不可用/误判时使用）
 #
 # 输出：每例一行进度 [i/n 时间] <stem> PASS|FAIL|ERROR；仅失败时附详细日志 + 设备健康状态。
 set -uo pipefail
@@ -56,15 +57,33 @@ echo "  STOP_ON_FAIL=$STOP_ON_FAIL"
 "$PY" -c 'import numpy, torch' 2>/dev/null || { echo "error: $PY 缺少 numpy/torch（先 source CANN，或用 PYTHON= 指定）"; exit 2; }
 command -v ccec >/dev/null 2>&1 || echo "warn: PATH 上没有 ccec（本脚本不编译，仅运行）"
 
-device_health() { # 打印设备健康状态；OK 返回 0，非 OK/查不到返回 1
+device_health() { # 打印设备健康状态；OK 返回 0，异常/无法确认返回 1
+  if [ "${SKIP_HEALTH_CHECK:-0}" = "1" ]; then
+    echo "      | 已按 SKIP_HEALTH_CHECK=1 跳过设备健康检查"
+    return 0
+  fi
   if ! command -v npu-smi >/dev/null 2>&1; then
     echo "      | npu-smi 不可用，跳过健康检查"
     return 0
   fi
-  local out
-  out="$(npu-smi info -t health -i "$DEVICE" 2>&1 | head -12)"
-  printf '%s\n' "$out" | sed 's/^/      | /'
-  printf '%s' "$out" | grep -qiE 'Health Status[[:space:]]*:?[[:space:]]*OK'
+  local out row
+  out="$(npu-smi info -t health -i "$DEVICE" 2>&1)"
+  if printf '%s' "$out" | grep -qiE 'Health[[:space:]]*Status[[:space:]]*:?[[:space:]]*OK'; then
+    printf '%s\n' "$out" | head -12 | sed 's/^/      | /'
+    return 0
+  fi
+  # -t health 的语法/输出格式不匹配时，退回解析 npu-smi info 的表格：
+  # 设备行形如 "| 4 | Ascend950PR | Alarm | ..."，列位随版本浮动，故在该行内扫健康值
+  row="$(npu-smi info 2>/dev/null | awk -v d="$DEVICE" \
+        '$1=="|" && $2==d { for (i=3;i<=NF;i++) if ($i ~ /^(OK|Alarm|Critical|Warning)$/) { print $i; exit } }')"
+  if [ -n "$row" ]; then
+    echo "      | (表格判定) NPU $DEVICE Health=$row"
+    [ "$row" = "OK" ]
+    return
+  fi
+  echo "      | 无法确认 NPU $DEVICE 健康状态，按异常处理："
+  printf '%s\n' "$out" | head -6 | sed 's/^/      | /'
+  return 1
 }
 
 reset_hint() {
