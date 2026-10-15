@@ -1,1 +1,1 @@
-git@github.com:zhangwenhao91/TileOPs.git
+cd <repo> && ASCEND_RT_VISIBLE_DEVICES=4 python -m pytest tests/test_ascend_backend.py -q
