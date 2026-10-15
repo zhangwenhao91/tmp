@@ -1,11 +1,2 @@
-cd /home/z30086261/tmp && git pull
-source /home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
-
-# 换到健康的 5 号卡（4 号已被打挂：Alarm + AICore 100% 且无进程，pkill 清不掉）
-export ASCEND_RT_VISIBLE_DEVICES=5
-npu-smi info -t health -i 5      # 期望 Health Status : OK
-
-# 4 号卡善后（可选，不影响本次）
-npu-smi set -t reset -i 4 -c 0
-
-cd opentile_e2e && bash run_npu.sh --i8
+(base) root@ubuntu162:/home/z30086261/tmp# npu-smi set -t reset -i 4 -c 0
+This device does not support input parameter of -c.
