@@ -47,11 +47,24 @@ EXTRA_CASES=(
   "triton_min_dim0:test_min_dim0"
   "triton_max_dim1:test_max_dim1"
 )
+# 矩阵扩样：mlir 由 gen_reduce_matrix.py 生成在 $PKG/_src/（无 FullPipeline 子目录）
+MATRIX_CASES=(
+  otr_sum_d0_f16 otr_sum_d0_f32 otr_sum_d0_i32
+  otr_sum_d1_f16 otr_sum_d1_f32 otr_sum_d1_i32
+  otr_max_d0_f16 otr_max_d0_f32 otr_max_d0_i32
+  otr_max_d1_f16 otr_max_d1_f32 otr_max_d1_i32
+  otr_min_d0_f16 otr_min_d0_f32 otr_min_d0_i32
+  otr_min_d1_f16 otr_min_d1_f32 otr_min_d1_i32
+)
 
-run_one() { # $1=stem $2=sub
+run_one() { # $1=stem $2=sub(可空，空则从 $PKG/_src/ 取)
   local stem="$1" sub="$2" d="$PKG/_work/$1" log="$PKG/_build_logs/$1.log"
+  local src
+  if [ -f "$PKG/_src/$stem.opentile.mlir" ]; then src="$PKG/_src/$stem.opentile.mlir"
+  else src="$SRC_DIR/$sub/$stem.opentile.mlir"; fi
+  [ -f "$src" ] || { echo "!! 找不到 mlir: $src"; return 1; }
   rm -rf "$d"; mkdir -p "$d"
-  cp "$SRC_DIR/$sub/$stem.opentile.mlir" "$d/"
+  cp "$src" "$d/"
   cp "$PKG/$stem.opentile.json" "$d/"
   cp "$PKG/golden_impl.py" "$d/"
   (
@@ -67,13 +80,17 @@ if [ $# -gt 0 ]; then
   SEL=("$@")
 else
   SEL=(); for s in "${CASES[@]}"; do SEL+=("${s%%:*}"); done
+  SEL+=("${MATRIX_CASES[@]}")
 fi
 
 ok=0; bad=0
 for stem in "${SEL[@]}"; do
   sub=""
   for s in "${CASES[@]}" "${EXTRA_CASES[@]}"; do [ "${s%%:*}" = "$stem" ] && sub="${s##*:}"; done
-  [ -n "$sub" ] || { echo "!! 未知用例: $stem"; continue; }
+  # 矩阵用例允许 sub 为空（mlir 在 _src/）
+  if [ -z "$sub" ] && [ ! -f "$PKG/_src/$stem.opentile.mlir" ]; then
+    echo "!! 未知用例: $stem"; continue
+  fi
   run_one "$stem" "$sub"
   if [ -f "$PKG/_work/$stem/$stem.o" ]; then
     printf 'OK   %-18s .o=%s bytes\n' "$stem" "$(stat -c%s "$PKG/_work/$stem/$stem.o")"; ok=$((ok+1))

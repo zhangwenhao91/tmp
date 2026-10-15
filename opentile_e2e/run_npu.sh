@@ -7,7 +7,7 @@
 #   3. 同目录 _work/<stem>/ 下已有本机产出的 <stem>.o（由 build_local.sh 生成并随包交付）
 #
 # 用法：
-#   bash run_npu.sh                       # 跑全部 6 个 float 用例
+#   bash run_npu.sh                       # 跑全部 24 个用例
 #   bash run_npu.sh triton_min_dim1       # 只跑指定子集
 #
 # 输出：每例一行进度 [i/n 时间] <stem> PASS|FAIL|ERROR；仅失败时附详细日志。
@@ -39,12 +39,32 @@ export PYTHONPATH="$KR${PYTHONPATH:+:$PYTHONPATH}"
 
 # --- 2) 用例表 stem:atol:rtol ---
 ALL_CASES=(
+  # 基线 6 例（已验证）
   "triton_min_dim1:0:0"
   "triton_max_dim0:0:0"
   "triton_sum_dim1:0.02:0.02"
   "triton_sum_dim0:0.5:0.01"
   "triton_mean_dim1:0.002:0.01"
   "triton_mean_dim0:0.01:0.01"
+  # 矩阵扩样：comb x axis x dtype（f16/f32 在前，i32 在后——i32 归约历史上未上机验证过）
+  "otr_sum_d1_f16:0.02:0.02"
+  "otr_sum_d0_f16:0.5:0.01"
+  "otr_max_d1_f16:0:0"
+  "otr_max_d0_f16:0:0"
+  "otr_min_d1_f16:0:0"
+  "otr_min_d0_f16:0:0"
+  "otr_sum_d1_f32:0.01:0.01"
+  "otr_sum_d0_f32:0.01:0.01"
+  "otr_max_d1_f32:0:0"
+  "otr_max_d0_f32:0:0"
+  "otr_min_d1_f32:0:0"
+  "otr_min_d0_f32:0:0"
+  "otr_sum_d1_i32:0:0"
+  "otr_sum_d0_i32:0:0"
+  "otr_max_d1_i32:0:0"
+  "otr_max_d0_i32:0:0"
+  "otr_min_d1_i32:0:0"
+  "otr_min_d0_i32:0:0"
 )
 declare -A ATOL RTOL
 for spec in "${ALL_CASES[@]}"; do

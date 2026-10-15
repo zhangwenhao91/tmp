@@ -1,0 +1,31 @@
+{
+  "kernel_o": "otr_sum_d1_f16.o",
+  "kernel_name": "otr_sum_d1_f16",
+  "device": 0,
+  "mix_mode": "aiv",
+  "blocknum": 1,
+  "golden": {
+    "module_path": "golden_impl.py",
+    "function": "otr_sum_d1_f16"
+  },
+  "args": [
+    {
+      "name": "x",
+      "kind": "input",
+      "shape": [
+        2048
+      ],
+      "dtype": "float16",
+      "generate": "random",
+      "seed": 0
+    },
+    {
+      "name": "out",
+      "kind": "output",
+      "shape": [
+        64
+      ],
+      "dtype": "float16"
+    }
+  ]
+}
