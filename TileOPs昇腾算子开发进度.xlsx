@@ -1,0 +1,220 @@
+									
+TileOPs 昇腾算子开发进度									
+									
+全部算子		205	第一优先级	7	昇腾已完成	0			
+任务目标（个）		150	第一优先级已完成	0	昇腾未完成	205			
+序号	功能类别	算子名称	中文功能说明	GPU 实现状态	优先级	Tilelang/example	幻方/TileKernel	是否完成昇腾实现	责任人
+1	注意力	GQADenseFwdOp	稠密分组查询注意力，多个查询头共享键和值头。	已实现	第一优先级	"gqa（昇腾）
+flashattn（CUDA）"	无example实例	否	
+2	注意力	GQABwdOp	分组查询注意力的梯度计算。	已实现	第一优先级	"flash_attention_bwd_preprocess + flash_attention_bwd_fused_dq_atomic_staged（昇腾）
+flashattn_bwd_atomic_add / flashattn_bwd_split（CUDA）"	无example实例	否	
+3	注意力	MHADecodePagedWithKVCacheFwdOp	使用分页键值缓存完成多头注意力解码。	已实现	第一优先级	"mha（昇腾；稠密前向参考，非分页解码）
+flashattn（MHA解码参考；CUDA，未实现分页缓存）"	无example实例	否	
+4	注意力	MLADecodeWithKVCacheFwdOp	使用键值缓存完成多头潜在注意力（MLA）解码。	已实现	第一优先级	flashattn / mla_decode_tilelang（MLA解码；CUDA）	无example实例	否	
+5	注意力	DSADecodeWithKVCacheFwdOp	按选定索引访问键值缓存，完成稀疏注意力解码。	已实现	第一优先级	sparse_mla_fwd_interface（DSA稀疏注意力参考；CUDA）	无example实例	否	
+6	注意力	NSAVarlenFwdOp	按已选块索引计算变长原生稀疏注意力。	已实现	第一优先级	native_sparse_attention_varlen（CUDA）	无example实例	否	
+7	线性注意力	KDAFwdOp	Kimi Delta Attention 线性注意力。	已实现	第一优先级	"safe_gated_kda_decode（解码参考；CUDA）
+tilelang_chunk_kda_fwd_intra_token_parallel + tilelang_chunk_fwd_o（分块阶段参考；CUDA）"	无example实例	否	
+8	注意力	GQAVarlenFwdOp	处理批内不同序列长度的分组查询注意力。	已实现	待定	flashattn（变长GQA；CUDA）	无example实例	否	
+9	注意力	GQAPagedFwdOp	通过分页键值缓存计算分组查询注意力。	未实现（仅有规格）	待定	flashattn（分页稀疏GQA参考；CUDA）	无example实例	否	
+10	注意力	GQAPrefillPagedWithKVCacheFwdOp	预填充阶段写入分页键值缓存并计算分组查询注意力。	已实现	待定	无example实例	无example实例	否	
+11	注意力	NSACompressedVarlenFwdOp	对变长序列的压缩键和值计算原生稀疏注意力。	已实现	待定	无example实例	无example实例	否	
+12	注意力	NSATopKVarlenFwdOp	为变长原生稀疏注意力选择得分最高的若干块。	已实现	待定	无example实例	无example实例	否	
+13	注意力	MLAPagedFwdOp	使用分页潜在键值缓存计算 MLA 注意力。	未实现（仅有规格）	待定	mla_decode_tilelang（分页解码参考；CUDA）	无example实例	否	
+14	注意力	MLAVarlenFwdOp	计算支持不同序列长度的 MLA 注意力。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+15	注意力	PagedKVCacheWriteFwdOp	按槽位映射将键和值写入分页缓存。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+16	注意力	MLAKVCacheWriteFwdOp	组合 MLA 潜在键值与位置分量，并写入缓存。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+17	注意力	MergeAttentionStatesFwdOp	依据归一化统计合并两组注意力输出状态。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+18	注意力	DSAPagedFwdOp	通过分页键值缓存和选定索引计算稀疏注意力。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+19	注意力	PagedKVCacheGatherFwdOp	按页表收集键值缓存，可按规格执行反量化。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+20	注意力	FP8LightningIndexerFwdOp	计算 FP8 注意力索引得分，为稀疏选择提供依据。	已实现	待定	mqa_attn_return_logits_interface（CUDA）	无example实例	否	
+21	注意力	TopKSelectFwdOp	在指定候选区间选择得分最高的 K 个索引。	已实现	待定	tl_topk（区间TopK；CUDA）	无example实例	否	
+22	卷积	Conv1dFwdOp	一维卷积前向计算。	已实现	待定	无example实例	无example实例	否	
+23	卷积	Conv2dFwdOp	二维卷积前向计算。	已实现	待定	convolution（CUDA）	无example实例	否	
+24	卷积	Conv3dFwdOp	三维卷积前向计算。	已实现	待定	无example实例	无example实例	否	
+25	逐元素计算	PreluFwdOp	带可学习负半轴斜率的 PReLU 激活。	已实现	待定	无example实例	无example实例	否	
+26	逐元素计算	MaskedFillTensorFwdOp	按布尔掩码用张量给定的值填充元素。	已实现	待定	无example实例	无example实例	否	
+27	逐元素计算	MaskedFillScalarFwdOp	按布尔掩码用标量填充元素。	已实现	待定	无example实例	无example实例	否	
+28	逐元素计算	AddFwdOp	逐元素加法，支持广播及对第二个输入乘以 alpha。	已实现	待定	"vector_add（昇腾）
+elementwise_add（CUDA）"	无example实例	否	
+29	逐元素计算	SubFwdOp	逐元素减法，支持广播及对第二个输入乘以 alpha。	已实现	待定	无example实例	无example实例	否	
+30	逐元素计算	MulFwdOp	逐元素乘法，支持广播。	已实现	待定	无example实例	无example实例	否	
+31	逐元素计算	DivFwdOp	逐元素除法，并按规格支持取整模式。	已实现	待定	无example实例	无example实例	否	
+32	逐元素计算	RemainderFwdOp	逐元素求余，余数符号遵循除数。	已实现	待定	无example实例	无example实例	否	
+33	逐元素计算	PowFwdOp	逐元素幂运算，支持广播。	已实现	待定	无example实例	无example实例	否	
+34	逐元素计算	FloorDivideFwdOp	逐元素除法后向负无穷方向取整。	已实现	待定	无example实例	无example实例	否	
+35	逐元素计算	LerpScalarFwdOp	使用标量权重在两个输入之间线性插值。	已实现	待定	无example实例	无example实例	否	
+36	逐元素计算	MaximumFwdOp	逐元素取两个输入中的较大值。	已实现	待定	无example实例	无example实例	否	
+37	逐元素计算	MinimumFwdOp	逐元素取两个输入中的较小值。	已实现	待定	无example实例	无example实例	否	
+38	逐元素计算	EqFwdOp	逐元素判断相等，输出布尔结果。	已实现	待定	无example实例	无example实例	否	
+39	逐元素计算	NeFwdOp	逐元素判断不相等，输出布尔结果。	已实现	待定	无example实例	无example实例	否	
+40	逐元素计算	GtFwdOp	逐元素判断第一个输入是否大于第二个输入。	已实现	待定	无example实例	无example实例	否	
+41	逐元素计算	LtFwdOp	逐元素判断第一个输入是否小于第二个输入。	已实现	待定	无example实例	无example实例	否	
+42	逐元素计算	GeFwdOp	逐元素判断大于或等于。	已实现	待定	无example实例	无example实例	否	
+43	逐元素计算	LeFwdOp	逐元素判断小于或等于。	已实现	待定	无example实例	无example实例	否	
+44	逐元素计算	LogicalAndFwdOp	逐元素逻辑与。	已实现	待定	无example实例	无example实例	否	
+45	逐元素计算	LogicalOrFwdOp	逐元素逻辑或。	已实现	待定	无example实例	无example实例	否	
+46	逐元素计算	BitwiseAndFwdOp	逐元素按位与。	已实现	待定	无example实例	无example实例	否	
+47	逐元素计算	BitwiseOrFwdOp	逐元素按位或。	已实现	待定	无example实例	无example实例	否	
+48	逐元素计算	BitwiseXorFwdOp	逐元素按位异或。	已实现	待定	无example实例	无example实例	否	
+49	逐元素计算	SiluAndMulFwdOp	将输入的门控部分做 SiLU 激活，再与值部分相乘。	已实现	待定	无example实例	swiglu_forward（昇腾/CUDA）	否	
+50	逐元素计算	GeluAndMulFwdOp	将输入的门控部分做 GELU 激活，再与值部分相乘。	已实现	待定	无example实例	无example实例	否	
+51	逐元素计算	GeluTanhAndMulFwdOp	采用 tanh 近似 GELU 的门控激活与乘法融合。	已实现	待定	无example实例	无example实例	否	
+52	逐元素计算	AlibiFwdOp	生成 ALiBi 线性位置偏置。	已实现	待定	无example实例	无example实例	否	
+53	逐元素计算	SinusoidalFwdOp	生成正弦与余弦形式的位置编码。	已实现	待定	无example实例	无example实例	否	
+54	逐元素计算	WhereFwdOp	按布尔条件逐元素从两个输入中选择结果。	已实现	待定	无example实例	无example实例	否	
+55	逐元素计算	LerpTensorFwdOp	使用张量权重在两个输入之间线性插值。	已实现	待定	无example实例	无example实例	否	
+56	逐元素计算	ReluFwdOp	ReLU 激活，将负值置零。	已实现	待定	无example实例	无example实例	否	
+57	逐元素计算	GeluFwdOp	高斯误差线性单元 GELU 激活。	已实现	待定	无example实例	无example实例	否	
+58	逐元素计算	SiluFwdOp	SiLU 激活，计算 x 乘以 sigmoid(x)。	已实现	待定	无example实例	无example实例	否	
+59	逐元素计算	HardswishFwdOp	HardSwish 分段近似激活。	已实现	待定	无example实例	无example实例	否	
+60	逐元素计算	HardsigmoidFwdOp	HardSigmoid 分段近似激活。	已实现	待定	无example实例	无example实例	否	
+61	逐元素计算	MishFwdOp	Mish 激活，计算 x 乘以 tanh(softplus(x))。	已实现	待定	无example实例	无example实例	否	
+62	逐元素计算	SeluFwdOp	带缩放系数的指数线性单元 SELU 激活。	已实现	待定	无example实例	无example实例	否	
+63	逐元素计算	LeakyReluFwdOp	负半轴保留固定斜率的 LeakyReLU 激活。	已实现	待定	无example实例	无example实例	否	
+64	逐元素计算	EluFwdOp	指数线性单元 ELU 激活。	已实现	待定	无example实例	无example实例	否	
+65	逐元素计算	HardtanhFwdOp	将输入截断到给定区间的 HardTanh 激活。	已实现	待定	无example实例	无example实例	否	
+66	逐元素计算	SoftplusFwdOp	平滑的正值激活，核心表达为 log(1+exp(x))。	已实现	待定	无example实例	无example实例	否	
+67	逐元素计算	ClampTensorFwdOp	按张量给定的上下界逐元素截断。	已实现	待定	无example实例	无example实例	否	
+68	逐元素计算	ClampScalarFwdOp	按标量给定的上下界逐元素截断。	已实现	待定	无example实例	无example实例	否	
+69	逐元素计算	NanToNumFwdOp	将非数值、正无穷和负无穷替换为指定或默认值。	已实现	待定	无example实例	无example实例	否	
+70	逐元素计算	ExpFwdOp	逐元素计算自然指数 exp(x)。	已实现	待定	无example实例	无example实例	否	
+71	逐元素计算	LogFwdOp	逐元素计算自然对数 log(x)。	已实现	待定	无example实例	无example实例	否	
+72	逐元素计算	SqrtFwdOp	逐元素计算平方根。	已实现	待定	无example实例	无example实例	否	
+73	逐元素计算	RsqrtFwdOp	逐元素计算平方根的倒数。	已实现	待定	无example实例	无example实例	否	
+74	逐元素计算	AbsFwdOp	逐元素计算绝对值。	已实现	待定	无example实例	无example实例	否	
+75	逐元素计算	NegFwdOp	逐元素取负。	已实现	待定	无example实例	无example实例	否	
+76	逐元素计算	ReciprocalFwdOp	逐元素计算倒数。	已实现	待定	无example实例	无example实例	否	
+77	逐元素计算	SignFwdOp	逐元素提取正、负或零的符号。	已实现	待定	无example实例	无example实例	否	
+78	逐元素计算	SinFwdOp	逐元素计算正弦。	已实现	待定	无example实例	无example实例	否	
+79	逐元素计算	CosFwdOp	逐元素计算余弦。	已实现	待定	无example实例	无example实例	否	
+80	逐元素计算	FloorFwdOp	逐元素向负无穷方向取整。	已实现	待定	无example实例	无example实例	否	
+81	逐元素计算	CeilFwdOp	逐元素向正无穷方向取整。	已实现	待定	无example实例	无example实例	否	
+82	逐元素计算	RoundFwdOp	逐元素舍入到最接近的整数。	已实现	待定	无example实例	无example实例	否	
+83	逐元素计算	TruncFwdOp	逐元素向零方向取整。	已实现	待定	无example实例	无example实例	否	
+84	逐元素计算	ErfFwdOp	逐元素计算误差函数。	已实现	待定	无example实例	无example实例	否	
+85	逐元素计算	Log1pFwdOp	逐元素计算 log(1+x)，改善小输入时的数值精度。	已实现	待定	无example实例	无example实例	否	
+86	逐元素计算	Expm1FwdOp	逐元素计算 exp(x)-1，改善小输入时的数值精度。	已实现	待定	无example实例	无example实例	否	
+87	逐元素计算	SigmoidFwdOp	Sigmoid 激活，将输入映射到零和一之间。	已实现	待定	无example实例	无example实例	否	
+88	逐元素计算	TanhFwdOp	逐元素计算双曲正切。	已实现	待定	无example实例	无example实例	否	
+89	逐元素计算	LogicalNotFwdOp	逐元素逻辑非。	已实现	待定	无example实例	无example实例	否	
+90	逐元素计算	BitwiseNotFwdOp	逐元素按位取反。	已实现	待定	无example实例	无example实例	否	
+91	逐元素计算	IsnanFwdOp	逐元素判断是否为非数值 NaN。	已实现	待定	无example实例	无example实例	否	
+92	逐元素计算	IsinfFwdOp	逐元素判断是否为正无穷或负无穷。	已实现	待定	无example实例	无example实例	否	
+93	逐元素计算	IsfiniteFwdOp	逐元素判断是否为有限数值。	已实现	待定	无example实例	无example实例	否	
+94	逐元素计算	DropoutFwdOp	按给定概率随机丢弃元素，并按保留概率缩放。	已实现	待定	无example实例	无example实例	否	
+95	快速傅里叶变换	FFTC2CFwdOp	复数输入到复数输出的快速傅里叶变换。	已实现	待定	无example实例	无example实例	否	
+96	矩阵乘法	GemmFwdOp	稠密矩阵乘法，支持规格声明的转置布局。	已实现	待定	"gemm / bf16_gemm_nt（昇腾）
+matmul（CUDA）"	无example实例	否	
+97	矩阵乘法	GemmFP8FwdOp	带量化缩放及可选偏置的 FP8 矩阵乘法。	已实现	待定	"fp8_gemm_nt（昇腾）
+matmul（FP8；CUDA）"	无example实例	否	
+98	矩阵乘法	GemmW4A16FwdOp	4 位量化权重与 16 位激活的矩阵乘法。	已实现	待定	dequantize_gemv / matmul（INT4反量化乘法参考；CUDA）	无example实例	否	
+99	矩阵乘法	GroupedGemmFwdOp	对多组矩阵执行分组矩阵乘法。	已实现	待定	"m_grouped_bf16_gemm_nt_contiguous（昇腾）
+grouped_gemm（CUDA）"	无example实例	否	
+100	矩阵乘法	GemmINT8W8A8FwdOp	8 位整数量化权重与激活的矩阵乘法。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+101	矩阵乘法	GemmW4A8FwdOp	4 位量化权重与 8 位激活的矩阵乘法。	未实现（仅有规格）	待定	matmul_int8xint4（CUDA）	无example实例	否	
+102	矩阵乘法	BmmFwdOp	对批内各组矩阵独立执行矩阵乘法。	已实现	待定	bf16_bmm（昇腾）	无example实例	否	
+103	矩阵乘法	BmmFP8FwdOp	带量化缩放的 FP8 批量矩阵乘法。	已实现	待定	fp8_bmm（昇腾）	无example实例	否	
+104	线性注意力	DeltaNetFwdOp	采用 Delta 更新规则的线性注意力。	已实现	待定	tilelang_chunk_gated_delta_rule_fwd_h（门控Delta分块阶段参考；CUDA）	无example实例	否	
+105	线性注意力	GDNFwdOp	带门控的 DeltaNet 线性注意力。	已实现	待定	tilelang_chunk_gated_delta_rule_fwd_h + tilelang_chunk_fwd_o（分块阶段参考；CUDA）	无example实例	否	
+106	线性注意力	DeltaNetRecurrentFwdOp	逐步递推更新 DeltaNet 状态并计算输出。	已实现	待定	无example实例	无example实例	否	
+107	线性注意力	GLARecurrentFwdOp	逐步递推更新门控线性注意力状态并计算输出。	已实现	待定	无example实例	无example实例	否	
+108	线性注意力	DeltaNetChunkFwdOp	按序列分块计算 DeltaNet 线性注意力。	已实现	待定	tilelang_chunk_gated_delta_rule_fwd_h（门控Delta分块阶段参考；CUDA）	无example实例	否	
+109	线性注意力	DeltaNetChunkBwdOp	按序列分块计算 DeltaNet 线性注意力的反向梯度计算。	已实现	待定	tilelang_chunk_gated_delta_rule_bwd_dhu + tilelang_chunk_o_bwd_dqkwg（阶段参考；CUDA）	无example实例	否	
+110	线性注意力	GLAFwdOp	门控线性注意力。	已实现	待定	无example实例	无example实例	否	
+111	线性注意力	GLAChunkFwdOp	按序列分块计算门控线性注意力。	已实现	待定	无example实例	无example实例	否	
+112	线性注意力	GLAChunkBwdOp	按序列分块计算门控线性注意力的反向梯度计算。	已实现	待定	无example实例	无example实例	否	
+113	Mamba 与状态空间	SSDChunkCumsumFwdOp	对时间步与状态衰减参数进行块内处理及累积求和。	已实现	待定	无example实例	无example实例	否	
+114	Mamba 与状态空间	SSDChunkCouplingFwdOp	计算 SSD 块内 C 与 B 的耦合矩阵。	已实现	待定	无example实例	无example实例	否	
+115	Mamba 与状态空间	SSDChunkStateFwdOp	计算 SSD 各序列块的状态贡献。	已实现	待定	chunk_state_fwd（CUDA）	无example实例	否	
+116	Mamba 与状态空间	SSDStatePassingFwdOp	将状态按衰减关系在序列块之间递推传递。	已实现	待定	无example实例	无example实例	否	
+117	Mamba 与状态空间	SSDChunkScanFwdOp	结合块内耦合与先前状态计算 SSD 块输出。	已实现	待定	chunk_scan_fwd（CUDA）	无example实例	否	
+118	Mamba 与状态空间	SSDRecurrentFwdOp	执行 SSD 单步状态更新并计算输出。	已实现	待定	无example实例	无example实例	否	
+119	Mamba 与状态空间	Mamba2FwdOp	组合 SSD 各阶段，完成 Mamba2 状态空间计算。	已实现	待定	无example实例	无example实例	否	
+120	Mamba 与状态空间	CausalConv1dFwdOp	执行因果一维卷积，可使用已有卷积状态。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+121	Mamba 与状态空间	CausalConv1dUpdateFwdOp	对新输入执行因果卷积并更新卷积状态。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+122	Mamba 与状态空间	SelectiveScanFwdOp	按输入相关参数执行选择性状态空间扫描。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+123	混合专家	MoEPermuteAlignFwdOp	按专家对路由索引分组，并补齐到指定块大小。	已实现	待定	无example实例	无example实例	否	
+124	混合专家	FusedMoEExpertsFwdOp	融合专家计算及路由权重加权合并。	已实现	待定	moe_forward_tilelang_routed（专家计算参考；CUDA）	无example实例	否	
+125	混合专家	IndexedExpertMLPFwdOp	按专家索引直接执行专家 MLP 计算及加权合并。	已实现	待定	moe_forward_tilelang_routed（索引专家计算参考；CUDA）	无example实例	否	
+126	混合专家	FusedTopKFwdOp	计算路由分数并选择 TopK 专家，可执行分组与归一化。	已实现	待定	无example实例	topk_gate（TopK阶段参考；不含完整分组路由语义；昇腾/CUDA）	否	
+127	混合专家	FusedMoEFwdOp	融合路由、专家计算及结果合并的完整 MoE。	已实现	待定	moe_forward_tilelang_routed（专家计算参考；路由非DSL；CUDA）	无example实例	否	
+128	混合专家	MoEPrePermuteFwdOp	按专家分配重新排列输入，准备专家计算布局。	已实现	待定	无example实例	无example实例	否	
+129	混合专家	MoEGroupedGemmFwdOp	按专家分组执行矩阵乘法。	已实现	待定	m_grouped_bf16_gemm_nt_contiguous（分组GEMM参考；昇腾）	无example实例	否	
+130	混合专家	MoEExpertMLPFwdOp	对分组专家输入执行门控 MLP。	已实现	待定	moe_forward_tilelang_routed（专家MLP参考；CUDA）	无example实例	否	
+131	混合专家	MoEPostPermuteFwdOp	将专家输出恢复到原始顺序，并按配置加权合并。	已实现	待定	无example实例	无example实例	否	
+132	混合专家	SharedExpertMLPFwdOp	执行所有输入共享的专家门控 MLP。	已实现	待定	moe_forward_tilelang_shared（CUDA）	无example实例	否	
+133	混合专家	FusedMoESharedExpertFwdOp	融合路由专家与共享专家计算，并组合输出。	已实现	待定	moe_forward_tilelang_routed + moe_forward_tilelang_shared（计算阶段参考；CUDA）	无example实例	否	
+134	混合专家	MoEGroupedGemmFP8FwdOp	带量化缩放的 FP8 分组专家矩阵乘法。	已实现	待定	m_grouped_fp8_gemm_nt_contiguous（分组GEMM参考；昇腾）	无example实例	否	
+135	归一化	RMSNormFwdOp	按均方根归一化输入，并应用权重。	已实现	待定	"rms_norm_fwd（昇腾）
+rms_norm（CUDA）"	norm_forward（昇腾/CUDA）	否	
+136	归一化	LayerNormFwdOp	按指定维度进行层归一化。	已实现	待定	layer_norm（CUDA）	无example实例	否	
+137	归一化	AdaLayerNormFwdOp	使用条件提供的缩放与偏移执行自适应层归一化。	已实现	待定	无example实例	无example实例	否	
+138	归一化	AdaLayerNormZeroFwdOp	执行 AdaLayerNorm-Zero 的条件归一化与调制输出。	已实现	待定	无example实例	无example实例	否	
+139	归一化	FusedAddLayerNormFwdOp	融合残差加法与层归一化。	已实现	待定	无example实例	无example实例	否	
+140	归一化	FusedAddRMSNormFwdOp	融合残差加法与均方根归一化。	已实现	待定	无example实例	norm_forward(residual=...)（昇腾/CUDA）	否	
+141	归一化	FusedAddRMSNormPerTokenQuantFwdOp	融合残差加法、均方根归一化及逐令牌量化。	未实现（仅有规格）	待定	无example实例	norm_forward_and_per_token_cast（FP8分组量化参考；昇腾/CUDA）	否	
+142	归一化	BatchNormFwdOp	批归一化。	已实现	待定	无example实例	无example实例	否	
+143	归一化	BatchNormBwdOp	批归一化的反向梯度计算。	已实现	待定	无example实例	无example实例	否	
+144	归一化	GroupNormFwdOp	按通道分组进行归一化。	已实现	待定	无example实例	无example实例	否	
+145	归一化	InstanceNormFwdOp	对每个样本的各通道分别归一化。	已实现	待定	无example实例	无example实例	否	
+146	归一化	FusedQKNormRoPEFwdOp	融合查询和键的归一化与旋转位置编码。	未实现（仅有规格）	待定	无example实例	无example实例	否	
+147	池化	AvgPool1dFwdOp	一维平均池化。	已实现	待定	无example实例	无example实例	否	
+148	池化	AvgPool2dFwdOp	二维平均池化。	已实现	待定	无example实例	无example实例	否	
+149	池化	AvgPool3dFwdOp	三维平均池化。	已实现	待定	无example实例	无example实例	否	
+150	池化	MaxPool1dFwdOp	一维最大池化。	已实现	待定	无example实例	无example实例	否	
+151	池化	MaxPool1dIndicesFwdOp	一维最大池化，同时返回最大值位置索引。	已实现	待定	无example实例	无example实例	否	
+152	池化	MaxPool2dFwdOp	二维最大池化。	已实现	待定	无example实例	无example实例	否	
+153	池化	MaxPool2dIndicesFwdOp	二维最大池化，同时返回最大值位置索引。	已实现	待定	无example实例	无example实例	否	
+154	池化	MaxPool3dFwdOp	三维最大池化。	已实现	待定	无example实例	无example实例	否	
+155	池化	MaxPool3dIndicesFwdOp	三维最大池化，同时返回最大值位置索引。	已实现	待定	无example实例	无example实例	否	
+156	池化	AdaptiveAvgPool2dFwdOp	二维自适应平均池化。	已实现	待定	无example实例	无example实例	否	
+157	池化	AdaptiveMaxPool2dFwdOp	二维自适应最大池化。	已实现	待定	无example实例	无example实例	否	
+158	池化	AdaptiveMaxPool2dIndicesFwdOp	二维自适应最大池化，同时返回最大值位置索引。	已实现	待定	无example实例	无example实例	否	
+159	池化	MeanPoolingFwdOp	按规格声明的维度执行均值池化。	已实现	待定	无example实例	无example实例	否	
+160	量化与反量化	FP8QuantFwdOp	将输入转换为带缩放的 FP8 量化表示。	已实现	待定	per_token_cast_to_fp8（昇腾/CUDA；分组量化参考，形状需适配）	per_token_cast（FP8分组量化参考；昇腾/CUDA）	否	
+161	量化与反量化	INT8QuantPerTensorFwdOp	使用整张量量化粒度执行 INT8 量化。	已实现	待定	无example实例	无example实例	否	
+162	量化与反量化	INT8QuantPerChannelFwdOp	按通道粒度执行 INT8 量化。	已实现	待定	无example实例	无example实例	否	
+163	量化与反量化	INT8QuantPerBlockFwdOp	按数据块粒度执行 INT8 量化。	已实现	待定	无example实例	无example实例	否	
+164	量化与反量化	INT4QuantPerGroupFwdOp	按数据组粒度执行 INT4 量化与打包。	已实现	待定	无example实例	无example实例	否	
+165	量化与反量化	SmoothQuantFwdOp	平滑调整激活数值范围并执行量化。	已实现	待定	无example实例	无example实例	否	
+166	量化与反量化	INT8DequantPerTensorFwdOp	按整张量缩放将 INT8 数据反量化。	已实现	待定	无example实例	无example实例	否	
+167	量化与反量化	INT8DequantPerChannelFwdOp	按通道缩放将 INT8 数据反量化。	已实现	待定	无example实例	无example实例	否	
+168	量化与反量化	INT8DequantPerBlockFwdOp	按数据块缩放将 INT8 数据反量化。	已实现	待定	无example实例	无example实例	否	
+169	量化与反量化	FP8QuantPerBlockFwdOp	按数据块计算缩放并执行 FP8 量化。	已实现	待定	fp8_act_quant（CUDA；一维分组量化参考，非完整二维分块）	per_block_cast（昇腾/CUDA）	否	
+170	归约与扫描	SoftmaxFwdOp	沿指定维度计算归一化指数概率。	已实现	待定	softmax_kernel（CUDA）	无example实例	否	
+171	归约与扫描	LogSoftmaxFwdOp	沿指定维度计算 Softmax 概率的对数。	已实现	待定	无example实例	无example实例	否	
+172	归约与扫描	LogSumExpFwdOp	沿指定维度稳定计算 log(sum(exp(x)))。	已实现	待定	无example实例	无example实例	否	
+173	归约与扫描	SumFwdOp	沿指定维度求和。	已实现	待定	无example实例	无example实例	否	
+174	归约与扫描	MeanFwdOp	沿指定维度求均值。	已实现	待定	无example实例	无example实例	否	
+175	归约与扫描	AmaxFwdOp	沿指定维度求最大值。	已实现	待定	无example实例	无example实例	否	
+176	归约与扫描	AminFwdOp	沿指定维度求最小值。	已实现	待定	无example实例	无example实例	否	
+177	归约与扫描	ProdFwdOp	沿指定维度求乘积。	已实现	待定	无example实例	无example实例	否	
+178	归约与扫描	VarFwdOp	沿指定维度计算方差。	已实现	待定	无example实例	无example实例	否	
+179	归约与扫描	StdFwdOp	沿指定维度计算标准差。	已实现	待定	无example实例	无example实例	否	
+180	归约与扫描	VarMeanFwdOp	同时计算指定维度上的方差和均值。	已实现	待定	无example实例	无example实例	否	
+181	归约与扫描	ArgmaxFwdOp	返回指定维度上的最大值位置。	已实现	待定	无example实例	无example实例	否	
+182	归约与扫描	ArgminFwdOp	返回指定维度上的最小值位置。	已实现	待定	无example实例	无example实例	否	
+183	归约与扫描	AllFwdOp	沿指定维度判断所有元素是否均为真。	已实现	待定	无example实例	无example实例	否	
+184	归约与扫描	AnyFwdOp	沿指定维度判断是否至少有一个元素为真。	已实现	待定	无example实例	无example实例	否	
+185	归约与扫描	CountNonzeroFwdOp	统计指定维度上的非零元素数量。	已实现	待定	无example实例	无example实例	否	
+186	归约与扫描	VectorNormFwdOp	沿指定维度计算向量范数。	已实现	待定	无example实例	无example实例	否	
+187	归约与扫描	CumsumFwdOp	沿指定维度计算前缀累积和。	已实现	待定	tilelang_chunk_local_cumsum_scalar（块内扫描参考；CUDA）	无example实例	否	
+188	归约与扫描	CumprodFwdOp	沿指定维度计算前缀累积乘积。	已实现	待定	无example实例	无example实例	否	
+189	旋转位置编码	RoPEFwdOp	对输入应用旋转位置编码。	已实现	待定	无example实例	apply_rotary（昇腾/CUDA；缓存及原地接口需适配）	否	
+190	旋转位置编码	RoPELlama31FwdOp	应用 Llama 3.1 使用的缩放旋转位置编码。	已实现	待定	无example实例	无example实例	否	
+191	旋转位置编码	YaRNFwdOp	应用 YaRN 长上下文旋转位置编码缩放策略。	已实现	待定	无example实例	无example实例	否	
+192	旋转位置编码	LongRoPEFwdOp	应用 LongRoPE 长上下文旋转位置编码缩放策略。	已实现	待定	无example实例	无example实例	否	
+193	旋转位置编码	RoPENeoxPositionIdsFwdOp	按显式位置编号应用 NeoX 布局的旋转位置编码。	已实现	待定	无example实例	apply_rotary(positions=..., interleaved=False)（昇腾/CUDA）	否	
+194	采样	TopKMaskFwdOp	保留概率最高的 K 个候选，并屏蔽其余候选。	已实现	待定	无example实例	无example实例	否	
+195	采样	MinPMaskFwdOp	按相对于最高概率的阈值筛选候选。	已实现	待定	无example实例	无example实例	否	
+196	采样	TopPMaskFwdOp	保留累计概率达到阈值的候选集合，即核采样筛选。	已实现	待定	无example实例	无example实例	否	
+197	采样	TopKTopPMaskFwdOp	组合 TopK 与 TopP 条件筛选候选。	已实现	待定	无example实例	无example实例	否	
+198	采样	SamplingFromProbsFwdOp	按照输入概率分布随机采样。	已实现	待定	无example实例	无example实例	否	
+199	采样	ChainSpeculativeSamplingFwdOp	对链式草稿令牌执行推测采样的接受与补采样。	已实现	待定	无example实例	无example实例	否	
+200	序列建模	EngramGateConvFwdOp	融合 Engram 门控、归一化及卷积。	已实现	待定	无example实例	engram_gate_fwd（门控阶段参考，不含卷积；昇腾/CUDA）	否	
+201	序列建模	EngramGateConvBwdOp	融合 Engram 门控、归一化及卷积的反向梯度计算。	已实现	待定	无example实例	engram_gate_bwd（门控反向阶段参考，不含卷积；昇腾/CUDA）	否	
+202	序列建模	EngramDecodeFwdOp	执行 Engram 单步解码并更新卷积状态。	已实现	待定	无example实例	无example实例	否	
+203	序列建模	MHCPreFwdOp	计算 mHC 层前的混合系数与输入聚合，包含 Sinkhorn 归一化。	已实现	待定	mhc_pre（CUDA）	mhc_pre_split_mixes_fwd + mhc_sinkhorn_fwd + mhc_pre_apply_mix_fwd（阶段参考；昇腾/CUDA）	否	
+204	序列建模	MHCPostFwdOp	按 mHC 混合系数组合层输出与残差流。	已实现	待定	mhc_post（CUDA）	mhc_post_fwd（昇腾/CUDA；输入契约需适配）	否	
+205	数学变换	HadamardTransformFwdOp	执行 Hadamard 变换，以加减运算完成正交混合。	未实现（仅有规格）	待定	hadamard（CUDA）	无example实例	否	
