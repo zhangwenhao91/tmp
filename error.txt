@@ -1,4 +1,4 @@
-cd /home/z30086261/TileOPs
+root@ubuntu162:/home/z30086261/TileOPs# cd /home/z30086261/TileOPs                  
 
 echo "== python =="
 python3 -V
@@ -35,12 +35,31 @@ PY
 
 echo "== CANN / NPU =="
 echo "  ASCEND_HOME_PATH=${ASCEND_HOME_PATH:-unset}"
-echo "  ASCEND_RT_VISIBLE_DEVICES=${ASCEND_RT_VISIBLE_DEVICES:-unset}"
-head -3 /usr/local/Ascend/ascend-toolkit/latest/version.cfg 2>/dev/null
-python3 - <<'PY'
-try:
-    import torch, torch_npu
-    print("  npu available:", torch.npu.is_available(), "count:", torch.npu.device_count())
-except BaseException as exc:
-    print("  npu 不可用:", type(exc).__name__, exc)
-PY
+PY  print("  npu 不可用:", type(exc).__name__, exc)e(), "count:", torch.npu.device_count())
+== python ==
+Python 3.11.0
+/usr/local/python3.11.0/bin/python3
+/usr/bin/python
+/usr/local/python3.11.0/bin/pip3
+/usr/local/python3.11.0/bin/pytest
+== 包 ==
+  torch: 2.7.1+cpu
+  tilelang: MISSING -- ModuleNotFoundError: No module named 'tilelang'
+  yaml: 6.0.2
+  torch_npu: 2.7.1.post3.dev20260129
+  triton: 3.6.0
+  pytest: 8.4.1
+== 这个克隆在那个解释器下 ==
+  tileops: /home/z30086261/TileOPs/src/tileops/__init__.py
+  targets: {'ascend'}
+== triton 里的 KERNEL_PATH 补丁 ==
+   triton: /usr/local/python3.11.0/lib/python3.11/site-packages/triton/__init__.py
+   补丁: ['/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/conf.py', '/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py']
+== CANN / NPU ==
+  ASCEND_HOME_PATH=/usr/local/Ascend/ascend-toolkit/latest
+  ASCEND_RT_VISIBLE_DEVICES=4
+# version: 1.0
+runtime_running_version=[8.3.T9.0.B066:8.3.RC1]
+compiler_running_version=[8.3.T9.0.B066:8.3.RC1]
+  npu available: True count: 1
+root@ubuntu162:/home/z30086261/TileOPs# 
