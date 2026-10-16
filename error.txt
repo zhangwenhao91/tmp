@@ -1,11 +1,19 @@
-docker exec -it z30086261 bash
+root@ubuntu162:/# docker exec -it z30086261 bash
 readlink -f /usr/local/Ascend/ascend-toolkit/latest     # 容器里 latest 指哪
 source /usr/local/Ascend/ascend-toolkit/latest/set_env.sh
 python3 - <<'PY'
 import torch, torch_npu
 print((torch.ones(4, 4, device="npu") + 1).cpu().sum().item())
 PY
-
-
-ls -l /usr/local/Ascend/cann/
+bash: docker: command not found
+/usr/local/Ascend/ascend-toolkit/latest
+bash: /usr/local/Ascend/ascend-toolkit/latest/set_env.sh: No such file or directory
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+RuntimeError: Current device only support aclnn operator, and current operator ones do not support internal format.
+[ERROR] 2026-10-16-16:59:44 (PID:1473, Device:0, RankID:-1) ERR00007 PTA feature not supported
+root@ubuntu162:/# ls -l /usr/local/Ascend/cann/
 ls /usr/local/Ascend/ascend-toolkit/
+ls: cannot access '/usr/local/Ascend/cann/': No such file or directory
+8.3.RC1  latest
+root@ubuntu162:/# 
