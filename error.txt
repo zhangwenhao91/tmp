@@ -1,15 +1,22 @@
-# 在你现在这个 shell 里
-cat /proc/1/cmdline | tr '\0' ' '; echo
-test -f /.dockerenv && echo "in-container" || echo "no-dockerenv"
-
-
-readlink /proc/2250277/cwd
+readlink /proc/2250277/root        # 指向 /var/lib/docker/... => 容器进程，实锤
+readlink /proc/2250277/cwd         # 是 /home/z30086261/TileOPs => 就是那个 board 脚本
 ls -l /proc/2250277/exe
-tr '\0' '\n' < /proc/2250277/environ | grep -iE 'ASCEND|KERNEL|PYTHON|VIRTUAL|^PATH='
+tr '\0' '\n' < /proc/2250277/environ | grep -iE 'ASCEND|KERNEL|VIRTUAL|^PATH='
 
 
-echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"
+# 1) 确认没搞错地方
+ls /.dockerenv; echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"
 which python3; python3 -V
+ls -d /usr/local/Ascend/ascend-toolkit/*
+
+# 2) 清掉那个空转进程（先在容器里 ps 拿到它的容器侧 PID）
+ps -ef | grep -w 'python3' | grep -v grep
+kill -9 <容器侧PID>
+
+# 3) source CANN 再验
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"      # 这次必须非空
+
 python3 - <<'PY'
 import os, torch, torch_npu
 print("ASCEND_HOME_PATH =", os.environ.get("ASCEND_HOME_PATH"))
