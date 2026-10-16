@@ -1,20 +1,24 @@
-cd /home/z30086261/TileOPs
-PYTHONPATH=src python3 - <<'PY'
-import torch
-import torch_npu
-from tileops.backend import TensorSpec
-from tileops.backends.ascend.builders.elementwise import build_add
-from tileops.backends.ascend.runtime import support
+# 1) 挂住的 python 还在不在、卡在哪个系统调用
+ps -ef | grep -E 'python3|pytest' | grep -v grep
+cat /proc/<PID>/status | grep -E '^State|Threads'   # State: D = 卡在驱动/任务下发
+cat /proc/<PID>/wchan; echo
 
-npu = torch.device("npu")
-for shape in [(32, 128), (4096, 128), (64, 256)]:
-    artifact = support.vadd_artifact(torch.float32, shape[-1])
-    spec = TensorSpec(npu, torch.float32, shape)
-    kernel = build_add(spec, spec)          # 走 builder 的全部校验
-    a = torch.randn(*shape, dtype=torch.float32, device=npu)
-    b = torch.randn(*shape, dtype=torch.float32, device=npu)
-    out = kernel(a, b)
-    err = (out.cpu() - (a.cpu() + b.cpu())).abs().max().item()
-    print(f"{shape} rows={a.numel() // shape[-1]} obj={artifact.path.name} "
-          f"cv_mode={artifact.cv_mode} max_abs_err={err:.3e}", flush=True)
+
+
+# 2) 宿主机上看卡（容器内没有 npu-smi）
+npu-smi info                  # device 4 那行的 Health 与 AICore(%)
+npu-smi info -t health -i 4   # 期望 Health Status : OK
+
+
+
+# 3) CANN 是哪套、source 了没
+echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"
+ls -d /usr/local/Ascend/ascend-toolkit/* 2>/dev/null
+
+
+python3 - <<'PY'
+import os, torch, torch_npu
+print("ASCEND_HOME_PATH =", os.environ.get("ASCEND_HOME_PATH"))
+x = torch.ones(4, 4, device="npu")
+print("trivial npu op ok:", (x + 1).cpu().sum().item())
 PY
