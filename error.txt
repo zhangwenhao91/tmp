@@ -1,21 +1,36 @@
-# 宿主机上直接抓（PID ns 共享）
-py-spy dump --pid 2250277
+root@ubuntu162:/# exit
+exit
+(base) root@ubuntu162:/home/z30086261# py-spy dump --pid 2250277
+py-spy: command not found
+(base) root@ubuntu162:/home/z30086261# cat /proc/2250277/wchan; echo
+cat: /proc/2250277/wchan: No such file or directory
 
-# 没 py-spy 就退而求其次
-cat /proc/2250277/wchan; echo
-gdb -p 2250277 -batch -ex 'thread apply all bt' 2>&1 | tail -40
-
-
-
-readlink -f /usr/local/Ascend/ascend-toolkit/latest
-ls -d /usr/local/Ascend/ascend-toolkit/*/ /usr/local/Ascend/*/
-
-
-docker exec -it z30086261 bash
+(base) root@ubuntu162:/home/z30086261# gdb -p 2250277 -batch -ex 'thread apply all bt' 2>&1 | tail -40
+ptrace: No such process.
+(base) root@ubuntu162:/home/z30086261# readlink -f /usr/local/Ascend/ascend-toolkit/latest
+/usr/local/Ascend/cann-9.1.0
+(base) root@ubuntu162:/home/z30086261# ls -d /usr/local/Ascend/ascend-toolkit/*/ /usr/local/Ascend/*/
+/usr/local/Ascend/ascend-toolkit/  /usr/local/Ascend/ascend-toolkit/latest/  /usr/local/Ascend/cann/  /usr/local/Ascend/cann-9.1.0/  /usr/local/Ascend/driver/  /usr/local/Ascend/firmware/
+(base) root@ubuntu162:/home/z30086261# docker exec -it z30086261 bash
 python3 - <<'PY'
 import os, torch, torch_npu
 print("ASCEND_HOME_PATH =", os.environ.get("ASCEND_HOME_PATH"))
 print("devices:", torch.npu.device_count())
 x = torch.ones(4, 4, device="npu")
 print("trivial npu op ok:", (x + 1).cpu().sum().item())
-PY
+PYroot@ubuntu162:/# python3 - <<'PY'
+> import os, torch, torch_npu
+> print("ASCEND_HOME_PATH =", os.environ.get("ASCEND_HOME_PATH"))
+> print("devices:", torch.npu.device_count())
+> x = torch.ones(4, 4, device="npu")
+> print("trivial npu op ok:", (x + 1).cpu().sum().item())
+> PY
+
+ASCEND_HOME_PATH = /usr/local/Ascend/ascend-toolkit/latest
+devices: 1
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+RuntimeError: Current device only support aclnn operator, and current operator ones do not support internal format.
+[ERROR] 2026-10-16-16:55:43 (PID:1396, Device:0, RankID:-1) ERR00007 PTA feature not supported
+root@ubuntu162:/# 
+root@ubuntu162:/# 
