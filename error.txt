@@ -1,65 +1,20 @@
-root@ubuntu162:/home/z30086261/TileOPs# cd /home/z30086261/TileOPs                  
+cd /home/z30086261/TileOPs
+PYTHONPATH=src python3 - <<'PY'
+import torch
+import torch_npu
+from tileops.backend import TensorSpec
+from tileops.backends.ascend.builders.elementwise import build_add
+from tileops.backends.ascend.runtime import support
 
-echo "== python =="
-python3 -V
-command -v python3 python pip3 pytest
-ls -d ~/venv* /home/z30086261/*venv* 2>/dev/null
-
-echo "== 包 =="
-python3 - <<'PY'
-import importlib
-for name in ("torch", "tilelang", "yaml", "torch_npu", "triton", "pytest"):
-    try:
-        mod = importlib.import_module(name)
-        print(f"  {name}: {getattr(mod, '__version__', '?')}")
-    except BaseException as exc:
-        print(f"  {name}: MISSING -- {type(exc).__name__}: {exc}")
+npu = torch.device("npu")
+for shape in [(32, 128), (4096, 128), (64, 256)]:
+    artifact = support.vadd_artifact(torch.float32, shape[-1])
+    spec = TensorSpec(npu, torch.float32, shape)
+    kernel = build_add(spec, spec)          # 走 builder 的全部校验
+    a = torch.randn(*shape, dtype=torch.float32, device=npu)
+    b = torch.randn(*shape, dtype=torch.float32, device=npu)
+    out = kernel(a, b)
+    err = (out.cpu() - (a.cpu() + b.cpu())).abs().max().item()
+    print(f"{shape} rows={a.numel() // shape[-1]} obj={artifact.path.name} "
+          f"cv_mode={artifact.cv_mode} max_abs_err={err:.3e}", flush=True)
 PY
-
-echo "== 这个克隆在那个解释器下 =="
-PYTHONPATH=src python3 -c "
-import tileops, tileops.backends.ascend
-from tileops.backend import registry
-print('  tileops:', tileops.__file__)
-print('  targets:', registry.known_targets())
-"
-
-echo "== triton 里的 KERNEL_PATH 补丁 =="
-python3 - <<'PY'
-import pathlib, triton
-root = pathlib.Path(triton.__file__).resolve().parent.parent
-hits = [str(p) for p in root.rglob("*.py") if "KERNEL_PATH" in p.read_text(errors="ignore")]
-print("   triton:", triton.__file__)
-print("   补丁:", hits or "NOT FOUND —— triton-opentile 没打补丁")
-PY
-
-echo "== CANN / NPU =="
-echo "  ASCEND_HOME_PATH=${ASCEND_HOME_PATH:-unset}"
-PY  print("  npu 不可用:", type(exc).__name__, exc)e(), "count:", torch.npu.device_count())
-== python ==
-Python 3.11.0
-/usr/local/python3.11.0/bin/python3
-/usr/bin/python
-/usr/local/python3.11.0/bin/pip3
-/usr/local/python3.11.0/bin/pytest
-== 包 ==
-  torch: 2.7.1+cpu
-  tilelang: MISSING -- ModuleNotFoundError: No module named 'tilelang'
-  yaml: 6.0.2
-  torch_npu: 2.7.1.post3.dev20260129
-  triton: 3.6.0
-  pytest: 8.4.1
-== 这个克隆在那个解释器下 ==
-  tileops: /home/z30086261/TileOPs/src/tileops/__init__.py
-  targets: {'ascend'}
-== triton 里的 KERNEL_PATH 补丁 ==
-   triton: /usr/local/python3.11.0/lib/python3.11/site-packages/triton/__init__.py
-   补丁: ['/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/conf.py', '/usr/local/python3.11.0/lib/python3.11/site-packages/triton/backends/opentile/targets/ascend/compiler.py']
-== CANN / NPU ==
-  ASCEND_HOME_PATH=/usr/local/Ascend/ascend-toolkit/latest
-  ASCEND_RT_VISIBLE_DEVICES=4
-# version: 1.0
-runtime_running_version=[8.3.T9.0.B066:8.3.RC1]
-compiler_running_version=[8.3.T9.0.B066:8.3.RC1]
-  npu available: True count: 1
-root@ubuntu162:/home/z30086261/TileOPs# 
