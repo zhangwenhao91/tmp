@@ -1,1 +1,46 @@
-test
+cd /home/z30086261/TileOPs
+
+echo "== python =="
+python3 -V
+command -v python3 python pip3 pytest
+ls -d ~/venv* /home/z30086261/*venv* 2>/dev/null
+
+echo "== 包 =="
+python3 - <<'PY'
+import importlib
+for name in ("torch", "tilelang", "yaml", "torch_npu", "triton", "pytest"):
+    try:
+        mod = importlib.import_module(name)
+        print(f"  {name}: {getattr(mod, '__version__', '?')}")
+    except BaseException as exc:
+        print(f"  {name}: MISSING -- {type(exc).__name__}: {exc}")
+PY
+
+echo "== 这个克隆在那个解释器下 =="
+PYTHONPATH=src python3 -c "
+import tileops, tileops.backends.ascend
+from tileops.backend import registry
+print('  tileops:', tileops.__file__)
+print('  targets:', registry.known_targets())
+"
+
+echo "== triton 里的 KERNEL_PATH 补丁 =="
+python3 - <<'PY'
+import pathlib, triton
+root = pathlib.Path(triton.__file__).resolve().parent.parent
+hits = [str(p) for p in root.rglob("*.py") if "KERNEL_PATH" in p.read_text(errors="ignore")]
+print("   triton:", triton.__file__)
+print("   补丁:", hits or "NOT FOUND —— triton-opentile 没打补丁")
+PY
+
+echo "== CANN / NPU =="
+echo "  ASCEND_HOME_PATH=${ASCEND_HOME_PATH:-unset}"
+echo "  ASCEND_RT_VISIBLE_DEVICES=${ASCEND_RT_VISIBLE_DEVICES:-unset}"
+head -3 /usr/local/Ascend/ascend-toolkit/latest/version.cfg 2>/dev/null
+python3 - <<'PY'
+try:
+    import torch, torch_npu
+    print("  npu available:", torch.npu.is_available(), "count:", torch.npu.device_count())
+except BaseException as exc:
+    print("  npu 不可用:", type(exc).__name__, exc)
+PY
