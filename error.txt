@@ -1,1 +1,1 @@
-cd <repo> && ASCEND_RT_VISIBLE_DEVICES=4 python -m pytest tests/test_ascend_backend.py -q
+test
