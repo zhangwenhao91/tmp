@@ -1,26 +1,26 @@
-readlink /proc/2250277/root        # 指向 /var/lib/docker/... => 容器进程，实锤
-readlink /proc/2250277/cwd         # 是 /home/z30086261/TileOPs => 就是那个 board 脚本
-ls -l /proc/2250277/exe
-tr '\0' '\n' < /proc/2250277/environ | grep -iE 'ASCEND|KERNEL|VIRTUAL|^PATH='
-
-
-# 1) 确认没搞错地方
-ls /.dockerenv; echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"
+(base) root@ubuntu162:/home/z30086261# readlink /proc/2250277/root        # 指向 /var/lib/docker/... => 容器进程，实锤
+/
+(base) root@ubuntu162:/home/z30086261# readlink /proc/2250277/cwd         # 是 /home/z30086261/TileOPs => 就是那个 board 脚本
+/home/z30086261/TileOPs
+(base) root@ubuntu162:/home/z30086261# ls -l /proc/2250277/exe
+lrwxrwxrwx 1 root root 0 Oct 16 16:42 /proc/2250277/exe -> /usr/local/python3.11.0/bin/python3.11
+(base) root@ubuntu162:/home/z30086261# tr '\0' '\n' < /proc/2250277/environ | grep -iE 'ASCEND|KERNEL|VIRTUAL|^PATH='
+ASCEND_RT_VISIBLE_DEVICES=4
+ASCEND_VISIBLE_DEVICES=1
+ASCEND_OPP_KERNEL_PATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1
+TOOLCHAIN_HOME=/usr/local/Ascend/ascend-toolkit/latest/toolkit
+ASCEND_OPP_PATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp
+LD_LIBRARY_PATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
+ASCEND_AICPU_PATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1
+PATH=/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
+ASCEND_HOME_PATH=/usr/local/Ascend/ascend-toolkit/latest
+(base) root@ubuntu162:/home/z30086261# docker exec -it z30086261 bash
+root@ubuntu162:/# ls /.dockerenv; echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"
 which python3; python3 -V
 ls -d /usr/local/Ascend/ascend-toolkit/*
-
-# 2) 清掉那个空转进程（先在容器里 ps 拿到它的容器侧 PID）
-ps -ef | grep -w 'python3' | grep -v grep
-kill -9 <容器侧PID>
-
-# 3) source CANN 再验
-source /usr/local/Ascend/ascend-toolkit/set_env.sh
-echo "ASCEND_HOME_PATH=$ASCEND_HOME_PATH"      # 这次必须非空
-
-python3 - <<'PY'
-import os, torch, torch_npu
-print("ASCEND_HOME_PATH =", os.environ.get("ASCEND_HOME_PATH"))
-print("devices:", torch.npu.device_count())
-x = torch.ones(4, 4, device="npu")
-print("trivial npu op ok:", (x + 1).cpu().sum().item())
-PY
+/.dockerenv
+ASCEND_HOME_PATH=/usr/local/Ascend/ascend-toolkit/latest
+/usr/local/python3.11.0/bin/python3
+Python 3.11.0
+/usr/local/Ascend/ascend-toolkit/8.3.RC1  /usr/local/Ascend/ascend-toolkit/latest
+root@ubuntu162:/# 
