@@ -1,30 +1,15 @@
-apt-get update
-apt-get install -y python3 python3-dev python3-setuptools gcc zlib1g-dev build-essential cmake libedit-dev
+Successfully built tilelang
+Installing collected packages: z3-solver, cloudpickle, apache-tvm-ffi, torch-c-dlpack-ext, tilelang
+  changing mode of /usr/local/python3.11.0/bin/tvm-ffi-config to 755
+  changing mode of /usr/local/python3.11.0/bin/tvm-ffi-stubgen to 755
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+te 0.4.0 requires tornado, which is not installed.
+Successfully installed apache-tvm-ffi-0.1.12 cloudpickle-3.1.2 tilelang-0.1.15+cuda.git48d38943 torch-c-dlpack-ext-0.1.5 z3-solver-4.15.4.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
-
-
-cd tilelang
-git submodule update --init --recursive
-
-
-
-pip install -e . -v    # 加 -e 便于开发，Python 改动即时生效
-
-
-
-pip install -r requirements-dev.txt
-pip install "nvidia-cuda-nvcc>=13" "nvidia-cuda-cccl>=13" "nvidia-cuda-nvrtc>=13"
-pip install . -v --no-build-isolation
-
-
-
-mkdir -p build && cd build
-cmake .. -DUSE_CUDA=ON -G Ninja   # 无 NVIDIA GPU 环境：-DUSE_CUDA=OFF
-ninja
-export PYTHONPATH=/path/to/tilelang:$PYTHONPATH
-python -c "import tilelang; print(tilelang.__version__)"
-
-
-
-
-python -c "import tilelang; print(tilelang.__version__)"
+[notice] A new release of pip is available: 25.2 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+root@ubuntu162:/home/z30086261/tilelang# python -c "import tilelang; print(tilelang.__version__)"
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+0.1.15+cuda.git48d38943
+root@ubuntu162:/home/z30086261/tilelang# 
