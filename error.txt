@@ -283,8 +283,8 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=010d94610a7c1fc8d0fbce990d8839285fc8aa1931b86d2581f8dcb45802f19c
-  Stored in directory: /tmp/pip-ephem-wheel-cache-b0mxc5y9/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=ea6677c2f2a0ce0c89fe73a4b50b226bc40cb9d8ebb4fa807b5bb6e81409aaa6
+  Stored in directory: /tmp/pip-ephem-wheel-cache-o_wcc_so/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -302,15 +302,15 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f57379b1d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7fe63e051d00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7f57379b1f80>
-+ python3 -m pytest tests/ops/test_mha.py -m smoke -k 'not dtype1' --tileops-device npu --tileops-target detect -v
+MHA builder: <function build_mha_decode_paged at 0x7fe63e051f80>
++ python3 -m pytest tests/ops/test_mha.py -m full -k 'not dtype1' --tileops-device npu --tileops-target detect -v
 + tail -100
 ============================= test session starts ==============================
 platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
@@ -320,27 +320,25 @@ hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/root/Ti
 rootdir: /root/TileOPs
 configfile: pyproject.toml
 plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
-collecting ... collected 13 items / 6 deselected / 7 selected
+collecting ... collected 13 items / 8 deselected / 5 selected
 
-tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-False] PASSED [ 14%]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0] PASSED [ 28%]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-True-real_lengths1] PASSED [ 42%]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2] PASSED [ 57%]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3] PASSED [ 71%]
-tests/ops/test_mha.py::test_mha_decode_paged_without_wgmma_drops_unread_rows SKIPPED [ 85%]
-tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool PASSED [100%]
+tests/ops/test_mha.py::test_mha_decode_paged_op[1-8-1-1024-64-256-False-dtype2-False] PASSED [ 20%]
+tests/ops/test_mha.py::test_mha_decode_paged_op[2-8-1-1024-64-256-False-dtype3-False] PASSED [ 40%]
+tests/ops/test_mha.py::test_mha_decode_paged_op[1-8-1-512-64-256-False-dtype4-False] PASSED [ 60%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths4] PASSED [ 80%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths5] PASSED [100%]
 
 =============================== warnings summary ===============================
-tests/ops/test_mha.py: 42 warnings
+tests/ops/test_mha.py: 28 warnings
   /home/z30086261/tilelang/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
-tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-False]
+tests/ops/test_mha.py::test_mha_decode_paged_op[1-8-1-1024-64-256-False-dtype2-False]
   /root/TileOPs/src/tileops/backends/ascend/builders/attention.py:92: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
     rows = bt_t[:, pos // page_size] * page_size + pos % page_size
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========== 6 passed, 1 skipped, 6 deselected, 43 warnings in 5.70s ============
+================= 5 passed, 8 deselected, 29 warnings in 9.35s =================
 + PYTEST_RC=0
 + echo pytest_rc=0
 pytest_rc=0
@@ -374,7 +372,7 @@ tests/ops/test_mha.py: 42 warnings
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================= 7 passed, 6 deselected, 43 warnings in 5.60s =================
+================= 7 passed, 6 deselected, 43 warnings in 5.79s =================
 + SHORT_RC=0
 + echo cache_shorter_rc=0
 cache_shorter_rc=0
