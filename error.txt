@@ -1,35 +1,41 @@
 CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
-=== stage B v1d: BSHD + [B,H] grid + S_q=4 + causal (B=2, H=2, rl=[300,3], W=3, fp16) ===
+=== stage B v1d-d2: BSHD ablation F0(H=1)/F1(H=2)/F2(H=2,causal), rl=[300,3], W=3, fp16 ===
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
-=== v1d build & compile ===
-2026-10-19 18:33:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 18:34:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
-COMPILE_OK
 
---- variant E1_nc (causal=False) ---
-Traceback (most recent call last):
-  File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 398, in main
-    kernel(q, bt, rl, bias, kp, vp, o)
-  File "/home/z30086261/tilelang/tilelang/jit/kernel.py", line 228, in __call__
-    return self.torch_function(*args, **kwds)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/z30086261/tilelang/tilelang/jit/adapter/tvm_ffi.py", line 348, in func
-    executable(*tensor_list)
-  File "/home/z30086261/tilelang/3rdparty/tvm/python/tvm/runtime/executable.py", line 46, in __call__
-    return self.jit().main(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "python/tvm_ffi/cython/function.pxi", line 968, in tvm_ffi.core.Function.__call__
-RuntimeError: kernel main input BIAS shape[1] violates packed ABI constraint; expected: 1, got: 16
-RUN_FAIL E1_nc
+--- variant F0_h1_nc (H=1, causal=False) ---
+compiling kernel (H=1) ...
+2026-10-19 18:37:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 18:37:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+COMPILE_OK H=1
+RUN_FAIL F0_h1_nc:
+        bias = make_bias(rl, hp, is_causal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 342, in make_bias
+        return torch.where(visible, 0.0, -1.0e30).to(torch.float32).view(B * BR, W * BC)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    RuntimeError: shape '[32, 384]' is invalid for input of size 768
 
---- variant E2_c (causal=True) ---
+--- variant F1_h2_nc (H=2, causal=False) ---
+compiling kernel (H=2) ...
+2026-10-19 18:37:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 18:37:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+COMPILE_OK H=2
+RUN_FAIL F1_h2_nc:
+        bias = make_bias(rl, hp, is_causal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 342, in make_bias
+        return torch.where(visible, 0.0, -1.0e30).to(torch.float32).view(B * BR, W * BC)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    RuntimeError: shape '[32, 384]' is invalid for input of size 768
+
+--- variant F2_h2_c (H=2, causal=True) ---
   b0h0: max_rel=986.4072
   b0h1: max_rel=nan
   b1h0: max_rel=13620.1846
   b1h1: max_rel=nan
-E2_c: finite=False max_rel_all=13620.1846 no_key_rows_zero=True (count=1)
+F2_h2_c: finite=False max_rel_all=13620.1846 no_key_rows_zero=True (count=1)
 
-=== v1d verdict ===
-E2_c: FAIL (max_rel=13620.1846) no_key_rows_zero=True (count=1)
+=== v1d-d2 verdict ===
+F2_h2_c: FAIL (max_rel=13620.1846) no_key_rows_zero=True (count=1)
 exit_code=0
 exit_code=0
