@@ -1,25 +1,20 @@
-"""v1d-d4：定位 F0/GB/GC 共同错误的真凶（rel=155.99 逐位可复现）。
+"""v1d-d5：查 GA2/GF 残留 0.155 (15.5%) 误差的来源。
 
-v1d-d3 消融结论：
-  - GB（共享 bias 读）FAIL 逐位同 F0 -> 逐行 bias vld 无罪
-  - GC（ZP 填零 pad 行）FAIL 逐位同 F0 -> 未初始化 pad 行无罪
-  - GA/GD 编译挂：dual_copy 目标 O[b, 0:BR, h, 0:D] 是 4 维切片
-    [1,16,1,128]，dual_copy 无法推断分半方向（写法错误，非工具链问题）
+v1d-d4 结论：
+  - 逐行 1D UB→GM store 是主犯：GA2/GF（dual_copy 块存）把 rel 从
+    156/826 降到 0.155/0.0857；GE/GQ 逐位同坏
+  - bias 2D copy（④）与 Q 拷贝路径（⑤）均无罪（GF==GA2，GQ==GE 逐位一致）
 
-剩余嫌疑：
-  ① 逐行 1D UB→GM store（从未验证；v1c 用 dual_copy 2D 块存）
-  ④ bias 2D 跨_stride GM→UB copy（BIAS[b*BR:(b+1)*BR, ...] 行距 W*BC=384）
-  ⑤ Q 的 3D→2D 切片 copy（Q[b, 0:S_Q, h, 0:D]）
+残留问题：0.155 仍超 5%。注意 d3 的 GC"pad 无罪"结论是在 store 坏掉时测的，
+作废。头号嫌疑：未初始化 Q_shared pad 行（4~15 行随机位，可能含 Inf/NaN
+fp16）经 softmax/gemm 的某条隐藏路径污染真行。
 
-本轮变体（全部 H=1 非因果；qpad 已排除不再带；每变体只改一个因素）：
-  GE_h1_v1cbias   bias 整体回退 v1c 路径：BIAS (B*W, BC)、bias_ub (1, BC)
-                  单行 GM→UB copy、softmax 共享读（测试④）
-  GA2_h1_block    只把 store 换成 dual_copy 块存，O 重排 (B,hp,BR,D)（测试①）
-  GQ_h1_qcopy2d   只把 Q 拷贝改成 2D 平铺 Q2[b*S_Q:(b+1)*S_Q, :]（测试⑤）
-  GF_h1_both      ④+① 双修复（大概率 PASS 的锚点）
-
-判读：GE PASS -> ④真凶；GA2 PASS -> ①真凶；GQ PASS -> ⑤真凶；
-GF 用作组合锚点。全 PASS 且 GF PASS -> 组合修复方案成立。
+本轮变体（全部 H=1 非因果，块存，rl=[300,3]）：
+  GF_ctrl   d4 的 GF 原样（对照，预期 0.155）
+  GF_qpad   ZP 零行填 Q_shared[S_Q:BR]（若 rel 掉回 v1c 量级 ~0.01 -> pad 真凶）
+两变体输出统一细粒度诊断：逐行 max_rel、rel>5% 元素计数、最大误差元素的
+(b,row,col,got,exp,|exp|)，区分"个别近零分母放大"与"面污染"。
+另附主机 fp16 量化 golden 对照，评估 fp16 softmax 的本征误差量级。
 """
 
 import math
@@ -60,7 +55,7 @@ def qk(kv, BT, b, h, KP, Q_shared, K_shared, qk_a_l0, qk_b_l0, qk_acc_l0c, S_ub)
 
 
 @T.macro
-def softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub, shared_bias):
+def softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub):
     with T.SimdVF(latency=735):
         softmax_full = S.pset(32, "PAT_ALL")
         softmax_one = S.pset(32, "PAT_VL1")
@@ -72,26 +67,18 @@ def softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub, 
 
         S.vsts(old_m_ub[0], S.vld(m_ub[0], "NORM"), softmax_full, "NORM_B32")
 
-        if shared_bias:
-            sh_lo = S.vld(bias_ub[0, 0], "NORM")
-            sh_hi = S.vld(bias_ub[0, VL], "NORM")
+        sh_lo = S.vld(bias_ub[0, 0], "NORM")
+        sh_hi = S.vld(bias_ub[0, VL], "NORM")
 
         for r in range(0, ROWS, 2):
-            if shared_bias:
-                b0lo, b0hi, b1lo, b1hi = sh_lo, sh_hi, sh_lo, sh_hi
-            else:
-                b0lo = S.vld(bias_ub[r, 0], "NORM")
-                b0hi = S.vld(bias_ub[r, VL], "NORM")
-                b1lo = S.vld(bias_ub[r + 1, 0], "NORM")
-                b1hi = S.vld(bias_ub[r + 1, VL], "NORM")
             s00 = S.vadd(S.vmuls(S.vld(S_ub[r, 0], "NORM"), T.float32(scale), softmax_full),
-                         b0lo, softmax_full)
+                         sh_lo, softmax_full)
             s01 = S.vadd(S.vmuls(S.vld(S_ub[r, VL], "NORM"), T.float32(scale), softmax_full),
-                         b0hi, softmax_full)
+                         sh_hi, softmax_full)
             s10 = S.vadd(S.vmuls(S.vld(S_ub[r + 1, 0], "NORM"), T.float32(scale), softmax_full),
-                         b1lo, softmax_full)
+                         sh_lo, softmax_full)
             s11 = S.vadd(S.vmuls(S.vld(S_ub[r + 1, VL], "NORM"), T.float32(scale), softmax_full),
-                         b1hi, softmax_full)
+                         sh_hi, softmax_full)
             S.vsts(S_ub[r, 0], s00, softmax_full, "NORM_B32")
             S.vsts(S_ub[r, VL], s01, softmax_full, "NORM_B32")
             S.vsts(S_ub[r + 1, 0], s10, softmax_full, "NORM_B32")
@@ -210,22 +197,17 @@ def clear_O_ub(O_ub):
 def kv_body(kv, BT, BIAS, b, h, KP, VP, Q_shared, K_shared, V_shared, P_shared,
             qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0, qk_acc_l0c, pv_acc_l0c,
             S_ub, P_nz_ub, bias_ub, O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub,
-            old_m_ub, row_sum_ub, shared_bias, v1c_bias):
-    if v1c_bias:
-        # v1c 已验证路径：单行 1D GM→UB copy
-        T.copy(BIAS[b * W + kv, 0:BC], bias_ub[0, 0:BC])
-    else:
-        # 嫌疑④：2D 跨_stride copy
-        T.copy(BIAS[b * BR:(b + 1) * BR, kv * BC:(kv + 1) * BC], bias_ub[0:BR, 0:BC])
+            old_m_ub, row_sum_ub):
+    T.copy(BIAS[b * BR:(b + 1) * BR, kv * BC:(kv + 1) * BC], bias_ub[0:BR, 0:BC])
     qk(kv, BT, b, h, KP, Q_shared, K_shared, qk_a_l0, qk_b_l0, qk_acc_l0c, S_ub)
-    softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub, shared_bias)
+    softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub)
     pack_p(P_nz_ub, P_shared)
     pv(kv, BT, b, h, VP, P_shared, V_shared, pv_a_l0, pv_b_l0, pv_acc_l0c, O_tmp_ub)
     accumulate_output(O_tmp_ub, O_ub, alpha_ub)
 
 
 @T.macro
-def finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub, block_store):
+def finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub):
     with T.SimdVF(latency=1780):
         normalize_mask = S.pset(32, "PAT_ALL")
         for i in range(ROWS):
@@ -239,32 +221,24 @@ def finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub, block_store):
             for c in range(0, D, VL):
                 ob = S.vcvt(S.vld(O_ub[r, c], "NORM"), out_dtype, cast_full)
                 S.vsts(O_cast_ub[r, c], ob, cast_full, "PK_B32")
-    if block_store:
-        # O 布局 (B, hp, BR, D)：目标切片是干净的 2D [BR, D]
-        T.dual_copy(O_cast_ub[0:ROWS, 0:D], O[b, h, 0:BR, 0:D])
-    else:
-        # 嫌疑①：逐行 1D UB→GM copy
-        for i in range(S_Q):
-            T.copy(O_cast_ub[i, 0:D], O[b, i, h, 0:D])
+    T.dual_copy(O_cast_ub[0:ROWS, 0:D], O[b, h, 0:BR, 0:D])
 
 
-def build(hp, block_store, v1c_bias, qcopy2d):
-    shared_bias = v1c_bias  # v1c 路径的 bias_ub 只有 1 行，必须共享读
-
+def build(qpad):
     @T.prim_func
     def main(
-        Q2: T.Buffer((B * S_Q, D), dtype),
-        Q3: T.Buffer((B, S_Q, hp, D), dtype),
+        Q: T.Buffer((B, S_Q, 1, D), dtype),
         BT: T.Buffer((B, W), "int32"),
         RL: T.Buffer((B,), "int32"),
-        BIAS: T.Buffer((B * W if v1c_bias else B * BR, BC if v1c_bias else W * BC), accum_dtype),
-        KP: T.Buffer((POOL_ROWS, hp, D), dtype),
-        VP: T.Buffer((POOL_ROWS, hp, D), dtype),
-        O: T.Buffer((B, hp if block_store else S_Q, BR if block_store else hp, D), out_dtype),
+        BIAS: T.Buffer((B * BR, W * BC), accum_dtype),
+        KP: T.Buffer((POOL_ROWS, 1, D), dtype),
+        VP: T.Buffer((POOL_ROWS, 1, D), dtype),
+        ZP: T.Buffer((BR - S_Q, D), dtype),
+        O: T.Buffer((B, 1, BR, D), out_dtype),
     ):
-        with T.Kernel(B * hp) as bx:
-            b: T.int32 = bx // hp
-            h: T.int32 = bx % hp
+        with T.Kernel(B * 1) as bx:
+            b: T.int32 = bx // 1
+            h: T.int32 = bx % 1
             Q_shared = T.alloc_l1((BR, D), dtype)
             K_shared = T.alloc_l1((BC, D), dtype)
             V_shared = T.alloc_l1((D, BC), dtype)
@@ -280,10 +254,7 @@ def build(hp, block_store, v1c_bias, qcopy2d):
             S_ub = T.alloc_shared((ROWS, BC), accum_dtype)
             P_nz_ub = T.alloc_shared((ROWS + 1, BC), dtype)
             T.annotate_layout({P_nz_ub: make_ascend_compact_nz_layout(P_nz_ub)})
-            if v1c_bias:
-                bias_ub = T.alloc_shared((1, BC), accum_dtype)
-            else:
-                bias_ub = T.alloc_shared((BR, BC), accum_dtype)
+            bias_ub = T.alloc_shared((BR, BC), accum_dtype)
             O_tmp_ub = T.alloc_shared((ROWS, D), accum_dtype)
             O_ub = T.alloc_shared((ROWS, D), accum_dtype)
             m_ub = T.alloc_shared((VL,), accum_dtype)
@@ -304,11 +275,9 @@ def build(hp, block_store, v1c_bias, qcopy2d):
                 }
             )
 
-            if qcopy2d:
-                # 嫌疑⑤的对照：2D 平铺 Q 拷贝（BSHD 且 hp=1 时与 Q3 同内存）
-                T.copy(Q2[b * S_Q:(b + 1) * S_Q, 0:D], Q_shared[0:S_Q, 0:D])
-            else:
-                T.copy(Q3[b, 0:S_Q, h, 0:D], Q_shared[0:S_Q, 0:D])
+            T.copy(Q[b, 0:S_Q, h, 0:D], Q_shared[0:S_Q, 0:D])
+            if qpad:
+                T.copy(ZP[0:BR - S_Q, 0:D], Q_shared[S_Q:BR, 0:D])
             init_m_l(m_ub, l_ub)
             clear_O_ub(O_ub)
 
@@ -320,10 +289,10 @@ def build(hp, block_store, v1c_bias, qcopy2d):
                                 P_shared, qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0,
                                 qk_acc_l0c, pv_acc_l0c, S_ub, P_nz_ub, bias_ub,
                                 O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub,
-                                old_m_ub, row_sum_ub, shared_bias, v1c_bias)
+                                old_m_ub, row_sum_ub)
 
             O_cast_ub = T.alloc_shared((ROWS, D), out_dtype)
-            finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub, block_store)
+            finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub)
 
     return main
 
@@ -369,8 +338,26 @@ def make_bias(rl, is_causal):
     return torch.where(visible, 0.0, -1.0e30).to(torch.float32).view(B * BR, W * BC)
 
 
-def rel_of(got, exp):
-    return ((got - exp).abs() / (exp.abs() + 1e-6)).max().item()
+def diagnose(tag, got, exp):
+    """got/exp: (B, S_Q, D) fp32。打印逐行 rel、超标计数、最大误差元素明细。"""
+    rel = (got - exp).abs() / (exp.abs() + 1e-6)
+    absd = (got - exp).abs()
+    finite = torch.isfinite(got).all().item()
+    over = (rel > 0.05).sum().item()
+    total = rel.numel()
+    print(f"  [{tag}] finite={finite} elements_over_5pct={over}/{total} "
+          f"({100.0 * over / total:.2f}%)")
+    for bi in range(B):
+        for r in range(S_Q):
+            rr = rel[bi, r].max().item()
+            ad = absd[bi, r].max().item()
+            print(f"    b{bi} row{r}: max_rel={rr:.4f} max_absdiff={ad:.6f} "
+                  f"|exp|max={(exp[bi, r].abs().max().item()):.4f}")
+    idx = rel.argmax()
+    bb, rr_, cc = (idx // (S_Q * D)).item(), (idx // D % S_Q).item(), (idx % D).item()
+    print(f"  [{tag}] max-rel element: b{bb} row{rr_} col{cc} "
+          f"got={got[bb, rr_, cc].item():.6f} exp={exp[bb, rr_, cc].item():.6f} "
+          f"(|exp|={abs(exp[bb, rr_, cc].item()):.2e})")
 
 
 def main():
@@ -382,66 +369,62 @@ def main():
     vp = torch.randn(POOL_ROWS, 1, D, dtype=torch.float16, device=dev)
     bt = torch.tensor([[6, 2, 4], [1, 7, 0]], dtype=torch.int32, device=dev)
     rl = torch.tensor([300, 3], dtype=torch.int32, device=dev)
+    zp = torch.zeros(BR - S_Q, D, dtype=torch.float16, device=dev)
+    bias = make_bias(rl, False)
+    exp = ref_mha_decode_paged(q, kp, vp, rl, bt, BC, False)  # (B, S_Q, 1, D) fp32
 
-    bias2d = make_bias(rl, False)  # (B*BR, W*BC)
-    bias1d = bias2d.view(B, BR, W * BC)[:, 0, :].contiguous().view(B * W, BC)  # (B*W, BC) 非因果各 bias 行相同
-    q2 = q.reshape(B * S_Q, D).contiguous()
-
-    # (name, hp, block_store, v1c_bias, qcopy2d)
     variants = [
-        ("GE_h1_v1cbias", 1, False, True, False),
-        ("GA2_h1_block", 1, True, False, False),
-        ("GQ_h1_qcopy2d", 1, False, False, True),
-        ("GF_h1_both", 1, True, True, False),
+        ("GF_ctrl", False),
+        ("GF_qpad", True),
     ]
-
     kernels = {}
-    results = {}
-    for name, hp, blk, v1cb, q2d in variants:
-        print(f"\n--- variant {name} (block_store={blk}, v1c_bias={v1cb}, qcopy2d={q2d}) ---")
-        key = (hp, blk, v1cb, q2d)
-        if key not in kernels:
+    for name, qp in variants:
+        print(f"\n--- variant {name} (qpad={qp}) ---")
+        if qp not in kernels:
             try:
-                print(f"compiling kernel {key} ...")
-                kernels[key] = tilelang.compile(build(hp, blk, v1cb, q2d))
-                print(f"COMPILE_OK {key}")
+                print(f"compiling kernel (qpad={qp}) ...")
+                kernels[qp] = tilelang.compile(build(qp))
+                print(f"COMPILE_OK (qpad={qp})")
             except Exception:
                 tb = traceback.format_exc().strip().splitlines()
                 keep = [l for l in tb if "Error" in l or "Check failed" in l or "error:" in l]
-                print(f"COMPILE_FAIL {key}:")
+                print(f"COMPILE_FAIL (qpad={qp}):")
                 for line in (keep or tb)[-8:]:
                     print("   ", line)
                 continue
-        kernel = kernels[key]
+        kernel = kernels[qp]
         try:
-            bias = bias1d if v1cb else bias2d
-            o = (torch.zeros(B, hp, BR, D, dtype=torch.float16, device=dev) if blk
-                 else torch.zeros(B, S_Q, hp, D, dtype=torch.float16, device=dev))
-            if q2d:
-                kernel(q2, q, bt, rl, bias, kp, vp, o)
-            else:
-                kernel(q2, q, bt, rl, bias, kp, vp, o)
+            o = torch.zeros(B, 1, BR, D, dtype=torch.float16, device=dev)
+            kernel(q, bt, rl, bias, kp, vp, zp, o)
             torch.npu.synchronize()
-            got = (o.permute(0, 2, 1, 3)[:, :S_Q] if blk else o).float()
-            exp = ref_mha_decode_paged(q, kp, vp, rl, bt, BC, False)
-            finite = torch.isfinite(got).all().item()
-            rels = []
-            for bi in range(B):
-                r = rel_of(got[bi, :, 0], exp[bi, :, 0])
-                rels.append(r)
-                print(f"  b{bi}h0: max_rel={r:.4f}")
-            results[name] = (finite, max(rels), "")
-            print(f"{name}: finite={finite} max_rel_all={max(rels):.4f}")
+            got = o[:, 0, :S_Q, 0].float()  # (B, S_Q, D)
+            diagnose(name, got, exp[:, :, 0])
+            mr = ((got - exp[:, :, 0]).abs() / (exp[:, :, 0].abs() + 1e-6)).max().item()
+            print(f"{name}: max_rel={mr:.4f} -> {'PASS' if mr < 5e-2 else 'FAIL'}")
         except Exception:
             tb = traceback.format_exc().strip().splitlines()
             print(f"RUN_FAIL {name}:")
             for line in tb[-6:]:
                 print("   ", line)
 
-    print("\n=== v1d-d4 verdict ===")
-    for name, (finite, mr, extra) in results.items():
-        print(f"{name}: {'PASS' if finite and mr < 5e-2 else 'FAIL'} "
-              f"(max_rel={mr:.4f}){extra}")
+    # 主机 fp16 量化对照：评估 fp16 softmax 本征误差量级（不含 kernel 因素）
+    print("\n--- host fp16-quantized reference (b0) ---")
+    kv_len = 300
+    k_l = torch.zeros(kv_len, D, dtype=torch.float16)
+    v_l = torch.zeros(kv_len, D, dtype=torch.float16)
+    for i_p, pid in enumerate([6, 2, 4]):
+        k_l[i_p * BC:(i_p + 1) * BC] = kp[pid * BC:(pid + 1) * BC, 0].cpu()
+        v_l[i_p * BC:(i_p + 1) * BC] = vp[pid * BC:(pid + 1) * BC, 0].cpu()
+    sc = q[0, :, 0].cpu().float() @ k_l.float().T * scale  # (S_Q, kv_len) fp32 累计
+    pr = sc.softmax(-1)
+    o32 = pr @ v_l.float()
+    print(f"fp32-acc ref vs exp b0: "
+          f"max_rel={((o32 - exp[0, :, 0].cpu()).abs() / (exp[0, :, 0].cpu().abs() + 1e-6)).max().item():.4f}")
+    # 模拟 P 量化 fp16：与 kernel 的 fp16 P 相同精度
+    pr16 = pr.to(torch.float16).float()
+    o16 = pr16 @ v_l.float()
+    print(f"fp16-P ref vs exp b0:   "
+          f"max_rel={((o16 - exp[0, :, 0].cpu()).abs() / (exp[0, :, 0].cpu().abs() + 1e-6)).max().item():.4f}")
 
 
 if __name__ == "__main__":

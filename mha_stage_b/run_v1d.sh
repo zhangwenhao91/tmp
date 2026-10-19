@@ -14,7 +14,7 @@ else
 fi
 export PYTHONUNBUFFERED=1
 
-echo "=== stage B v1d-d4: culprit isolation GE(bias)/GA2(store)/GQ(qcopy)/GF(both), H=1 nc, rl=[300,3], fp16 ==="
+echo "=== stage B v1d-d5: GF ctrl vs GF_qpad + fine-grained diagnostics (H=1 nc, block store) ==="
 python decode_v1d.py 2>&1
 rc=$?
 echo "exit_code=$rc"
