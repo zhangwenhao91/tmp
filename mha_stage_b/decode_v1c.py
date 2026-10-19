@@ -1,19 +1,23 @@
-"""v1c 消融矩阵：定位 B=2 改造中破坏基础路径的因素。
+"""v1c-d2：加性掩码版变长分页 decode（B=2, W=2, fp16, serial）。
 
-v1c 首跑现象：serial 编译过，但 b0（rl=256 双整页，数学上与 v1b 等价）rel=10.7。
-嫌疑：T.If 包裹 kv_body / bx 索引 / BT 二维标量 load / vmin 钳位。
+消融结论（上一轮）：
+  - C1/C2 的 b0 均为 0.0122 PASS → T.If / bx 索引 / BT 二维标量 load 全部无罪
+  - C3（vmin 钳位）b0 反而挂 → S.vmin + vdup(-1e30) 路径会破坏有效分数，弃用
+  - b1 在 C1/C2 挂属预期：rl=100 尾块第 100~127 行为垃圾数据，需要块内掩码
 
-消融变体（全部 B=2, W=2, serial）：
-  C1  无 If 无 vmin —— 隔离 bx/BT2D/Q 偏移因素（b1 数学必错属预期，看 b0）
-  C2  有 If 无 vmin —— 隔离 T.If 因素（b1 页内截断必错属预期，看 b0）
-  C3  有 If 有 vmin —— 完整 v1c（b0/b1 都应过）
+本轮方案：加性偏置掩码
+  - 主机按 rl 预生成 BIAS [B*W, BC] fp32（有效位 0，无效位 -1e30）
+  - kv_body 里 GM→UB 拷入 bias_ub，softmax 中 s = vadd(s, bias)
+  - 整页 batch（b0, rl=256）bias 全 0，严格不干扰基础路径
+  - 尾块（b1, rl=100）第 100~127 位加 -1e30，exp 后权重归 0
 
-b0 失败时自动做假设检验：与页序 [3,0]（正确）、[0,3]（BT 索引 bug 假设）分别
-比对 rel，并打印前 4 个分量辅助人工判读。
+变体：
+  D1_if_bias   If 守卫 + 掩码（完整 v1c 形态，b0/b1 都应 PASS）
+  D2_noif_bias 无 If + 掩码（隔离掩码路径；b1 的整块无效页仍会以均匀权重
+               混入垃圾 V，b1 FAIL 属预期，看 b0 是否 PASS）
 """
 
 import math
-import sys
 import traceback
 
 import torch
@@ -50,7 +54,7 @@ def qk(kv, BT, bx, KP, Q_shared, K_shared, qk_a_l0, qk_b_l0, qk_acc_l0c, S_ub):
 
 
 @T.macro
-def softmax(S_ub, P_nz_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub, use_vmin):
+def softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub):
     with T.SimdVF(latency=735):
         softmax_full = S.pset(32, "PAT_ALL")
         softmax_one = S.pset(32, "PAT_VL1")
@@ -62,19 +66,19 @@ def softmax(S_ub, P_nz_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub, use_vmin)
 
         S.vsts(old_m_ub[0], S.vld(m_ub[0], "NORM"), softmax_full, "NORM_B32")
 
-        if use_vmin:
-            neg_big = S.vdup(NEG_BIG, accum_dtype, softmax_full)
+        # 加性掩码：每行的 128 个 kv 位置拆两个 64-lane 半段，全 batch 共享
+        b_lo = S.vld(bias_ub[0], "NORM")
+        b_hi = S.vld(bias_ub[VL], "NORM")
 
         for r in range(0, ROWS, 2):
-            s00 = S.vmuls(S.vld(S_ub[r, 0], "NORM"), T.float32(scale), softmax_full)
-            s01 = S.vmuls(S.vld(S_ub[r, VL], "NORM"), T.float32(scale), softmax_full)
-            s10 = S.vmuls(S.vld(S_ub[r + 1, 0], "NORM"), T.float32(scale), softmax_full)
-            s11 = S.vmuls(S.vld(S_ub[r + 1, VL], "NORM"), T.float32(scale), softmax_full)
-            if use_vmin:
-                s00 = S.vmin(s00, neg_big, softmax_full)
-                s01 = S.vmin(s01, neg_big, softmax_full)
-                s10 = S.vmin(s10, neg_big, softmax_full)
-                s11 = S.vmin(s11, neg_big, softmax_full)
+            s00 = S.vadd(S.vmuls(S.vld(S_ub[r, 0], "NORM"), T.float32(scale), softmax_full),
+                         b_lo, softmax_full)
+            s01 = S.vadd(S.vmuls(S.vld(S_ub[r, VL], "NORM"), T.float32(scale), softmax_full),
+                         b_hi, softmax_full)
+            s10 = S.vadd(S.vmuls(S.vld(S_ub[r + 1, 0], "NORM"), T.float32(scale), softmax_full),
+                         b_lo, softmax_full)
+            s11 = S.vadd(S.vmuls(S.vld(S_ub[r + 1, VL], "NORM"), T.float32(scale), softmax_full),
+                         b_hi, softmax_full)
             S.vsts(S_ub[r, 0], s00, softmax_full, "NORM_B32")
             S.vsts(S_ub[r, VL], s01, softmax_full, "NORM_B32")
             S.vsts(S_ub[r + 1, 0], s10, softmax_full, "NORM_B32")
@@ -190,12 +194,13 @@ def clear_O_ub(O_ub):
 
 
 @T.macro
-def kv_body(kv, BT, bx, KP, VP, Q_shared, K_shared, V_shared, P_shared,
+def kv_body(kv, BT, BIAS, bx, KP, VP, Q_shared, K_shared, V_shared, P_shared,
             qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0, qk_acc_l0c, pv_acc_l0c,
-            S_ub, P_nz_ub, O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub,
-            use_vmin):
+            S_ub, P_nz_ub, bias_ub, O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub,
+            old_m_ub, row_sum_ub):
+    T.copy(BIAS[bx * W + kv, 0:BC], bias_ub[0:BC])
     qk(kv, BT, bx, KP, Q_shared, K_shared, qk_a_l0, qk_b_l0, qk_acc_l0c, S_ub)
-    softmax(S_ub, P_nz_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub, use_vmin)
+    softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub)
     pack_p(P_nz_ub, P_shared)
     pv(kv, BT, bx, VP, P_shared, V_shared, pv_a_l0, pv_b_l0, pv_acc_l0c, O_tmp_ub)
     accumulate_output(O_tmp_ub, O_ub, alpha_ub)
@@ -219,12 +224,13 @@ def finalize_cast(O, bx, O_ub, O_cast_ub, l_ub):
     T.dual_copy(O_cast_ub[0:ROWS, 0:D], O[bx * BR:(bx + 1) * BR, 0:D])
 
 
-def build(use_if, use_vmin):
+def build(use_if):
     @T.prim_func
     def main(
         Q: T.Buffer((B * BR, D), dtype),
         BT: T.Buffer((B, W), "int32"),
         RL: T.Buffer((B,), "int32"),
+        BIAS: T.Buffer((B * W, BC), accum_dtype),
         KP: T.Buffer((POOL_ROWS, D), dtype),
         VP: T.Buffer((POOL_ROWS, D), dtype),
         O: T.Buffer((B * BR, D), out_dtype),
@@ -245,6 +251,7 @@ def build(use_if, use_vmin):
             S_ub = T.alloc_shared((ROWS, BC), accum_dtype)
             P_nz_ub = T.alloc_shared((ROWS + 1, BC), dtype)
             T.annotate_layout({P_nz_ub: make_ascend_compact_nz_layout(P_nz_ub)})
+            bias_ub = T.alloc_shared((BC,), accum_dtype)
             O_tmp_ub = T.alloc_shared((ROWS, D), accum_dtype)
             O_ub = T.alloc_shared((ROWS, D), accum_dtype)
             m_ub = T.alloc_shared((VL,), accum_dtype)
@@ -274,17 +281,17 @@ def build(use_if, use_vmin):
                 if use_if:
                     with T.If(kv * BC < rl):
                         with T.Then():
-                            kv_body(kv, BT, bx, KP, VP, Q_shared, K_shared, V_shared,
+                            kv_body(kv, BT, BIAS, bx, KP, VP, Q_shared, K_shared, V_shared,
                                     P_shared, qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0,
-                                    qk_acc_l0c, pv_acc_l0c, S_ub, P_nz_ub, O_tmp_ub,
-                                    O_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub,
-                                    use_vmin)
+                                    qk_acc_l0c, pv_acc_l0c, S_ub, P_nz_ub, bias_ub,
+                                    O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub,
+                                    old_m_ub, row_sum_ub)
                 else:
-                    kv_body(kv, BT, bx, KP, VP, Q_shared, K_shared, V_shared,
+                    kv_body(kv, BT, BIAS, bx, KP, VP, Q_shared, K_shared, V_shared,
                             P_shared, qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0,
-                            qk_acc_l0c, pv_acc_l0c, S_ub, P_nz_ub, O_tmp_ub,
-                            O_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub,
-                            use_vmin)
+                            qk_acc_l0c, pv_acc_l0c, S_ub, P_nz_ub, bias_ub,
+                            O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub,
+                            old_m_ub, row_sum_ub)
 
             O_cast_ub = T.alloc_shared((ROWS, D), out_dtype)
             finalize_cast(O, bx, O_ub, O_cast_ub, l_ub)
@@ -292,25 +299,18 @@ def build(use_if, use_vmin):
     return main
 
 
-def ref_paged_attention_row(q, bt, rl, kp, vp, clamp_rl=True):
-    pages = []
-    remaining = int(rl) if clamp_rl else BC * len(bt)
+def ref_paged_attention_row(q, bt, rl, kp, vp):
+    pages_k, pages_v = [], []
+    remaining = int(rl)
     for p in bt:
         take = min(BC, remaining)
         if take <= 0:
             break
-        pages.append(kp[int(p) * BC:int(p) * BC + take])
+        pages_k.append(kp[int(p) * BC:int(p) * BC + take])
+        pages_v.append(vp[int(p) * BC:int(p) * BC + take])
         remaining -= take
-    k = torch.cat(pages, dim=0)
-    pages = []
-    remaining = int(rl) if clamp_rl else BC * len(bt)
-    for p in bt:
-        take = min(BC, remaining)
-        if take <= 0:
-            break
-        pages.append(vp[int(p) * BC:int(p) * BC + take])
-        remaining -= take
-    v = torch.cat(pages, dim=0)
+    k = torch.cat(pages_k, dim=0)
+    v = torch.cat(pages_v, dim=0)
     s = (q.float() @ k.float().T) * scale
     p = torch.softmax(s, dim=-1)
     return p @ v.float()
@@ -332,23 +332,24 @@ def main():
     bt = torch.tensor([[3, 0], [5, 2]], dtype=torch.int32, device=dev)
     rl = torch.tensor([256, 100], dtype=torch.int32, device=dev)
 
+    # 加性掩码：全局 kv 位置 < rl[b] 为有效（0），否则 -1e30
+    pos = torch.arange(W * BC, dtype=torch.float32, device=dev).view(1, W * BC)
+    bias = torch.where(pos < rl.view(B, 1).float(), 0.0, -1.0e30).view(B * W, BC)
+
     # golden（fp32）
     exp_b0 = ref_paged_attention_row(q[0], bt[0], rl[0], kp, vp)
     exp_b1 = ref_paged_attention_row(q[1], bt[1], rl[1], kp, vp)
-    # 假设检验用：b0 页序交换
-    exp_b0_swap = ref_paged_attention_row(q[0], torch.flip(bt[0], dims=[0]), rl[0], kp, vp)
 
     variants = {
-        "C1_noif_novmin": (False, False),
-        "C2_if_novmin": (True, False),
-        "C3_if_vmin": (True, True),
+        "D1_if_bias": (True,),
+        "D2_noif_bias": (False,),
     }
 
     results = {}
-    for name, (use_if, use_vmin) in variants.items():
+    for name, (use_if,) in variants.items():
         print(f"\n--- variant {name}: compiling ---")
         try:
-            kernel = tilelang.compile(build(use_if, use_vmin))
+            kernel = tilelang.compile(build(use_if))
         except Exception:
             tb = traceback.format_exc().strip().splitlines()
             keep = [l for l in tb if "Error" in l or "Check failed" in l or "error:" in l]
@@ -359,17 +360,17 @@ def main():
         print(f"COMPILE_OK {name}")
         o = torch.zeros(B * BR, D, dtype=torch.float16, device=dev)
         try:
-            kernel(q_pad, bt, rl, kp, vp, o)
+            kernel(q_pad, bt, rl, bias, kp, vp, o)
             torch.npu.synchronize()
             finite = torch.isfinite(o.float()).all().item()
             r0 = rel_of(o[0].float(), exp_b0)
             r1 = rel_of(o[BR].float(), exp_b1)
-            r0_swap = rel_of(o[0].float(), exp_b0_swap)
-            results[name] = (finite, r0, r0_swap, r1)
-            print(f"{name}: finite={finite} b0_rel={r0:.4f} b0_rel_swapbt={r0_swap:.4f} "
-                  f"b1_rel={r1:.4f}")
+            results[name] = (finite, r0, r1)
+            print(f"{name}: finite={finite} b0_rel={r0:.4f} b1_rel={r1:.4f}")
             print(f"   b0 got[:4] ={o[0, :4].float().tolist()}")
             print(f"   b0 exp[:4] ={exp_b0[:4].tolist()}")
+            print(f"   b1 got[:4] ={o[BR, :4].float().tolist()}")
+            print(f"   b1 exp[:4] ={exp_b1[:4].tolist()}")
         except Exception:
             tb = traceback.format_exc().strip().splitlines()
             print(f"RUN_FAIL {name}:")
@@ -377,10 +378,9 @@ def main():
                 print("   ", line)
 
     print("\n=== ablation verdict ===")
-    for name, (finite, r0, r0_swap, r1) in results.items():
-        print(f"{name}: b0 {'PASS' if r0 < 5e-2 else 'FAIL'} "
-              f"(swapbt {'matches' if r0_swap < 5e-2 else 'no'}), "
-              f"b1 {'PASS' if r1 < 5e-2 else 'FAIL(expect in C1/C2)'}")
+    for name, (finite, r0, r1) in results.items():
+        verdict_b1 = "PASS" if r1 < 5e-2 else ("FAIL(expect in D2)" if name == "D2_noif_bias" else "FAIL")
+        print(f"{name}: b0 {'PASS' if r0 < 5e-2 else 'FAIL'}, b1 {verdict_b1}")
 
 
 if __name__ == "__main__":
