@@ -58,22 +58,17 @@ print("MHA registered_targets:", dispatch.registered_targets("MHADecodePagedWith
 print("MHA builder:", registry.BUILDERS.get(("MHADecodePagedWithKVCacheFwdOp", "ascend")))
 PYEOF
 
-# 冒烟 0：进程内绑定探针（定位 in-tree 分流根因后可删）
-echo "=== debug binding probe ==="
-python3 -m pytest tests/ops/test_debug_binding.py --tileops-device npu -v -s 2>&1 | tail -15
-echo "PROBE_RC=${PIPESTATUS[0]}"
-echo "=== spy log (file-based, no truncation) ==="
-cat /tmp/tileops_spy.log
-
+# 关键：conftest 的 --tileops-target 默认 builtin（强制 in-tree 内核，backend 不接管）。
+# 要让已安装的 ascend backend 认领 npu 设备，必须显式 --tileops-target detect。
 # 冒烟 1：pytest 官方 smoke（bf16 支持在后续轮次，先排除）
 python3 -m pytest tests/ops/test_mha.py -m smoke -k "not bfloat16" \
-  --tileops-device npu -v 2>&1 | tail -100
+  --tileops-device npu --tileops-target detect -v 2>&1 | tail -100
 PYTEST_RC=${PIPESTATUS[0]}
 echo "pytest_rc=$PYTEST_RC"
 
 # 冒烟 2：cache-shorter-than-bound（NaN 投毒池，验证 builder sanitize 路径）
 python3 -m pytest tests/ops/test_mha.py -k "cache_shorter or table_width" \
-  --tileops-device npu -v 2>&1 | tail -60
+  --tileops-device npu --tileops-target detect -v 2>&1 | tail -60
 SHORT_RC=${PIPESTATUS[0]}
 echo "cache_shorter_rc=$SHORT_RC"
 
