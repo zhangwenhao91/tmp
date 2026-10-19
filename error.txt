@@ -1,74 +1,270 @@
-CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
-=== stage B v1d-d5: GF ctrl vs GF_qpad + fine-grained diagnostics (H=1 nc, block store) ===
++ export PYTHONUNBUFFERED=1
++ PYTHONUNBUFFERED=1
++ source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
+++ case "$-" in
+++ __setenv_errexit_was_set=n
+++ set -e
+++ setenv_main
+++ local version_dirpath install_dirpath my_ld_library_path my_path driver_install_path_param dep_hal_path
+++ local dep_hal_name=libascend_hal.so
+++ local dep_info_file=/etc/ascend_install.info
+++ local is_install_driver=n
+++ local architecture remove_regex
+++ version_dirpath=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0
++++ dirname /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+++ install_dirpath=/home/CANN/9.3.0.weekly.20260930
+++ remove_regex='^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
+++ remove_env PATH '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
+++ local name=PATH
+++ local 'regex=^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
++++ eval echo '${PATH:-}'
+++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ccec_compiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/profiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ascend_system_advisor/asys:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/show_kernel_debug_data:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/msobjdump:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
+++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ccec_compiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/profiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ascend_system_advisor/asys:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/show_kernel_debug_data:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/msobjdump:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
+++ read -r PATH
++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ccec_compiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/profiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ascend_system_advisor/asys:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/show_kernel_debug_data:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/msobjdump:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
++++ tr : '\n'
++++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
++++ tr '\n' :
++++ sed 's/:$//'
+++ export PATH
+++ remove_env LD_LIBRARY_PATH '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
+++ local name=LD_LIBRARY_PATH
+++ local 'regex=^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
++++ eval echo '${LD_LIBRARY_PATH:-}'
+++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
+++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
+++ read -r LD_LIBRARY_PATH
++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
++++ tr : '\n'
++++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
++++ tr '\n' :
++++ sed 's/:$//'
+++ export LD_LIBRARY_PATH
+++ remove_env PYTHONPATH '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
+++ local name=PYTHONPATH
+++ local 'regex=^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
++++ eval echo '${PYTHONPATH:-}'
+++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
+++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
+++ read -r PYTHONPATH
++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
++++ tr : '\n'
++++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
++++ tr '\n' :
++++ sed 's/:$//'
+++ export PYTHONPATH
+++ my_ld_library_path=/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
+++ '[' '!' -z /usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub ']'
++++ echo /usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
++++ tr : ' '
+++ my_ld_library_path='/usr/local/Ascend/driver/lib64 /usr/local/Ascend/driver/lib64/common /usr/local/Ascend/driver/lib64/driver /usr/local/Ascend/driver/lib64 /usr/local/Ascend/driver/lib64/common /usr/local/Ascend/driver/lib64/driver /usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64 /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64 /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64 /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin /usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64 /usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64 /usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel /usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine /usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64 /usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel /usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine /usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64 /usr/local/Ascend/driver/lib64/common /usr/local/Ascend/driver/lib64/driver /usr/local/Ascend/driver/lib64 /usr/local/python3.11.0/lib/  /usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub /usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub'
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/driver/lib64
+++ grep -q driver
+++ '[' -d /usr/local/Ascend/driver/lib64 ']'
++++ find /usr/local/Ascend/driver/lib64 -name libascend_hal.so
+++ dep_hal_path=/usr/local/Ascend/driver/lib64/driver/libascend_hal.so
+++ '[' '!' -z /usr/local/Ascend/driver/lib64/driver/libascend_hal.so ']'
+++ is_install_driver=y
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/driver/lib64/common
+++ grep -q driver
+++ '[' -d /usr/local/Ascend/driver/lib64/common ']'
++++ find /usr/local/Ascend/driver/lib64/common -name libascend_hal.so
+++ dep_hal_path=
+++ '[' '!' -z '' ']'
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/driver/lib64/driver
+++ grep -q driver
+++ '[' -d /usr/local/Ascend/driver/lib64/driver ']'
++++ find /usr/local/Ascend/driver/lib64/driver -name libascend_hal.so
+++ dep_hal_path=/usr/local/Ascend/driver/lib64/driver/libascend_hal.so
+++ '[' '!' -z /usr/local/Ascend/driver/lib64/driver/libascend_hal.so ']'
+++ is_install_driver=y
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/driver/lib64
+++ grep -q driver
+++ '[' -d /usr/local/Ascend/driver/lib64 ']'
++++ find /usr/local/Ascend/driver/lib64 -name libascend_hal.so
+++ dep_hal_path=/usr/local/Ascend/driver/lib64/driver/libascend_hal.so
+++ '[' '!' -z /usr/local/Ascend/driver/lib64/driver/libascend_hal.so ']'
+++ is_install_driver=y
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/driver/lib64/common
+++ grep -q driver
+++ '[' -d /usr/local/Ascend/driver/lib64/common ']'
++++ find /usr/local/Ascend/driver/lib64/common -name libascend_hal.so
+++ dep_hal_path=
+++ '[' '!' -z '' ']'
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/driver/lib64/driver
+++ grep -q driver
+++ '[' -d /usr/local/Ascend/driver/lib64/driver ']'
++++ find /usr/local/Ascend/driver/lib64/driver -name libascend_hal.so
+++ dep_hal_path=/usr/local/Ascend/driver/lib64/driver/libascend_hal.so
+++ '[' '!' -z /usr/local/Ascend/driver/lib64/driver/libascend_hal.so ']'
+++ is_install_driver=y
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/driver/lib64/common
+++ grep -q driver
+++ '[' -d /usr/local/Ascend/driver/lib64/common ']'
++++ find /usr/local/Ascend/driver/lib64/common -name libascend_hal.so
+++ dep_hal_path=
+++ '[' '!' -z '' ']'
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/driver/lib64/driver
+++ grep -q driver
+++ '[' -d /usr/local/Ascend/driver/lib64/driver ']'
++++ find /usr/local/Ascend/driver/lib64/driver -name libascend_hal.so
+++ dep_hal_path=/usr/local/Ascend/driver/lib64/driver/libascend_hal.so
+++ '[' '!' -z /usr/local/Ascend/driver/lib64/driver/libascend_hal.so ']'
+++ is_install_driver=y
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/driver/lib64
+++ grep -q driver
+++ '[' -d /usr/local/Ascend/driver/lib64 ']'
++++ find /usr/local/Ascend/driver/lib64 -name libascend_hal.so
+++ dep_hal_path=/usr/local/Ascend/driver/lib64/driver/libascend_hal.so
+++ '[' '!' -z /usr/local/Ascend/driver/lib64/driver/libascend_hal.so ']'
+++ is_install_driver=y
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/python3.11.0/lib/
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub
+++ grep -q driver
+++ for my_path in ${my_ld_library_path}
+++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
+++ grep -q driver
+++ '[' -f /etc/ascend_install.info ']'
++++ grep -iw driver_install_path_param /etc/ascend_install.info
++++ cut --only-delimited -d= -f2-
+++ driver_install_path_param=/usr/local/Ascend
+++ '[' '!' -z /usr/local/Ascend ']'
+++ my_path=/usr/local/Ascend/driver/lib64
+++ '[' -d /usr/local/Ascend/driver/lib64 ']'
++++ find /usr/local/Ascend/driver/lib64 -name libascend_hal.so
+++ dep_hal_path=/usr/local/Ascend/driver/lib64/driver/libascend_hal.so
+++ '[' '!' -z /usr/local/Ascend/driver/lib64/driver/libascend_hal.so ']'
+++ is_install_driver=y
+++ case ":$PATH:" in
+++ command -v ldconfig
+++ ldconfig -p
+++ grep -q -- libascend_hal.so
+++ command -v arch
++++ arch
+++ architecture=x86_64
+++ prepend_env PATH /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ccec_compiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/profiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ascend_system_advisor/asys:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/show_kernel_debug_data:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/msobjdump
+++ local name=PATH
+++ local value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ccec_compiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/profiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ascend_system_advisor/asys:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/show_kernel_debug_data:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/msobjdump
++++ eval echo '${PATH:-}'
+++++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
+++ local env_value=/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
+++ '[' /usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin = '' ']'
+++ read -r PATH
+++ export PATH
+++ prepend_env LD_LIBRARY_PATH /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver
+++ local name=LD_LIBRARY_PATH
+++ local value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver
++++ eval echo '${LD_LIBRARY_PATH:-}'
+++++ echo /usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
+++ local env_value=/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
+++ '[' /usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub = '' ']'
+++ read -r LD_LIBRARY_PATH
+++ export LD_LIBRARY_PATH
+++ export PYTHONPATH=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
+++ PYTHONPATH=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
+++ '[' y = n ']'
+++ export ASCEND_OPP_PATH=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp
+++ ASCEND_OPP_PATH=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp
+++ export ASCEND_AICPU_PATH=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+++ ASCEND_AICPU_PATH=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+++ export TOOLCHAIN_HOME=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit
+++ TOOLCHAIN_HOME=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit
+++ export ASCEND_HOME_PATH=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+++ ASCEND_HOME_PATH=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+++ export ASCEND_TOOLKIT_HOME=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+++ ASCEND_TOOLKIT_HOME=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+++ prepend_env CMAKE_PREFIX_PATH /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake
+++ local name=CMAKE_PREFIX_PATH
+++ local value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake
++++ eval echo '${CMAKE_PREFIX_PATH:-}'
+++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake
+++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake
+++ '[' /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake = '' ']'
+++ read -r CMAKE_PREFIX_PATH
+++ export CMAKE_PREFIX_PATH
+++ prepend_env CMAKE_PREFIX_PATH /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake
+++ local name=CMAKE_PREFIX_PATH
+++ local value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake
++++ eval echo '${CMAKE_PREFIX_PATH:-}'
+++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake
+++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake
+++ '[' /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/toolkit/tools/tikicpulib/lib/cmake:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/cmake = '' ']'
+++ read -r CMAKE_PREFIX_PATH
+++ export CMAKE_PREFIX_PATH
+++ '[' n = n ']'
+++ set +e
+++ unset __setenv_errexit_was_set
++ python3 -c 'import sys; print('\''python'\'', sys.version)'
+python 3.11.0 (main, Aug 12 2025, 07:15:09) [GCC 11.2.0]
++ python3 -c 'import torch; print('\''torch'\'', torch.__version__)'
+torch 2.7.1+cpu
++ python3 -c 'import torch_npu; print('\''torch_npu OK'\'')'
+torch_npu OK
++ python3 -c 'import tilelang; print('\''tilelang'\'', tilelang.__version__)'
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+tilelang 0.1.15+cuda.git48d38943
++ python3 -c 'import pytest; print('\''pytest'\'', pytest.__version__)'
+pytest 8.4.1
++ cd /root
++ '[' '!' -d TileOPs ']'
++ GIT_TERMINAL_PROMPT=0
++ git clone -b ascend-mha-decode git@github.com:zhangwenhao91/TileOPs.git
+Cloning into 'TileOPs'...
+ssh: Could not resolve hostname github.com: Temporary failure in name resolution
+fatal: Could not read from remote repository.
 
---- variant H1_nc (H=1, causal=False) ---
-compiling kernel (H=1) ...
-2026-10-19 19:11:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 19:11:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
-COMPILE_OK (H=1)
-  [H1_nc] finite=True mixed_violations=0/1024 max_absdiff=0.000566
-    b0h0 row0: max_rel=0.0880 max_absdiff=0.000068
-    b0h0 row1: max_rel=0.0204 max_absdiff=0.000071
-    b0h0 row2: max_rel=0.0838 max_absdiff=0.000096
-    b0h0 row3: max_rel=0.0099 max_absdiff=0.000071
-    b1h0 row0: max_rel=0.0431 max_absdiff=0.000532
-    b1h0 row1: max_rel=0.0112 max_absdiff=0.000497
-    b1h0 row2: max_rel=0.0053 max_absdiff=0.000566
-    b1h0 row3: max_rel=0.0061 max_absdiff=0.000551
-H1_nc: PASS
-
---- variant H2_nc (H=2, causal=False) ---
-compiling kernel (H=2) ...
-2026-10-19 19:11:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 19:11:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
-COMPILE_OK (H=2)
-  [H2_nc] finite=True mixed_violations=0/2048 max_absdiff=0.000948
-    b0h0 row0: max_rel=0.0880 max_absdiff=0.000068
-    b0h0 row1: max_rel=0.0204 max_absdiff=0.000071
-    b0h0 row2: max_rel=0.0838 max_absdiff=0.000096
-    b0h0 row3: max_rel=0.0099 max_absdiff=0.000071
-    b0h1 row0: max_rel=0.0261 max_absdiff=0.000089
-    b0h1 row1: max_rel=0.0442 max_absdiff=0.000069
-    b0h1 row2: max_rel=0.0272 max_absdiff=0.000057
-    b0h1 row3: max_rel=0.0062 max_absdiff=0.000087
-    b1h0 row0: max_rel=0.0431 max_absdiff=0.000532
-    b1h0 row1: max_rel=0.0112 max_absdiff=0.000497
-    b1h0 row2: max_rel=0.0053 max_absdiff=0.000566
-    b1h0 row3: max_rel=0.0061 max_absdiff=0.000551
-    b1h1 row0: max_rel=0.0045 max_absdiff=0.000948
-    b1h1 row1: max_rel=0.0169 max_absdiff=0.000405
-    b1h1 row2: max_rel=0.0379 max_absdiff=0.000505
-    b1h1 row3: max_rel=0.2033 max_absdiff=0.000693
-H2_nc: PASS
-
---- variant H2_c (H=2, causal=True) ---
-  [H2_c] finite=True mixed_violations=0/2048 max_absdiff=0.000931
-    b0h0 row0: max_rel=0.1921 max_absdiff=0.000071
-    b0h0 row1: max_rel=0.2424 max_absdiff=0.000077
-    b0h0 row2: max_rel=0.1004 max_absdiff=0.000097
-    b0h0 row3: max_rel=0.0099 max_absdiff=0.000071
-    b0h1 row0: max_rel=0.0101 max_absdiff=0.000134
-    b0h1 row1: max_rel=0.0222 max_absdiff=0.000083
-    b0h1 row2: max_rel=0.0856 max_absdiff=0.000078
-    b0h1 row3: max_rel=0.0062 max_absdiff=0.000087
-    b1h0 row0: max_rel=0.0000 max_absdiff=0.000000
-    b1h0 row1: max_rel=0.0000 max_absdiff=0.000000
-    b1h0 row2: max_rel=0.0523 max_absdiff=0.000931
-    b1h0 row3: max_rel=0.0061 max_absdiff=0.000551
-    b1h1 row0: max_rel=0.0000 max_absdiff=0.000000
-    b1h1 row1: max_rel=0.0000 max_absdiff=0.000000
-    b1h1 row2: max_rel=0.0027 max_absdiff=0.000776
-    b1h1 row3: max_rel=0.2033 max_absdiff=0.000693
-H2_c: PASS no_key_zero=True (count=1)
-
-=== v1d-d6 verdict (mixed criterion: |d| <= 0.01 + 0.05*|exp|) ===
-H1_nc: PASS
-H2_nc: PASS
-H2_c: PASS
-
---- host fp16-quantized reference (b0, h0) ---
-fp32-acc ref vs golden b0h0: max_absdiff=0.025401
-fp16-P ref vs golden b0h0:   max_absdiff=0.025420
-exit_code=0
-exit_code=0
+Please make sure you have the correct access rights
+and the repository exists.
++ exit 1
+exit_code=1
