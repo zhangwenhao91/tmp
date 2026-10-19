@@ -25,3 +25,4 @@ C1_noif_novmin: b0 PASS (swapbt matches), b1 FAIL(expect in C1/C2)
 C2_if_novmin: b0 PASS (swapbt matches), b1 FAIL(expect in C1/C2)
 C3_if_vmin: b0 FAIL (swapbt no), b1 FAIL(expect in C1/C2)
 exit_code=0
+exit_code=0
