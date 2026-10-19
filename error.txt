@@ -1,2 +1,8 @@
 du -sh /root/OpenTileAS/third_party/*          # 目录在长大就是在拉
 tail -f /root/OpenTileAS/build_logs/1_submodules.log
+
+
+
+
+
+tail -f build_otas.log
