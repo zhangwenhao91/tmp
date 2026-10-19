@@ -25,6 +25,7 @@ D = 128
 BR = 16          # 补零后的 M 行数（S_q=1 + 15 行零）
 ROWS = BR // 2   # 每 AIV 半片行数
 BC = 128         # == 2*VL，softmax NZ 打包硬约束
+VL = 64          # Ascend fp32 SIMD lane 数
 PAGE = 128       # 单页 K/V 行数
 NUM_KV = PAGE // BC
 dtype = "float16"
@@ -203,8 +204,6 @@ def finalize_cast(O, O_ub, O_cast_ub, l_ub):
 
 
 def build(use_pipelined):
-    VL = 64
-
     @T.prim_func
     def main(
         Q: T.Buffer((BR, D), dtype),
