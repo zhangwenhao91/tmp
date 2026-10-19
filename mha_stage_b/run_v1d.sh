@@ -14,7 +14,7 @@ else
 fi
 export PYTHONUNBUFFERED=1
 
-echo "=== stage B v1d-d3: single-factor ablation GA/GB/GC(H=1) + GD(H=2 allfix), rl=[300,3], fp16 ==="
+echo "=== stage B v1d-d4: culprit isolation GE(bias)/GA2(store)/GQ(qcopy)/GF(both), H=1 nc, rl=[300,3], fp16 ==="
 python decode_v1d.py 2>&1
 rc=$?
 echo "exit_code=$rc"
