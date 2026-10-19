@@ -35,6 +35,29 @@ python3 -m pip install -e . --no-deps --no-build-isolation || {
   exit 1
 }
 
+# 诊断：entry point 是否注册、探测器是否认领 npu 设备
+echo "=== backend registry diagnostic ==="
+python3 - <<'PYEOF' || echo "DIAG_FAILED"
+import torch
+print("torch", torch.__version__)
+import torch_npu  # noqa: F401
+print("torch_npu imported")
+import tileops
+from tileops.backend import registry
+registry.ensure_loaded()
+print("LOAD_FAILURES:", registry.LOAD_FAILURES)
+print("DETECTORS:", registry.DETECTORS)
+print("BUILDERS:", sorted(registry.BUILDERS))
+print("default_target:", registry.default_target)
+d = torch.device("npu", 0)
+print("device.type:", d.type)
+from tileops.backend import dispatch
+print("detect_target(npu):", dispatch.detect_target(d))
+print("select_target(None, npu):", dispatch.select_target(None, d))
+print("MHA registered_targets:", dispatch.registered_targets("MHADecodePagedWithKVCacheFwdOp"))
+print("MHA builder:", registry.BUILDERS.get(("MHADecodePagedWithKVCacheFwdOp", "ascend")))
+PYEOF
+
 # 冒烟 1：pytest 官方 smoke（bf16 支持在后续轮次，先排除）
 python3 -m pytest tests/ops/test_mha.py -m smoke -k "not bfloat16" \
   --tileops-device npu -v 2>&1 | tail -100
