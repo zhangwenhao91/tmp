@@ -47,8 +47,8 @@
 ++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 ++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 ++ read -r PYTHONPATH
-+++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 +++ tr : '\n'
++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 +++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
 +++ tr '\n' :
 +++ sed 's/:$//'
@@ -262,16 +262,16 @@ pytest 8.4.1
 + git fetch origin ascend-mha-decode
 From https://github.com/zhangwenhao91/TileOPs
  * branch              ascend-mha-decode -> FETCH_HEAD
-   5031d3f2..a9944cea  ascend-mha-decode -> origin/ascend-mha-decode
+   a9944cea..80ab8249  ascend-mha-decode -> origin/ascend-mha-decode
 + git checkout ascend-mha-decode
 Already on 'ascend-mha-decode'
 M	pyproject.toml
 Your branch is behind 'origin/ascend-mha-decode' by 1 commit, and can be fast-forwarded.
   (use "git pull" to update your local branch)
 + git reset --hard origin/ascend-mha-decode
-HEAD is now at a9944cea debug: add smoke marker to binding probe
+HEAD is now at 80ab8249 debug: spy on select_target/detect_target during real call, fix probe device bug
 + git log --oneline -1
-a9944cea debug: add smoke marker to binding probe
+80ab8249 debug: spy on select_target/detect_target during real call, fix probe device bug
 + sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
 + sed -i 's/^license = .*/license = {text = "MIT"}/' pyproject.toml
 + sed -i '/^license-files/d' pyproject.toml
@@ -285,8 +285,8 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=485c32732fd69c90826022b30e785ed5520bb341db646b61d80f1547f3bfc08b
-  Stored in directory: /tmp/pip-ephem-wheel-cache-b7gr5kgj/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=209b8b8cc95847c3e3906546e9ad19825d4abcd5e0a7a486ff785d891311185f
+  Stored in directory: /tmp/pip-ephem-wheel-cache-bnldxmix/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -304,18 +304,63 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f30d6405d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f8b88eddd00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7f30d6405f80>
+MHA builder: <function build_mha_decode_paged at 0x7f8b88eddf80>
 + echo '=== debug binding probe ==='
 === debug binding probe ===
 + python3 -m pytest tests/ops/test_debug_binding.py --tileops-device npu -v -s
-+ tail -40
++ tail -120
+    
+        dev = torch.device(device_mod.run_device())
+        B, S_Q, H, D = 1, 1, 2, 128
+        PAGE, W = 128, 4
+        q = torch.randn(B, S_Q, H, D, device=dev, dtype=torch.float16)
+        kp = torch.randn(W * PAGE, H, D, device=dev, dtype=torch.float16)
+        vp = torch.randn(W * PAGE, H, D, device=dev, dtype=torch.float16)
+        real = torch.tensor([PAGE], dtype=torch.int32, device=dev)
+        table = torch.arange(W, dtype=torch.int32, device=dev).view(B, W)
+        print("=== direct op call (no verify) ===")
+        try:
+>           out = op(q, kp, vp, real, table)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/ops/test_debug_binding.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/tileops/ops/op_base.py:1025: in __call__
+    return self._call_boundary(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<MHADecodePagedWithKVCacheFwdOp boundary>:2: in _call_boundary
+    ???
+src/tileops/ops/_signature_codegen.py:1346: in call
+    result = operator(
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/custom_ops.py:671: in __call__
+    return self._opoverload(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_ops.py:756: in __call__
+    return self._op(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/autograd.py:113: in autograd_impl
+    result = forward_no_grad(*args, Metadata(keyset, keyword_only_args))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/autograd.py:40: in forward_no_grad
+    result = op.redispatch(keyset & _C._after_autograd_keyset, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_ops.py:761: in redispatch
+    return self._handle.redispatch_boxed(keyset, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/custom_ops.py:335: in backend_impl
+    result = self._backend_fns[device_type](*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_compile.py:51: in inner
+    return disable_fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py:838: in _fn
     return fn(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^
 /usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/custom_ops.py:367: in wrapped_fn
@@ -324,38 +369,73 @@ MHA builder: <function build_mha_decode_paged at 0x7f30d6405f80>
 src/tileops/ops/_signature_codegen.py:1277: in operator
     result = op._run_call(tuple(values[:count]), op.forward, writes, written, execution)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/op_base.py:698: in _run_call
-    call = self._check_signature(tensors)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/op_base.py:589: in _check_signature
-    return type(self)._signature.check(self, tensors)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/_signature_codegen.py:1062: in check
-    return self._lookup(self.checks, op, tensors)(op, tensors)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-<MHADecodePagedWithKVCacheFwdOp check>:22: in check
-    ???
+src/tileops/ops/op_base.py:712: in _run_call
+    result = body(*inputs, **writes, **(execution or {}))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/tileops/ops/attention/mha.py:112: in forward
+    kernel = self.kernel_for("mha_decode_paged", self._attention_call(q, k, block_table))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/tileops/ops/op_base.py:479: in kernel_for
+    entry = self._get_or_build_entry(interface, call)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/tileops/ops/op_base.py:509: in _get_or_build_entry
+    cls = self._installed_kernel_types[self.key_for(interface, call)]
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-name = 'MHADecodePagedWithKVCacheFwdOp'
-op = <tileops.ops.attention.mha.MHADecodePagedWithKVCacheFwdOp object at 0x7f3ce51af2d0>
-tensors = (tensor([[[[-1.2402e+00,  6.1426e-01, -8.1006e-01,  9.2773e-01, -1.2715e+00,
-            1.8252e+00, -8.2617e-01, -4.1...     device='npu:0', dtype=torch.float16), tensor([128], dtype=torch.int32), tensor([[0, 1, 2, 3]], dtype=torch.int32))
-cpu = (), ctor = ()
+self = <tileops.ops.attention.mha.MHADecodePagedWithKVCacheFwdOp object at 0x7f8c5a4c14d0>
+interface = 'mha_decode_paged'
+call = AttentionCall(arch=-1, calibration=None, sm_count=0, smem_budget=0, device=device(type='npu', index=0), dtype=torch.fl...e, has_sinks=False, cache_dtype=torch.float16, fuse_rope=False, max_position=None, rotary_dim=None, rope_layout='neox')
 
-    def _call_device(name: str, op, tensors: tuple, cpu: tuple, ctor: tuple):
-        """The call device (docs/design/manifest.md § Call Semantics)."""
-        devices = {t.device for t in tensors}
-        if len(devices) > 1:
->           raise CheckError(
-                f"{name} needs every tensor on one device; got {sorted(map(str, devices))}"
+    def key_for(self, interface: str, call: CallSpec) -> str:
+        """Return the key of the one implementation of *interface* that serves *call*.
+    
+        A key is available where its implementation can run, and it applies where the
+        implementation's ``refusal`` accepts the call. Among the available keys that apply,
+        the answer is the unique one no other is preferred over: ``preferred_over`` orders
+        them, transitively, and the general one is below every other. Neither the order of
+        the keys nor any numeric priority decides it.
+    
+        Raises:
+            OpNotAvailableError: No key runs on the call's device type.
+            ValueError: When no implementation serves the call, or when several are
+                preferred over none.
+        """
+        device = getattr(call, "device", None)
+        on_device = device is None
+        rules: dict[str, type[Kernel]] = {}
+        rejected: list[str] = []
+        for key in self._keys_by_interface[interface]:
+            rule = self._installed_kernel_types[key]
+            on_device = on_device or device.type in rule.devices
+            reason = rule.unavailable(call) or rule.refusal(call)
+            if reason is None:
+                rules[key] = rule
+            else:
+                rejected.append(f"{key} ({rule.__name__}: {reason})")
+        chosen = [
+            key
+            for key, rule in rules.items()
+            if not any(
+                key in self._preferred_over.get(other, ())
+                or (rule.general and not rules[other].general)
+                for other in rules
+                if other != key
             )
-E           tileops.ops._signature_codegen.CheckError: MHADecodePagedWithKVCacheFwdOp needs every tensor on one device; got ['cpu', 'npu:0']
+        ]
+        if len(chosen) == 1:
+            return chosen[0]
+        if not on_device and rejected:
+>           raise OpNotAvailableError(
+                f"{type(self).__name__}'s in-tree kernels do not run on {device}; known "
+                f"targets for this op: {registered_targets(type(self).__name__)}"
+            )
+E           tileops.backend.errors.OpNotAvailableError: MHADecodePagedWithKVCacheFwdOp's in-tree kernels do not run on npu:0; known targets for this op: ['ascend']
 
-src/tileops/ops/_signature_codegen.py:216: CheckError
+src/tileops/ops/op_base.py:425: OpNotAvailableError
 =========================== short test summary info ============================
-FAILED tests/ops/test_debug_binding.py::test_debug_binding - tileops.ops._sig...
-============================== 1 failed in 5.14s ===============================
+FAILED tests/ops/test_debug_binding.py::test_debug_binding - tileops.backend....
+============================== 1 failed in 5.35s ===============================
 + echo PROBE_RC=1
 PROBE_RC=1
 + python3 -m pytest tests/ops/test_mha.py -m smoke -k 'not bfloat16' --tileops-device npu -v
@@ -395,7 +475,7 @@ src/tileops/ops/op_base.py:509: in _get_or_build_entry
                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <tileops.ops.attention.mha.MHADecodePagedWithKVCacheFwdOp object at 0x7f37c8ca4c10>
+self = <tileops.ops.attention.mha.MHADecodePagedWithKVCacheFwdOp object at 0x7f3f081b37d0>
 interface = 'mha_decode_paged'
 call = AttentionCall(arch=-1, calibration=None, sm_count=0, smem_budget=0, device=device(type='npu', index=0), dtype=torch.fl...e, has_sinks=False, cache_dtype=torch.float16, fuse_rope=False, max_position=None, rotary_dim=None, rope_layout='neox')
 
@@ -459,7 +539,7 @@ FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-T
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2]
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3]
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool
-============ 7 failed, 1 skipped, 5 deselected, 1 warning in 6.16s =============
+============ 7 failed, 1 skipped, 5 deselected, 1 warning in 6.23s =============
 + PYTEST_RC=1
 + echo pytest_rc=1
 pytest_rc=1
@@ -524,7 +604,7 @@ FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-F
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths4]
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths5]
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool
-================== 7 failed, 6 deselected, 1 warning in 6.24s ==================
+================== 7 failed, 6 deselected, 1 warning in 6.05s ==================
 + SHORT_RC=1
 + echo cache_shorter_rc=1
 cache_shorter_rc=1
