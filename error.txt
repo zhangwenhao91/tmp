@@ -262,14 +262,16 @@ pytest 8.4.1
 + git fetch origin ascend-mha-decode
 From https://github.com/zhangwenhao91/TileOPs
  * branch              ascend-mha-decode -> FETCH_HEAD
+   55553fe0..f3f268ca  ascend-mha-decode -> origin/ascend-mha-decode
 + git checkout ascend-mha-decode
 Already on 'ascend-mha-decode'
 M	pyproject.toml
-Your branch is up to date with 'origin/ascend-mha-decode'.
+Your branch is behind 'origin/ascend-mha-decode' by 1 commit, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
 + git reset --hard origin/ascend-mha-decode
-HEAD is now at 55553fe0 ascend backend: paged MHA decode via TileLang Ascend JIT
+HEAD is now at f3f268ca compat: sym_and/sym_or shim for torch < 2.8 (static-shape paths never call them)
 + git log --oneline -1
-55553fe0 ascend backend: paged MHA decode via TileLang Ascend JIT
+f3f268ca compat: sym_and/sym_or shim for torch < 2.8 (static-shape paths never call them)
 + sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
 + sed -i 's/^license = .*/license = {text = "MIT"}/' pyproject.toml
 + sed -i '/^license-files/d' pyproject.toml
@@ -283,10 +285,14 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=ec95cebeaf2cfd67f8222e8bee4c5f9ca4c68867a91807fd893884caebb96803
-  Stored in directory: /tmp/pip-ephem-wheel-cache-bu827gr5/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=176fe584aa55519898837e3d4c745ec525f486daca59d7d021dc8de5bac2e8be
+  Stored in directory: /tmp/pip-ephem-wheel-cache-56rlc6jx/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
+  Attempting uninstall: tileops
+    Found existing installation: tileops 0.0.0
+    Uninstalling tileops-0.0.0:
+      Successfully uninstalled tileops-0.0.0
 Successfully installed tileops-0.0.0
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
@@ -294,94 +300,176 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 [notice] To update, run: pip install --upgrade pip
 + python3 -m pytest tests/ops/test_mha.py -m smoke -k 'not bfloat16' --tileops-device npu -v
 + tail -100
-============================= test session starts ==============================
-platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
-cachedir: .pytest_cache
-metadata: {'Python': '3.11.0', 'Platform': 'Linux-5.4.0-144-generic-x86_64-with-glibc2.36', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'html': '4.1.1', 'cov': '6.2.1', 'metadata': '3.1.1', 'hypothesis': '6.70.1', 'xdist': '3.8.0', 'repeat': '0.9.4'}}
-hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/root/TileOPs/.hypothesis/examples')
-rootdir: /root/TileOPs
-configfile: pyproject.toml
-plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
-collecting ... collected 0 items / 1 error
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/autograd.py:40: in forward_no_grad
+    result = op.redispatch(keyset & _C._after_autograd_keyset, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_ops.py:761: in redispatch
+    return self._handle.redispatch_boxed(keyset, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/custom_ops.py:335: in backend_impl
+    result = self._backend_fns[device_type](*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_compile.py:51: in inner
+    return disable_fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py:838: in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/custom_ops.py:367: in wrapped_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+src/tileops/ops/_signature_codegen.py:1277: in operator
+    result = op._run_call(tuple(values[:count]), op.forward, writes, written, execution)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/tileops/ops/op_base.py:712: in _run_call
+    result = body(*inputs, **writes, **(execution or {}))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/tileops/ops/attention/mha.py:112: in forward
+    kernel = self.kernel_for("mha_decode_paged", self._attention_call(q, k, block_table))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/tileops/ops/op_base.py:479: in kernel_for
+    entry = self._get_or_build_entry(interface, call)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/tileops/ops/op_base.py:509: in _get_or_build_entry
+    cls = self._installed_kernel_types[self.key_for(interface, call)]
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-==================================== ERRORS ====================================
-____________________ ERROR collecting tests/ops/test_mha.py ____________________
-ImportError while importing test module '/root/TileOPs/tests/ops/test_mha.py'.
-Hint: make sure your test modules/packages have valid Python names.
-Traceback:
-/usr/local/python3.11.0/lib/python3.11/importlib/__init__.py:126: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-tests/ops/test_mha.py:7: in <module>
-    from tileops.ops import MHADecodePagedWithKVCacheFwdOp
-src/tileops/ops/__init__.py:284: in __getattr__
-    value = getattr(importlib.import_module(module, __package__), name)
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/importlib/__init__.py:126: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/attention/__init__.py:1: in <module>
-    from tileops.ops.attention.dsa import DSADecodeWithKVCacheFwdOp
-src/tileops/ops/attention/dsa.py:9: in <module>
-    from tileops.ops.op_base import Op
-src/tileops/ops/op_base.py:35: in <module>
-    from tileops.ops._signature_codegen import check_result
-src/tileops/ops/_signature_codegen.py:27: in <module>
-    from torch.fx.experimental.symbolic_shapes import sym_and, sym_or
-E   ImportError: cannot import name 'sym_and' from 'torch.fx.experimental.symbolic_shapes' (/usr/local/python3.11.0/lib/python3.11/site-packages/torch/fx/experimental/symbolic_shapes.py)
+self = <tileops.ops.attention.mha.MHADecodePagedWithKVCacheFwdOp object at 0x7f80af309ad0>
+interface = 'mha_decode_paged'
+call = AttentionCall(arch=-1, calibration=None, sm_count=0, smem_budget=0, device=device(type='npu', index=0), dtype=torch.fl...e, has_sinks=False, cache_dtype=torch.float16, fuse_rope=False, max_position=None, rotary_dim=None, rope_layout='neox')
+
+    def key_for(self, interface: str, call: CallSpec) -> str:
+        """Return the key of the one implementation of *interface* that serves *call*.
+    
+        A key is available where its implementation can run, and it applies where the
+        implementation's ``refusal`` accepts the call. Among the available keys that apply,
+        the answer is the unique one no other is preferred over: ``preferred_over`` orders
+        them, transitively, and the general one is below every other. Neither the order of
+        the keys nor any numeric priority decides it.
+    
+        Raises:
+            OpNotAvailableError: No key runs on the call's device type.
+            ValueError: When no implementation serves the call, or when several are
+                preferred over none.
+        """
+        device = getattr(call, "device", None)
+        on_device = device is None
+        rules: dict[str, type[Kernel]] = {}
+        rejected: list[str] = []
+        for key in self._keys_by_interface[interface]:
+            rule = self._installed_kernel_types[key]
+            on_device = on_device or device.type in rule.devices
+            reason = rule.unavailable(call) or rule.refusal(call)
+            if reason is None:
+                rules[key] = rule
+            else:
+                rejected.append(f"{key} ({rule.__name__}: {reason})")
+        chosen = [
+            key
+            for key, rule in rules.items()
+            if not any(
+                key in self._preferred_over.get(other, ())
+                or (rule.general and not rules[other].general)
+                for other in rules
+                if other != key
+            )
+        ]
+        if len(chosen) == 1:
+            return chosen[0]
+        if not on_device and rejected:
+>           raise OpNotAvailableError(
+                f"{type(self).__name__}'s in-tree kernels do not run on {device}; known "
+                f"targets for this op: {registered_targets(type(self).__name__)}"
+            )
+E           tileops.backend.errors.OpNotAvailableError: MHADecodePagedWithKVCacheFwdOp's in-tree kernels do not run on npu:0; known targets for this op: ['ascend']
+
+src/tileops/ops/op_base.py:425: OpNotAvailableError
+=============================== warnings summary ===============================
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0]
+  /root/TileOPs/tests/ops/test_mha.py:146: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    rows = block_table[:, pos // page_size] * page_size + pos % page_size
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ============================
-ERROR tests/ops/test_mha.py
-!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
-=============================== 1 error in 2.17s ===============================
-+ PYTEST_RC=2
-+ echo pytest_rc=2
-pytest_rc=2
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-False]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-1024-128-128-False-dtype1-False]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-True-real_lengths1]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool
+============ 7 failed, 1 skipped, 5 deselected, 1 warning in 6.05s =============
++ PYTEST_RC=1
++ echo pytest_rc=1
+pytest_rc=1
 + python3 -m pytest tests/ops/test_mha.py -k 'cache_shorter or table_width' --tileops-device npu -v
 + tail -60
-============================= test session starts ==============================
-platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
-cachedir: .pytest_cache
-metadata: {'Python': '3.11.0', 'Platform': 'Linux-5.4.0-144-generic-x86_64-with-glibc2.36', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'html': '4.1.1', 'cov': '6.2.1', 'metadata': '3.1.1', 'hypothesis': '6.70.1', 'xdist': '3.8.0', 'repeat': '0.9.4'}}
-hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/root/TileOPs/.hypothesis/examples')
-rootdir: /root/TileOPs
-configfile: pyproject.toml
-plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
-collecting ... collected 0 items / 1 error
+        """Return the key of the one implementation of *interface* that serves *call*.
+    
+        A key is available where its implementation can run, and it applies where the
+        implementation's ``refusal`` accepts the call. Among the available keys that apply,
+        the answer is the unique one no other is preferred over: ``preferred_over`` orders
+        them, transitively, and the general one is below every other. Neither the order of
+        the keys nor any numeric priority decides it.
+    
+        Raises:
+            OpNotAvailableError: No key runs on the call's device type.
+            ValueError: When no implementation serves the call, or when several are
+                preferred over none.
+        """
+        device = getattr(call, "device", None)
+        on_device = device is None
+        rules: dict[str, type[Kernel]] = {}
+        rejected: list[str] = []
+        for key in self._keys_by_interface[interface]:
+            rule = self._installed_kernel_types[key]
+            on_device = on_device or device.type in rule.devices
+            reason = rule.unavailable(call) or rule.refusal(call)
+            if reason is None:
+                rules[key] = rule
+            else:
+                rejected.append(f"{key} ({rule.__name__}: {reason})")
+        chosen = [
+            key
+            for key, rule in rules.items()
+            if not any(
+                key in self._preferred_over.get(other, ())
+                or (rule.general and not rules[other].general)
+                for other in rules
+                if other != key
+            )
+        ]
+        if len(chosen) == 1:
+            return chosen[0]
+        if not on_device and rejected:
+>           raise OpNotAvailableError(
+                f"{type(self).__name__}'s in-tree kernels do not run on {device}; known "
+                f"targets for this op: {registered_targets(type(self).__name__)}"
+            )
+E           tileops.backend.errors.OpNotAvailableError: MHADecodePagedWithKVCacheFwdOp's in-tree kernels do not run on npu:0; known targets for this op: ['ascend']
 
-==================================== ERRORS ====================================
-____________________ ERROR collecting tests/ops/test_mha.py ____________________
-ImportError while importing test module '/root/TileOPs/tests/ops/test_mha.py'.
-Hint: make sure your test modules/packages have valid Python names.
-Traceback:
-/usr/local/python3.11.0/lib/python3.11/importlib/__init__.py:126: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-tests/ops/test_mha.py:7: in <module>
-    from tileops.ops import MHADecodePagedWithKVCacheFwdOp
-src/tileops/ops/__init__.py:284: in __getattr__
-    value = getattr(importlib.import_module(module, __package__), name)
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/importlib/__init__.py:126: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/attention/__init__.py:1: in <module>
-    from tileops.ops.attention.dsa import DSADecodeWithKVCacheFwdOp
-src/tileops/ops/attention/dsa.py:9: in <module>
-    from tileops.ops.op_base import Op
-src/tileops/ops/op_base.py:35: in <module>
-    from tileops.ops._signature_codegen import check_result
-src/tileops/ops/_signature_codegen.py:27: in <module>
-    from torch.fx.experimental.symbolic_shapes import sym_and, sym_or
-E   ImportError: cannot import name 'sym_and' from 'torch.fx.experimental.symbolic_shapes' (/usr/local/python3.11.0/lib/python3.11/site-packages/torch/fx/experimental/symbolic_shapes.py)
+src/tileops/ops/op_base.py:425: OpNotAvailableError
+=============================== warnings summary ===============================
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0]
+  /root/TileOPs/tests/ops/test_mha.py:146: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    rows = block_table[:, pos // page_size] * page_size + pos % page_size
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ============================
-ERROR tests/ops/test_mha.py
-!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
-=============================== 1 error in 1.95s ===============================
-+ SHORT_RC=2
-+ echo cache_shorter_rc=2
-cache_shorter_rc=2
-+ echo 'FINAL: pytest=2 cache_shorter=2'
-FINAL: pytest=2 cache_shorter=2
-+ '[' 2 = 0 ']'
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-True-real_lengths1]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths4]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths5]
+FAILED tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool
+================== 7 failed, 6 deselected, 1 warning in 5.88s ==================
++ SHORT_RC=1
++ echo cache_shorter_rc=1
+cache_shorter_rc=1
++ echo 'FINAL: pytest=1 cache_shorter=1'
+FINAL: pytest=1 cache_shorter=1
++ '[' 1 = 0 ']'
 + exit 1
 exit_code=1
