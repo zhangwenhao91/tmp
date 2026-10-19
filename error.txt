@@ -1,3 +1,7 @@
++++ dirname mha_stage_c/run_tileops_mha.sh
+++ cd mha_stage_c
+++ pwd
++ SCRIPT_DIR=/home/z30086261/tmp/mha_stage_c
 + export PYTHONUNBUFFERED=1
 + PYTHONUNBUFFERED=1
 + source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
@@ -117,8 +121,8 @@
 ++ echo /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64
 ++ grep -q driver
 ++ for my_path in ${my_ld_library_path}
-++ echo /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin
 ++ grep -q driver
+++ echo /usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin
 ++ for my_path in ${my_ld_library_path}
 ++ echo /usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64
 ++ grep -q driver
@@ -283,8 +287,8 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=e0c16eca7c09c4f54bdaf056a3d86d1955b465fa0393b84b2c382f7e1e296ea6
-  Stored in directory: /tmp/pip-ephem-wheel-cache-huo82w31/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=5846b2e29307de14f8fc3f9720f15b5ebb5ac899aff262f161374b6b074a20e8
+  Stored in directory: /tmp/pip-ephem-wheel-cache-rez9lv0x/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -302,14 +306,14 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f86e0485d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7fea16151d00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7f86e0486020>
+MHA builder: <function build_mha_decode_paged at 0x7fea16152020>
 + python3 -m pytest tests/ops/test_mha.py -m smoke --tileops-device npu --tileops-target detect -v
 + tail -100
 ============================= test session starts ==============================
@@ -375,15 +379,46 @@ tests/ops/test_mha.py: 42 warnings
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================= 7 passed, 6 deselected, 43 warnings in 5.58s =================
+================= 7 passed, 6 deselected, 43 warnings in 5.88s =================
 + SHORT_RC=0
 + echo cache_shorter_rc=0
 cache_shorter_rc=0
-+++ dirname mha_stage_c/run_tileops_mha.sh
-++ cd mha_stage_c
-mha_stage_c/run_tileops_mha.sh: line 76: cd: mha_stage_c: No such file or directory
-+ SCRIPT_DIR=
-+ cp /bench_mha.py /root/TileOPs/bench_mha.py
-cp: cannot stat '/bench_mha.py': No such file or directory
-+ exit 1
-exit_code=1
++ cp /home/z30086261/tmp/mha_stage_c/bench_mha.py /root/TileOPs/bench_mha.py
++ cd /root/TileOPs
++ python3 bench_mha.py
++ tail -80
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+peak_bw=3200.0GB/s warmup=3 repeat=20 per-call 口径含 builder host 开销（bias 构造 + 池 sanitize 克隆）
+shape                        dtype      first(ms)  median(ms)  amort(ms)   eff(GB)     med GB/s   amort GB/s    MBU%
+2026-10-19 20:25:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-19 20:25:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+/root/TileOPs/src/tileops/backends/ascend/builders/attention.py:92: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  rows = bt_t[:, pos // page_size] * page_size + pos % page_size
+s1_B1H8_kv2048_p128          float16   first=  3216.9ms med=   0.549ms amort=   0.543ms eff= 0.0084GB med=    15.3GB/s (  0.48%) amort=    15.5GB/s (  0.48%)
+2026-10-19 20:25:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-19 20:25:35  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s2_B8H8_kv2048_p128          float16   first=  3220.9ms med=   0.564ms amort=    0.54ms eff= 0.0671GB med=   119.1GB/s (  3.72%) amort=   124.4GB/s (  3.89%)
+2026-10-19 20:25:36  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-19 20:25:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s3_B16H8_kv1024_p128         float16   first=  3198.2ms med=   0.654ms amort=   0.587ms eff= 0.0672GB med=   102.7GB/s (  3.21%) amort=   114.5GB/s (  3.58%)
+2026-10-19 20:25:39  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-19 20:25:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s4_B8H32_kv4096_p256         float16   first=  3218.4ms med=   0.735ms amort=   0.678ms eff=  0.537GB med=   730.3GB/s ( 22.82%) amort=   792.0GB/s ( 24.75%)
+s5_B8H8_kv2048_p128_half     float16   first=     4.1ms med=   0.618ms amort=   0.602ms eff= 0.0336GB med=    54.3GB/s (   1.7%) amort=    55.8GB/s (  1.74%)
+2026-10-19 20:25:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-19 20:25:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s6_B4H8_kv4096_p256_half     float16   first=  3134.9ms med=   0.733ms amort=   0.641ms eff= 0.0336GB med=    45.8GB/s (  1.43%) amort=    52.4GB/s (  1.64%)
+2026-10-19 20:25:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-19 20:25:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s7_bf16_B8H8_kv2048_p128     bfloat16  first=  3183.4ms med=   0.529ms amort=   0.516ms eff= 0.0671GB med=   127.0GB/s (  3.97%) amort=   130.0GB/s (  4.06%)
+BENCH_JSON: [{"name": "s1_B1H8_kv2048_p128", "dtype": "float16", "first_ms": 3216.9, "median_ms": 0.549, "amortized_ms": 0.543, "eff_GB": 0.0084, "median_Gbps": 15.3, "amortized_Gbps": 15.5, "median_MBU": 0.48, "amortized_MBU": 0.48}, {"name": "s2_B8H8_kv2048_p128", "dtype": "float16", "first_ms": 3220.9, "median_ms": 0.564, "amortized_ms": 0.54, "eff_GB": 0.0671, "median_Gbps": 119.1, "amortized_Gbps": 124.4, "median_MBU": 3.72, "amortized_MBU": 3.89}, {"name": "s3_B16H8_kv1024_p128", "dtype": "float16", "first_ms": 3198.2, "median_ms": 0.654, "amortized_ms": 0.587, "eff_GB": 0.0672, "median_Gbps": 102.7, "amortized_Gbps": 114.5, "median_MBU": 3.21, "amortized_MBU": 3.58}, {"name": "s4_B8H32_kv4096_p256", "dtype": "float16", "first_ms": 3218.4, "median_ms": 0.735, "amortized_ms": 0.678, "eff_GB": 0.537, "median_Gbps": 730.3, "amortized_Gbps": 792.0, "median_MBU": 22.82, "amortized_MBU": 24.75}, {"name": "s5_B8H8_kv2048_p128_half", "dtype": "float16", "first_ms": 4.1, "median_ms": 0.618, "amortized_ms": 0.602, "eff_GB": 0.0336, "median_Gbps": 54.3, "amortized_Gbps": 55.8, "median_MBU": 1.7, "amortized_MBU": 1.74}, {"name": "s6_B4H8_kv4096_p256_half", "dtype": "float16", "first_ms": 3134.9, "median_ms": 0.733, "amortized_ms": 0.641, "eff_GB": 0.0336, "median_Gbps": 45.8, "amortized_Gbps": 52.4, "median_MBU": 1.43, "amortized_MBU": 1.64}, {"name": "s7_bf16_B8H8_kv2048_p128", "dtype": "bfloat16", "first_ms": 3183.4, "median_ms": 0.529, "amortized_ms": 0.516, "eff_GB": 0.0671, "median_Gbps": 127.0, "amortized_Gbps": 130.0, "median_MBU": 3.97, "amortized_MBU": 4.06}]
++ BENCH_RC=0
++ echo bench_rc=0
+bench_rc=0
++ echo 'FINAL: pytest=0 cache_shorter=0 bench=0'
+FINAL: pytest=0 cache_shorter=0 bench=0
++ '[' 0 = 0 ']'
++ '[' 0 = 0 ']'
++ '[' 0 = 0 ']'
++ exit 0
+exit_code=0
