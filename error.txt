@@ -1,47 +1,202 @@
 CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
-=== probe_iter（多变体二分：定位 ScalarDcacheBypass 触发条件） ===
+=== stage B v1a: minimal decode kernel (B=1,H=1,S_q=1,D=128,1 page,fp16) ===
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+=== v1a decode kernel: build & compile ===
+2026-10-19 17:15:33  [TileLang:tilelang.language.eager.builder:CRITICAL] (builder.py:1787): Failed to build prim_func from main
+args={'Q': Q, 'K': K, 'V': V, 'O': O}
+source=def make_closure(use_pipelined):
 
---- variant H1_ub2gm_static: compiling ---
-2026-10-19 17:09:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
-2026-10-19 17:09:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `v`
-COMPILE_OK H1_ub2gm_static
+    def main(__tb):
+        __tb_fl = '/home/z30086261/tmp/mha_stage_b/decode_v1a.py'
+        __tb_fn = 'main'
+        __tb.set_fileline(__tb_fl, 209, __tb_fn)
 
---- variant J1_elemstore_ctrl: compiling ---
-2026-10-19 17:09:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
-COMPILE_FAIL J1_elemstore_ctrl:
-      File "<unknown>", line 0, in TVMFFIPyCallManager::ForwardPyErrorToFFI()
-      File "<unknown>", line 0, in TVMFFICyErrorSetRaisedFromPyError(_object*)
-        raise ValueError(
-    ValueError: [TileLang Semantic Check] T.Parallel loop 'i_j_fused' must be inside a VF block (T.SimdVF() or T.SimtVF()). Parallel loops outside VF blocks are not supported on Ascend NPU.
+        def main(Q, K, V, O, **__kwargs):
+            __tb.set_fileline(__tb_fl, 210, __tb_fn)
+            Q = __tb.arg('Q', Q)
+            __tb.set_fileline(__tb_fl, 211, __tb_fn)
+            K = __tb.arg('K', K)
+            __tb.set_fileline(__tb_fl, 212, __tb_fn)
+            V = __tb.arg('V', V)
+            __tb.set_fileline(__tb_fl, 213, __tb_fn)
+            O = __tb.arg('O', O)
+            __tb.set_fileline(__tb_fl, 1, __tb_fn)
+            if __tb.skip_kernel_ctx():
+                __tb.set_fileline(__tb_fl, 1, __tb_fn)
+                return
+            __tb.set_fileline(__tb_fl, 215, __tb_fn)
+            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Kernel)(1)) as bx:
+                __tb.set_fileline(__tb_fl, 216, __tb_fn)
+                Q_shared = __tb.bind('Q_shared', __tb.resolve_call(__tb.rval('T', T).alloc_l1)((__tb.rval('BR', BR), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 217, __tb_fn)
+                K_shared = __tb.bind('K_shared', __tb.resolve_call(__tb.rval('T', T).alloc_l1)((__tb.rval('BC', BC), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 218, __tb_fn)
+                V_shared = __tb.bind('V_shared', __tb.resolve_call(__tb.rval('T', T).alloc_l1)((__tb.rval('D', D), __tb.rval('BC', BC)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 219, __tb_fn)
+                P_shared = __tb.bind('P_shared', __tb.resolve_call(__tb.rval('T', T).alloc_l1)((__tb.rval('BR', BR), __tb.rval('BC', BC)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 221, __tb_fn)
+                qk_a_l0 = __tb.bind('qk_a_l0', __tb.resolve_call(__tb.rval('T', T).alloc_l0a)((__tb.rval('BR', BR), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 222, __tb_fn)
+                qk_b_l0 = __tb.bind('qk_b_l0', __tb.resolve_call(__tb.rval('T', T).alloc_l0b)((__tb.rval('BC', BC), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 223, __tb_fn)
+                pv_a_l0 = __tb.bind('pv_a_l0', __tb.resolve_call(__tb.rval('T', T).alloc_l0a)((__tb.rval('BR', BR), __tb.rval('BC', BC)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 224, __tb_fn)
+                pv_b_l0 = __tb.bind('pv_b_l0', __tb.resolve_call(__tb.rval('T', T).alloc_l0b)((__tb.rval('D', D), __tb.rval('BC', BC)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 225, __tb_fn)
+                qk_acc_l0c = __tb.bind('qk_acc_l0c', __tb.resolve_call(__tb.rval('T', T).alloc_l0c)((__tb.rval('BR', BR), __tb.rval('BC', BC)), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 226, __tb_fn)
+                pv_acc_l0c = __tb.bind('pv_acc_l0c', __tb.resolve_call(__tb.rval('T', T).alloc_l0c)((__tb.rval('BR', BR), __tb.rval('D', D)), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 228, __tb_fn)
+                S_ub = __tb.bind('S_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS), __tb.rval('BC', BC)), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 229, __tb_fn)
+                P_nz_ub = __tb.bind('P_nz_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS) + 1, __tb.rval('BC', BC)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 230, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).annotate_layout)({__tb.rval('P_nz_ub', P_nz_ub): __tb.resolve_call(__tb.rval('make_ascend_compact_nz_layout', make_ascend_compact_nz_layout))(__tb.rval('P_nz_ub', P_nz_ub))}))
+                __tb.set_fileline(__tb_fl, 231, __tb_fn)
+                O_tmp_ub = __tb.bind('O_tmp_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS), __tb.rval('D', D)), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 232, __tb_fn)
+                O_ub = __tb.bind('O_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS), __tb.rval('D', D)), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 233, __tb_fn)
+                m_ub = __tb.bind('m_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS),), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 234, __tb_fn)
+                l_ub = __tb.bind('l_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS),), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 235, __tb_fn)
+                alpha_ub = __tb.bind('alpha_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS),), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 236, __tb_fn)
+                old_m_ub = __tb.bind('old_m_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS),), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 237, __tb_fn)
+                row_sum_ub = __tb.bind('row_sum_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS),), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 238, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).annotate_buffer_versions)({__tb.rval('K_shared', K_shared): 3, __tb.rval('V_shared', V_shared): 3, __tb.rval('qk_acc_l0c', qk_acc_l0c): 2, __tb.rval('pv_acc_l0c', pv_acc_l0c): 2, __tb.rval('S_ub', S_ub): 3, __tb.rval('P_nz_ub', P_nz_ub): 2, __tb.rval('alpha_ub', alpha_ub): 3, __tb.rval('O_tmp_ub', O_tmp_ub): 2}))
+                __tb.set_fileline(__tb_fl, 251, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('Q', Q)[0:__tb.rval('BR', BR), 0:__tb.rval('D', D)], __tb.rval('Q_shared', Q_shared)[0:__tb.rval('BR', BR), 0:__tb.rval('D', D)]))
+                __tb.set_fileline(__tb_fl, 252, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('init_m_l', init_m_l))(__tb.rval('m_ub', m_ub), __tb.rval('l_ub', l_ub)))
+                __tb.set_fileline(__tb_fl, 253, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('clear_O_ub', clear_O_ub))(__tb.rval('O_ub', O_ub)))
+                __tb.set_fileline(__tb_fl, 255, __tb_fn)
+                for __2 in __tb.ctx_if(__tb.rval('use_pipelined', use_pipelined)):
+                    __tb.set_fileline(__tb_fl, 255, __tb_fn)
+                    for _ in __tb.ctx_then(__2):
+                        __tb.set_fileline(__tb_fl, 256, __tb_fn)
+                        for __0 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).Pipelined), __tb.rval('NUM_KV', NUM_KV), num_stages=1, annotations={'enable_offset': True})):
+                            __tb.set_fileline(__tb_fl, 256, __tb_fn)
+                            kv = __tb.bind('kv', __0, loop_target=True)
+                            __tb.set_fileline(__tb_fl, 258, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('kv_body', kv_body))(__tb.rval('kv', kv), __tb.rval('K', K), __tb.rval('V', V), __tb.rval('Q_shared', Q_shared), __tb.rval('K_shared', K_shared), __tb.rval('V_shared', V_shared), __tb.rval('P_shared', P_shared), __tb.rval('qk_a_l0', qk_a_l0), __tb.rval('qk_b_l0', qk_b_l0), __tb.rval('pv_a_l0', pv_a_l0), __tb.rval('pv_b_l0', pv_b_l0), __tb.rval('qk_acc_l0c', qk_acc_l0c), __tb.rval('pv_acc_l0c', pv_acc_l0c), __tb.rval('S_ub', S_ub), __tb.rval('P_nz_ub', P_nz_ub), __tb.rval('O_tmp_ub', O_tmp_ub), __tb.rval('O_ub', O_ub), __tb.rval('m_ub', m_ub), __tb.rval('l_ub', l_ub), __tb.rval('alpha_ub', alpha_ub), __tb.rval('old_m_ub', old_m_ub), __tb.rval('row_sum_ub', row_sum_ub)))
+                    __tb.set_fileline(__tb_fl, 255, __tb_fn)
+                    for _ in __tb.ctx_else(__2):
+                        __tb.set_fileline(__tb_fl, 263, __tb_fn)
+                        for __1 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), __tb.rval('NUM_KV', NUM_KV))):
+                            __tb.set_fileline(__tb_fl, 263, __tb_fn)
+                            kv = __tb.bind('kv', __1, loop_target=True)
+                            __tb.set_fileline(__tb_fl, 264, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('kv_body', kv_body))(__tb.rval('kv', kv), __tb.rval('K', K), __tb.rval('V', V), __tb.rval('Q_shared', Q_shared), __tb.rval('K_shared', K_shared), __tb.rval('V_shared', V_shared), __tb.rval('P_shared', P_shared), __tb.rval('qk_a_l0', qk_a_l0), __tb.rval('qk_b_l0', qk_b_l0), __tb.rval('pv_a_l0', pv_a_l0), __tb.rval('pv_b_l0', pv_b_l0), __tb.rval('qk_acc_l0c', qk_acc_l0c), __tb.rval('pv_acc_l0c', pv_acc_l0c), __tb.rval('S_ub', S_ub), __tb.rval('P_nz_ub', P_nz_ub), __tb.rval('O_tmp_ub', O_tmp_ub), __tb.rval('O_ub', O_ub), __tb.rval('m_ub', m_ub), __tb.rval('l_ub', l_ub), __tb.rval('alpha_ub', alpha_ub), __tb.rval('old_m_ub', old_m_ub), __tb.rval('row_sum_ub', row_sum_ub)))
+                __tb.set_fileline(__tb_fl, 269, __tb_fn)
+                O_cast_ub = __tb.bind('O_cast_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS), __tb.rval('D', D)), __tb.rval('out_dtype', out_dtype)))
+                __tb.set_fileline(__tb_fl, 270, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('finalize_cast', finalize_cast))(__tb.rval('O', O), __tb.rval('O_ub', O_ub), __tb.rval('O_cast_ub', O_cast_ub), __tb.rval('l_ub', l_ub)))
+        return main
+    return main
+COMPILE_FAIL (loop=serial):
+    NameError: name 'VL' is not defined
+2026-10-19 17:15:33  [TileLang:tilelang.language.eager.builder:CRITICAL] (builder.py:1787): Failed to build prim_func from main
+args={'Q': Q, 'K': K, 'V': V, 'O': O}
+source=def make_closure(use_pipelined):
 
---- variant H3_strided_dynbt_ub: compiling ---
-2026-10-19 17:09:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
-2026-10-19 17:09:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `v`
-COMPILE_OK H3_strided_dynbt_ub
+    def main(__tb):
+        __tb_fl = '/home/z30086261/tmp/mha_stage_b/decode_v1a.py'
+        __tb_fn = 'main'
+        __tb.set_fileline(__tb_fl, 209, __tb_fn)
 
---- variant K1_flat_dynbt_ub: compiling ---
-2026-10-19 17:09:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
-2026-10-19 17:09:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `v`
-COMPILE_OK K1_flat_dynbt_ub
-
---- variant K2_flat_rowloop_ub: compiling ---
-2026-10-19 17:09:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
-2026-10-19 17:09:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `v`
-COMPILE_OK K2_flat_rowloop_ub
-
---- variant L1_strided_dynbt_if_ub: compiling ---
-2026-10-19 17:09:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
-2026-10-19 17:09:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `v`
-COMPILE_OK L1_strided_dynbt_if_ub
-
-=== run compiled variants ===
-H1_ub2gm_static: PASS 
-H3_strided_dynbt_ub: PASS 
-K1_flat_dynbt_ub: PASS 
-K2_flat_rowloop_ub: PASS 
-L1_strided_dynbt_if_ub: PASS covered=[0, 1]
-
-=== done ===
-
-=== done ===
+        def main(Q, K, V, O, **__kwargs):
+            __tb.set_fileline(__tb_fl, 210, __tb_fn)
+            Q = __tb.arg('Q', Q)
+            __tb.set_fileline(__tb_fl, 211, __tb_fn)
+            K = __tb.arg('K', K)
+            __tb.set_fileline(__tb_fl, 212, __tb_fn)
+            V = __tb.arg('V', V)
+            __tb.set_fileline(__tb_fl, 213, __tb_fn)
+            O = __tb.arg('O', O)
+            __tb.set_fileline(__tb_fl, 1, __tb_fn)
+            if __tb.skip_kernel_ctx():
+                __tb.set_fileline(__tb_fl, 1, __tb_fn)
+                return
+            __tb.set_fileline(__tb_fl, 215, __tb_fn)
+            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Kernel)(1)) as bx:
+                __tb.set_fileline(__tb_fl, 216, __tb_fn)
+                Q_shared = __tb.bind('Q_shared', __tb.resolve_call(__tb.rval('T', T).alloc_l1)((__tb.rval('BR', BR), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 217, __tb_fn)
+                K_shared = __tb.bind('K_shared', __tb.resolve_call(__tb.rval('T', T).alloc_l1)((__tb.rval('BC', BC), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 218, __tb_fn)
+                V_shared = __tb.bind('V_shared', __tb.resolve_call(__tb.rval('T', T).alloc_l1)((__tb.rval('D', D), __tb.rval('BC', BC)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 219, __tb_fn)
+                P_shared = __tb.bind('P_shared', __tb.resolve_call(__tb.rval('T', T).alloc_l1)((__tb.rval('BR', BR), __tb.rval('BC', BC)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 221, __tb_fn)
+                qk_a_l0 = __tb.bind('qk_a_l0', __tb.resolve_call(__tb.rval('T', T).alloc_l0a)((__tb.rval('BR', BR), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 222, __tb_fn)
+                qk_b_l0 = __tb.bind('qk_b_l0', __tb.resolve_call(__tb.rval('T', T).alloc_l0b)((__tb.rval('BC', BC), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 223, __tb_fn)
+                pv_a_l0 = __tb.bind('pv_a_l0', __tb.resolve_call(__tb.rval('T', T).alloc_l0a)((__tb.rval('BR', BR), __tb.rval('BC', BC)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 224, __tb_fn)
+                pv_b_l0 = __tb.bind('pv_b_l0', __tb.resolve_call(__tb.rval('T', T).alloc_l0b)((__tb.rval('D', D), __tb.rval('BC', BC)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 225, __tb_fn)
+                qk_acc_l0c = __tb.bind('qk_acc_l0c', __tb.resolve_call(__tb.rval('T', T).alloc_l0c)((__tb.rval('BR', BR), __tb.rval('BC', BC)), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 226, __tb_fn)
+                pv_acc_l0c = __tb.bind('pv_acc_l0c', __tb.resolve_call(__tb.rval('T', T).alloc_l0c)((__tb.rval('BR', BR), __tb.rval('D', D)), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 228, __tb_fn)
+                S_ub = __tb.bind('S_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS), __tb.rval('BC', BC)), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 229, __tb_fn)
+                P_nz_ub = __tb.bind('P_nz_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS) + 1, __tb.rval('BC', BC)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 230, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).annotate_layout)({__tb.rval('P_nz_ub', P_nz_ub): __tb.resolve_call(__tb.rval('make_ascend_compact_nz_layout', make_ascend_compact_nz_layout))(__tb.rval('P_nz_ub', P_nz_ub))}))
+                __tb.set_fileline(__tb_fl, 231, __tb_fn)
+                O_tmp_ub = __tb.bind('O_tmp_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS), __tb.rval('D', D)), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 232, __tb_fn)
+                O_ub = __tb.bind('O_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS), __tb.rval('D', D)), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 233, __tb_fn)
+                m_ub = __tb.bind('m_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS),), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 234, __tb_fn)
+                l_ub = __tb.bind('l_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS),), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 235, __tb_fn)
+                alpha_ub = __tb.bind('alpha_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS),), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 236, __tb_fn)
+                old_m_ub = __tb.bind('old_m_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS),), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 237, __tb_fn)
+                row_sum_ub = __tb.bind('row_sum_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS),), __tb.rval('accum_dtype', accum_dtype)))
+                __tb.set_fileline(__tb_fl, 238, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).annotate_buffer_versions)({__tb.rval('K_shared', K_shared): 3, __tb.rval('V_shared', V_shared): 3, __tb.rval('qk_acc_l0c', qk_acc_l0c): 2, __tb.rval('pv_acc_l0c', pv_acc_l0c): 2, __tb.rval('S_ub', S_ub): 3, __tb.rval('P_nz_ub', P_nz_ub): 2, __tb.rval('alpha_ub', alpha_ub): 3, __tb.rval('O_tmp_ub', O_tmp_ub): 2}))
+                __tb.set_fileline(__tb_fl, 251, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('Q', Q)[0:__tb.rval('BR', BR), 0:__tb.rval('D', D)], __tb.rval('Q_shared', Q_shared)[0:__tb.rval('BR', BR), 0:__tb.rval('D', D)]))
+                __tb.set_fileline(__tb_fl, 252, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('init_m_l', init_m_l))(__tb.rval('m_ub', m_ub), __tb.rval('l_ub', l_ub)))
+                __tb.set_fileline(__tb_fl, 253, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('clear_O_ub', clear_O_ub))(__tb.rval('O_ub', O_ub)))
+                __tb.set_fileline(__tb_fl, 255, __tb_fn)
+                for __2 in __tb.ctx_if(__tb.rval('use_pipelined', use_pipelined)):
+                    __tb.set_fileline(__tb_fl, 255, __tb_fn)
+                    for _ in __tb.ctx_then(__2):
+                        __tb.set_fileline(__tb_fl, 256, __tb_fn)
+                        for __0 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).Pipelined), __tb.rval('NUM_KV', NUM_KV), num_stages=1, annotations={'enable_offset': True})):
+                            __tb.set_fileline(__tb_fl, 256, __tb_fn)
+                            kv = __tb.bind('kv', __0, loop_target=True)
+                            __tb.set_fileline(__tb_fl, 258, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('kv_body', kv_body))(__tb.rval('kv', kv), __tb.rval('K', K), __tb.rval('V', V), __tb.rval('Q_shared', Q_shared), __tb.rval('K_shared', K_shared), __tb.rval('V_shared', V_shared), __tb.rval('P_shared', P_shared), __tb.rval('qk_a_l0', qk_a_l0), __tb.rval('qk_b_l0', qk_b_l0), __tb.rval('pv_a_l0', pv_a_l0), __tb.rval('pv_b_l0', pv_b_l0), __tb.rval('qk_acc_l0c', qk_acc_l0c), __tb.rval('pv_acc_l0c', pv_acc_l0c), __tb.rval('S_ub', S_ub), __tb.rval('P_nz_ub', P_nz_ub), __tb.rval('O_tmp_ub', O_tmp_ub), __tb.rval('O_ub', O_ub), __tb.rval('m_ub', m_ub), __tb.rval('l_ub', l_ub), __tb.rval('alpha_ub', alpha_ub), __tb.rval('old_m_ub', old_m_ub), __tb.rval('row_sum_ub', row_sum_ub)))
+                    __tb.set_fileline(__tb_fl, 255, __tb_fn)
+                    for _ in __tb.ctx_else(__2):
+                        __tb.set_fileline(__tb_fl, 263, __tb_fn)
+                        for __1 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), __tb.rval('NUM_KV', NUM_KV))):
+                            __tb.set_fileline(__tb_fl, 263, __tb_fn)
+                            kv = __tb.bind('kv', __1, loop_target=True)
+                            __tb.set_fileline(__tb_fl, 264, __tb_fn)
+                            __tb.eval(__tb.resolve_call(__tb.rval('kv_body', kv_body))(__tb.rval('kv', kv), __tb.rval('K', K), __tb.rval('V', V), __tb.rval('Q_shared', Q_shared), __tb.rval('K_shared', K_shared), __tb.rval('V_shared', V_shared), __tb.rval('P_shared', P_shared), __tb.rval('qk_a_l0', qk_a_l0), __tb.rval('qk_b_l0', qk_b_l0), __tb.rval('pv_a_l0', pv_a_l0), __tb.rval('pv_b_l0', pv_b_l0), __tb.rval('qk_acc_l0c', qk_acc_l0c), __tb.rval('pv_acc_l0c', pv_acc_l0c), __tb.rval('S_ub', S_ub), __tb.rval('P_nz_ub', P_nz_ub), __tb.rval('O_tmp_ub', O_tmp_ub), __tb.rval('O_ub', O_ub), __tb.rval('m_ub', m_ub), __tb.rval('l_ub', l_ub), __tb.rval('alpha_ub', alpha_ub), __tb.rval('old_m_ub', old_m_ub), __tb.rval('row_sum_ub', row_sum_ub)))
+                __tb.set_fileline(__tb_fl, 269, __tb_fn)
+                O_cast_ub = __tb.bind('O_cast_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('ROWS', ROWS), __tb.rval('D', D)), __tb.rval('out_dtype', out_dtype)))
+                __tb.set_fileline(__tb_fl, 270, __tb_fn)
+                __tb.eval(__tb.resolve_call(__tb.rval('finalize_cast', finalize_cast))(__tb.rval('O', O), __tb.rval('O_ub', O_ub), __tb.rval('O_cast_ub', O_cast_ub), __tb.rval('l_ub', l_ub)))
+        return main
+    return main
+COMPILE_FAIL (loop=Pipelined):
+    NameError: name 'VL' is not defined
+FATAL: both loop forms failed to compile
+exit_code=1
