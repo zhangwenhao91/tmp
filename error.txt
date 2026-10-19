@@ -47,8 +47,8 @@
 ++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 ++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 ++ read -r PYTHONPATH
-+++ tr : '\n'
 +++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
++++ tr : '\n'
 +++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
 +++ tr '\n' :
 +++ sed 's/:$//'
@@ -262,12 +262,10 @@ pytest 8.4.1
 + git fetch origin ascend-mha-decode
 From https://github.com/zhangwenhao91/TileOPs
  * branch              ascend-mha-decode -> FETCH_HEAD
-   6648a85e..7fa8a52d  ascend-mha-decode -> origin/ascend-mha-decode
 + git checkout ascend-mha-decode
 Already on 'ascend-mha-decode'
 M	pyproject.toml
-Your branch is behind 'origin/ascend-mha-decode' by 1 commit, and can be fast-forwarded.
-  (use "git pull" to update your local branch)
+Your branch is up to date with 'origin/ascend-mha-decode'.
 + git reset --hard origin/ascend-mha-decode
 HEAD is now at 7fa8a52d mha decode: support bfloat16 (pack path parameterized per example core.py)
 + git log --oneline -1
@@ -285,8 +283,8 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=766005dd866e51bb21ee5369df662df354b2a3685db79882c8c0ee8dfbc706c5
-  Stored in directory: /tmp/pip-ephem-wheel-cache-gdmsly53/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=e0c16eca7c09c4f54bdaf056a3d86d1955b465fa0393b84b2c382f7e1e296ea6
+  Stored in directory: /tmp/pip-ephem-wheel-cache-huo82w31/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -304,14 +302,14 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7fe1dc849d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f86e0485d00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7fe1dc84a2a0>
+MHA builder: <function build_mha_decode_paged at 0x7f86e0486020>
 + python3 -m pytest tests/ops/test_mha.py -m smoke --tileops-device npu --tileops-target detect -v
 + tail -100
 ============================= test session starts ==============================
@@ -343,7 +341,7 @@ tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-
     rows = bt_t[:, pos // page_size] * page_size + pos % page_size
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 32.39s ===========
+=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 5.71s ============
 + PYTEST_RC=0
 + echo pytest_rc=0
 pytest_rc=0
@@ -377,13 +375,15 @@ tests/ops/test_mha.py: 42 warnings
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================= 7 passed, 6 deselected, 43 warnings in 7.36s =================
+================= 7 passed, 6 deselected, 43 warnings in 5.58s =================
 + SHORT_RC=0
 + echo cache_shorter_rc=0
 cache_shorter_rc=0
-+ echo 'FINAL: pytest=0 cache_shorter=0'
-FINAL: pytest=0 cache_shorter=0
-+ '[' 0 = 0 ']'
-+ '[' 0 = 0 ']'
-+ exit 0
-exit_code=0
++++ dirname mha_stage_c/run_tileops_mha.sh
+++ cd mha_stage_c
+mha_stage_c/run_tileops_mha.sh: line 76: cd: mha_stage_c: No such file or directory
++ SCRIPT_DIR=
++ cp /bench_mha.py /root/TileOPs/bench_mha.py
+cp: cannot stat '/bench_mha.py': No such file or directory
++ exit 1
+exit_code=1
