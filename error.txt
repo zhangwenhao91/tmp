@@ -47,8 +47,8 @@
 ++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 ++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 ++ read -r PYTHONPATH
-+++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 +++ tr : '\n'
++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 +++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
 +++ tr '\n' :
 +++ sed 's/:$//'
@@ -262,14 +262,16 @@ pytest 8.4.1
 + git fetch origin ascend-mha-decode
 From https://github.com/zhangwenhao91/TileOPs
  * branch              ascend-mha-decode -> FETCH_HEAD
+   6648a85e..7fa8a52d  ascend-mha-decode -> origin/ascend-mha-decode
 + git checkout ascend-mha-decode
 Already on 'ascend-mha-decode'
 M	pyproject.toml
-Your branch is up to date with 'origin/ascend-mha-decode'.
+Your branch is behind 'origin/ascend-mha-decode' by 1 commit, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
 + git reset --hard origin/ascend-mha-decode
-HEAD is now at 6648a85e kernel: pin annotation-only W/POOL_ROWS as closure variables
+HEAD is now at 7fa8a52d mha decode: support bfloat16 (pack path parameterized per example core.py)
 + git log --oneline -1
-6648a85e kernel: pin annotation-only W/POOL_ROWS as closure variables
+7fa8a52d mha decode: support bfloat16 (pack path parameterized per example core.py)
 + sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
 + sed -i 's/^license = .*/license = {text = "MIT"}/' pyproject.toml
 + sed -i '/^license-files/d' pyproject.toml
@@ -283,8 +285,8 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=ea6677c2f2a0ce0c89fe73a4b50b226bc40cb9d8ebb4fa807b5bb6e81409aaa6
-  Stored in directory: /tmp/pip-ephem-wheel-cache-o_wcc_so/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=766005dd866e51bb21ee5369df662df354b2a3685db79882c8c0ee8dfbc706c5
+  Stored in directory: /tmp/pip-ephem-wheel-cache-gdmsly53/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -302,15 +304,15 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7fe63e051d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7fe1dc849d00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7fe63e051f80>
-+ python3 -m pytest tests/ops/test_mha.py -m full -k 'not dtype1' --tileops-device npu --tileops-target detect -v
+MHA builder: <function build_mha_decode_paged at 0x7fe1dc84a2a0>
++ python3 -m pytest tests/ops/test_mha.py -m smoke --tileops-device npu --tileops-target detect -v
 + tail -100
 ============================= test session starts ==============================
 platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
@@ -320,25 +322,28 @@ hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/root/Ti
 rootdir: /root/TileOPs
 configfile: pyproject.toml
 plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
-collecting ... collected 13 items / 8 deselected / 5 selected
+collecting ... collected 13 items / 5 deselected / 8 selected
 
-tests/ops/test_mha.py::test_mha_decode_paged_op[1-8-1-1024-64-256-False-dtype2-False] PASSED [ 20%]
-tests/ops/test_mha.py::test_mha_decode_paged_op[2-8-1-1024-64-256-False-dtype3-False] PASSED [ 40%]
-tests/ops/test_mha.py::test_mha_decode_paged_op[1-8-1-512-64-256-False-dtype4-False] PASSED [ 60%]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths4] PASSED [ 80%]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths5] PASSED [100%]
+tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-False] PASSED [ 12%]
+tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-1024-128-128-False-dtype1-False] PASSED [ 25%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0] PASSED [ 37%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-True-real_lengths1] PASSED [ 50%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2] PASSED [ 62%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3] PASSED [ 75%]
+tests/ops/test_mha.py::test_mha_decode_paged_without_wgmma_drops_unread_rows SKIPPED [ 87%]
+tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool PASSED [100%]
 
 =============================== warnings summary ===============================
-tests/ops/test_mha.py: 28 warnings
+tests/ops/test_mha.py: 49 warnings
   /home/z30086261/tilelang/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
-tests/ops/test_mha.py::test_mha_decode_paged_op[1-8-1-1024-64-256-False-dtype2-False]
+tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-False]
   /root/TileOPs/src/tileops/backends/ascend/builders/attention.py:92: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
     rows = bt_t[:, pos // page_size] * page_size + pos % page_size
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================= 5 passed, 8 deselected, 29 warnings in 9.35s =================
+=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 32.39s ===========
 + PYTEST_RC=0
 + echo pytest_rc=0
 pytest_rc=0
@@ -372,7 +377,7 @@ tests/ops/test_mha.py: 42 warnings
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================= 7 passed, 6 deselected, 43 warnings in 5.79s =================
+================= 7 passed, 6 deselected, 43 warnings in 7.36s =================
 + SHORT_RC=0
 + echo cache_shorter_rc=0
 cache_shorter_rc=0
