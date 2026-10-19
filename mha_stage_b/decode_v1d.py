@@ -1,21 +1,24 @@
-"""v1d-d2：BSHD + [B,H] grid + S_q 多行 + causal 的消融版。
+"""v1d-d3：单因素消融，定位 F0（H=1 连续布局仍错，rel~156）的真凶。
 
-v1d-d1 结果与归因：
-  - E1（H=2 非因果）挂在 tvm_ffi ABI：`BIAS shape[1] violates packed ABI
-    constraint; expected: 1, got: 16` —— v1c 的 2D BIAS (B*W, BC) 能过，
-    3D (B, BR, W*BC) 被拒。本轮 BIAS 压平为 2D (B*BR, W*BC)。
-  - E2（H=2 因果）数值全错且含 NaN/Inf。嫌疑：E1 首调在参数绑定阶段抛异常
-    后，同 kernel 实例二次调用绑定错位（错误指针 -> 垃圾/越界读）；或 3D
-    跨步读 / bx//H 分解本身有错。
+已知事实：
+  - v1c D1（B grid、Q 16 行主机填零、1D bias 全行共享、dual_copy 块存）PASS
+  - v1d F0（H=1、Q 只拷 S_Q=4 行 pad 行未初始化、bias_ub 2D 逐行 vld、
+    finalize 逐行 1D UB→GM store）finite 但 rel=156/126，逐位可复现
+  - F1/F2 的 h=1 输出全 NaN（3D 跨步读或 3D store 的独立问题，GD 顺带检查）
 
-本轮三级消融（BIAS 全部 2D）：
-  F0_h1_nc  H=1, causal=False —— 验证 grid 分解 + S_Q 多 query 行 + 逐行 bias
-            （H=1 时所有 3D 跨步读退化为连续，风险最小）
-  F1_h2_nc  H=2, causal=False —— 加上 3D 跨步单头读（Q/KP/VP）
-  F2_h2_c   H=2, causal=True  —— 完整形态（含无 key 行主机清零）
+F0 相对 v1c 的三个结构性嫌疑（本轮每变体只改一个因素）：
+  ① 逐行 1D UB→GM store（从未单独验证；v1c 用 dual_copy 2D）
+  ② softmax 逐行 bias vld（v1c 是全行共享一段）
+  ③ Q_shared pad 行未初始化（v1c 主机填零；v1a 教训：未初始化内存含 NaN/Inf）
 
-判读：F0 挂 -> grid/多行/bias 问题；F0 过 F1 挂 -> 3D 跨步读问题；
-F1 过 F2 挂 -> causal bias/后处理问题。HP 相同的 kernel 只编译一次。
+变体（全部 H=1 非因果，rl=[300,3]，除 GD）：
+  GA_h1_blockstore  只改①：finalize 用 dual_copy 块存 O (B,BR,1,D)
+  GB_h1_sharedbias  只改②：softmax 只从 bias_ub[0] 载入一段共享
+  GC_h1_qpad        只改③：ZP 零行填 Q_shared[S_Q:BR]
+  GD_h2_allfix      H=2，①②③全修复（causal=False），检查 h=1 NaN 是否消失
+
+判读：GA/GB/GC 中谁 PASS 谁就是真凶；GD PASS 且对应单因素变体 PASS ->
+组合修复即可；若单因素全 FAIL 而 GD PASS -> 因素间交互，再组合。
 """
 
 import math
@@ -56,7 +59,7 @@ def qk(kv, BT, b, h, KP, Q_shared, K_shared, qk_a_l0, qk_b_l0, qk_acc_l0c, S_ub)
 
 
 @T.macro
-def softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub):
+def softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub, shared_bias):
     with T.SimdVF(latency=735):
         softmax_full = S.pset(32, "PAT_ALL")
         softmax_one = S.pset(32, "PAT_VL1")
@@ -68,12 +71,20 @@ def softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub):
 
         S.vsts(old_m_ub[0], S.vld(m_ub[0], "NORM"), softmax_full, "NORM_B32")
 
+        if shared_bias:
+            # 共享 bias：所有 query 行同一段（非因果场景各 bias_ub 行内容相同）
+            sh_lo = S.vld(bias_ub[0, 0], "NORM")
+            sh_hi = S.vld(bias_ub[0, VL], "NORM")
+
         for r in range(0, ROWS, 2):
-            # 每 query 行各自的加性 bias（causal 掩码按行不同）
-            b0lo = S.vld(bias_ub[r, 0], "NORM")
-            b0hi = S.vld(bias_ub[r, VL], "NORM")
-            b1lo = S.vld(bias_ub[r + 1, 0], "NORM")
-            b1hi = S.vld(bias_ub[r + 1, VL], "NORM")
+            if shared_bias:
+                b0lo, b0hi, b1lo, b1hi = sh_lo, sh_hi, sh_lo, sh_hi
+            else:
+                # 每 query 行各自的加性 bias（causal 掩码按行不同）
+                b0lo = S.vld(bias_ub[r, 0], "NORM")
+                b0hi = S.vld(bias_ub[r, VL], "NORM")
+                b1lo = S.vld(bias_ub[r + 1, 0], "NORM")
+                b1hi = S.vld(bias_ub[r + 1, VL], "NORM")
             s00 = S.vadd(S.vmuls(S.vld(S_ub[r, 0], "NORM"), T.float32(scale), softmax_full),
                          b0lo, softmax_full)
             s01 = S.vadd(S.vmuls(S.vld(S_ub[r, VL], "NORM"), T.float32(scale), softmax_full),
@@ -200,17 +211,17 @@ def clear_O_ub(O_ub):
 def kv_body(kv, BT, BIAS, b, h, KP, VP, Q_shared, K_shared, V_shared, P_shared,
             qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0, qk_acc_l0c, pv_acc_l0c,
             S_ub, P_nz_ub, bias_ub, O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub,
-            old_m_ub, row_sum_ub):
+            old_m_ub, row_sum_ub, shared_bias):
     T.copy(BIAS[b * BR:(b + 1) * BR, kv * BC:(kv + 1) * BC], bias_ub[0:BR, 0:BC])
     qk(kv, BT, b, h, KP, Q_shared, K_shared, qk_a_l0, qk_b_l0, qk_acc_l0c, S_ub)
-    softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub)
+    softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub, shared_bias)
     pack_p(P_nz_ub, P_shared)
     pv(kv, BT, b, h, VP, P_shared, V_shared, pv_a_l0, pv_b_l0, pv_acc_l0c, O_tmp_ub)
     accumulate_output(O_tmp_ub, O_ub, alpha_ub)
 
 
 @T.macro
-def finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub):
+def finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub, block_store):
     with T.SimdVF(latency=1780):
         normalize_mask = S.pset(32, "PAT_ALL")
         for i in range(ROWS):
@@ -224,12 +235,16 @@ def finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub):
             for c in range(0, D, VL):
                 ob = S.vcvt(S.vld(O_ub[r, c], "NORM"), out_dtype, cast_full)
                 S.vsts(O_cast_ub[r, c], ob, cast_full, "PK_B32")
-    # 只存 S_Q 个真 query 行（pad 行丢弃）；逐行 1D copy 避开 3D GM store
-    for i in range(S_Q):
-        T.copy(O_cast_ub[i, 0:D], O[b, i, h, 0:D])
+    if block_store:
+        # v1c 已验证的路径：dual_copy 2D 块存（pad 行一并写出，主机比对时忽略）
+        T.dual_copy(O_cast_ub[0:ROWS, 0:D], O[b, 0:BR, h, 0:D])
+    else:
+        # 只存 S_Q 个真 query 行；逐行 1D copy（嫌疑①）
+        for i in range(S_Q):
+            T.copy(O_cast_ub[i, 0:D], O[b, i, h, 0:D])
 
 
-def build(hp):
+def build(hp, block_store, shared_bias, qpad):
     @T.prim_func
     def main(
         Q: T.Buffer((B, S_Q, hp, D), dtype),
@@ -238,7 +253,8 @@ def build(hp):
         BIAS: T.Buffer((B * BR, W * BC), accum_dtype),
         KP: T.Buffer((POOL_ROWS, hp, D), dtype),
         VP: T.Buffer((POOL_ROWS, hp, D), dtype),
-        O: T.Buffer((B, S_Q, hp, D), out_dtype),
+        ZP: T.Buffer((BR - S_Q, D), dtype),
+        O: T.Buffer((B, BR if block_store else S_Q, hp, D), out_dtype),
     ):
         with T.Kernel(B * hp) as bx:
             b: T.int32 = bx // hp
@@ -279,9 +295,10 @@ def build(hp):
                 }
             )
 
-            # 单头 Q 读（3D 跨步 2D 化）；Q_shared 的 pad 行不初始化，
-            # 其输出行不存储（行独立，不影响真 query 行）
             T.copy(Q[b, 0:S_Q, h, 0:D], Q_shared[0:S_Q, 0:D])
+            if qpad:
+                # 嫌疑③的修复：ZP 零行填 pad 区，避免未初始化 L1 进入 gemm
+                T.copy(ZP[0:BR - S_Q, 0:D], Q_shared[S_Q:BR, 0:D])
             init_m_l(m_ub, l_ub)
             clear_O_ub(O_ub)
 
@@ -293,10 +310,10 @@ def build(hp):
                                 P_shared, qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0,
                                 qk_acc_l0c, pv_acc_l0c, S_ub, P_nz_ub, bias_ub,
                                 O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub,
-                                old_m_ub, row_sum_ub)
+                                old_m_ub, row_sum_ub, shared_bias)
 
             O_cast_ub = T.alloc_shared((ROWS, D), out_dtype)
-            finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub)
+            finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub, block_store)
 
     return main
 
@@ -330,7 +347,7 @@ def ref_mha_decode_paged(q, k_pool, v_pool, real_seqlen_kv, block_table, page_si
     return out
 
 
-def make_bias(rl, hp, is_causal):
+def make_bias(rl, is_causal):
     """主机 2D 加性掩码 (B*BR, W*BC)：causal 按 query 行尾对齐，pad 行全可见。"""
     pos = torch.arange(W * BC, dtype=torch.float32, device=dev).view(1, 1, W * BC)
     if is_causal:
@@ -364,52 +381,58 @@ def main():
     vp = torch.randn(POOL_ROWS, 2, D, dtype=torch.float16, device=dev)
     bt = torch.tensor([[6, 2, 4], [1, 7, 0]], dtype=torch.int32, device=dev)
     rl = torch.tensor([300, 3], dtype=torch.int32, device=dev)
+    zp = torch.zeros(BR - S_Q, D, dtype=torch.float16, device=dev)
 
-    variants = {
-        "F0_h1_nc": (1, False),
-        "F1_h2_nc": (2, False),
-        "F2_h2_c": (2, True),
-    }
+    # (name, hp, causal, block_store, shared_bias, qpad)
+    variants = [
+        ("GA_h1_blockstore", 1, False, True, False, False),
+        ("GB_h1_sharedbias", 1, False, False, True, False),
+        ("GC_h1_qpad", 1, False, False, False, True),
+        ("GD_h2_allfix", 2, False, True, True, True),
+    ]
 
     kernels = {}
     results = {}
-    for name, (hp, is_causal) in variants.items():
-        print(f"\n--- variant {name} (H={hp}, causal={is_causal}) ---")
-        if hp not in kernels:
+    for name, hp, causal, blk, shb, qp in variants:
+        print(f"\n--- variant {name} (H={hp}, causal={causal}, "
+              f"block_store={blk}, shared_bias={shb}, qpad={qp}) ---")
+        key = (hp, blk, shb, qp)
+        if key not in kernels:
             try:
-                print(f"compiling kernel (H={hp}) ...")
-                kernels[hp] = tilelang.compile(build(hp))
-                print(f"COMPILE_OK H={hp}")
+                print(f"compiling kernel {key} ...")
+                kernels[key] = tilelang.compile(build(hp, blk, shb, qp))
+                print(f"COMPILE_OK {key}")
             except Exception:
                 tb = traceback.format_exc().strip().splitlines()
                 keep = [l for l in tb if "Error" in l or "Check failed" in l or "error:" in l]
-                print(f"COMPILE_FAIL H={hp}:")
+                print(f"COMPILE_FAIL {key}:")
                 for line in (keep or tb)[-8:]:
                     print("   ", line)
                 continue
-        kernel = kernels[hp]
+        kernel = kernels[key]
         try:
-            bias = make_bias(rl, hp, is_causal)
+            bias = make_bias(rl, causal)
             qv = q[:, :, :hp, :].contiguous()
             kv_ = kp[:, :hp, :].contiguous()
             vv = vp[:, :hp, :].contiguous()
-            o = torch.zeros(B, S_Q, hp, D, dtype=torch.float16, device=dev)
-            kernel(qv, bt, rl, bias, kv_, vv, o)
+            o_rows = BR if blk else S_Q
+            o = torch.zeros(B, o_rows, hp, D, dtype=torch.float16, device=dev)
+            kernel(qv, bt, rl, bias, kv_, vv, zp, o)
             torch.npu.synchronize()
-            # 无 key 行按契约清零（in-kernel 处理留到集成阶段）
-            nk = no_key_mask(rl, is_causal)
+            nk = no_key_mask(rl, causal)
             if nk.any():
                 o[nk] = 0
-            exp = ref_mha_decode_paged(qv, kv_, vv, rl, bt, BC, is_causal)
-            finite = torch.isfinite(o.float()).all().item()
+            exp = ref_mha_decode_paged(qv, kv_, vv, rl, bt, BC, causal)
+            of = o[:, :S_Q].float()
+            finite = torch.isfinite(of).all().item()
             rels = []
             for bi in range(B):
                 for hi in range(hp):
-                    r = rel_of(o[bi, :, hi].float(), exp[bi, :, hi])
+                    r = rel_of(of[bi, :, hi], exp[bi, :, hi])
                     rels.append(r)
                     print(f"  b{bi}h{hi}: max_rel={r:.4f}")
             extra = ""
-            if is_causal and nk.any():
+            if causal and nk.any():
                 zero_ok = bool((o[nk].float() == 0).all().item())
                 extra = f" no_key_rows_zero={zero_ok} (count={int(nk.sum().item())})"
             results[name] = (finite, max(rels), extra)
@@ -420,7 +443,7 @@ def main():
             for line in tb[-6:]:
                 print("   ", line)
 
-    print("\n=== v1d-d2 verdict ===")
+    print("\n=== v1d-d3 verdict ===")
     for name, (finite, mr, extra) in results.items():
         print(f"{name}: {'PASS' if finite and mr < 5e-2 else 'FAIL'} "
               f"(max_rel={mr:.4f}){extra}")
