@@ -1,11 +1,12 @@
-root@ubuntu162:/home/z30086261/tmp# grep -cE 'error:' /root/OpenTileAS/build_logs/3b_make.log
-grep -nE 'error:|undefined reference|Killed|SIGKILL|virtual memory|internal compiler error' /root/OpenTileAS/build_logs/3b_make.log | head -20
-grep -nE '\*\*\*' /root/OpenTileAS/build_logs/3b_make.log | head -10
-gcc --version | head -1
-ls /usr/bin/gcc* /usr/bin/g++* 2>/dev/null
-0
-gcc (GCC) 11.2.0
-/usr/bin/g++      /usr/bin/gcc     /usr/bin/gcc-ar-12  /usr/bin/gcc-ranlib
-/usr/bin/g++-12   /usr/bin/gcc-12  /usr/bin/gcc-nm     /usr/bin/gcc-ranlib-12
-/usr/bin/g++.bak  /usr/bin/gcc-ar  /usr/bin/gcc-nm-12  /usr/bin/gcc.bak
-root@ubuntu162:/home/z30086261/tmp# 
+# 1) 确认没有残留的构建进程
+ps aux | grep -E '[m]ake|[c]c1plus' | head
+
+# 2) 重跑（已编完的部分不会重来，如果真到了 100% 这次几秒就过）
+cd /home/z30086261/tmp && git pull
+nohup bash build_otas.sh > build_otas2.log 2>&1 &
+
+
+
+
+
+tail -30 /home/z30086261/tmp/build_otas2.log
