@@ -1,27 +1,9 @@
-root@ubuntu162:/home/z30086261/tmp# cann93  # 或重新 source
-ls $ASCEND_HOME_PATH/compiler/
-find $ASCEND_HOME_PATH -maxdepth 4 $ -name 'ccec' -o -name '*ccec*' -o -name 'bisheng*' $ 2>/dev/null | head -15
-ls $ASCEND_HOME_PATH/bin/ 2>/dev/null | head -20
-bash: cann93: command not found
-asc  ascendc  bin  conf  python  tikcpp  version.info
-akt
-aoe
-asc_dumper
-asc_opc
-ascendc_pack_kernel
-atc
-atc.bin
-bisheng
-bisheng-tune
-bishengir-compile
-bishengir-compile-a5
-bishengir-opt
-bishengir-opt-a5
-cannsim
-cce-ld
-ccec
-deployer_daemon
-gen_esb
-hivmc
-hivmc-a5
-root@ubuntu162:/home/z30086261/tmp# 
+source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
+$ASCEND_HOME_PATH/bin/ccec --help 2>&1 | head -15
+
+
+
+cd /home/z30086261/tmp
+git pull
+nohup bash build_otas.sh > build_otas.log 2>&1 &
+tail -f build_otas.log
