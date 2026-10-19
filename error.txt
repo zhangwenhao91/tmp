@@ -2,15 +2,10 @@ CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
 === stage B v1a: minimal decode kernel (B=1,H=1,S_q=1,D=128,1 page,fp16) ===
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 === v1a decode kernel: build & compile ===
-2026-10-19 17:16:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 17:16:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+2026-10-19 17:18:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 17:18:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
 COMPILE_OK (loop=serial)
 === run on NPU & compare ===
-Traceback (most recent call last):
-  File "/home/z30086261/tmp/mha_stage_b/decode_v1a.py", line 324, in <module>
-    main()
-  File "/home/z30086261/tmp/mha_stage_b/decode_v1a.py", line 311, in main
-    assert torch.isfinite(o.float()).all(), "output contains non-finite values"
-AssertionError: output contains non-finite values
-[ERROR] 2026-10-19-17:17:02 (PID:65691, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
-exit_code=1
+max_abs_diff=0.000136 max_rel=0.006569
+PASS: v1a
+exit_code=0
