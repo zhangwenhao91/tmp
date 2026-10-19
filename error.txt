@@ -258,141 +258,130 @@ tilelang 0.1.15+cuda.git48d38943
 pytest 8.4.1
 + cd /root
 + '[' '!' -d TileOPs ']'
-+ GIT_TERMINAL_PROMPT=0
-+ git clone -b ascend-mha-decode https://github.com/zhangwenhao91/TileOPs.git
-Cloning into 'TileOPs'...
 + cd /root/TileOPs
 + git fetch origin ascend-mha-decode
 From https://github.com/zhangwenhao91/TileOPs
  * branch              ascend-mha-decode -> FETCH_HEAD
 + git checkout ascend-mha-decode
 Already on 'ascend-mha-decode'
+M	pyproject.toml
 Your branch is up to date with 'origin/ascend-mha-decode'.
 + git reset --hard origin/ascend-mha-decode
 HEAD is now at 55553fe0 ascend backend: paged MHA decode via TileLang Ascend JIT
 + git log --oneline -1
 55553fe0 ascend backend: paged MHA decode via TileLang Ascend JIT
 + sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
++ sed -i 's/^license = .*/license = {text = "MIT"}/' pyproject.toml
++ sed -i '/^license-files/d' pyproject.toml
 + python3 -m pip install -e . --no-deps --no-build-isolation
 Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
 Obtaining file:///root/TileOPs
   Checking if build backend supports build_editable: started
   Checking if build backend supports build_editable: finished with status 'done'
   Preparing editable metadata (pyproject.toml): started
-  Preparing editable metadata (pyproject.toml): finished with status 'error'
-  error: subprocess-exited-with-error
-  
-  × Preparing editable metadata (pyproject.toml) did not run successfully.
-  │ exit code: 1
-  ╰─> [94 lines of output]
-      /usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py:108: _BetaConfiguration: Support for `[tool.setuptools]` in `pyproject.toml` is still *beta*.
-        warnings.warn(msg, _BetaConfiguration)
-      configuration error: `project.license` must be valid exactly by one definition (2 matches found):
-      
-          - keys:
-              'file': {type: string}
-            required: ['file']
-          - keys:
-              'text': {type: string}
-            required: ['text']
-      
-      DESCRIPTION:
-          `Project license <https://www.python.org/dev/peps/pep-0621/#license>`_.
-      
-      GIVEN VALUE:
-          "MIT"
-      
-      OFFENDING RULE: 'oneOf'
-      
-      DEFINITION:
-          {
-              "oneOf": [
-                  {
-                      "properties": {
-                          "file": {
-                              "type": "string",
-                              "$$description": [
-                                  "Relative path to the file (UTF-8) which contains the license for the",
-                                  "project."
-                              ]
-                          }
-                      },
-                      "required": [
-                          "file"
-                      ]
-                  },
-                  {
-                      "properties": {
-                          "text": {
-                              "type": "string",
-                              "$$description": [
-                                  "The license of the project whose meaning is that of the",
-                                  "`License field from the core metadata",
-                                  "<https://packaging.python.org/specifications/core-metadata/#license>`_."
-                              ]
-                          }
-                      },
-                      "required": [
-                          "text"
-                      ]
-                  }
-              ]
-          }
-      Traceback (most recent call last):
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 389, in <module>
-          main()
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 373, in main
-          json_out["return_val"] = hook(**hook_input["kwargs"])
-                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 209, in prepare_metadata_for_build_editable
-          return hook(metadata_directory, config_settings)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/build_meta.py", line 450, in prepare_metadata_for_build_editable
-          return self.prepare_metadata_for_build_wheel(
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/build_meta.py", line 377, in prepare_metadata_for_build_wheel
-          self.run_setup()
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/build_meta.py", line 335, in run_setup
-          exec(code, locals())
-        File "<string>", line 1, in <module>
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/__init__.py", line 87, in setup
-          return distutils.core.setup(**attrs)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/_distutils/core.py", line 159, in setup
-          dist.parse_config_files()
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/dist.py", line 868, in parse_config_files
-          pyprojecttoml.apply_configuration(self, filename, ignore_option_errors)
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py", line 62, in apply_configuration
-          config = read_configuration(filepath, True, ignore_option_errors, dist)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py", line 126, in read_configuration
-          validate(subset, filepath)
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py", line 51, in validate
-          raise ValueError(f"{error}\n{summary}") from None
-      ValueError: invalid pyproject.toml config: `project.license`.
-      configuration error: `project.license` must be valid exactly by one definition (2 matches found):
-      
-          - keys:
-              'file': {type: string}
-            required: ['file']
-          - keys:
-              'text': {type: string}
-            required: ['text']
-      
-      [end of output]
-  
-  note: This error originates from a subprocess, and is likely not a problem with pip.
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: tileops
+  Building editable for tileops (pyproject.toml): started
+  Building editable for tileops (pyproject.toml): finished with status 'done'
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=ec95cebeaf2cfd67f8222e8bee4c5f9ca4c68867a91807fd893884caebb96803
+  Stored in directory: /tmp/pip-ephem-wheel-cache-bu827gr5/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+Successfully built tileops
+Installing collected packages: tileops
+Successfully installed tileops-0.0.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
 [notice] A new release of pip is available: 25.2 -> 26.2.1
 [notice] To update, run: pip install --upgrade pip
-error: metadata-generation-failed
++ python3 -m pytest tests/ops/test_mha.py -m smoke -k 'not bfloat16' --tileops-device npu -v
++ tail -100
+============================= test session starts ==============================
+platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.0', 'Platform': 'Linux-5.4.0-144-generic-x86_64-with-glibc2.36', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'html': '4.1.1', 'cov': '6.2.1', 'metadata': '3.1.1', 'hypothesis': '6.70.1', 'xdist': '3.8.0', 'repeat': '0.9.4'}}
+hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/root/TileOPs/.hypothesis/examples')
+rootdir: /root/TileOPs
+configfile: pyproject.toml
+plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
+collecting ... collected 0 items / 1 error
 
-× Encountered error while generating package metadata.
-╰─> See above for output.
+==================================== ERRORS ====================================
+____________________ ERROR collecting tests/ops/test_mha.py ____________________
+ImportError while importing test module '/root/TileOPs/tests/ops/test_mha.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python3.11.0/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/ops/test_mha.py:7: in <module>
+    from tileops.ops import MHADecodePagedWithKVCacheFwdOp
+src/tileops/ops/__init__.py:284: in __getattr__
+    value = getattr(importlib.import_module(module, __package__), name)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/tileops/ops/attention/__init__.py:1: in <module>
+    from tileops.ops.attention.dsa import DSADecodeWithKVCacheFwdOp
+src/tileops/ops/attention/dsa.py:9: in <module>
+    from tileops.ops.op_base import Op
+src/tileops/ops/op_base.py:35: in <module>
+    from tileops.ops._signature_codegen import check_result
+src/tileops/ops/_signature_codegen.py:27: in <module>
+    from torch.fx.experimental.symbolic_shapes import sym_and, sym_or
+E   ImportError: cannot import name 'sym_and' from 'torch.fx.experimental.symbolic_shapes' (/usr/local/python3.11.0/lib/python3.11/site-packages/torch/fx/experimental/symbolic_shapes.py)
+=========================== short test summary info ============================
+ERROR tests/ops/test_mha.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 2.17s ===============================
++ PYTEST_RC=2
++ echo pytest_rc=2
+pytest_rc=2
++ python3 -m pytest tests/ops/test_mha.py -k 'cache_shorter or table_width' --tileops-device npu -v
++ tail -60
+============================= test session starts ==============================
+platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.0', 'Platform': 'Linux-5.4.0-144-generic-x86_64-with-glibc2.36', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'html': '4.1.1', 'cov': '6.2.1', 'metadata': '3.1.1', 'hypothesis': '6.70.1', 'xdist': '3.8.0', 'repeat': '0.9.4'}}
+hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/root/TileOPs/.hypothesis/examples')
+rootdir: /root/TileOPs
+configfile: pyproject.toml
+plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
+collecting ... collected 0 items / 1 error
 
-note: This is an issue with the package mentioned above, not pip.
-hint: See above for details.
-+ echo PIP_INSTALL_FAILED
-PIP_INSTALL_FAILED
+==================================== ERRORS ====================================
+____________________ ERROR collecting tests/ops/test_mha.py ____________________
+ImportError while importing test module '/root/TileOPs/tests/ops/test_mha.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python3.11.0/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/ops/test_mha.py:7: in <module>
+    from tileops.ops import MHADecodePagedWithKVCacheFwdOp
+src/tileops/ops/__init__.py:284: in __getattr__
+    value = getattr(importlib.import_module(module, __package__), name)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python3.11.0/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/tileops/ops/attention/__init__.py:1: in <module>
+    from tileops.ops.attention.dsa import DSADecodeWithKVCacheFwdOp
+src/tileops/ops/attention/dsa.py:9: in <module>
+    from tileops.ops.op_base import Op
+src/tileops/ops/op_base.py:35: in <module>
+    from tileops.ops._signature_codegen import check_result
+src/tileops/ops/_signature_codegen.py:27: in <module>
+    from torch.fx.experimental.symbolic_shapes import sym_and, sym_or
+E   ImportError: cannot import name 'sym_and' from 'torch.fx.experimental.symbolic_shapes' (/usr/local/python3.11.0/lib/python3.11/site-packages/torch/fx/experimental/symbolic_shapes.py)
+=========================== short test summary info ============================
+ERROR tests/ops/test_mha.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 1.95s ===============================
++ SHORT_RC=2
++ echo cache_shorter_rc=2
+cache_shorter_rc=2
++ echo 'FINAL: pytest=2 cache_shorter=2'
+FINAL: pytest=2 cache_shorter=2
++ '[' 2 = 0 ']'
 + exit 1
 exit_code=1
