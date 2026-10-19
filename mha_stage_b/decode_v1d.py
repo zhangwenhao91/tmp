@@ -338,7 +338,7 @@ def make_bias(rl, hp, is_causal):
         last_key = row_idx + rl.view(B, 1, 1).float() - S_Q
         visible = pos <= last_key
     else:
-        visible = pos < rl.view(B, 1, 1).float()
+        visible = (pos < rl.view(B, 1, 1).float()).expand(B, BR, W * BC)
     return torch.where(visible, 0.0, -1.0e30).to(torch.float32).view(B * BR, W * BC)
 
 
