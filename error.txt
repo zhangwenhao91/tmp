@@ -262,12 +262,10 @@ pytest 8.4.1
 + git fetch origin ascend-mha-decode
 From https://github.com/zhangwenhao91/TileOPs
  * branch              ascend-mha-decode -> FETCH_HEAD
-   e4b75d78..6648a85e  ascend-mha-decode -> origin/ascend-mha-decode
 + git checkout ascend-mha-decode
 Already on 'ascend-mha-decode'
 M	pyproject.toml
-Your branch is behind 'origin/ascend-mha-decode' by 1 commit, and can be fast-forwarded.
-  (use "git pull" to update your local branch)
+Your branch is up to date with 'origin/ascend-mha-decode'.
 + git reset --hard origin/ascend-mha-decode
 HEAD is now at 6648a85e kernel: pin annotation-only W/POOL_ROWS as closure variables
 + git log --oneline -1
@@ -285,8 +283,8 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=a1f5fb4edcf8e403382b24fd39ccb835463213b66d5b48c4920443539df432be
-  Stored in directory: /tmp/pip-ephem-wheel-cache-6qncv_sc/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=010d94610a7c1fc8d0fbce990d8839285fc8aa1931b86d2581f8dcb45802f19c
+  Stored in directory: /tmp/pip-ephem-wheel-cache-b0mxc5y9/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -304,103 +302,34 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7fce65131d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f57379b1d00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7fce65131f80>
-+ python3 -m pytest tests/ops/test_mha.py -m smoke -k 'not bfloat16' --tileops-device npu --tileops-target detect -v
+MHA builder: <function build_mha_decode_paged at 0x7f57379b1f80>
++ python3 -m pytest tests/ops/test_mha.py -m smoke -k 'not dtype1' --tileops-device npu --tileops-target detect -v
 + tail -100
-    ) -> None:
-        test = MHADecodePagedTest(batch, heads, seqlen_q, seqlen_kv, dim, page_size, is_causal, dtype)
-        op = MHADecodePagedWithKVCacheFwdOp(page_size=page_size, is_causal=is_causal)
-        if tune:
-            op.request_tune()
->       test.check(op, *test.gen_inputs())
+============================= test session starts ==============================
+platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.0', 'Platform': 'Linux-5.4.0-144-generic-x86_64-with-glibc2.36', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'html': '4.1.1', 'cov': '6.2.1', 'metadata': '3.1.1', 'hypothesis': '6.70.1', 'xdist': '3.8.0', 'repeat': '0.9.4'}}
+hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/root/TileOPs/.hypothesis/examples')
+rootdir: /root/TileOPs
+configfile: pyproject.toml
+plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
+collecting ... collected 13 items / 6 deselected / 7 selected
 
-tests/ops/test_mha.py:104: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-tests/workload_test_base.py:83: in check
-    result = verify(
-workloads/numerics.py:546: in verify
-    produced = _copy_outputs(request.run(*request.args))
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/op_base.py:1025: in __call__
-    return self._call_boundary(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-<MHADecodePagedWithKVCacheFwdOp boundary>:2: in _call_boundary
-    ???
-src/tileops/ops/_signature_codegen.py:1346: in call
-    result = operator(
-/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/custom_ops.py:671: in __call__
-    return self._opoverload(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_ops.py:756: in __call__
-    return self._op(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/autograd.py:113: in autograd_impl
-    result = forward_no_grad(*args, Metadata(keyset, keyword_only_args))
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/autograd.py:40: in forward_no_grad
-    result = op.redispatch(keyset & _C._after_autograd_keyset, *args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_ops.py:761: in redispatch
-    return self._handle.redispatch_boxed(keyset, *args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/custom_ops.py:335: in backend_impl
-    result = self._backend_fns[device_type](*args, **kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_compile.py:51: in inner
-    return disable_fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py:838: in _fn
-    return fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/custom_ops.py:367: in wrapped_fn
-    return fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/_signature_codegen.py:1277: in operator
-    result = op._run_call(tuple(values[:count]), op.forward, writes, written, execution)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/op_base.py:708: in _run_call
-    result = self._run_on_target(
-src/tileops/ops/op_base.py:758: in _run_on_target
-    kernel = kernels[signature] = self._build_target_kernel(named)
-                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/op_base.py:776: in _build_target_kernel
-    kernel = self._target_builder(*specs, **params)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-False] PASSED [ 14%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0] PASSED [ 28%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-True-real_lengths1] PASSED [ 42%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2] PASSED [ 57%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3] PASSED [ 71%]
+tests/ops/test_mha.py::test_mha_decode_paged_without_wgmma_drops_unread_rows SKIPPED [ 85%]
+tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool PASSED [100%]
 
-q = TensorSpec(device=device(type='npu', index=0), dtype=torch.bfloat16, shape=(1, 1, 16, 128))
-k = TensorSpec(device=device(type='npu', index=0), dtype=torch.bfloat16, shape=(1024, 16, 128))
-v = TensorSpec(device=device(type='npu', index=0), dtype=torch.bfloat16, shape=(1024, 16, 128))
-real_seqlen_kv = TensorSpec(device=device(type='npu', index=0), dtype=torch.int32, shape=(1,))
-block_table = TensorSpec(device=device(type='npu', index=0), dtype=torch.int32, shape=(1, 8))
-
-    def build_mha_decode_paged(
-        q: TensorSpec,
-        k: TensorSpec,
-        v: TensorSpec,
-        real_seqlen_kv: TensorSpec,
-        block_table: TensorSpec,
-        *,
-        page_size: int,
-        is_causal: bool | None = False,
-    ):
-        """Return the kernel serving one paged MHA decode call shape on the NPU."""
-        batch, seqlen_q, heads, dim = q.shape
-        pool_rows = k.shape[0]
-        max_pages_per_req = block_table.shape[1]
-    
-        if q.dtype not in _DTYPE_TO_STR:
->           raise _refuse(f"Q dtype {q.dtype}")
-E           tileops.backend.errors.OpNotAvailableError: the ascend target serves MHADecodePagedWithKVCacheFwdOp for float16 Q and KV, seqlen_q <= 16, dim a multiple of 64, page_size 128 or a multiple of it; this call asks for Q dtype torch.bfloat16. No in-tree kernel runs on an NPU to fall back to.
-
-src/tileops/backends/ascend/builders/attention.py:63: OpNotAvailableError
 =============================== warnings summary ===============================
 tests/ops/test_mha.py: 42 warnings
   /home/z30086261/tilelang/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
@@ -411,14 +340,12 @@ tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-
     rows = bt_t[:, pos // page_size] * page_size + pos % page_size
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========================== short test summary info ============================
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-1024-128-128-False-dtype1-False]
-====== 1 failed, 6 passed, 1 skipped, 5 deselected, 43 warnings in 29.18s ======
-+ PYTEST_RC=1
-+ echo pytest_rc=1
-pytest_rc=1
-+ tail -60
+=========== 6 passed, 1 skipped, 6 deselected, 43 warnings in 5.70s ============
++ PYTEST_RC=0
++ echo pytest_rc=0
+pytest_rc=0
 + python3 -m pytest tests/ops/test_mha.py -k 'cache_shorter or table_width' --tileops-device npu --tileops-target detect -v
++ tail -60
 ============================= test session starts ==============================
 platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
 cachedir: .pytest_cache
@@ -447,12 +374,13 @@ tests/ops/test_mha.py: 42 warnings
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================= 7 passed, 6 deselected, 43 warnings in 7.83s =================
+================= 7 passed, 6 deselected, 43 warnings in 5.60s =================
 + SHORT_RC=0
 + echo cache_shorter_rc=0
 cache_shorter_rc=0
-+ echo 'FINAL: pytest=1 cache_shorter=0'
-FINAL: pytest=1 cache_shorter=0
-+ '[' 1 = 0 ']'
-+ exit 1
-exit_code=1
++ echo 'FINAL: pytest=0 cache_shorter=0'
+FINAL: pytest=0 cache_shorter=0
++ '[' 0 = 0 ']'
++ '[' 0 = 0 ']'
++ exit 0
+exit_code=0
