@@ -65,9 +65,14 @@ cmake -G "Unix Makefiles" ../llvm \
   -DLLVM_ENABLE_ASSERTIONS=ON \
   >"$LOGDIR/3a_cmake.log" 2>&1 \
   || { echo "FATAL: llvm cmake 失败"; tail -10 "$LOGDIR/3a_cmake.log"; exit 1; }
-echo "llvm cmake OK, 开始 make（日志: $LOGDIR/3b_make.log）"
-make -j"$JOBS" >"$LOGDIR/3b_make.log" 2>&1 \
+echo "llvm cmake OK, 开始 make（完整日志: $LOGDIR/3b_make.log；下方 [n/m] 为实时进度）"
+set -o pipefail
+make -j"$JOBS" 2>&1 \
+  | tee "$LOGDIR/3b_make.log" \
+  | stdbuf -oL grep -E '^\[[0-9]+/[0-9]+\]|\*\*\*|error:' \
+  | stdbuf -oL cut -c1-70 \
   || { echo "FATAL: llvm make 失败"; tail -20 "$LOGDIR/3b_make.log"; exit 1; }
+set +o pipefail
 echo "llvm OK"
 
 echo "=== [4/5] OpenTileAS 构建 ==="
@@ -75,7 +80,10 @@ cd "$R" || exit 1
 mkdir -p build && cd build || exit 1
 cmake .. >"$LOGDIR/4a_cmake.log" 2>&1 \
   || { echo "FATAL: otas cmake 失败"; tail -10 "$LOGDIR/4a_cmake.log"; exit 1; }
-make -j"$JOBS" >"$LOGDIR/4b_make.log" 2>&1 \
+make -j"$JOBS" 2>&1 \
+  | tee "$LOGDIR/4b_make.log" \
+  | stdbuf -oL grep -E '^\[[0-9]+/[0-9]+\]|\*\*\*|error:' \
+  | stdbuf -oL cut -c1-70 \
   || { echo "FATAL: otas make 失败"; tail -20 "$LOGDIR/4b_make.log"; exit 1; }
 echo "otas OK"
 
