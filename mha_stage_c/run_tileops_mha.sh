@@ -60,9 +60,9 @@ PYEOF
 
 # 关键：conftest 的 --tileops-target 默认 builtin（强制 in-tree 内核，backend 不接管）。
 # 要让已安装的 ascend backend 认领 npu 设备，必须显式 --tileops-target detect。
-# 冒烟 1：pytest 官方 smoke。bf16（parametrize id 为 dtype1）暂不支持，
-# 注意 pytest 生成的 id 是 dtype1 而非 bfloat16，-k 必须按 id 过滤。
-python3 -m pytest tests/ops/test_mha.py -m smoke -k "not dtype1" \
+# full 形状：page_size=256（SP 子块路径）、seqlen_kv=1024、B=2 等。
+# bf16（parametrize id 为 dtype1）暂不支持，-k 按 id 过滤。
+python3 -m pytest tests/ops/test_mha.py -m full -k "not dtype1" \
   --tileops-device npu --tileops-target detect -v 2>&1 | tail -100
 PYTEST_RC=${PIPESTATUS[0]}
 echo "pytest_rc=$PYTEST_RC"
