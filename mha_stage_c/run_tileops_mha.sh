@@ -77,10 +77,21 @@ echo "cache_shorter_rc=$SHORT_RC"
 # 基线基准：固定形状中位耗时 + 有效带宽 MBU（脚本自注口径，单形状失败不拖垮整表）
 cp "$SCRIPT_DIR/bench_mha.py" ~/TileOPs/bench_mha.py || exit 1
 cd ~/TileOPs
-python3 bench_mha.py 2>&1 | tail -80
+python3 bench_mha.py 2>&1 | tail -40
 BENCH_RC=${PIPESTATUS[0]}
 echo "bench_rc=$BENCH_RC"
 
-echo "FINAL: pytest=$PYTEST_RC cache_shorter=$SHORT_RC bench=$BENCH_RC"
+# kernel 层 A/B：T.Pipelined double-buffer 变体（TILEOPS_MHA_NUM_STAGES=2）。
+# 先 pytest 验精度（官方 assert_close 1e-3 口径）再 bench 测性能；
+# 实验口径：失败或变慢都不影响主结果，仅记录 rc 供对比。
+TILEOPS_MHA_NUM_STAGES=2 python3 -m pytest tests/ops/test_mha.py -m smoke \
+  --tileops-device npu --tileops-target detect 2>&1 | tail -15
+PIPE_PYTEST_RC=${PIPESTATUS[0]}
+echo "pipelined_pytest_rc=$PIPE_PYTEST_RC"
+TILEOPS_MHA_NUM_STAGES=2 python3 bench_mha.py 2>&1 | tail -40
+BENCH_PIPE_RC=${PIPESTATUS[0]}
+echo "bench_pipelined_rc=$BENCH_PIPE_RC"
+
+echo "FINAL: pytest=$PYTEST_RC cache_shorter=$SHORT_RC bench=$BENCH_RC pipe_pytest=$PIPE_PYTEST_RC bench_pipe=$BENCH_PIPE_RC"
 [ "$PYTEST_RC" = "0" ] && [ "$SHORT_RC" = "0" ] && [ "$BENCH_RC" = "0" ]
 exit $?

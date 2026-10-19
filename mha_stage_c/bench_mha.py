@@ -29,6 +29,7 @@ from tileops.ops import MHADecodePagedWithKVCacheFwdOp
 
 DEV = torch.device("npu", 0)
 PEAK_BW_GBPS = float(os.environ.get("BENCH_PEAK_BW_GBPS", "3200"))
+NUM_STAGES = os.environ.get("TILEOPS_MHA_NUM_STAGES", "1")
 
 WARMUP = 3          # 首调之后的预热次数
 REPEAT = 20         # per-call 与 amortized 共用的重复次数
@@ -119,7 +120,8 @@ def bench_one(name, B, H, kv_rows, page_size, fill, dtype):
 
 def main():
     print(f"peak_bw={PEAK_BW_GBPS}GB/s warmup={WARMUP} repeat={REPEAT} "
-          f"per-call 口径含 builder host 开销（bias 构造 + 池 sanitize 克隆）")
+          f"num_stages={NUM_STAGES} "
+          f"per-call 口径含 builder host 开销（rl/bt D2H + launch + contiguous）")
     header = (f"{'shape':<28} {'dtype':<9} {'first(ms)':>10} {'median(ms)':>11} "
               f"{'amort(ms)':>10} {'eff(GB)':>9} {'med GB/s':>12} {'amort GB/s':>12} {'MBU%':>7}")
     print(header)
