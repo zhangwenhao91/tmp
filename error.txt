@@ -4,29 +4,19 @@ Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 
 --- variant F0_h1_nc (H=1, causal=False) ---
 compiling kernel (H=1) ...
-2026-10-19 18:37:13  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 18:37:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
 COMPILE_OK H=1
-RUN_FAIL F0_h1_nc:
-        bias = make_bias(rl, hp, is_causal)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 342, in make_bias
-        return torch.where(visible, 0.0, -1.0e30).to(torch.float32).view(B * BR, W * BC)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    RuntimeError: shape '[32, 384]' is invalid for input of size 768
+  b0h0: max_rel=155.9939
+  b1h0: max_rel=126.2993
+F0_h1_nc: finite=True max_rel_all=155.9939
 
 --- variant F1_h2_nc (H=2, causal=False) ---
 compiling kernel (H=2) ...
-2026-10-19 18:37:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 18:37:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
 COMPILE_OK H=2
-RUN_FAIL F1_h2_nc:
-        bias = make_bias(rl, hp, is_causal)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 342, in make_bias
-        return torch.where(visible, 0.0, -1.0e30).to(torch.float32).view(B * BR, W * BC)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    RuntimeError: shape '[32, 384]' is invalid for input of size 768
+  b0h0: max_rel=155.9939
+  b0h1: max_rel=nan
+  b1h0: max_rel=126.2993
+  b1h1: max_rel=nan
+F1_h2_nc: finite=False max_rel_all=155.9939
 
 --- variant F2_h2_c (H=2, causal=True) ---
   b0h0: max_rel=986.4072
@@ -36,6 +26,8 @@ RUN_FAIL F1_h2_nc:
 F2_h2_c: finite=False max_rel_all=13620.1846 no_key_rows_zero=True (count=1)
 
 === v1d-d2 verdict ===
+F0_h1_nc: FAIL (max_rel=155.9939)
+F1_h2_nc: FAIL (max_rel=155.9939)
 F2_h2_c: FAIL (max_rel=13620.1846) no_key_rows_zero=True (count=1)
 exit_code=0
 exit_code=0
