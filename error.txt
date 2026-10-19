@@ -1,4 +1,25 @@
-kill %1 2>/dev/null; kill 7840 2>/dev/null   # 清掉挂住的构建
-cd /home/z30086261/tmp && git pull
-# 验证 gitcode 连通性（10 秒内出结果，不会挂）
-GIT_TERMINAL_PROMPT=0 git ls-remote https://gitcode.com/OpenTileIR/OpenTileAS.git HEAD
+nproc=256 mem=1511GB -> JOBS=256
+               total        used        free      shared  buff/cache   available
+Mem:            1511          18        1469           0          31        1493
+overlay          25T  1.8T   23T   8% /
+^C
+
+[1]+  Stopped                 nohup bash build_otas.sh > build_otas.log 2>&1
+root@ubuntu162:/home/z30086261/tmp# kill %1 2>/dev/null; kill 7840 2>/dev/null
+root@ubuntu162:/home/z30086261/tmp# cd /home/z30086261/tmp && git pull
+remote: Enumerating objects: 12, done.
+remote: Counting objects: 100% (12/12), done.
+remote: Compressing objects: 100% (7/7), done.
+remote: Total 9 (delta 4), reused 3 (delta 2), pack-reused 0 (from 0)
+Unpacking objects: 100% (9/9), 3.50 KiB | 1.75 MiB/s, done.
+From https://github.com/zhangwenhao91/tmp
+   dd4620c..c05f4a9  main       -> origin/main
+Updating dd4620c..c05f4a9
+Fast-forward
+ build_otas.sh |  3 ++-
+ error.txt     | 13 ++++---------
+ 2 files changed, 6 insertions(+), 10 deletions(-)
+[1]+  Terminated              nohup bash build_otas.sh > build_otas.log 2>&1
+root@ubuntu162:/home/z30086261/tmp# GIT_TERMINAL_PROMPT=0 git ls-remote https://gitcode.com/OpenTileIR/OpenTileAS.git HEAD
+fatal: could not read Username for 'https://gitcode.com': terminal prompts disabled
+root@ubuntu162:/home/z30086261/tmp# 
