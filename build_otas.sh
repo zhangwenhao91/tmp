@@ -3,6 +3,7 @@
 # 已知良好 commit: 99bf5fe（含 tilelang.vmax 支持，>=78f11fb）
 # 用法: nohup bash build_otas.sh > build_otas.log 2>&1 &   然后 tail -f build_otas.log
 set -u
+export GIT_TERMINAL_PROMPT=0   # gitcode 不通时快速失败，而不是挂在凭据提示上
 R=$HOME/OpenTileAS
 LOGDIR=$R/build_logs
 mkdir -p "$LOGDIR"
@@ -27,7 +28,7 @@ df -h "$HOME" | tail -1
 AVAIL_KB=$(df -k "$HOME" | tail -1 | awk '{print $4}')
 [ "$AVAIL_KB" -lt 62914560 ] && { echo "FATAL: HOME 所在分区可用空间 < 60GB（LLVM 构建很占盘）"; exit 1; }
 git ls-remote https://gitcode.com/OpenTileIR/OpenTileAS.git HEAD >/dev/null 2>&1 \
-  || { echo "FATAL: 无法访问 gitcode.com，检查网络/代理"; exit 1; }
+  || { echo "FATAL: 无法访问 gitcode.com（匿名被拒或网络不通），需配置 token 或改用 GitHub 镜像"; exit 1; }
 echo "env OK"
 
 echo "=== [1/5] clone + checkout 99bf5fe + 子模块 ==="
