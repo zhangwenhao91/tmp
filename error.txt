@@ -1,31 +1,5 @@
-root@ubuntu162:/home/z30086261/tmp# tail -30 /home/z30086261/tmp/build_otas.log 
-=== [1/5] clone + checkout 99bf5fe + 子模块 ===
- 7b0fbc98fc6a4fd55c654283b011760122502d26 third_party/OpenTileIR (remotes/origin/fix/autoblockify-grid-stride)
- f6ded0be897e2878612dd903f7e8bb85448269e5 third_party/llvm-project (llvmorg-22-init-9154-gf6ded0be897e)
- 7c56a5e40f7fd928dfd5c72902d5def0097db73a third_party/triton (legacy-backend-4663-g7c56a5e40f)
-submodules OK
-=== [2/5] apply patches ===
-patch OK
-=== [3/5] LLVM/MLIR + triton 构建（最耗时，可能数小时） ===
-llvm cmake OK, 开始 make（完整日志: /root/OpenTileAS/build_logs/3b_make.log；下方 [n/m] 为实时进度）
-FATAL: llvm make 失败
-In file included from /root/OpenTileAS/third_party/triton/third_party/proton/Dialect/include/Conversion/ProtonToProtonGPU/Passes.h:6,
-                 from /root/OpenTileAS/third_party/triton/bin/./RegisterTritonDialects.h:9,
-                 from /root/OpenTileAS/third_party/triton/bin/triton-opt.cpp:1:
-/root/OpenTileAS/third_party/triton/third_party/proton/Dialect/include/Dialect/ProtonGPU/IR/Dialect.h:24:1: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
-   24 | const int getBytesPerClockEntry();
-      | ^~~~~
-/root/OpenTileAS/third_party/triton/third_party/proton/Dialect/include/Dialect/ProtonGPU/IR/Dialect.h:26:1: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
-   26 | const int getCircularHeaderSize();
-      | ^~~~~
-/root/OpenTileAS/third_party/triton/third_party/proton/Dialect/include/Dialect/ProtonGPU/IR/Dialect.h:28:1: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
-   28 | const int getTotalNumWarps(ModuleOp mod);
-      | ^~~~~
-[100%] Linking CXX executable ../../../bin/triton-lsp
-[100%] Linking CXX executable ../../../bin/triton-reduce
-[100%] Linking CXX executable ../../../bin/triton-opt
-[100%] Linking CXX executable ../../../bin/triton-tensor-layout
-[100%] Built target triton-lsp
-[100%] Built target triton-reduce
-[100%] Built target triton-opt
-[100%] Built target triton-tensor-layou
+grep -cE 'error:' /root/OpenTileAS/build_logs/3b_make.log
+grep -nE 'error:|undefined reference|Killed|SIGKILL|virtual memory|internal compiler error' /root/OpenTileAS/build_logs/3b_make.log | head -20
+grep -nE '\*\*\*' /root/OpenTileAS/build_logs/3b_make.log | head -10
+gcc --version | head -1
+ls /usr/bin/gcc* /usr/bin/g++* 2>/dev/null
