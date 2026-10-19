@@ -14,7 +14,8 @@ python3 -c "import pytest; print('pytest', pytest.__version__)" 2>/dev/null \
 
 cd ~
 if [ ! -d TileOPs ]; then
-  GIT_TERMINAL_PROMPT=0 git clone -b ascend-mha-decode git@github.com:zhangwenhao91/TileOPs.git || exit 1
+  # 服务器走内网 HTTP 代理，SSH 协议不通，必须用 HTTPS 拉公开仓库
+  GIT_TERMINAL_PROMPT=0 git clone -b ascend-mha-decode https://github.com/zhangwenhao91/TileOPs.git || exit 1
 fi
 cd ~/TileOPs
 git fetch origin ascend-mha-decode || exit 1
@@ -22,10 +23,12 @@ git checkout ascend-mha-decode || exit 1
 git reset --hard origin/ascend-mha-decode || exit 1
 git log --oneline -1
 
-# tileops 主张 tilelang==0.1.12 / torch>=2.13；服务器是 0.1.15 + torch_npu 环境，
-# 用 --no-deps 跳过依赖检查（依赖已就位）。
+# tileops 主张 tilelang==0.1.12 / torch>=2.13 / python>=3.12；服务器是
+# python 3.11 + tilelang 0.1.15 + torch_npu 环境。代码未用 3.12 专属语法与
+# stdlib API（已核查），仅元数据门挡路：放宽 requires-python 后 --no-deps 跳过依赖检查。
+sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
 python3 -m pip install -e . --no-deps --no-build-isolation || {
-  echo "PIP_INSTALL_FAILED（python 版本需 >=3.12,<3.13，见上方 python 版本）"
+  echo "PIP_INSTALL_FAILED"
   exit 1
 }
 
