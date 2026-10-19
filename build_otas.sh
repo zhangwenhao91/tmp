@@ -47,9 +47,15 @@ git submodule status | head -5
 echo "submodules OK"
 
 echo "=== [2/5] apply patches ==="
-./build-tools/apply_patch.sh >"$LOGDIR/2_patch.log" 2>&1 \
-  || { echo "FATAL: patch 失败（若重复运行，先 git submodule deinit -f . 再重跑 stage1/2）"; tail -10 "$LOGDIR/2_patch.log"; exit 1; }
-echo "patch OK"
+# 子模块有本地改动 = 补丁已应用过（上次构建残留），跳过 patch 避免 --merge 交互卡死
+if git -C "$R/third_party/llvm-project" diff --quiet >/dev/null 2>&1 \
+   && git -C "$R/third_party/triton" diff --quiet >/dev/null 2>&1; then
+  ./build-tools/apply_patch.sh >"$LOGDIR/2_patch.log" 2>&1 \
+    || { echo "FATAL: patch 失败"; tail -10 "$LOGDIR/2_patch.log"; exit 1; }
+  echo "patch OK"
+else
+  echo "patch 已应用过，跳过（如需重打: ./build-tools/apply_patch.sh --clean-up 后重跑）"
+fi
 
 echo "=== [3/5] LLVM/MLIR + triton 构建（最耗时，可能数小时） ==="
 cd "$R/third_party/llvm-project" || exit 1
@@ -65,13 +71,12 @@ cmake -G "Unix Makefiles" ../llvm \
   >"$LOGDIR/3a_cmake.log" 2>&1 \
   || { echo "FATAL: llvm cmake 失败"; tail -10 "$LOGDIR/3a_cmake.log"; exit 1; }
 echo "llvm cmake OK, 开始 make（完整日志: $LOGDIR/3b_make.log；下方 [n/m] 为实时进度）"
-set -o pipefail
 make -j"$JOBS" 2>&1 \
   | tee "$LOGDIR/3b_make.log" \
   | stdbuf -oL grep -E '^\[[0-9]+/[0-9]+\]|\*\*\*|error:' \
-  | stdbuf -oL cut -c1-70 \
-  || { echo "FATAL: llvm make 失败"; tail -20 "$LOGDIR/3b_make.log"; exit 1; }
-set +o pipefail
+  | stdbuf -oL cut -c1-70
+RC=${PIPESTATUS[0]}
+[ "$RC" -ne 0 ] && { echo "FATAL: llvm make 失败 (rc=$RC)"; tail -20 "$LOGDIR/3b_make.log"; exit 1; }
 echo "llvm OK"
 
 echo "=== [4/5] OpenTileAS 构建 ==="
@@ -82,8 +87,9 @@ cmake .. >"$LOGDIR/4a_cmake.log" 2>&1 \
 make -j"$JOBS" 2>&1 \
   | tee "$LOGDIR/4b_make.log" \
   | stdbuf -oL grep -E '^\[[0-9]+/[0-9]+\]|\*\*\*|error:' \
-  | stdbuf -oL cut -c1-70 \
-  || { echo "FATAL: otas make 失败"; tail -20 "$LOGDIR/4b_make.log"; exit 1; }
+  | stdbuf -oL cut -c1-70
+RC=${PIPESTATUS[0]}
+[ "$RC" -ne 0 ] && { echo "FATAL: otas make 失败 (rc=$RC)"; tail -20 "$LOGDIR/4b_make.log"; exit 1; }
 echo "otas OK"
 
 echo "=== [5/5] 验证 ==="
