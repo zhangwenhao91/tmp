@@ -1,118 +1,20 @@
-===== G) ascend-toolkit/latest 的版本 =====
-# version: 1.0
-runtime_running_version=[8.3.T9.0.B066:8.3.RC1]
-compiler_running_version=[8.3.T9.0.B066:8.3.RC1]
-hccl_running_version=[8.3.T9.0.B066:8.3.RC1]
-opp_running_version=[8.3.T9.0.B066:8.3.RC1]
-toolkit_running_version=[8.3.T9.0.B066:8.3.RC1]
-aoe_running_version=[8.3.T9.0.B066:8.3.RC1]
-opp_kernel_running_version=[8.3.T9.0.B066:8.3.RC1]
-runtime_upgrade_version=[8.3.T9.0.B066:8.3.RC1]
-compiler_upgrade_version=[8.3.T9.0.B066:8.3.RC1]
-hccl_upgrade_version=[8.3.T9.0.B066:8.3.RC1]
-opp_upgrade_version=[8.3.T9.0.B066:8.3.RC1]
-toolkit_upgrade_version=[8.3.T9.0.B066:8.3.RC1]
-aoe_upgrade_version=[8.3.T9.0.B066:8.3.RC1]
-opp_kernel_upgrade_version=[8.3.T9.0.B066:8.3.RC1]
-runtime_installed_version=[8.3.T9.0.B066:8.3.RC1]
-compiler_installed_version=[8.3.T9.0.B066:8.3.RC1]
-hccl_installed_version=[8.3.T9.0.B066:8.3.RC1]
-opp_installed_version=[8.3.T9.0.B066:8.3.RC1]
-toolkit_installed_version=[8.3.T9.0.B066:8.3.RC1]
-aoe_installed_version=[8.3.T9.0.B066:8.3.RC1]
-opp_kernel_installed_version=[8.3.T9.0.B066:8.3.RC1]
--- /usr/local/Ascend/latest/version.cfg:
-# version: 1.0
-runtime_running_version=[8.3.T9.0.B066:8.3.RC1]
-runtime_upgrade_version=[8.3.T9.0.B066:8.3.RC1]
-runtime_installed_version=[8.3.T9.0.B066:8.3.RC1]
-drwxr-xr-x 6 root root 4096 Sep 10  2025 /usr/local/Ascend/ascend-toolkit/latest
-drwxr-xr-x 1 root root 4096 Jan 29  2026 /usr/local/Ascend/latest
-ascc
-ascendc
-bin
-ccec_compiler
-conf
-data
-develop
-devlib
-include
-lib64
-/usr/local/Ascend/ascend-toolkit/latest/version.cfg
+# 1) 激活 9.3（会覆盖 ASCEND_HOME_PATH 等环境变量）
+source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
 
-===== H) /home/CANN 9.3 两个 weekly 目录的性质 =====
--- /home/CANN/9.3.0.weekly.20260916/cann-9.3.0:
-asc
-bin
-cann_uninstall.sh
-combo_script
-compat
-compiler
-conf
-devlib
-fwkacllib
-include
-lib64
-opp
-ops_uninstall.sh
-pkg_inc
-python
-query_pkg_version.sh
-runtime
-set_env.sh
-share
-test-ops
-   [set_env.sh 存在?] YES
-   [lib64 存在?] YES
-   [compiler 存在?] YES
+# 2) 验证确实切过去了
+echo $ASCEND_HOME_PATH
+# 期望输出: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+cat $ASCEND_HOME_PATH/version.cfg | head -3
 
--- /home/CANN/9.3.0.weekly.20260930/cann-9.3.0:
-asc
-bin
-cann_uninstall.sh
-combo_script
-compat
-compiler
-conf
-devlib
-fwkacllib
-include
-lib64
-opp
-ops_uninstall.sh
-pkg_inc
-python
-query_pkg_version.sh
-runtime
-set_env.sh
-share
-test-ops
-   [set_env.sh 存在?] YES
-   [lib64 存在?] YES
-   [compiler 存在?] YES
+# 3) 编译器可用性
+ls $ASCEND_HOME_PATH/compiler/ccec_compiler/bin/ | head
 
-9.1.0-beta.3
-9.2.0-beta.1
-9.2.0.weekly.20260909
-9.3.0.weekly.20260916
-9.3.0.weekly.20260930
-toolbox
+# 4) torch_npu 与新 CANN 的兼容性冒烟
+python -c "import torch, torch_npu; print('torch_npu', torch_npu.__version__); t=torch.randn(4,4).npu(); print((t*2).sum().item())"
 
-===== I) /home/CANN 权限（能否直接 source / 需要拷贝） =====
-drwxr-xr-x  8 root root 4096 Oct 12 08:58 /home/CANN
-drwxr-xr-x  4 root root 4096 Oct  9 14:17 /home/CANN/9.3.0.weekly.20260930
-drwxr-xr-x 14 root root 4096 Oct  9 14:17 /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
 
-===== J) NPU 型号（多种方式兜底） =====
-find_cann3.sh: line 32: npu-smi: command not found
-0d:00.0 Processing accelerators: Huawei Technologies Co., Ltd. Device d806 (rev 20)
-0e:00.0 Processing accelerators: Huawei Technologies Co., Ltd. Device d806 (rev 20)
-55:00.0 Processing accelerators: Huawei Technologies Co., Ltd. Device d806 (rev 20)
-57:00.0 Processing accelerators: Huawei Technologies Co., Ltd. Device d806 (rev 20)
-8b:00.0 Processing accelerators: Huawei Technologies Co., Ltd. Device d806 (rev 20)
-Version=25.7.rc1.b086
-ascendhal_version=7.35.23
-aicpu_version=1.0
 
-===== K) 950-ops 安装包信息 =====
--rw-r--r-- 1 root root 3.4G Sep 30 09:21 /home/g00946757/Ascend-cann-950-ops_9.3.0~weekly.20260930.01_linux-x86_64.run
+
+
+
+echo "alias cann93='source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh'" >> ~/.bashrc
