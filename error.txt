@@ -1,45 +1,4 @@
-root@ubuntu162:/home/z30086261/tmp# source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
-$ASCEND_HOME_PATH/bin/ccec --help 2>&1 | head -15
-OVERVIEW: clang LLVM compiler
-
-USAGE: bisheng [options] file...
-
-OPTIONS:
-  -###                    Print (but do not run) the commands to run for this compilation
-  --aicore-only           alias of --cce-aicore-only
-  --amdgpu-arch-tool=<value>
-                          Tool used for detecting AMD GPU arch in the system.
-  --analyzer-output <value>
-                          Static analyzer report output format (html|plist|plist-multi-file|plist-html|sarif|sarif-html|text).
-  --analyze               Run the static analyzer
-  -arcmt-migrate-emit-errors
-                          Emit ARC errors even if the migrator can fix them
-  -arcmt-migrate-report-output <value>
-root@ubuntu162:/home/z30086261/tmp# cd /home/z30086261/tmp
-git pull
-nohup bash build_otas.sh > build_otas.log 2>&1 &
-tail -f build_otas.log
-remote: Enumerating objects: 14, done.
-remote: Counting objects: 100% (14/14), done.
-remote: Compressing objects: 100% (11/11), done.
-remote: Total 12 (delta 5), reused 3 (delta 1), pack-reused 0 (from 0)
-Unpacking objects: 100% (12/12), 5.08 KiB | 2.54 MiB/s, done.
-From https://github.com/zhangwenhao91/tmp
-   c3a7e16..dd4620c  main       -> origin/main
-Updating c3a7e16..dd4620c
-Fast-forward
- build_otas.sh | 85 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- error.txt     | 21 +++++++++------------
- 2 files changed, 94 insertions(+), 12 deletions(-)
- create mode 100644 build_otas.sh
-[1] 7840
-tail: inotify resources exhausted
-tail: inotify cannot be used, reverting to polling
-nohup: ignoring input
-Username for 'https://gitcode.com': === [0/5] 环境检查 ===
-cmake: cmake version 4.1.0
-gcc: gcc (GCC) 11.2.0
-nproc=256 mem=1511GB -> JOBS=256
-               total        used        free      shared  buff/cache   available
-Mem:            1511          18        1469           0          31        1493
-overlay          25T  1.8T   23T   8% /
+kill %1 2>/dev/null; kill 7840 2>/dev/null   # 清掉挂住的构建
+cd /home/z30086261/tmp && git pull
+# 验证 gitcode 连通性（10 秒内出结果，不会挂）
+GIT_TERMINAL_PROMPT=0 git ls-remote https://gitcode.com/OpenTileIR/OpenTileAS.git HEAD
