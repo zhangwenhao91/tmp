@@ -1,12 +1,33 @@
-# 1) 确认没有残留的构建进程
-ps aux | grep -E '[m]ake|[c]c1plus' | head
-
-# 2) 重跑（已编完的部分不会重来，如果真到了 100% 这次几秒就过）
-cd /home/z30086261/tmp && git pull
-nohup bash build_otas.sh > build_otas2.log 2>&1 &
-
-
-
-
-
-tail -30 /home/z30086261/tmp/build_otas2.log
+root@ubuntu162:/home/z30086261/tmp# tail -30 /home/z30086261/tmp/build_otas2.log
+               total        used        free      shared  buff/cache   available
+Mem:            1511          19        1414           0          85        1492
+overlay          25T  1.9T   23T   8% /
+env OK
+=== [1/5] clone + checkout 99bf5fe + 子模块 ===
+ 7b0fbc98fc6a4fd55c654283b011760122502d26 third_party/OpenTileIR (remotes/origin/fix/autoblockify-grid-stride)
+ f6ded0be897e2878612dd903f7e8bb85448269e5 third_party/llvm-project (llvmorg-22-init-9154-gf6ded0be897e)
+ 7c56a5e40f7fd928dfd5c72902d5def0097db73a third_party/triton (legacy-backend-4663-g7c56a5e40f)
+submodules OK
+=== [2/5] apply patches ===
+patch 已应用过，跳过（如需重打: ./build-tools/apply_patch.sh --clean-up 后重跑）
+=== [3/5] LLVM/MLIR + triton 构建（最耗时，可能数小时） ===
+llvm cmake OK, 开始 make（完整日志: /root/OpenTileAS/build_logs/3b_make.log；下方 [n/m] 为实时进度）
+llvm OK
+=== [4/5] OpenTileAS 构建 ===
+otas OK
+=== [5/5] 验证 ===
+total 564676
+drwxr-xr-x 2 root root      4096 Oct 19 15:36 .
+drwxr-xr-x 9 root root      4096 Oct 19 15:35 ..
+-rwxr-xr-x 1 root root   1471136 Oct 19 15:35 hacc-target-spec-tblgen
+-rwxr-xr-x 1 root root    952536 Oct 19 15:35 opentileas
+-rwxr-xr-x 1 root root     26512 Oct 19 15:35 opentileas-stage-tool
+-rwxr-xr-x 1 root root 344243624 Oct 19 15:37 tile-opt
+-rwxr-xr-x 1 root root 231514704 Oct 19 15:36 tile-translate
+TILE_OPT_OK
+TILE_TRANSLATE_OK
+OPENTILEAS_OK
+VMAX_OK
+=== BUILD_DONE ===
+[1]+  Done                    nohup bash build_otas.sh > build_otas2.log 2>&1
+root@ubuntu162:/home/z30086261/tmp# 
