@@ -3,35 +3,25 @@ CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 
 --- variant C1_noif_novmin: compiling ---
-2026-10-19 17:36:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 17:36:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
 COMPILE_OK C1_noif_novmin
-RUN_FAIL C1_noif_novmin:
-      File "/home/z30086261/tmp/mha_stage_b/decode_v1c.py", line 366, in main
-        r1 = rel_of(o[B * BR].float(), exp_b1)
-                    ~^^^^^^^^
-    IndexError: index 32 is out of bounds for dimension 0 with size 32
+C1_noif_novmin: finite=True b0_rel=0.0122 b0_rel_swapbt=0.0122 b1_rel=44.4275
+   b0 got[:4] =[0.130126953125, -0.054931640625, 0.0024356842041015625, -0.056488037109375]
+   b0 exp[:4] =[0.1300571709871292, -0.05494042485952377, 0.002449454739689827, -0.05647174268960953]
 
 --- variant C2_if_novmin: compiling ---
-2026-10-19 17:36:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 17:36:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
 COMPILE_OK C2_if_novmin
-RUN_FAIL C2_if_novmin:
-      File "/home/z30086261/tmp/mha_stage_b/decode_v1c.py", line 366, in main
-        r1 = rel_of(o[B * BR].float(), exp_b1)
-                    ~^^^^^^^^
-    IndexError: index 32 is out of bounds for dimension 0 with size 32
+C2_if_novmin: finite=True b0_rel=0.0122 b0_rel_swapbt=0.0122 b1_rel=16.8273
+   b0 got[:4] =[0.130126953125, -0.054931640625, 0.0024356842041015625, -0.056488037109375]
+   b0 exp[:4] =[0.1300571709871292, -0.05494042485952377, 0.002449454739689827, -0.05647174268960953]
 
 --- variant C3_if_vmin: compiling ---
-2026-10-19 17:36:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 17:36:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
 COMPILE_OK C3_if_vmin
-RUN_FAIL C3_if_vmin:
-      File "/home/z30086261/tmp/mha_stage_b/decode_v1c.py", line 366, in main
-        r1 = rel_of(o[B * BR].float(), exp_b1)
-                    ~^^^^^^^^
-    IndexError: index 32 is out of bounds for dimension 0 with size 32
+C3_if_vmin: finite=True b0_rel=10.6790 b0_rel_swapbt=10.6790 b1_rel=35.5058
+   b0 got[:4] =[0.046661376953125, -0.0701904296875, 0.0103759765625, -0.1025390625]
+   b0 exp[:4] =[0.1300571709871292, -0.05494042485952377, 0.002449454739689827, -0.05647174268960953]
 
 === ablation verdict ===
-exit_code=0
+C1_noif_novmin: b0 PASS (swapbt matches), b1 FAIL(expect in C1/C2)
+C2_if_novmin: b0 PASS (swapbt matches), b1 FAIL(expect in C1/C2)
+C3_if_vmin: b0 FAIL (swapbt no), b1 FAIL(expect in C1/C2)
 exit_code=0
