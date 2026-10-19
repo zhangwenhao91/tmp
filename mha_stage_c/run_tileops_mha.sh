@@ -60,8 +60,10 @@ PYEOF
 
 # 冒烟 0：进程内绑定探针（定位 in-tree 分流根因后可删）
 echo "=== debug binding probe ==="
-python3 -m pytest tests/ops/test_debug_binding.py --tileops-device npu -v -s 2>&1 | tail -120
+python3 -m pytest tests/ops/test_debug_binding.py --tileops-device npu -v -s 2>&1 | tail -15
 echo "PROBE_RC=${PIPESTATUS[0]}"
+echo "=== spy log (file-based, no truncation) ==="
+cat /tmp/tileops_spy.log
 
 # 冒烟 1：pytest 官方 smoke（bf16 支持在后续轮次，先排除）
 python3 -m pytest tests/ops/test_mha.py -m smoke -k "not bfloat16" \
