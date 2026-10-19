@@ -49,8 +49,8 @@
 ++ read -r PYTHONPATH
 +++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 +++ tr : '\n'
-+++ tr '\n' :
 +++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
++++ tr '\n' :
 +++ sed 's/:$//'
 ++ export PYTHONPATH
 ++ my_ld_library_path=/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
@@ -262,14 +262,16 @@ pytest 8.4.1
 + git fetch origin ascend-mha-decode
 From https://github.com/zhangwenhao91/TileOPs
  * branch              ascend-mha-decode -> FETCH_HEAD
+   f3f268ca..5031d3f2  ascend-mha-decode -> origin/ascend-mha-decode
 + git checkout ascend-mha-decode
 Already on 'ascend-mha-decode'
 M	pyproject.toml
-Your branch is up to date with 'origin/ascend-mha-decode'.
+Your branch is behind 'origin/ascend-mha-decode' by 1 commit, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
 + git reset --hard origin/ascend-mha-decode
-HEAD is now at f3f268ca compat: sym_and/sym_or shim for torch < 2.8 (static-shape paths never call them)
+HEAD is now at 5031d3f2 debug: in-pytest binding probe (temporary)
 + git log --oneline -1
-f3f268ca compat: sym_and/sym_or shim for torch < 2.8 (static-shape paths never call them)
+5031d3f2 debug: in-pytest binding probe (temporary)
 + sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
 + sed -i 's/^license = .*/license = {text = "MIT"}/' pyproject.toml
 + sed -i '/^license-files/d' pyproject.toml
@@ -283,8 +285,8 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=f5f3c50def2eeab172cfef266d320dce41638ec98cd05e950c0804b1830280c1
-  Stored in directory: /tmp/pip-ephem-wheel-cache-wj2j1bmu/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=8467dfb0838c9af06e58e4cca16744198617d44dbb66b5de9f6f24aeea4631ef
+  Stored in directory: /tmp/pip-ephem-wheel-cache-sh9nt59d/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -302,14 +304,35 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f43e87a1d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f421c6d5d00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7f43e87a1f80>
+MHA builder: <function build_mha_decode_paged at 0x7f421c6d5f80>
++ echo '=== debug binding probe ==='
+=== debug binding probe ===
++ python3 -m pytest tests/ops/test_debug_binding.py --tileops-device npu -v -s
++ tail -40
+============================= test session starts ==============================
+platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.0', 'Platform': 'Linux-5.4.0-144-generic-x86_64-with-glibc2.36', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'html': '4.1.1', 'cov': '6.2.1', 'metadata': '3.1.1', 'hypothesis': '6.70.1', 'xdist': '3.8.0', 'repeat': '0.9.4'}}
+hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/root/TileOPs/.hypothesis/examples')
+rootdir: /root/TileOPs
+configfile: pyproject.toml
+plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
+collecting ... collected 1 item
+
+============================ no tests ran in 3.14s =============================
+ERROR: Invalid explicit test marker assignments detected:
+tests/ops/test_debug_binding.py::test_debug_binding: expected exactly one tier marker, found none
+tests/ops/test_debug_binding.py::test_debug_binding: each test must have at least one smoke case
+
++ echo PROBE_RC=4
+PROBE_RC=4
 + python3 -m pytest tests/ops/test_mha.py -m smoke -k 'not bfloat16' --tileops-device npu -v
 + tail -100
 /usr/local/python3.11.0/lib/python3.11/site-packages/torch/_library/autograd.py:40: in forward_no_grad
@@ -347,7 +370,7 @@ src/tileops/ops/op_base.py:509: in _get_or_build_entry
                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-self = <tileops.ops.attention.mha.MHADecodePagedWithKVCacheFwdOp object at 0x7fb600339250>
+self = <tileops.ops.attention.mha.MHADecodePagedWithKVCacheFwdOp object at 0x7efcc8bf9310>
 interface = 'mha_decode_paged'
 call = AttentionCall(arch=-1, calibration=None, sm_count=0, smem_budget=0, device=device(type='npu', index=0), dtype=torch.fl...e, has_sinks=False, cache_dtype=torch.float16, fuse_rope=False, max_position=None, rotary_dim=None, rope_layout='neox')
 
@@ -411,7 +434,7 @@ FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-T
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2]
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3]
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool
-============ 7 failed, 1 skipped, 5 deselected, 1 warning in 6.03s =============
+============ 7 failed, 1 skipped, 5 deselected, 1 warning in 6.22s =============
 + PYTEST_RC=1
 + echo pytest_rc=1
 pytest_rc=1
@@ -476,7 +499,7 @@ FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-F
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths4]
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths5]
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool
-================== 7 failed, 6 deselected, 1 warning in 6.23s ==================
+================== 7 failed, 6 deselected, 1 warning in 6.11s ==================
 + SHORT_RC=1
 + echo cache_shorter_rc=1
 cache_shorter_rc=1
