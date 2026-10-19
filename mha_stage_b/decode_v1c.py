@@ -65,16 +65,17 @@ def softmax(S_ub, P_nz_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub):
 
         S.vsts(old_m_ub[0], S.vld(m_ub[0], "NORM"), softmax_full, "NORM_B32")
 
+        neg_big = S.vdup(NEG_BIG, accum_dtype, softmax_full)
         for r in range(0, ROWS, 2):
             # vmin 钳位：页内无效列（score 有限但属于越界行）→ -1e30 → exp 精确 0
             s00 = S.vmin(S.vmuls(S.vld(S_ub[r, 0], "NORM"), T.float32(scale), softmax_full),
-                         NEG_BIG, softmax_full)
+                         neg_big, softmax_full)
             s01 = S.vmin(S.vmuls(S.vld(S_ub[r, VL], "NORM"), T.float32(scale), softmax_full),
-                         NEG_BIG, softmax_full)
+                         neg_big, softmax_full)
             s10 = S.vmin(S.vmuls(S.vld(S_ub[r + 1, 0], "NORM"), T.float32(scale), softmax_full),
-                         NEG_BIG, softmax_full)
+                         neg_big, softmax_full)
             s11 = S.vmin(S.vmuls(S.vld(S_ub[r + 1, VL], "NORM"), T.float32(scale), softmax_full),
-                         NEG_BIG, softmax_full)
+                         neg_big, softmax_full)
             S.vsts(S_ub[r, 0], s00, softmax_full, "NORM_B32")
             S.vsts(S_ub[r, VL], s01, softmax_full, "NORM_B32")
             S.vsts(S_ub[r + 1, 0], s10, softmax_full, "NORM_B32")
