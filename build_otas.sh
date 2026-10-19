@@ -6,7 +6,6 @@ set -u
 export GIT_TERMINAL_PROMPT=0   # gitcode 不通时快速失败，而不是挂在凭据提示上
 R=$HOME/OpenTileAS
 LOGDIR=$R/build_logs
-mkdir -p "$LOGDIR"
 
 echo "=== [0/5] 环境检查 ==="
 for t in git cmake gcc g++ python3; do
@@ -33,9 +32,12 @@ echo "env OK"
 
 echo "=== [1/5] clone + checkout 99bf5fe + 子模块 ==="
 if [ ! -d "$R/.git" ]; then
+  rm -rf "$R"   # 残留目录（最多只有上次误建的 build_logs）必须清掉，否则 clone 拒绝非空目标
+  mkdir -p "$LOGDIR"
   git clone https://gitcode.com/OpenTileIR/OpenTileAS.git "$R" >"$LOGDIR/1_clone.log" 2>&1 \
     || { echo "FATAL: clone 失败"; tail -5 "$LOGDIR/1_clone.log"; exit 1; }
 fi
+mkdir -p "$LOGDIR"
 cd "$R" || exit 1
 git checkout 99bf5fe >"$LOGDIR/1_checkout.log" 2>&1 \
   || { echo "FATAL: checkout 99bf5fe 失败"; tail -5 "$LOGDIR/1_checkout.log"; exit 1; }
