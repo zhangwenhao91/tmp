@@ -1,18 +1,15 @@
-"""v1c 变长 decode kernel：v1b + B=2 批量 + real_seqlen 变长守卫。
+"""v1c 消融矩阵：定位 B=2 改造中破坏基础路径的因素。
 
-形状：B=2, H=1, S_q=1(pad BR=16), D=128, W=2 逻辑页, fp16。
-real_seqlen = [256, 100]：b0 两个整页；b1 只有一个页且页内仅前 100 行有效。
+v1c 首跑现象：serial 编译过，但 b0（rl=256 双整页，数学上与 v1b 等价）rel=10.7。
+嫌疑：T.If 包裹 kv_body / bx 索引 / BT 二维标量 load / vmin 钳位。
 
-两个新机制：
-  1. 整页跳过：`T.If(kv*BC < rl)` 包住 kv_body（探针 E2 已验证 T.If）。
-     全无效页若参与 softmax 会使 alpha=exp(old_m-m) 溢出 Inf，必须跳过。
-  2. 页内掩码：softmax 里对 scaled score 做 `S.vmin(s, -1e30)` 钳位——
-     无效列 exp(-1e30 - m) 精确下溢为 0，row_sum/P 全部零贡献；
-     softmax 恒等式 exp(s-m)/Σexp(s'-m) 对 m 不变，数学正确。
-     钳位要求无效行 score 有限：池是完整分配的 randn，天然有限。
+消融变体（全部 B=2, W=2, serial）：
+  C1  无 If 无 vmin —— 隔离 bx/BT2D/Q 偏移因素（b1 数学必错属预期，看 b0）
+  C2  有 If 无 vmin —— 隔离 T.If 因素（b1 页内截断必错属预期，看 b0）
+  C3  有 If 有 vmin —— 完整 v1c（b0/b1 都应过）
 
-验收：B=2，b0 页序 [3,0] rl=256；b1 页序 [5,2] rl=100（BT[1] 存在但被跳过）。
-每请求 row0 与 torch golden（按 bt 拼 k/v 截断 rl 行）rel < 5e-2。
+b0 失败时自动做假设检验：与页序 [3,0]（正确）、[0,3]（BT 索引 bug 假设）分别
+比对 rel，并打印前 4 个分量辅助人工判读。
 """
 
 import math
@@ -31,7 +28,7 @@ ROWS = BR // 2
 BC = 128
 VL = 64
 B = 2
-W = 2              # 每请求最大逻辑页数（编译期）
+W = 2
 POOL_PAGES = 8
 POOL_ROWS = POOL_PAGES * BC
 NUM_KV = W
@@ -39,7 +36,7 @@ dtype = "float16"
 accum_dtype = "float32"
 out_dtype = "float16"
 scale = 1.0 / math.sqrt(D)
-NEG_BIG = T.float32(-1.0e30)   # 无效列钳位值：exp 下溢为精确 0
+NEG_BIG = T.float32(-1.0e30)
 
 
 @T.macro
@@ -53,7 +50,7 @@ def qk(kv, BT, bx, KP, Q_shared, K_shared, qk_a_l0, qk_b_l0, qk_acc_l0c, S_ub):
 
 
 @T.macro
-def softmax(S_ub, P_nz_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub):
+def softmax(S_ub, P_nz_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub, use_vmin):
     with T.SimdVF(latency=735):
         softmax_full = S.pset(32, "PAT_ALL")
         softmax_one = S.pset(32, "PAT_VL1")
@@ -65,17 +62,19 @@ def softmax(S_ub, P_nz_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub):
 
         S.vsts(old_m_ub[0], S.vld(m_ub[0], "NORM"), softmax_full, "NORM_B32")
 
-        neg_big = S.vdup(NEG_BIG, accum_dtype, softmax_full)
+        if use_vmin:
+            neg_big = S.vdup(NEG_BIG, accum_dtype, softmax_full)
+
         for r in range(0, ROWS, 2):
-            # vmin 钳位：页内无效列（score 有限但属于越界行）→ -1e30 → exp 精确 0
-            s00 = S.vmin(S.vmuls(S.vld(S_ub[r, 0], "NORM"), T.float32(scale), softmax_full),
-                         neg_big, softmax_full)
-            s01 = S.vmin(S.vmuls(S.vld(S_ub[r, VL], "NORM"), T.float32(scale), softmax_full),
-                         neg_big, softmax_full)
-            s10 = S.vmin(S.vmuls(S.vld(S_ub[r + 1, 0], "NORM"), T.float32(scale), softmax_full),
-                         neg_big, softmax_full)
-            s11 = S.vmin(S.vmuls(S.vld(S_ub[r + 1, VL], "NORM"), T.float32(scale), softmax_full),
-                         neg_big, softmax_full)
+            s00 = S.vmuls(S.vld(S_ub[r, 0], "NORM"), T.float32(scale), softmax_full)
+            s01 = S.vmuls(S.vld(S_ub[r, VL], "NORM"), T.float32(scale), softmax_full)
+            s10 = S.vmuls(S.vld(S_ub[r + 1, 0], "NORM"), T.float32(scale), softmax_full)
+            s11 = S.vmuls(S.vld(S_ub[r + 1, VL], "NORM"), T.float32(scale), softmax_full)
+            if use_vmin:
+                s00 = S.vmin(s00, neg_big, softmax_full)
+                s01 = S.vmin(s01, neg_big, softmax_full)
+                s10 = S.vmin(s10, neg_big, softmax_full)
+                s11 = S.vmin(s11, neg_big, softmax_full)
             S.vsts(S_ub[r, 0], s00, softmax_full, "NORM_B32")
             S.vsts(S_ub[r, VL], s01, softmax_full, "NORM_B32")
             S.vsts(S_ub[r + 1, 0], s10, softmax_full, "NORM_B32")
@@ -193,9 +192,10 @@ def clear_O_ub(O_ub):
 @T.macro
 def kv_body(kv, BT, bx, KP, VP, Q_shared, K_shared, V_shared, P_shared,
             qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0, qk_acc_l0c, pv_acc_l0c,
-            S_ub, P_nz_ub, O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub):
+            S_ub, P_nz_ub, O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub,
+            use_vmin):
     qk(kv, BT, bx, KP, Q_shared, K_shared, qk_a_l0, qk_b_l0, qk_acc_l0c, S_ub)
-    softmax(S_ub, P_nz_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub)
+    softmax(S_ub, P_nz_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub, use_vmin)
     pack_p(P_nz_ub, P_shared)
     pv(kv, BT, bx, VP, P_shared, V_shared, pv_a_l0, pv_b_l0, pv_acc_l0c, O_tmp_ub)
     accumulate_output(O_tmp_ub, O_ub, alpha_ub)
@@ -219,7 +219,7 @@ def finalize_cast(O, bx, O_ub, O_cast_ub, l_ub):
     T.dual_copy(O_cast_ub[0:ROWS, 0:D], O[bx * BR:(bx + 1) * BR, 0:D])
 
 
-def build(use_pipelined):
+def build(use_if, use_vmin):
     @T.prim_func
     def main(
         Q: T.Buffer((B * BR, D), dtype),
@@ -247,8 +247,6 @@ def build(use_pipelined):
             T.annotate_layout({P_nz_ub: make_ascend_compact_nz_layout(P_nz_ub)})
             O_tmp_ub = T.alloc_shared((ROWS, D), accum_dtype)
             O_ub = T.alloc_shared((ROWS, D), accum_dtype)
-            # softmax/init 宏的 PAT_ALL 向量操作固定读写 64 lane（v1a 教训）：
-            # ROWS<64 时必须分配 64 元素，循环只用前 ROWS 个标量。
             m_ub = T.alloc_shared((VL,), accum_dtype)
             l_ub = T.alloc_shared((VL,), accum_dtype)
             alpha_ub = T.alloc_shared((VL,), accum_dtype)
@@ -272,23 +270,21 @@ def build(use_pipelined):
             clear_O_ub(O_ub)
 
             rl = RL[bx]
-            if use_pipelined:
-                for kv in T.Pipelined(NUM_KV, num_stages=2,
-                                      annotations={"enable_offset": True}):
+            for kv in T.serial(NUM_KV):
+                if use_if:
                     with T.If(kv * BC < rl):
                         with T.Then():
                             kv_body(kv, BT, bx, KP, VP, Q_shared, K_shared, V_shared,
                                     P_shared, qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0,
                                     qk_acc_l0c, pv_acc_l0c, S_ub, P_nz_ub, O_tmp_ub,
-                                    O_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub)
-            else:
-                for kv in T.serial(NUM_KV):
-                    with T.If(kv * BC < rl):
-                        with T.Then():
-                            kv_body(kv, BT, bx, KP, VP, Q_shared, K_shared, V_shared,
-                                    P_shared, qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0,
-                                    qk_acc_l0c, pv_acc_l0c, S_ub, P_nz_ub, O_tmp_ub,
-                                    O_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub)
+                                    O_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub,
+                                    use_vmin)
+                else:
+                    kv_body(kv, BT, bx, KP, VP, Q_shared, K_shared, V_shared,
+                            P_shared, qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0,
+                            qk_acc_l0c, pv_acc_l0c, S_ub, P_nz_ub, O_tmp_ub,
+                            O_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub,
+                            use_vmin)
 
             O_cast_ub = T.alloc_shared((ROWS, D), out_dtype)
             finalize_cast(O, bx, O_ub, O_cast_ub, l_ub)
@@ -296,10 +292,9 @@ def build(use_pipelined):
     return main
 
 
-def ref_paged_attention_row(q, bt, rl, kp, vp):
-    """按 block_table 拼逻辑 KV、截断 rl 行后的单 query attention（fp32）。"""
+def ref_paged_attention_row(q, bt, rl, kp, vp, clamp_rl=True):
     pages = []
-    remaining = int(rl)
+    remaining = int(rl) if clamp_rl else BC * len(bt)
     for p in bt:
         take = min(BC, remaining)
         if take <= 0:
@@ -308,7 +303,7 @@ def ref_paged_attention_row(q, bt, rl, kp, vp):
         remaining -= take
     k = torch.cat(pages, dim=0)
     pages = []
-    remaining = int(rl)
+    remaining = int(rl) if clamp_rl else BC * len(bt)
     for p in bt:
         take = min(BC, remaining)
         if take <= 0:
@@ -321,26 +316,11 @@ def ref_paged_attention_row(q, bt, rl, kp, vp):
     return p @ v.float()
 
 
-def main():
-    print("=== v1c variable-length decode kernel: build & compile ===")
-    kernel = None
-    for pipelined in (False, True):
-        try:
-            fn = build(use_pipelined=pipelined)
-            kernel = tilelang.compile(fn)
-            print(f"COMPILE_OK (loop={'Pipelined' if pipelined else 'serial'})")
-            break
-        except Exception:
-            tb = traceback.format_exc().strip().splitlines()
-            keep = [l for l in tb if "Error" in l or "Check failed" in l or "error:" in l]
-            print(f"COMPILE_FAIL (loop={'Pipelined' if pipelined else 'serial'}):")
-            for line in (keep or tb)[-6:]:
-                print("   ", line)
-    if kernel is None:
-        print("FATAL: both loop forms failed to compile")
-        sys.exit(1)
+def rel_of(got, exp):
+    return ((got - exp).abs() / (exp.abs() + 1e-6)).max().item()
 
-    print("=== run on NPU & compare ===")
+
+def main():
     dev = torch.device("npu")
     torch.manual_seed(0)
     q = torch.randn(B, D, dtype=torch.float16, device=dev)
@@ -351,25 +331,56 @@ def main():
     vp = torch.randn(POOL_ROWS, D, dtype=torch.float16, device=dev)
     bt = torch.tensor([[3, 0], [5, 2]], dtype=torch.int32, device=dev)
     rl = torch.tensor([256, 100], dtype=torch.int32, device=dev)
-    o = torch.zeros(B * BR, D, dtype=torch.float16, device=dev)
 
-    kernel(q_pad, bt, rl, kp, vp, o)
-    torch.npu.synchronize()
+    # golden（fp32）
+    exp_b0 = ref_paged_attention_row(q[0], bt[0], rl[0], kp, vp)
+    exp_b1 = ref_paged_attention_row(q[1], bt[1], rl[1], kp, vp)
+    # 假设检验用：b0 页序交换
+    exp_b0_swap = ref_paged_attention_row(q[0], torch.flip(bt[0], dims=[0]), rl[0], kp, vp)
 
-    assert torch.isfinite(o.float()).all(), "output contains non-finite values"
-    all_ok = True
-    for b in range(B):
-        exp = ref_paged_attention_row(q[b], bt[b], rl[b], kp, vp)
-        got = o[b * BR].float()
-        diff = (got - exp).abs()
-        rel = (diff / (exp.abs() + 1e-6)).max().item()
-        max_abs = diff.max().item()
-        ok = rel < 5e-2
-        all_ok = all_ok and ok
-        print(f"  b{b} (rl={int(rl[b])}): max_abs_diff={max_abs:.6f} max_rel={rel:.6f} "
-              f"{'OK' if ok else 'FAIL'}")
-    print("PASS: v1c" if all_ok else "FAIL: v1c accuracy")
-    sys.exit(0 if all_ok else 2)
+    variants = {
+        "C1_noif_novmin": (False, False),
+        "C2_if_novmin": (True, False),
+        "C3_if_vmin": (True, True),
+    }
+
+    results = {}
+    for name, (use_if, use_vmin) in variants.items():
+        print(f"\n--- variant {name}: compiling ---")
+        try:
+            kernel = tilelang.compile(build(use_if, use_vmin))
+        except Exception:
+            tb = traceback.format_exc().strip().splitlines()
+            keep = [l for l in tb if "Error" in l or "Check failed" in l or "error:" in l]
+            print(f"COMPILE_FAIL {name}:")
+            for line in (keep or tb)[-6:]:
+                print("   ", line)
+            continue
+        print(f"COMPILE_OK {name}")
+        o = torch.zeros(B * BR, D, dtype=torch.float16, device=dev)
+        try:
+            kernel(q_pad, bt, rl, kp, vp, o)
+            torch.npu.synchronize()
+            finite = torch.isfinite(o.float()).all().item()
+            r0 = rel_of(o[0].float(), exp_b0)
+            r1 = rel_of(o[B * BR].float(), exp_b1)
+            r0_swap = rel_of(o[0].float(), exp_b0_swap)
+            results[name] = (finite, r0, r0_swap, r1)
+            print(f"{name}: finite={finite} b0_rel={r0:.4f} b0_rel_swapbt={r0_swap:.4f} "
+                  f"b1_rel={r1:.4f}")
+            print(f"   b0 got[:4] ={o[0, :4].float().tolist()}")
+            print(f"   b0 exp[:4] ={exp_b0[:4].tolist()}")
+        except Exception:
+            tb = traceback.format_exc().strip().splitlines()
+            print(f"RUN_FAIL {name}:")
+            for line in tb[-4:]:
+                print("   ", line)
+
+    print("\n=== ablation verdict ===")
+    for name, (finite, r0, r0_swap, r1) in results.items():
+        print(f"{name}: b0 {'PASS' if r0 < 5e-2 else 'FAIL'} "
+              f"(swapbt {'matches' if r0_swap < 5e-2 else 'no'}), "
+              f"b1 {'PASS' if r1 < 5e-2 else 'FAIL(expect in C1/C2)'}")
 
 
 if __name__ == "__main__":
