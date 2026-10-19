@@ -53,8 +53,8 @@
 ++ read -r PYTHONPATH
 +++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/python/site-packages/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/built-in/op_impl/ai_core/tbe/
 +++ tr : '\n'
-+++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
 +++ tr '\n' :
++++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
 +++ sed 's/:$//'
 ++ export PYTHONPATH
 ++ my_ld_library_path=/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
@@ -266,16 +266,16 @@ pytest 8.4.1
 + git fetch origin ascend-mha-decode
 From https://github.com/zhangwenhao91/TileOPs
  * branch              ascend-mha-decode -> FETCH_HEAD
-   7fa8a52d..9a9f5d1b  ascend-mha-decode -> origin/ascend-mha-decode
+   9a9f5d1b..7a583b14  ascend-mha-decode -> origin/ascend-mha-decode
 + git checkout ascend-mha-decode
 Already on 'ascend-mha-decode'
 M	pyproject.toml
 Your branch is behind 'origin/ascend-mha-decode' by 1 commit, and can be fast-forwarded.
   (use "git pull" to update your local branch)
 + git reset --hard origin/ascend-mha-decode
-HEAD is now at 9a9f5d1b ascend mha: skip pool clone when fully read, cache bias by real_seqlen, empty o_buf
+HEAD is now at 7a583b14 ascend mha: cache read mask and full-read verdict by (real_seqlen, block_table)
 + git log --oneline -1
-9a9f5d1b ascend mha: skip pool clone when fully read, cache bias by real_seqlen, empty o_buf
+7a583b14 ascend mha: cache read mask and full-read verdict by (real_seqlen, block_table)
 + sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
 + sed -i 's/^license = .*/license = {text = "MIT"}/' pyproject.toml
 + sed -i '/^license-files/d' pyproject.toml
@@ -289,8 +289,8 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=ad02d591538f7265f79f4e3216558a965f44eec5c8c36138224ad12f3fe61385
-  Stored in directory: /tmp/pip-ephem-wheel-cache-h7oxp9jy/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=9e07cdba58637632e398dd049d7cbff0468e7de95346816581e26e987e5740a7
+  Stored in directory: /tmp/pip-ephem-wheel-cache-l0ot56fn/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -308,14 +308,14 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f834d675d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f7c4beb1d00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7f834d676160>
+MHA builder: <function build_mha_decode_paged at 0x7f7c4beb2160>
 + python3 -m pytest tests/ops/test_mha.py -m smoke --tileops-device npu --tileops-target detect -v
 + tail -100
 ============================= test session starts ==============================
@@ -343,11 +343,11 @@ tests/ops/test_mha.py: 49 warnings
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-False]
-  /root/TileOPs/src/tileops/backends/ascend/builders/attention.py:102: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  /root/TileOPs/src/tileops/backends/ascend/builders/attention.py:115: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
     rows = bt_t[:, pos // page_size] * page_size + pos % page_size
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 5.64s ============
+=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 5.99s ============
 + PYTEST_RC=0
 + echo pytest_rc=0
 pytest_rc=0
@@ -381,7 +381,7 @@ tests/ops/test_mha.py: 42 warnings
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================= 7 passed, 6 deselected, 43 warnings in 5.81s =================
+================= 7 passed, 6 deselected, 43 warnings in 5.59s =================
 + SHORT_RC=0
 + echo cache_shorter_rc=0
 cache_shorter_rc=0
@@ -392,16 +392,16 @@ cache_shorter_rc=0
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 peak_bw=3200.0GB/s warmup=3 repeat=20 per-call 口径含 builder host 开销（bias 构造 + 池 sanitize 克隆）
 shape                        dtype      first(ms)  median(ms)  amort(ms)   eff(GB)     med GB/s   amort GB/s    MBU%
-/root/TileOPs/src/tileops/backends/ascend/builders/attention.py:102: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+/root/TileOPs/src/tileops/backends/ascend/builders/attention.py:115: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   rows = bt_t[:, pos // page_size] * page_size + pos % page_size
-s1_B1H8_kv2048_p128          float16   first=    99.6ms med=   0.423ms amort=    0.41ms eff= 0.0084GB med=    19.9GB/s (  0.62%) amort=    20.5GB/s (  0.64%)
-s2_B8H8_kv2048_p128          float16   first=    65.6ms med=   0.407ms amort=   0.391ms eff= 0.0671GB med=   165.0GB/s (  5.16%) amort=   171.8GB/s (  5.37%)
-s3_B16H8_kv1024_p128         float16   first=    64.6ms med=   0.416ms amort=     0.4ms eff= 0.0672GB med=   161.4GB/s (  5.04%) amort=   168.0GB/s (  5.25%)
-s4_B8H32_kv4096_p256         float16   first=    64.5ms med=   0.551ms amort=   0.496ms eff=  0.537GB med=   975.2GB/s ( 30.48%) amort=  1082.0GB/s ( 33.81%)
-s5_B8H8_kv2048_p128_half     float16   first=     4.3ms med=   0.633ms amort=   0.626ms eff= 0.0336GB med=    53.0GB/s (  1.66%) amort=    53.7GB/s (  1.68%)
-s6_B4H8_kv4096_p256_half     float16   first=    64.0ms med=   0.614ms amort=   0.593ms eff= 0.0336GB med=    54.7GB/s (  1.71%) amort=    56.7GB/s (  1.77%)
-s7_bf16_B8H8_kv2048_p128     bfloat16  first=    63.7ms med=   0.406ms amort=   0.391ms eff= 0.0671GB med=   165.2GB/s (  5.16%) amort=   171.5GB/s (  5.36%)
-BENCH_JSON: [{"name": "s1_B1H8_kv2048_p128", "dtype": "float16", "first_ms": 99.6, "median_ms": 0.423, "amortized_ms": 0.41, "eff_GB": 0.0084, "median_Gbps": 19.9, "amortized_Gbps": 20.5, "median_MBU": 0.62, "amortized_MBU": 0.64}, {"name": "s2_B8H8_kv2048_p128", "dtype": "float16", "first_ms": 65.6, "median_ms": 0.407, "amortized_ms": 0.391, "eff_GB": 0.0671, "median_Gbps": 165.0, "amortized_Gbps": 171.8, "median_MBU": 5.16, "amortized_MBU": 5.37}, {"name": "s3_B16H8_kv1024_p128", "dtype": "float16", "first_ms": 64.6, "median_ms": 0.416, "amortized_ms": 0.4, "eff_GB": 0.0672, "median_Gbps": 161.4, "amortized_Gbps": 168.0, "median_MBU": 5.04, "amortized_MBU": 5.25}, {"name": "s4_B8H32_kv4096_p256", "dtype": "float16", "first_ms": 64.5, "median_ms": 0.551, "amortized_ms": 0.496, "eff_GB": 0.537, "median_Gbps": 975.2, "amortized_Gbps": 1082.0, "median_MBU": 30.48, "amortized_MBU": 33.81}, {"name": "s5_B8H8_kv2048_p128_half", "dtype": "float16", "first_ms": 4.3, "median_ms": 0.633, "amortized_ms": 0.626, "eff_GB": 0.0336, "median_Gbps": 53.0, "amortized_Gbps": 53.7, "median_MBU": 1.66, "amortized_MBU": 1.68}, {"name": "s6_B4H8_kv4096_p256_half", "dtype": "float16", "first_ms": 64.0, "median_ms": 0.614, "amortized_ms": 0.593, "eff_GB": 0.0336, "median_Gbps": 54.7, "amortized_Gbps": 56.7, "median_MBU": 1.71, "amortized_MBU": 1.77}, {"name": "s7_bf16_B8H8_kv2048_p128", "dtype": "bfloat16", "first_ms": 63.7, "median_ms": 0.406, "amortized_ms": 0.391, "eff_GB": 0.0671, "median_Gbps": 165.2, "amortized_Gbps": 171.5, "median_MBU": 5.16, "amortized_MBU": 5.36}]
+s1_B1H8_kv2048_p128          float16   first=    95.5ms med=   0.134ms amort=    0.12ms eff= 0.0084GB med=    62.8GB/s (  1.96%) amort=    69.7GB/s (  2.18%)
+s2_B8H8_kv2048_p128          float16   first=    65.4ms med=   0.138ms amort=   0.121ms eff= 0.0671GB med=   486.4GB/s (  15.2%) amort=   554.6GB/s ( 17.33%)
+s3_B16H8_kv1024_p128         float16   first=    64.5ms med=   0.135ms amort=    0.12ms eff= 0.0672GB med=   496.1GB/s (  15.5%) amort=   557.7GB/s ( 17.43%)
+s4_B8H32_kv4096_p256         float16   first=    64.5ms med=    0.29ms amort=   0.254ms eff=  0.537GB med=  1853.7GB/s ( 57.93%) amort=  2113.9GB/s ( 66.06%)
+s5_B8H8_kv2048_p128_half     float16   first=     4.1ms med=   0.395ms amort=   0.381ms eff= 0.0336GB med=    85.0GB/s (  2.66%) amort=    88.1GB/s (  2.75%)
+s6_B4H8_kv4096_p256_half     float16   first=    64.2ms med=   0.392ms amort=   0.376ms eff= 0.0336GB med=    85.7GB/s (  2.68%) amort=    89.3GB/s (  2.79%)
+s7_bf16_B8H8_kv2048_p128     bfloat16  first=    63.7ms med=   0.134ms amort=   0.122ms eff= 0.0671GB med=   501.1GB/s ( 15.66%) amort=   552.0GB/s ( 17.25%)
+BENCH_JSON: [{"name": "s1_B1H8_kv2048_p128", "dtype": "float16", "first_ms": 95.5, "median_ms": 0.134, "amortized_ms": 0.12, "eff_GB": 0.0084, "median_Gbps": 62.8, "amortized_Gbps": 69.7, "median_MBU": 1.96, "amortized_MBU": 2.18}, {"name": "s2_B8H8_kv2048_p128", "dtype": "float16", "first_ms": 65.4, "median_ms": 0.138, "amortized_ms": 0.121, "eff_GB": 0.0671, "median_Gbps": 486.4, "amortized_Gbps": 554.6, "median_MBU": 15.2, "amortized_MBU": 17.33}, {"name": "s3_B16H8_kv1024_p128", "dtype": "float16", "first_ms": 64.5, "median_ms": 0.135, "amortized_ms": 0.12, "eff_GB": 0.0672, "median_Gbps": 496.1, "amortized_Gbps": 557.7, "median_MBU": 15.5, "amortized_MBU": 17.43}, {"name": "s4_B8H32_kv4096_p256", "dtype": "float16", "first_ms": 64.5, "median_ms": 0.29, "amortized_ms": 0.254, "eff_GB": 0.537, "median_Gbps": 1853.7, "amortized_Gbps": 2113.9, "median_MBU": 57.93, "amortized_MBU": 66.06}, {"name": "s5_B8H8_kv2048_p128_half", "dtype": "float16", "first_ms": 4.1, "median_ms": 0.395, "amortized_ms": 0.381, "eff_GB": 0.0336, "median_Gbps": 85.0, "amortized_Gbps": 88.1, "median_MBU": 2.66, "amortized_MBU": 2.75}, {"name": "s6_B4H8_kv4096_p256_half", "dtype": "float16", "first_ms": 64.2, "median_ms": 0.392, "amortized_ms": 0.376, "eff_GB": 0.0336, "median_Gbps": 85.7, "amortized_Gbps": 89.3, "median_MBU": 2.68, "amortized_MBU": 2.79}, {"name": "s7_bf16_B8H8_kv2048_p128", "dtype": "bfloat16", "first_ms": 63.7, "median_ms": 0.134, "amortized_ms": 0.122, "eff_GB": 0.0671, "median_Gbps": 501.1, "amortized_Gbps": 552.0, "median_MBU": 15.66, "amortized_MBU": 17.25}]
 + BENCH_RC=0
 + echo bench_rc=0
 bench_rc=0
