@@ -4,38 +4,45 @@ Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 
 --- variant GF_ctrl (qpad=False) ---
 compiling kernel (qpad=False) ...
-2026-10-19 19:05:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 19:05:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
 COMPILE_OK (qpad=False)
-RUN_FAIL GF_ctrl:
-      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 401, in main
-        diagnose(name, got, exp[:, :, 0])
-      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 343, in diagnose
-        rel = (got - exp).abs() / (exp.abs() + 1e-6)
-               ~~~~^~~~~
-    RuntimeError: The size of tensor a (4) must match the size of tensor b (128) at non-singleton dimension 2
+  [GF_ctrl] finite=True elements_over_5pct=4/1024 (0.39%)
+    b0 row0: max_rel=0.0441 max_absdiff=0.000070 |exp|max=0.2685
+    b0 row1: max_rel=0.0433 max_absdiff=0.000073 |exp|max=0.2395
+    b0 row2: max_rel=0.1471 max_absdiff=0.000061 |exp|max=0.2288
+    b0 row3: max_rel=0.1550 max_absdiff=0.000104 |exp|max=0.2689
+    b1 row0: max_rel=0.0039 max_absdiff=0.000484 |exp|max=1.8800
+    b1 row1: max_rel=0.0857 max_absdiff=0.000474 |exp|max=2.1505
+    b1 row2: max_rel=0.0604 max_absdiff=0.000537 |exp|max=1.9026
+    b1 row3: max_rel=0.0053 max_absdiff=0.000575 |exp|max=2.0466
+/home/z30086261/tmp/mha_stage_b/decode_v1d.py:357: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  bb, rr_, cc = (idx // (S_Q * D)).item(), (idx // D % S_Q).item(), (idx % D).item()
+  [GF_ctrl] max-rel element: b0 row3 col108 got=0.000097 exp=0.000115 (|exp|=1.15e-04)
+GF_ctrl: max_rel=0.1550 -> FAIL
 
 --- variant GF_qpad (qpad=True) ---
 compiling kernel (qpad=True) ...
-2026-10-19 19:05:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 19:06:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
 COMPILE_OK (qpad=True)
-RUN_FAIL GF_qpad:
-      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 401, in main
-        diagnose(name, got, exp[:, :, 0])
-      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 343, in diagnose
-        rel = (got - exp).abs() / (exp.abs() + 1e-6)
-               ~~~~^~~~~
-    RuntimeError: The size of tensor a (4) must match the size of tensor b (128) at non-singleton dimension 2
+  [GF_qpad] finite=True elements_over_5pct=4/1024 (0.39%)
+    b0 row0: max_rel=0.0441 max_absdiff=0.000070 |exp|max=0.2685
+    b0 row1: max_rel=0.0433 max_absdiff=0.000073 |exp|max=0.2395
+    b0 row2: max_rel=0.1471 max_absdiff=0.000061 |exp|max=0.2288
+    b0 row3: max_rel=0.1550 max_absdiff=0.000104 |exp|max=0.2689
+    b1 row0: max_rel=0.0039 max_absdiff=0.000484 |exp|max=1.8800
+    b1 row1: max_rel=0.0857 max_absdiff=0.000474 |exp|max=2.1505
+    b1 row2: max_rel=0.0604 max_absdiff=0.000537 |exp|max=1.9026
+    b1 row3: max_rel=0.0053 max_absdiff=0.000575 |exp|max=2.0466
+  [GF_qpad] max-rel element: b0 row3 col108 got=0.000097 exp=0.000115 (|exp|=1.15e-04)
+GF_qpad: max_rel=0.1550 -> FAIL
 
 --- host fp16-quantized reference (b0) ---
+fp32-acc ref vs exp b0: max_rel=0.0005
 Traceback (most recent call last):
   File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 431, in <module>
     main()
-  File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 416, in main
-    k_l[i_p * BC:(i_p + 1) * BC] = kp[pid * BC:(pid + 1) * BC, 0].cpu()
-    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^
-RuntimeError: The expanded size of the tensor (44) must match the existing size (128) at non-singleton dimension 0.  Target sizes: [44, 128].  Tensor sizes: [128, 128]
-[ERROR] 2026-10-19-19:06:04 (PID:70301, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+  File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 425, in main
+    o16 = pr16 @ v_l.float()
+          ~~~~~^~~~~~~~~~~~~
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (4x300 and 1024x128)
+[ERROR] 2026-10-19-19:08:17 (PID:70823, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
 exit_code=1
 exit_code=0
