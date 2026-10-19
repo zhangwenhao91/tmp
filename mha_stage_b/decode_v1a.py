@@ -229,11 +229,14 @@ def build(use_pipelined):
             T.annotate_layout({P_nz_ub: make_ascend_compact_nz_layout(P_nz_ub)})
             O_tmp_ub = T.alloc_shared((ROWS, D), accum_dtype)
             O_ub = T.alloc_shared((ROWS, D), accum_dtype)
-            m_ub = T.alloc_shared((ROWS,), accum_dtype)
-            l_ub = T.alloc_shared((ROWS,), accum_dtype)
-            alpha_ub = T.alloc_shared((ROWS,), accum_dtype)
-            old_m_ub = T.alloc_shared((ROWS,), accum_dtype)
-            row_sum_ub = T.alloc_shared((ROWS,), accum_dtype)
+            # 注意：softmax/init 宏里对 m/l/alpha 等的 PAT_ALL 向量操作固定读写
+            # 64 lane（例子 ROWS=64 恰好贴合）；ROWS<64 时必须分配 64 元素防越界，
+            # 循环只使用前 ROWS 个标量，多余 lane 为垃圾但无影响。
+            m_ub = T.alloc_shared((VL,), accum_dtype)
+            l_ub = T.alloc_shared((VL,), accum_dtype)
+            alpha_ub = T.alloc_shared((VL,), accum_dtype)
+            old_m_ub = T.alloc_shared((VL,), accum_dtype)
+            row_sum_ub = T.alloc_shared((VL,), accum_dtype)
             T.annotate_buffer_versions(
                 {
                     K_shared: 3,
