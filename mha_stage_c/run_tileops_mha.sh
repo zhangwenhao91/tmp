@@ -2,6 +2,8 @@
 # TileOPs MHA decode ascend backend：服务器冒烟
 # 用法：bash mha_stage_c/run_tileops_mha.sh > error.txt 2>&1
 set -x
+# 必须在任何 cd 之前取脚本绝对路径，后面基准段要靠它拷 bench_mha.py
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)" || exit 1
 export PYTHONUNBUFFERED=1
 source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh || exit 1
 
@@ -73,7 +75,6 @@ SHORT_RC=${PIPESTATUS[0]}
 echo "cache_shorter_rc=$SHORT_RC"
 
 # 基线基准：固定形状中位耗时 + 有效带宽 MBU（脚本自注口径，单形状失败不拖垮整表）
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cp "$SCRIPT_DIR/bench_mha.py" ~/TileOPs/bench_mha.py || exit 1
 cd ~/TileOPs
 python3 bench_mha.py 2>&1 | tail -80
