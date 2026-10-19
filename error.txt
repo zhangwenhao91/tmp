@@ -1,8 +1,15 @@
-du -sh /root/OpenTileAS/third_party/*          # 目录在长大就是在拉
-tail -f /root/OpenTileAS/build_logs/1_submodules.log
-
-
-
-
-
-tail -f build_otas.log
+root@ubuntu162:/home/z30086261/tmp# tail -f build_otas.log
+   28 | const int getTotalNumWarps(ModuleOp mod);
+      | ^~~~~
+[100%] Linking CXX executable ../../../bin/triton-lsp
+[100%] Linking CXX executable ../../../bin/triton-reduce
+[100%] Linking CXX executable ../../../bin/triton-opt
+[100%] Linking CXX executable ../../../bin/triton-tensor-layout
+[100%] Built target triton-lsp
+[100%] Built target triton-reduce
+[100%] Built target triton-opt
+[100%] Built target triton-tensor-layout
+tail: inotify resources exhausted
+tail: inotify cannot be used, reverting to polling
+^C
+root@ubuntu162:/home/z30086261/tmp# 
