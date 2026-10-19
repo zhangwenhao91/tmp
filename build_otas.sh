@@ -32,10 +32,9 @@ echo "env OK"
 
 echo "=== [1/5] clone + checkout 99bf5fe + 子模块 ==="
 if [ ! -d "$R/.git" ]; then
-  rm -rf "$R"   # 残留目录（最多只有上次误建的 build_logs）必须清掉，否则 clone 拒绝非空目标
-  mkdir -p "$LOGDIR"
-  git clone https://gitcode.com/OpenTileIR/OpenTileAS.git "$R" >"$LOGDIR/1_clone.log" 2>&1 \
-    || { echo "FATAL: clone 失败"; tail -5 "$LOGDIR/1_clone.log"; exit 1; }
+  rm -rf "$R"   # 清残留，保证 clone 目标不存在
+  git clone https://gitcode.com/OpenTileIR/OpenTileAS.git "$R" >"$HOME/otas_1_clone.log" 2>&1 \
+    || { echo "FATAL: clone 失败"; tail -5 "$HOME/otas_1_clone.log"; exit 1; }
 fi
 mkdir -p "$LOGDIR"
 cd "$R" || exit 1
