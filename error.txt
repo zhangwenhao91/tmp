@@ -21,8 +21,8 @@
 ++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ccec_compiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/profiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ascend_system_advisor/asys:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/show_kernel_debug_data:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/msobjdump:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
 ++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ccec_compiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/profiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ascend_system_advisor/asys:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/show_kernel_debug_data:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/msobjdump:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
 ++ read -r PATH
-+++ tr : '\n'
 +++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ccec_compiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/profiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ascend_system_advisor/asys:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/show_kernel_debug_data:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/msobjdump:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
++++ tr : '\n'
 +++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
 +++ tr '\n' :
 +++ sed 's/:$//'
@@ -34,8 +34,8 @@
 ++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
 ++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
 ++ read -r LD_LIBRARY_PATH
-+++ tr : '\n'
 +++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
++++ tr : '\n'
 +++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
 +++ tr '\n' :
 +++ sed 's/:$//'
@@ -262,16 +262,16 @@ pytest 8.4.1
 + git fetch origin ascend-mha-decode
 From https://github.com/zhangwenhao91/TileOPs
  * branch              ascend-mha-decode -> FETCH_HEAD
-   af4b430a..e4b75d78  ascend-mha-decode -> origin/ascend-mha-decode
+   e4b75d78..6648a85e  ascend-mha-decode -> origin/ascend-mha-decode
 + git checkout ascend-mha-decode
 Already on 'ascend-mha-decode'
 M	pyproject.toml
 Your branch is behind 'origin/ascend-mha-decode' by 1 commit, and can be fast-forwarded.
   (use "git pull" to update your local branch)
 + git reset --hard origin/ascend-mha-decode
-HEAD is now at e4b75d78 debug: remove binding probe (root cause: conftest pins --tileops-target=builtin)
+HEAD is now at 6648a85e kernel: pin annotation-only W/POOL_ROWS as closure variables
 + git log --oneline -1
-e4b75d78 debug: remove binding probe (root cause: conftest pins --tileops-target=builtin)
+6648a85e kernel: pin annotation-only W/POOL_ROWS as closure variables
 + sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
 + sed -i 's/^license = .*/license = {text = "MIT"}/' pyproject.toml
 + sed -i '/^license-files/d' pyproject.toml
@@ -285,8 +285,8 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=10466d802bcabed4ee56600cfcc44629b5a78d1bc2356c3b5c3cbc58a826abe4
-  Stored in directory: /tmp/pip-ephem-wheel-cache-5oorod5t/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=a1f5fb4edcf8e403382b24fd39ccb835463213b66d5b48c4920443539df432be
+  Stored in directory: /tmp/pip-ephem-wheel-cache-6qncv_sc/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -304,21 +304,30 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7fcccc49dd00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7fce65131d00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7fcccc49df80>
+MHA builder: <function build_mha_decode_paged at 0x7fce65131f80>
 + python3 -m pytest tests/ops/test_mha.py -m smoke -k 'not bfloat16' --tileops-device npu --tileops-target detect -v
 + tail -100
->           output = op(q, k, v, lengths, block_table)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ) -> None:
+        test = MHADecodePagedTest(batch, heads, seqlen_q, seqlen_kv, dim, page_size, is_causal, dtype)
+        op = MHADecodePagedWithKVCacheFwdOp(page_size=page_size, is_causal=is_causal)
+        if tune:
+            op.request_tune()
+>       test.check(op, *test.gen_inputs())
 
-tests/ops/test_mha.py:169: 
+tests/ops/test_mha.py:104: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/workload_test_base.py:83: in check
+    result = verify(
+workloads/numerics.py:546: in verify
+    produced = _copy_outputs(request.run(*request.args))
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
 src/tileops/ops/op_base.py:1025: in __call__
     return self._call_boundary(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -364,126 +373,86 @@ src/tileops/ops/op_base.py:758: in _run_on_target
 src/tileops/ops/op_base.py:776: in _build_target_kernel
     kernel = self._target_builder(*specs, **params)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/backends/ascend/builders/attention.py:79: in build_mha_decode_paged
-    kernel = compile_kernel(
-src/tileops/backends/ascend/kernels/mha_decode_paged.py:231: in compile_kernel
-    @T.prim_func
-     ^^^^^^^^^^^
-/home/z30086261/tilelang/tilelang/language/eager/builder.py:1790: in prim_func
-    return impl(func) if func is not None else impl
-           ^^^^^^^^^^
-/home/z30086261/tilelang/tilelang/language/eager/builder.py:1754: in impl
-    func_annot = get_type_hints(func)
-                 ^^^^^^^^^^^^^^^^^^^^
-/home/z30086261/tilelang/tilelang/language/eager/builder.py:1171: in get_type_hints
-    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/typing.py:378: in _eval_type
-    return t._evaluate(globalns, localns, recursive_guard)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/typing.py:871: in _evaluate
-    eval(self.__forward_code__, globalns, localns),
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
->   ???
-E   NameError: name 'W' is not defined
+q = TensorSpec(device=device(type='npu', index=0), dtype=torch.bfloat16, shape=(1, 1, 16, 128))
+k = TensorSpec(device=device(type='npu', index=0), dtype=torch.bfloat16, shape=(1024, 16, 128))
+v = TensorSpec(device=device(type='npu', index=0), dtype=torch.bfloat16, shape=(1024, 16, 128))
+real_seqlen_kv = TensorSpec(device=device(type='npu', index=0), dtype=torch.int32, shape=(1,))
+block_table = TensorSpec(device=device(type='npu', index=0), dtype=torch.int32, shape=(1, 8))
 
-<string>:1: NameError
+    def build_mha_decode_paged(
+        q: TensorSpec,
+        k: TensorSpec,
+        v: TensorSpec,
+        real_seqlen_kv: TensorSpec,
+        block_table: TensorSpec,
+        *,
+        page_size: int,
+        is_causal: bool | None = False,
+    ):
+        """Return the kernel serving one paged MHA decode call shape on the NPU."""
+        batch, seqlen_q, heads, dim = q.shape
+        pool_rows = k.shape[0]
+        max_pages_per_req = block_table.shape[1]
+    
+        if q.dtype not in _DTYPE_TO_STR:
+>           raise _refuse(f"Q dtype {q.dtype}")
+E           tileops.backend.errors.OpNotAvailableError: the ascend target serves MHADecodePagedWithKVCacheFwdOp for float16 Q and KV, seqlen_q <= 16, dim a multiple of 64, page_size 128 or a multiple of it; this call asks for Q dtype torch.bfloat16. No in-tree kernel runs on an NPU to fall back to.
+
+src/tileops/backends/ascend/builders/attention.py:63: OpNotAvailableError
 =============================== warnings summary ===============================
-tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-False]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-True-real_lengths1]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3]
-tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool
+tests/ops/test_mha.py: 42 warnings
   /home/z30086261/tilelang/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0]
-  /root/TileOPs/tests/ops/test_mha.py:146: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
-    rows = block_table[:, pos // page_size] * page_size + pos % page_size
+tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-False]
+  /root/TileOPs/src/tileops/backends/ascend/builders/attention.py:92: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    rows = bt_t[:, pos // page_size] * page_size + pos % page_size
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ============================
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-False]
 FAILED tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-1024-128-128-False-dtype1-False]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-True-real_lengths1]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool
-============ 7 failed, 1 skipped, 5 deselected, 7 warnings in 6.91s ============
+====== 1 failed, 6 passed, 1 skipped, 5 deselected, 43 warnings in 29.18s ======
 + PYTEST_RC=1
 + echo pytest_rc=1
 pytest_rc=1
-+ python3 -m pytest tests/ops/test_mha.py -k 'cache_shorter or table_width' --tileops-device npu --tileops-target detect -v
 + tail -60
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/op_base.py:708: in _run_call
-    result = self._run_on_target(
-src/tileops/ops/op_base.py:758: in _run_on_target
-    kernel = kernels[signature] = self._build_target_kernel(named)
-                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/ops/op_base.py:776: in _build_target_kernel
-    kernel = self._target_builder(*specs, **params)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tileops/backends/ascend/builders/attention.py:79: in build_mha_decode_paged
-    kernel = compile_kernel(
-src/tileops/backends/ascend/kernels/mha_decode_paged.py:231: in compile_kernel
-    @T.prim_func
-     ^^^^^^^^^^^
-/home/z30086261/tilelang/tilelang/language/eager/builder.py:1790: in prim_func
-    return impl(func) if func is not None else impl
-           ^^^^^^^^^^
-/home/z30086261/tilelang/tilelang/language/eager/builder.py:1754: in impl
-    func_annot = get_type_hints(func)
-                 ^^^^^^^^^^^^^^^^^^^^
-/home/z30086261/tilelang/tilelang/language/eager/builder.py:1171: in get_type_hints
-    hints[name] = _eval_type(value, globalns=globalns, localns=localns)
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/typing.py:378: in _eval_type
-    return t._evaluate(globalns, localns, recursive_guard)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/python3.11.0/lib/python3.11/typing.py:871: in _evaluate
-    eval(self.__forward_code__, globalns, localns),
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
++ python3 -m pytest tests/ops/test_mha.py -k 'cache_shorter or table_width' --tileops-device npu --tileops-target detect -v
+============================= test session starts ==============================
+platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.0', 'Platform': 'Linux-5.4.0-144-generic-x86_64-with-glibc2.36', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'html': '4.1.1', 'cov': '6.2.1', 'metadata': '3.1.1', 'hypothesis': '6.70.1', 'xdist': '3.8.0', 'repeat': '0.9.4'}}
+hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/root/TileOPs/.hypothesis/examples')
+rootdir: /root/TileOPs
+configfile: pyproject.toml
+plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
+collecting ... collected 13 items / 6 deselected / 7 selected
 
->   ???
-E   NameError: name 'W' is not defined
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0] PASSED [ 14%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-True-real_lengths1] PASSED [ 28%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2] PASSED [ 42%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3] PASSED [ 57%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths4] PASSED [ 71%]
+tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths5] PASSED [ 85%]
+tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool PASSED [100%]
 
-<string>:1: NameError
 =============================== warnings summary ===============================
 tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0]
   /root/TileOPs/tests/ops/test_mha.py:146: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
     rows = block_table[:, pos // page_size] * page_size + pos % page_size
 
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-True-real_lengths1]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths4]
-tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths5]
-tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool
+tests/ops/test_mha.py: 42 warnings
   /home/z30086261/tilelang/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========================== short test summary info ============================
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths0]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[2-True-real_lengths1]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-True-real_lengths2]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[4-False-real_lengths3]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths4]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_cache_shorter_than_bound[1-False-real_lengths5]
-FAILED tests/ops/test_mha.py::test_mha_decode_paged_table_width_is_independent_of_pool
-================= 7 failed, 6 deselected, 8 warnings in 7.06s ==================
-+ SHORT_RC=1
-+ echo cache_shorter_rc=1
-cache_shorter_rc=1
-+ echo 'FINAL: pytest=1 cache_shorter=1'
-FINAL: pytest=1 cache_shorter=1
+================= 7 passed, 6 deselected, 43 warnings in 7.83s =================
++ SHORT_RC=0
++ echo cache_shorter_rc=0
+cache_shorter_rc=0
++ echo 'FINAL: pytest=1 cache_shorter=0'
+FINAL: pytest=1 cache_shorter=0
 + '[' 1 = 0 ']'
 + exit 1
 exit_code=1
