@@ -1,4 +1,96 @@
-cd /home/z30086261/tmp
-git pull
-bash find_cann2.sh | tee error.txt
-git add error.txt && git commit -m 'Update error.txt' && git push
+===== A) /usr/local/Ascend 各版本目录内容 =====
+[目录] /usr/local/Ascend/8.2.RC1.alpha002:
+bisheng_toolkit
+cann_uninstall.sh
+compiler
+x86_64-linux
+
+[目录] /usr/local/Ascend/8.3.RC1:
+acllib
+bin
+cann_uninstall.sh
+compiler
+conf
+create_version_softlink.sh
+hccl
+include
+lib64
+python
+runtime
+var
+x86_64-linux
+
+[目录] /usr/local/Ascend/8.5.0:
+bisheng_toolkit
+cann_uninstall.sh
+compiler
+x86_64-linux
+
+[目录] /usr/local/Ascend/latest:
+acllib
+bin
+bisheng_toolkit
+compiler
+conf
+include
+lib64
+platform.ini
+remove_latest_softlink.sh
+runtime
+var
+version.cfg
+x86_64-linux
+
+[目录] /usr/local/Ascend/ascend-toolkit/latest:
+acllib
+atc
+bin
+compiler
+conf
+fwkacllib
+hccl
+include
+lib64
+opp
+opp_kernel
+ops
+platform.ini
+python
+remove_latest_softlink.sh
+
+===== B) 深层搜索 ascend_toolkit_install.info（深度 5） =====
+
+===== C) full 搜索 9.x / 9.3 相关目录 =====
+/home/g00946757/Ascend-cann-950-ops_9.3.0~weekly.20260930.01_linux-x86_64.run
+/home/s00958582/miniforge3/lib/libnghttp2.so.14.29.3
+/home/CANN/9.3.0.weekly.20260916
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0
+/home/CANN/9.3.0.weekly.20260930
+/home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+/home/s00958582/miniforge3/pkgs/libstdcxx-devel_linux-64-9.5.0-h0a57e50_19
+/home/s00958582/miniforge3/pkgs/libgcc-devel_linux-64-9.5.0-h0a57e50_19
+/home/s00958582/miniforge3/pkgs/libstdcxx-devel_linux-64-9.5.0-h0a57e50_19.tar.bz2
+/home/s00958582/miniforge3/pkgs/gcc_linux-64-9.5.0-h4258300_13
+/home/s00958582/miniforge3/pkgs/gcc_impl_linux-64-9.5.0-h99780fb_19.tar.bz2
+/home/s00958582/miniforge3/pkgs/libsanitizer-9.5.0-h2f262e1_19.tar.bz2
+/home/s00958582/miniforge3/pkgs/gxx_linux-64-9.5.0-h43f449f_13
+/home/s00958582/miniforge3/pkgs/gcc_linux-64-9.5.0-h4258300_13.conda
+/home/s00958582/miniforge3/pkgs/libgcc-devel_linux-64-9.5.0-h0a57e50_19.tar.bz2
+/home/s00958582/miniforge3/pkgs/gxx_impl_linux-64-9.5.0-h99780fb_19.tar.bz2
+
+===== D) 常见位置搜索 CANN 安装包（.run/.tar.gz/.zip） =====
+/data/pri/cann/9.1.0.B095/Ascend-cann-950-ops_9.1.0_linux-x86_64.run
+/data/pri/cann/9.1.0.B095/Ascend-cann-toolkit_9.1.0_linux-x86_64.run
+
+===== E) 磁盘整体大文件安装包兜底搜索（/ 下深度 3，>500MB） =====
+/data/RecModelZoo.tar.gz
+/data/docker_image/triton_op_pipeline.tar.gz
+/data/aliccp_out.tar.gz
+/data/criteo.tar.gz
+/home/g00946757/Ascend-cann-950-ops_9.3.0~weekly.20260930.01_linux-x86_64.run
+/home/h00932613/Ascend-cann-toolkit_9.2.0~weekly.20260909.01_linux-x86_64.run
+/home/h00932613/Ascend-cann-950-ops_9.2.0~weekly.20260909.01_linux-x86_64.run
+/home/z00910011/Ascend-cann-toolkit_9.2.0-beta.1_linux-x86_64.run
+/home/z00910011/Ascend-cann-950-ops_9.2.0-beta.1_linux-x86_64.run
+
+===== F) NPU 型号确认 =====
