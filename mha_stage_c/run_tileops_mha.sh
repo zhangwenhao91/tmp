@@ -72,6 +72,14 @@ python3 -m pytest tests/ops/test_mha.py -k "cache_shorter or table_width" \
 SHORT_RC=${PIPESTATUS[0]}
 echo "cache_shorter_rc=$SHORT_RC"
 
-echo "FINAL: pytest=$PYTEST_RC cache_shorter=$SHORT_RC"
-[ "$PYTEST_RC" = "0" ] && [ "$SHORT_RC" = "0" ]
+# 基线基准：固定形状中位耗时 + 有效带宽 MBU（脚本自注口径，单形状失败不拖垮整表）
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cp "$SCRIPT_DIR/bench_mha.py" ~/TileOPs/bench_mha.py || exit 1
+cd ~/TileOPs
+python3 bench_mha.py 2>&1 | tail -80
+BENCH_RC=${PIPESTATUS[0]}
+echo "bench_rc=$BENCH_RC"
+
+echo "FINAL: pytest=$PYTEST_RC cache_shorter=$SHORT_RC bench=$BENCH_RC"
+[ "$PYTEST_RC" = "0" ] && [ "$SHORT_RC" = "0" ] && [ "$BENCH_RC" = "0" ]
 exit $?
