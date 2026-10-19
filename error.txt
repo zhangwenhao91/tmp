@@ -2,48 +2,45 @@ CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
 === probe_iter（多变体二分：定位 ScalarDcacheBypass 触发条件） ===
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 
---- variant A1_base_contig: compiling ---
-2026-10-19 17:06:11  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_A1` with `out_idx=None`
-COMPILE_FAIL A1_base_contig:
-    tvm.error.InternalError: Check failed: (op->value.dtype().is_scalar()) is false: ScalarDcacheBypass: vector-valued buffer store not implemented
+--- variant H1_ub2gm_static: compiling ---
+2026-10-19 17:09:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
+2026-10-19 17:09:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `v`
+COMPILE_OK H1_ub2gm_static
 
---- variant B1_strided_static: compiling ---
-2026-10-19 17:06:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_B1` with `out_idx=None`
-COMPILE_FAIL B1_strided_static:
-    tvm.error.InternalError: Check failed: (op->value.dtype().is_scalar()) is false: ScalarDcacheBypass: vector-valued buffer store not implemented
+--- variant J1_elemstore_ctrl: compiling ---
+2026-10-19 17:09:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
+COMPILE_FAIL J1_elemstore_ctrl:
+      File "<unknown>", line 0, in TVMFFIPyCallManager::ForwardPyErrorToFFI()
+      File "<unknown>", line 0, in TVMFFICyErrorSetRaisedFromPyError(_object*)
+        raise ValueError(
+    ValueError: [TileLang Semantic Check] T.Parallel loop 'i_j_fused' must be inside a VF block (T.SimdVF() or T.SimtVF()). Parallel loops outside VF blocks are not supported on Ascend NPU.
 
---- variant C1_strided_dynbt: compiling ---
-2026-10-19 17:06:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_C1` with `out_idx=None`
-COMPILE_FAIL C1_strided_dynbt:
-    tvm.error.InternalError: Check failed: (op->value.dtype().is_scalar()) is false: ScalarDcacheBypass: vector-valued buffer store not implemented
+--- variant H3_strided_dynbt_ub: compiling ---
+2026-10-19 17:09:17  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
+2026-10-19 17:09:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `v`
+COMPILE_OK H3_strided_dynbt_ub
 
---- variant D1_page3d_dynbt: compiling ---
-2026-10-19 17:06:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_D1` with `out_idx=None`
-[17:06:12] /home/z30086261/tilelang/3rdparty/tvm/src/tirx/script/printer/expr.cc:75: Warning: Didn't find variable definition for: pid
-[17:06:12] /home/z30086261/tilelang/3rdparty/tvm/src/relax/script/printer/./../../../script/printer/utils.h:53: Warning: TVMScript printer falls back to the basic address printer with the error:
-Variable is not defined in the environment: pid
-COMPILE_FAIL D1_page3d_dynbt:
-    tvm.error.InternalError: Check failed: (layout.has_value()) is false: Ascend GM->L1 OOB handling cannot represent this region with one 2D MTE descriptor: all axes outside one row/inner pair must have extent 1, and the inner axis must be contiguous. Outer-loop lowering is not yet implemented. Buffer KP has shape (512, 4, 128), strides (), and ranges (ir.Range(0x2486ca10), I.Range(0, 4), I.Range(0, 128)).
+--- variant K1_flat_dynbt_ub: compiling ---
+2026-10-19 17:09:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
+2026-10-19 17:09:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `v`
+COMPILE_OK K1_flat_dynbt_ub
 
---- variant E1_page2d_dynbt: compiling ---
-2026-10-19 17:06:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_E1` with `out_idx=None`
-COMPILE_FAIL E1_page2d_dynbt:
-        TVM_FFI_THROW(IndexError) << "Index " << i << " out of bounds " << TVMFFISeqCell::size;
-    IndexError: Index 2 out of bounds 2
+--- variant K2_flat_rowloop_ub: compiling ---
+2026-10-19 17:09:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
+2026-10-19 17:09:23  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `v`
+COMPILE_OK K2_flat_rowloop_ub
 
---- variant E2_page2d_dynbt_if: compiling ---
-2026-10-19 17:06:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_E2` with `out_idx=None`
-COMPILE_FAIL E2_page2d_dynbt_if:
-        TVM_FFI_THROW(IndexError) << "Index " << i << " out of bounds " << TVMFFISeqCell::size;
-    IndexError: Index 2 out of bounds 2
-
---- variant G1_page2d_rowloop: compiling ---
-2026-10-19 17:06:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_G1` with `out_idx=None`
-COMPILE_FAIL G1_page2d_rowloop:
-        TVM_FFI_THROW(IndexError) << "Index " << i << " out of bounds " << TVMFFISeqCell::size;
-    IndexError: Index 2 out of bounds 2
+--- variant L1_strided_dynbt_if_ub: compiling ---
+2026-10-19 17:09:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `v` with `out_idx=None`
+2026-10-19 17:09:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `v`
+COMPILE_OK L1_strided_dynbt_if_ub
 
 === run compiled variants ===
+H1_ub2gm_static: PASS 
+H3_strided_dynbt_ub: PASS 
+K1_flat_dynbt_ub: PASS 
+K2_flat_rowloop_ub: PASS 
+L1_strided_dynbt_if_ub: PASS covered=[0, 1]
 
 === done ===
 
