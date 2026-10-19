@@ -25,8 +25,11 @@ git log --oneline -1
 
 # tileops 主张 tilelang==0.1.12 / torch>=2.13 / python>=3.12；服务器是
 # python 3.11 + tilelang 0.1.15 + torch_npu 环境。代码未用 3.12 专属语法与
-# stdlib API（已核查），仅元数据门挡路：放宽 requires-python 后 --no-deps 跳过依赖检查。
+# stdlib API（已核查），仅元数据门挡路：放宽 requires-python；旧 setuptools
+# 不认 PEP 639 的 SPDX license 字符串与 license-files，一并改成旧式写法。
 sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
+sed -i 's/^license = .*/license = {text = "MIT"}/' pyproject.toml
+sed -i '/^license-files/d' pyproject.toml
 python3 -m pip install -e . --no-deps --no-build-isolation || {
   echo "PIP_INSTALL_FAILED"
   exit 1
