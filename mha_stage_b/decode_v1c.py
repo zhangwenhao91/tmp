@@ -363,7 +363,7 @@ def main():
             torch.npu.synchronize()
             finite = torch.isfinite(o.float()).all().item()
             r0 = rel_of(o[0].float(), exp_b0)
-            r1 = rel_of(o[B * BR].float(), exp_b1)
+            r1 = rel_of(o[BR].float(), exp_b1)
             r0_swap = rel_of(o[0].float(), exp_b0_swap)
             results[name] = (finite, r0, r0_swap, r1)
             print(f"{name}: finite={finite} b0_rel={r0:.4f} b0_rel_swapbt={r0_swap:.4f} "
