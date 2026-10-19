@@ -1,29 +1,35 @@
 CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
-=== stage B v1c: variable-length paged decode (B=2, rl=[256,100], W=2, fp16) ===
+=== stage B v1d: BSHD + [B,H] grid + S_q=4 + causal (B=2, H=2, rl=[300,3], W=3, fp16) ===
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+=== v1d build & compile ===
+2026-10-19 18:33:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 18:34:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+COMPILE_OK
 
---- variant D1_if_bias: compiling ---
-2026-10-19 18:27:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 18:27:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
-COMPILE_OK D1_if_bias
-D1_if_bias: finite=True b0_rel=0.0122 b1_rel=0.0094
-   b0 got[:4] =[0.130126953125, -0.054931640625, 0.0024356842041015625, -0.056488037109375]
-   b0 exp[:4] =[0.1300571709871292, -0.05494042485952377, 0.002449454739689827, -0.05647174268960953]
-   b1 got[:4] =[0.23486328125, -0.061431884765625, 0.0152130126953125, -0.037506103515625]
-   b1 exp[:4] =[0.23491427302360535, -0.06144946813583374, 0.015224117785692215, -0.03744618222117424]
+--- variant E1_nc (causal=False) ---
+Traceback (most recent call last):
+  File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 398, in main
+    kernel(q, bt, rl, bias, kp, vp, o)
+  File "/home/z30086261/tilelang/tilelang/jit/kernel.py", line 228, in __call__
+    return self.torch_function(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z30086261/tilelang/tilelang/jit/adapter/tvm_ffi.py", line 348, in func
+    executable(*tensor_list)
+  File "/home/z30086261/tilelang/3rdparty/tvm/python/tvm/runtime/executable.py", line 46, in __call__
+    return self.jit().main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "python/tvm_ffi/cython/function.pxi", line 968, in tvm_ffi.core.Function.__call__
+RuntimeError: kernel main input BIAS shape[1] violates packed ABI constraint; expected: 1, got: 16
+RUN_FAIL E1_nc
 
---- variant D2_noif_bias: compiling ---
-2026-10-19 18:27:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 18:27:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
-COMPILE_OK D2_noif_bias
-D2_noif_bias: finite=True b0_rel=0.0122 b1_rel=0.0094
-   b0 got[:4] =[0.130126953125, -0.054931640625, 0.0024356842041015625, -0.056488037109375]
-   b0 exp[:4] =[0.1300571709871292, -0.05494042485952377, 0.002449454739689827, -0.05647174268960953]
-   b1 got[:4] =[0.23486328125, -0.061431884765625, 0.0152130126953125, -0.037506103515625]
-   b1 exp[:4] =[0.23491427302360535, -0.06144946813583374, 0.015224117785692215, -0.03744618222117424]
+--- variant E2_c (causal=True) ---
+  b0h0: max_rel=986.4072
+  b0h1: max_rel=nan
+  b1h0: max_rel=13620.1846
+  b1h1: max_rel=nan
+E2_c: finite=False max_rel_all=13620.1846 no_key_rows_zero=True (count=1)
 
-=== ablation verdict ===
-D1_if_bias: b0 PASS, b1 PASS
-D2_noif_bias: b0 PASS, b1 PASS
+=== v1d verdict ===
+E2_c: FAIL (max_rel=13620.1846) no_key_rows_zero=True (count=1)
 exit_code=0
 exit_code=0
