@@ -397,7 +397,7 @@ def main():
             o = torch.zeros(B, 1, BR, D, dtype=torch.float16, device=dev)
             kernel(q, bt, rl, bias, kp, vp, zp, o)
             torch.npu.synchronize()
-            got = o[:, 0, :S_Q, 0].float()  # (B, S_Q, D)
+            got = o[:, 0, :S_Q, :].float()  # (B, S_Q, D)
             diagnose(name, got, exp[:, :, 0])
             mr = ((got - exp[:, :, 0]).abs() / (exp[:, :, 0].abs() + 1e-6)).max().item()
             print(f"{name}: max_rel={mr:.4f} -> {'PASS' if mr < 5e-2 else 'FAIL'}")
@@ -410,14 +410,14 @@ def main():
     # 主机 fp16 量化对照：评估 fp16 softmax 本征误差量级（不含 kernel 因素）
     print("\n--- host fp16-quantized reference (b0) ---")
     kv_len = 300
-    k_l = torch.zeros(kv_len, D, dtype=torch.float16)
-    v_l = torch.zeros(kv_len, D, dtype=torch.float16)
+    k_l = torch.zeros(POOL_ROWS, D, dtype=torch.float16)
+    v_l = torch.zeros(POOL_ROWS, D, dtype=torch.float16)
     for i_p, pid in enumerate([6, 2, 4]):
         k_l[i_p * BC:(i_p + 1) * BC] = kp[pid * BC:(pid + 1) * BC, 0].cpu()
         v_l[i_p * BC:(i_p + 1) * BC] = vp[pid * BC:(pid + 1) * BC, 0].cpu()
-    sc = q[0, :, 0].cpu().float() @ k_l.float().T * scale  # (S_Q, kv_len) fp32 累计
+    sc = q[0, :, 0].cpu().float() @ k_l[:kv_len].float().T * scale  # (S_Q, kv_len)
     pr = sc.softmax(-1)
-    o32 = pr @ v_l.float()
+    o32 = pr @ v_l[:kv_len].float()
     print(f"fp32-acc ref vs exp b0: "
           f"max_rel={((o32 - exp[0, :, 0].cpu()).abs() / (exp[0, :, 0].cpu().abs() + 1e-6)).max().item():.4f}")
     # 模拟 P 量化 fp16：与 kernel 的 fp16 P 相同精度
