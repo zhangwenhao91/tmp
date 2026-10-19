@@ -1,47 +1,41 @@
 CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
-=== stage B v1d-d4: culprit isolation GE(bias)/GA2(store)/GQ(qcopy)/GF(both), H=1 nc, rl=[300,3], fp16 ===
+=== stage B v1d-d5: GF ctrl vs GF_qpad + fine-grained diagnostics (H=1 nc, block store) ===
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 
---- variant GE_h1_v1cbias (block_store=False, v1c_bias=True, qcopy2d=False) ---
-compiling kernel (1, False, True, False) ...
-2026-10-19 18:55:30  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 18:55:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
-COMPILE_OK (1, False, True, False)
-  b0h0: max_rel=347.5378
-  b1h0: max_rel=826.8901
-GE_h1_v1cbias: finite=True max_rel_all=826.8901
+--- variant GF_ctrl (qpad=False) ---
+compiling kernel (qpad=False) ...
+2026-10-19 19:05:55  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 19:05:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+COMPILE_OK (qpad=False)
+RUN_FAIL GF_ctrl:
+      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 401, in main
+        diagnose(name, got, exp[:, :, 0])
+      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 343, in diagnose
+        rel = (got - exp).abs() / (exp.abs() + 1e-6)
+               ~~~~^~~~~
+    RuntimeError: The size of tensor a (4) must match the size of tensor b (128) at non-singleton dimension 2
 
---- variant GA2_h1_block (block_store=True, v1c_bias=False, qcopy2d=False) ---
-compiling kernel (1, True, False, False) ...
-2026-10-19 18:55:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 18:55:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
-COMPILE_OK (1, True, False, False)
-  b0h0: max_rel=0.1550
-  b1h0: max_rel=0.0857
-GA2_h1_block: finite=True max_rel_all=0.1550
+--- variant GF_qpad (qpad=True) ---
+compiling kernel (qpad=True) ...
+2026-10-19 19:05:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 19:06:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+COMPILE_OK (qpad=True)
+RUN_FAIL GF_qpad:
+      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 401, in main
+        diagnose(name, got, exp[:, :, 0])
+      File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 343, in diagnose
+        rel = (got - exp).abs() / (exp.abs() + 1e-6)
+               ~~~~^~~~~
+    RuntimeError: The size of tensor a (4) must match the size of tensor b (128) at non-singleton dimension 2
 
---- variant GQ_h1_qcopy2d (block_store=False, v1c_bias=False, qcopy2d=True) ---
-compiling kernel (1, False, False, True) ...
-2026-10-19 18:55:38  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 18:55:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
-COMPILE_OK (1, False, False, True)
-  b0h0: max_rel=347.5378
-  b1h0: max_rel=826.8901
-GQ_h1_qcopy2d: finite=True max_rel_all=826.8901
-
---- variant GF_h1_both (block_store=True, v1c_bias=True, qcopy2d=False) ---
-compiling kernel (1, True, True, False) ...
-2026-10-19 18:55:42  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 18:55:45  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
-COMPILE_OK (1, True, True, False)
-  b0h0: max_rel=0.1550
-  b1h0: max_rel=0.0857
-GF_h1_both: finite=True max_rel_all=0.1550
-
-=== v1d-d4 verdict ===
-GE_h1_v1cbias: FAIL (max_rel=826.8901)
-GA2_h1_block: FAIL (max_rel=0.1550)
-GQ_h1_qcopy2d: FAIL (max_rel=826.8901)
-GF_h1_both: FAIL (max_rel=0.1550)
-exit_code=0
+--- host fp16-quantized reference (b0) ---
+Traceback (most recent call last):
+  File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 431, in <module>
+    main()
+  File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 416, in main
+    k_l[i_p * BC:(i_p + 1) * BC] = kp[pid * BC:(pid + 1) * BC, 0].cpu()
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The expanded size of the tensor (44) must match the existing size (128) at non-singleton dimension 0.  Target sizes: [44, 128].  Tensor sizes: [128, 128]
+[ERROR] 2026-10-19-19:06:04 (PID:70301, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+exit_code=1
 exit_code=0
