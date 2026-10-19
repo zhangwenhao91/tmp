@@ -14,7 +14,7 @@ copy [pid*PAGE, (pid+1)*PAGE, h, :] → O[b, h, 0:PAGE, :]（纯拷贝，应逐�
 
 import torch
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 B, H, D, PAGE, W = 2, 4, 128, 64, 8
 NKV = B * W * PAGE

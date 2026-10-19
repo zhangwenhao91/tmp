@@ -15,7 +15,7 @@ shape：B=2, H=2, D=128, PAGE=64, W=8；pool [B*W*PAGE, H, D] fp16。
 
 import torch
 import tilelang
-import tilelang.language as T
+import tilelang.ascend.language as T
 
 B, H, D, PAGE, W = 2, 2, 128, 64, 8
 NKV = B * W * PAGE
