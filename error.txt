@@ -2,27 +2,28 @@ CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
 === stage B v1c: variable-length paged decode (B=2, rl=[256,100], W=2, fp16) ===
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 
---- variant C1_noif_novmin: compiling ---
-COMPILE_OK C1_noif_novmin
-C1_noif_novmin: finite=True b0_rel=0.0122 b0_rel_swapbt=0.0122 b1_rel=44.4275
+--- variant D1_if_bias: compiling ---
+2026-10-19 18:27:28  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 18:27:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+COMPILE_OK D1_if_bias
+D1_if_bias: finite=True b0_rel=0.0122 b1_rel=0.0094
    b0 got[:4] =[0.130126953125, -0.054931640625, 0.0024356842041015625, -0.056488037109375]
    b0 exp[:4] =[0.1300571709871292, -0.05494042485952377, 0.002449454739689827, -0.05647174268960953]
+   b1 got[:4] =[0.23486328125, -0.061431884765625, 0.0152130126953125, -0.037506103515625]
+   b1 exp[:4] =[0.23491427302360535, -0.06144946813583374, 0.015224117785692215, -0.03744618222117424]
 
---- variant C2_if_novmin: compiling ---
-COMPILE_OK C2_if_novmin
-C2_if_novmin: finite=True b0_rel=0.0122 b0_rel_swapbt=0.0122 b1_rel=16.8273
+--- variant D2_noif_bias: compiling ---
+2026-10-19 18:27:31  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 18:27:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+COMPILE_OK D2_noif_bias
+D2_noif_bias: finite=True b0_rel=0.0122 b1_rel=0.0094
    b0 got[:4] =[0.130126953125, -0.054931640625, 0.0024356842041015625, -0.056488037109375]
    b0 exp[:4] =[0.1300571709871292, -0.05494042485952377, 0.002449454739689827, -0.05647174268960953]
-
---- variant C3_if_vmin: compiling ---
-COMPILE_OK C3_if_vmin
-C3_if_vmin: finite=True b0_rel=10.6790 b0_rel_swapbt=10.6790 b1_rel=35.5058
-   b0 got[:4] =[0.046661376953125, -0.0701904296875, 0.0103759765625, -0.1025390625]
-   b0 exp[:4] =[0.1300571709871292, -0.05494042485952377, 0.002449454739689827, -0.05647174268960953]
+   b1 got[:4] =[0.23486328125, -0.061431884765625, 0.0152130126953125, -0.037506103515625]
+   b1 exp[:4] =[0.23491427302360535, -0.06144946813583374, 0.015224117785692215, -0.03744618222117424]
 
 === ablation verdict ===
-C1_noif_novmin: b0 PASS (swapbt matches), b1 FAIL(expect in C1/C2)
-C2_if_novmin: b0 PASS (swapbt matches), b1 FAIL(expect in C1/C2)
-C3_if_vmin: b0 FAIL (swapbt no), b1 FAIL(expect in C1/C2)
+D1_if_bias: b0 PASS, b1 PASS
+D2_noif_bias: b0 PASS, b1 PASS
 exit_code=0
 exit_code=0
