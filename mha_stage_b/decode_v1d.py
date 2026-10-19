@@ -1,31 +1,21 @@
-"""v1d：BSHD 布局 + [B,H] grid + S_q 多 query 行 + causal，对齐 TileOPs
-MHADecodePagedWithKVCacheFwdOp 完整契约。
+"""v1d-d2：BSHD + [B,H] grid + S_q 多行 + causal 的消融版。
 
-契约（TileOPs call_spec.MHAPagedDecodeFwdInterface + workload ref_program）：
-  - q: (B, S_q, H, D) BSHD；k_pool/v_pool: (pool_rows, H, D)，page_size 行一页
-  - real_seqlen_kv: (B,) int32；block_table: (B, max_pages) int32
-  - 输出形状同 q；score = q·k * D**-0.5
-  - causal: query i 看到 key 位置 <= i + kv_len - S_q（尾部对齐）；看不到 key 的
-    query 输出全零
+v1d-d1 结果与归因：
+  - E1（H=2 非因果）挂在 tvm_ffi ABI：`BIAS shape[1] violates packed ABI
+    constraint; expected: 1, got: 16` —— v1c 的 2D BIAS (B*W, BC) 能过，
+    3D (B, BR, W*BC) 被拒。本轮 BIAS 压平为 2D (B*BR, W*BC)。
+  - E2（H=2 因果）数值全错且含 NaN/Inf。嫌疑：E1 首调在参数绑定阶段抛异常
+    后，同 kernel 实例二次调用绑定错位（错误指针 -> 垃圾/越界读）；或 3D
+    跨步读 / bx//H 分解本身有错。
 
-设计：
-  - grid = B*H，bx -> b = bx // H, h = bx % H
-  - Q 单头读：T.copy(Q[b, 0:S_Q, h, :], Q_shared[0:S_Q])，3D 跨步 2D 化（阶段 A 已验证）
-  - BR=16 行 tile（Cube M=16），前 S_Q 行真 query，pad 行输出不存储
-  - causal 由主机 2D bias [B, BR, W*BC]（行 x kv 位置）表达，kernel 不感知；
-    softmax 每 query 行 vld 自己的 bias 半段后 vadd
-  - 无 key 行（causal 且 i + rl - S_q < 0）：主机后置清零（契约要求输出零；
-    in-kernel 处理留到 TileOPs 集成阶段）
-  - 输出存储：逐行 1D T.copy(O_cast_ub[i], O[b, i, h, :])，避开 3D GM store 风险
+本轮三级消融（BIAS 全部 2D）：
+  F0_h1_nc  H=1, causal=False —— 验证 grid 分解 + S_Q 多 query 行 + 逐行 bias
+            （H=1 时所有 3D 跨步读退化为连续，风险最小）
+  F1_h2_nc  H=2, causal=False —— 加上 3D 跨步单头读（Q/KP/VP）
+  F2_h2_c   H=2, causal=True  —— 完整形态（含无 key 行主机清零）
 
-已知边界（本轮不做，留 v1e）：
-  - 未读池行含 NaN 的场景（TileOPs _check_partly_filled_cache 用 NaN 投毒）：
-    加性 bias 掩码仍会读越界行，NaN 经 vadd/vmax 传播会污染 m/l。
-    彻底解法是尾页按有效行数动态截断拷贝，需要探针验证。
-
-变体（同一 kernel 编译一次，仅 bias 与后处理不同）：
-  E1_nc  causal=False, rl=[300, 3]  —— 多 query 行非因果
-  E2_c   causal=True,  rl=[300, 3]  —— 尾对齐因果；b1(rl=3) 第 0 行无 key 应输出零
+判读：F0 挂 -> grid/多行/bias 问题；F0 过 F1 挂 -> 3D 跨步读问题；
+F1 过 F2 挂 -> causal bias/后处理问题。HP 相同的 kernel 只编译一次。
 """
 
 import math
@@ -38,7 +28,6 @@ from tilelang.layout import make_ascend_compact_nz_layout
 from tilelang.ascend.language import simd as S
 
 D = 128
-H = 2
 B = 2
 S_Q = 4
 BR = 16
@@ -212,7 +201,7 @@ def kv_body(kv, BT, BIAS, b, h, KP, VP, Q_shared, K_shared, V_shared, P_shared,
             qk_a_l0, qk_b_l0, pv_a_l0, pv_b_l0, qk_acc_l0c, pv_acc_l0c,
             S_ub, P_nz_ub, bias_ub, O_tmp_ub, O_ub, m_ub, l_ub, alpha_ub,
             old_m_ub, row_sum_ub):
-    T.copy(BIAS[b, 0:BR, kv * BC:(kv + 1) * BC], bias_ub[0:BR, 0:BC])
+    T.copy(BIAS[b * BR:(b + 1) * BR, kv * BC:(kv + 1) * BC], bias_ub[0:BR, 0:BC])
     qk(kv, BT, b, h, KP, Q_shared, K_shared, qk_a_l0, qk_b_l0, qk_acc_l0c, S_ub)
     softmax(S_ub, P_nz_ub, bias_ub, m_ub, l_ub, alpha_ub, old_m_ub, row_sum_ub)
     pack_p(P_nz_ub, P_shared)
@@ -240,20 +229,20 @@ def finalize_cast(O, b, h, O_ub, O_cast_ub, l_ub):
         T.copy(O_cast_ub[i, 0:D], O[b, i, h, 0:D])
 
 
-def build():
+def build(hp):
     @T.prim_func
     def main(
-        Q: T.Buffer((B, S_Q, H, D), dtype),
+        Q: T.Buffer((B, S_Q, hp, D), dtype),
         BT: T.Buffer((B, W), "int32"),
         RL: T.Buffer((B,), "int32"),
-        BIAS: T.Buffer((B, BR, W * BC), accum_dtype),
-        KP: T.Buffer((POOL_ROWS, H, D), dtype),
-        VP: T.Buffer((POOL_ROWS, H, D), dtype),
-        O: T.Buffer((B, S_Q, H, D), out_dtype),
+        BIAS: T.Buffer((B * BR, W * BC), accum_dtype),
+        KP: T.Buffer((POOL_ROWS, hp, D), dtype),
+        VP: T.Buffer((POOL_ROWS, hp, D), dtype),
+        O: T.Buffer((B, S_Q, hp, D), out_dtype),
     ):
-        with T.Kernel(B * H) as bx:
-            b: T.int32 = bx // H
-            h: T.int32 = bx % H
+        with T.Kernel(B * hp) as bx:
+            b: T.int32 = bx // hp
+            h: T.int32 = bx % hp
             Q_shared = T.alloc_l1((BR, D), dtype)
             K_shared = T.alloc_l1((BC, D), dtype)
             V_shared = T.alloc_l1((D, BC), dtype)
@@ -341,8 +330,8 @@ def ref_mha_decode_paged(q, k_pool, v_pool, real_seqlen_kv, block_table, page_si
     return out
 
 
-def make_bias(rl, is_causal):
-    """主机 2D 加性掩码 [B, BR, W*BC]：causal 按 query 行尾对齐，pad 行全可见。"""
+def make_bias(rl, hp, is_causal):
+    """主机 2D 加性掩码 (B*BR, W*BC)：causal 按 query 行尾对齐，pad 行全可见。"""
     pos = torch.arange(W * BC, dtype=torch.float32, device=dev).view(1, 1, W * BC)
     if is_causal:
         row_idx = torch.arange(BR, dtype=torch.float32, device=dev).view(1, BR, 1)
@@ -350,7 +339,7 @@ def make_bias(rl, is_causal):
         visible = pos <= last_key
     else:
         visible = pos < rl.view(B, 1, 1).float()
-    return torch.where(visible, 0.0, -1.0e30).to(torch.float32)
+    return torch.where(visible, 0.0, -1.0e30).to(torch.float32).view(B * BR, W * BC)
 
 
 def no_key_mask(rl, is_causal):
@@ -370,42 +359,52 @@ def main():
     global dev
     dev = torch.device("npu")
     torch.manual_seed(0)
-    q = torch.randn(B, S_Q, H, D, dtype=torch.float16, device=dev)
-    kp = torch.randn(POOL_ROWS, H, D, dtype=torch.float16, device=dev)
-    vp = torch.randn(POOL_ROWS, H, D, dtype=torch.float16, device=dev)
+    q = torch.randn(B, S_Q, 2, D, dtype=torch.float16, device=dev)
+    kp = torch.randn(POOL_ROWS, 2, D, dtype=torch.float16, device=dev)
+    vp = torch.randn(POOL_ROWS, 2, D, dtype=torch.float16, device=dev)
     bt = torch.tensor([[6, 2, 4], [1, 7, 0]], dtype=torch.int32, device=dev)
     rl = torch.tensor([300, 3], dtype=torch.int32, device=dev)
 
-    print("=== v1d build & compile ===")
-    try:
-        kernel = tilelang.compile(build())
-    except Exception:
-        traceback.print_exc()
-        print("COMPILE_FAIL")
-        return
-    print("COMPILE_OK")
-
     variants = {
-        "E1_nc": (False,),
-        "E2_c": (True,),
+        "F0_h1_nc": (1, False),
+        "F1_h2_nc": (2, False),
+        "F2_h2_c": (2, True),
     }
+
+    kernels = {}
     results = {}
-    for name, (is_causal,) in variants.items():
-        print(f"\n--- variant {name} (causal={is_causal}) ---")
+    for name, (hp, is_causal) in variants.items():
+        print(f"\n--- variant {name} (H={hp}, causal={is_causal}) ---")
+        if hp not in kernels:
+            try:
+                print(f"compiling kernel (H={hp}) ...")
+                kernels[hp] = tilelang.compile(build(hp))
+                print(f"COMPILE_OK H={hp}")
+            except Exception:
+                tb = traceback.format_exc().strip().splitlines()
+                keep = [l for l in tb if "Error" in l or "Check failed" in l or "error:" in l]
+                print(f"COMPILE_FAIL H={hp}:")
+                for line in (keep or tb)[-8:]:
+                    print("   ", line)
+                continue
+        kernel = kernels[hp]
         try:
-            bias = make_bias(rl, is_causal)
-            o = torch.zeros(B, S_Q, H, D, dtype=torch.float16, device=dev)
-            kernel(q, bt, rl, bias, kp, vp, o)
+            bias = make_bias(rl, hp, is_causal)
+            qv = q[:, :, :hp, :].contiguous()
+            kv_ = kp[:, :hp, :].contiguous()
+            vv = vp[:, :hp, :].contiguous()
+            o = torch.zeros(B, S_Q, hp, D, dtype=torch.float16, device=dev)
+            kernel(qv, bt, rl, bias, kv_, vv, o)
             torch.npu.synchronize()
             # 无 key 行按契约清零（in-kernel 处理留到集成阶段）
             nk = no_key_mask(rl, is_causal)
             if nk.any():
                 o[nk] = 0
-            exp = ref_mha_decode_paged(q, kp, vp, rl, bt, BC, is_causal)
+            exp = ref_mha_decode_paged(qv, kv_, vv, rl, bt, BC, is_causal)
             finite = torch.isfinite(o.float()).all().item()
             rels = []
             for bi in range(B):
-                for hi in range(H):
+                for hi in range(hp):
                     r = rel_of(o[bi, :, hi].float(), exp[bi, :, hi])
                     rels.append(r)
                     print(f"  b{bi}h{hi}: max_rel={r:.4f}")
@@ -416,10 +415,12 @@ def main():
             results[name] = (finite, max(rels), extra)
             print(f"{name}: finite={finite} max_rel_all={max(rels):.4f}{extra}")
         except Exception:
-            traceback.print_exc()
-            print(f"RUN_FAIL {name}")
+            tb = traceback.format_exc().strip().splitlines()
+            print(f"RUN_FAIL {name}:")
+            for line in tb[-6:]:
+                print("   ", line)
 
-    print("\n=== v1d verdict ===")
+    print("\n=== v1d-d2 verdict ===")
     for name, (finite, mr, extra) in results.items():
         print(f"{name}: {'PASS' if finite and mr < 5e-2 else 'FAIL'} "
               f"(max_rel={mr:.4f}){extra}")

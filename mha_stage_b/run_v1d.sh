@@ -14,7 +14,7 @@ else
 fi
 export PYTHONUNBUFFERED=1
 
-echo "=== stage B v1d: BSHD + [B,H] grid + S_q=4 + causal (B=2, H=2, rl=[300,3], W=3, fp16) ==="
+echo "=== stage B v1d-d2: BSHD ablation F0(H=1)/F1(H=2)/F2(H=2,causal), rl=[300,3], W=3, fp16 ==="
 python decode_v1d.py 2>&1
 rc=$?
 echo "exit_code=$rc"
