@@ -1,126 +1,95 @@
 CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
-=== [1/2] probe_gather（运行时间接寻址） ===
-  File "<unknown>", line 0, in tvm::transform::Pass::operator()(tvm::IRModule) const
-  File "<unknown>", line 0, in tvm::transform::Pass::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
-  File "<unknown>", line 0, in tvm::tirx::transform::PrimFuncPassNode::operator()(tvm::IRModule, tvm::transform::PassContext const&) const
-  File "<unknown>", line 0, in std::_Function_handler<tvm::tirx::PrimFunc (tvm::tirx::PrimFunc, tvm::IRModule, tvm::transform::PassContext), tvm::tl::MarkScalarDcacheBypass()::{lambda(tvm::tirx::PrimFunc, tvm::IRModule const&, tvm::transform::PassContext const&)#1}>::_M_invoke(std::_Any_data const&, tvm::tirx::PrimFunc&&, tvm::IRModule&&, tvm::transform::PassContext&&)
-  File "<unknown>", line 0, in tvm::tl::ScalarDcacheBypassRewriter::Rewrite(tvm::tirx::PrimFunc)
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
-  File "<unknown>", line 0, in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
-  File "<unknown>", line 0, in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in non-virtual thunk to tvm::tl::ScalarDcacheBypassRewriter::VisitStmt_(tvm::tirx::SBlockNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
-  File "<unknown>", line 0, in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::ForNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
-  File "<unknown>", line 0, in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::ForNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#11}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "/home/z30086261/tilelang/src/ascend/transform/mark_scalar_dcache_bypass.cc", line 142, in virtual tvm::tirx::Stmt tvm::tl::ScalarDcacheBypassRewriter::VisitStmt_(const tvm::tirx::BufferStoreNode*)
-    ICHECK(op->value.dtype().is_scalar())
+=== probe_iter（多变体二分：定位 ScalarDcacheBypass 触发条件） ===
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 
-tvm.error.InternalError: Check failed: (op->value.dtype().is_scalar()) is false: ScalarDcacheBypass: vector-valued buffer store not implemented
-[ERROR] 2026-10-19-16:55:10 (PID:63976, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+--- variant A_base_contig: compiling ---
+2026-10-19 17:01:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_A` with `out_idx=None`
+COMPILE_FAIL A_base_contig:
+      File "/home/z30086261/tilelang/src/ascend/transform/auto_schedule/kernel_rewriter.h", line 153, in tvm::tirx::PrimFunc tvm::tl::ascend::RewriteTilelangKernels(tvm::tirx::PrimFunc, const char*, const TilelangKernelRewrite&, bool)
+        ICHECK_GT(rewriter.NumRewrittenKernels(), 0)
+        
+    tvm.error.InternalError: Check failed: rewriter.NumRewrittenKernels() > 0 (0 vs. 0) : AssignCore could not find a tilelang_root
 
-=== [2/2] probe_dynloop（运行时守卫/动态早退） ===
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
-  File "<unknown>", line 0, in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
-  File "<unknown>", line 0, in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#12}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in non-virtual thunk to tvm::tl::ScalarDcacheBypassRewriter::VisitStmt_(tvm::tirx::SBlockNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SBlockNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#2}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::AttrStmtNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
-  File "<unknown>", line 0, in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::ForNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
-  File "<unknown>", line 0, in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::ForNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#9}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::SeqStmtNode const*)
-  File "<unknown>", line 0, in tvm::ffi::ObjectPtr<tvm::ffi::Object> tvm::ffi::Array<tvm::tirx::Stmt, void>::MapHelper<tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1}, tvm::tirx::Stmt>(tvm::ffi::ObjectPtr<tvm::ffi::Object>, tvm::tirx::StmtMutator::Internal::Mutate(tvm::tirx::StmtMutator*, tvm::ffi::Array<tvm::tirx::Stmt, void> const&)::{lambda(tvm::tirx::Stmt const&)#1})
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#3}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::IfThenElseNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#4}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt_(tvm::tirx::ForNode const*)
-  File "<unknown>", line 0, in tvm::tirx::StmtMutator::VisitStmt(tvm::tirx::Stmt const&)
-  File "<unknown>", line 0, in tvm::NodeFunctor<tvm::tirx::Stmt (tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)>::operator()(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*) const
-  File "<unknown>", line 0, in tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>::InitVTable()::{lambda(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)#11}::_FUN(tvm::ffi::ObjectRef const&, tvm::tirx::StmtFunctor<tvm::tirx::Stmt (tvm::tirx::Stmt const&)>*)
-  File "/home/z30086261/tilelang/src/ascend/transform/mark_scalar_dcache_bypass.cc", line 142, in virtual tvm::tirx::Stmt tvm::tl::ScalarDcacheBypassRewriter::VisitStmt_(const tvm::tirx::BufferStoreNode*)
-    ICHECK(op->value.dtype().is_scalar())
+--- variant B_strided_static: compiling ---
+2026-10-19 17:01:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_B` with `out_idx=None`
+COMPILE_FAIL B_strided_static:
+      File "/home/z30086261/tilelang/src/ascend/transform/auto_schedule/kernel_rewriter.h", line 153, in tvm::tirx::PrimFunc tvm::tl::ascend::RewriteTilelangKernels(tvm::tirx::PrimFunc, const char*, const TilelangKernelRewrite&, bool)
+        ICHECK_GT(rewriter.NumRewrittenKernels(), 0)
+        
+    tvm.error.InternalError: Check failed: rewriter.NumRewrittenKernels() > 0 (0 vs. 0) : AssignCore could not find a tilelang_root
 
-tvm.error.InternalError: Check failed: (op->value.dtype().is_scalar()) is false: ScalarDcacheBypass: vector-valued buffer store not implemented
-[ERROR] 2026-10-19-16:55:19 (PID:64075, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+--- variant C_strided_dynbt: compiling ---
+2026-10-19 17:01:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_C` with `out_idx=None`
+COMPILE_FAIL C_strided_dynbt:
+      File "/home/z30086261/tilelang/src/ascend/transform/auto_schedule/kernel_rewriter.h", line 153, in tvm::tirx::PrimFunc tvm::tl::ascend::RewriteTilelangKernels(tvm::tirx::PrimFunc, const char*, const TilelangKernelRewrite&, bool)
+        ICHECK_GT(rewriter.NumRewrittenKernels(), 0)
+        
+    tvm.error.InternalError: Check failed: rewriter.NumRewrittenKernels() > 0 (0 vs. 0) : AssignCore could not find a tilelang_root
+
+--- variant D_contig_dynbt: compiling ---
+2026-10-19 17:01:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_D` with `out_idx=None`
+[17:01:19] /home/z30086261/tilelang/3rdparty/tvm/src/tirx/script/printer/expr.cc:75: Warning: Didn't find variable definition for: pid
+[17:01:19] /home/z30086261/tilelang/3rdparty/tvm/src/relax/script/printer/./../../../script/printer/utils.h:53: Warning: TVMScript printer falls back to the basic address printer with the error:
+Variable is not defined in the environment: pid
+COMPILE_FAIL D_contig_dynbt:
+      File "/home/z30086261/tilelang/src/ascend/op/ascend_mte_plan.h", line 265, in tvm::tl::StridedLayout tvm::tl::NormalizeMTE2DLayout(const tvm::tirx::Buffer&, const tvm::ffi::Array<tvm::Range>&, tvm::arith::Analyzer*, const string&)
+        ICHECK(layout.has_value())
+        
+    tvm.error.InternalError: Check failed: (layout.has_value()) is false: Ascend GM->L1 OOB handling cannot represent this region with one 2D MTE descriptor: all axes outside one row/inner pair must have extent 1, and the inner axis must be contiguous. Outer-loop lowering is not yet implemented. Buffer KP has shape (512, 4, 128), strides (), and ranges (ir.Range(0x10208f90), I.Range(0, 4), I.Range(0, 128)).
+
+--- variant E_contig_dynbt_if: compiling ---
+2026-10-19 17:01:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `var_E` with `out_idx=None`
+[17:01:19] /home/z30086261/tilelang/3rdparty/tvm/src/tirx/script/printer/expr.cc:75: Warning: Didn't find variable definition for: pid
+[17:01:19] /home/z30086261/tilelang/3rdparty/tvm/src/relax/script/printer/./../../../script/printer/utils.h:53: Warning: TVMScript printer falls back to the basic address printer with the error:
+Variable is not defined in the environment: pid
+COMPILE_FAIL E_contig_dynbt_if:
+      File "/home/z30086261/tilelang/src/ascend/op/ascend_mte_plan.h", line 265, in tvm::tl::StridedLayout tvm::tl::NormalizeMTE2DLayout(const tvm::tirx::Buffer&, const tvm::ffi::Array<tvm::Range>&, tvm::arith::Analyzer*, const string&)
+        ICHECK(layout.has_value())
+        
+    tvm.error.InternalError: Check failed: (layout.has_value()) is false: Ascend GM->L1 OOB handling cannot represent this region with one 2D MTE descriptor: all axes outside one row/inner pair must have extent 1, and the inner axis must be contiguous. Outer-loop lowering is not yet implemented. Buffer KP has shape (512, 4, 128), strides (), and ranges (ir.Range(0x1061cbb0), I.Range(0, 4), I.Range(0, 128)).
+2026-10-19 17:01:19  [TileLang:tilelang.language.eager.builder:CRITICAL] (builder.py:1787): Failed to build prim_func from var_F
+args={'KP': KP, 'O': O}
+source=def make_closure():
+
+    def var_F(__tb):
+        __tb_fl = '/home/z30086261/tmp/mha_stage_a/probe_iter.py'
+        __tb_fn = 'var_F'
+        __tb.set_fileline(__tb_fl, 94, __tb_fn)
+
+        def var_F(KP, O, **__kwargs):
+            __tb.set_fileline(__tb_fl, 94, __tb_fn)
+            KP = __tb.arg('KP', KP)
+            __tb.set_fileline(__tb_fl, 94, __tb_fn)
+            O = __tb.arg('O', O)
+            __tb.set_fileline(__tb_fl, 95, __tb_fn)
+            S_ub = __tb.bind('S_ub', __tb.resolve_call(__tb.rval('T', T).alloc_shared)((__tb.rval('PAGE', PAGE), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+            __tb.set_fileline(__tb_fl, 96, __tb_fn)
+            __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('KP', KP)[0:__tb.rval('PAGE', PAGE), 0:__tb.rval('D', D)], __tb.rval('S_ub', S_ub)[0:__tb.rval('PAGE', PAGE), 0:__tb.rval('D', D)]))
+            __tb.set_fileline(__tb_fl, 97, __tb_fn)
+            __tb.eval(__tb.resolve_call(__tb.rval('T', T).dual_copy)(__tb.rval('S_ub', S_ub)[0:__tb.rval('PAGE', PAGE), 0:__tb.rval('D', D)], __tb.rval('O', O)[0:__tb.rval('PAGE', PAGE), 0:__tb.rval('D', D)]))
+        return var_F
+    return var_F
+Traceback (most recent call last):
+  File "/home/z30086261/tmp/mha_stage_a/probe_iter.py", line 184, in <module>
+    main()
+  File "/home/z30086261/tmp/mha_stage_a/probe_iter.py", line 178, in main
+    fn, check = maker()
+                ^^^^^^^
+  File "/home/z30086261/tmp/mha_stage_a/probe_iter.py", line 93, in make_F
+    @T.prim_func
+     ^^^^^^^^^^^
+  File "/home/z30086261/tilelang/tilelang/language/eager/builder.py", line 1790, in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+  File "/home/z30086261/tilelang/tilelang/language/eager/builder.py", line 1788, in impl
+    raise e
+  File "/home/z30086261/tilelang/tilelang/language/eager/builder.py", line 1781, in impl
+    ir_gen.gen(builder)(**annot)
+  File "/home/z30086261/tmp/mha_stage_a/probe_iter.py", line 97, in var_F
+    T.dual_copy(S_ub[0:PAGE, 0:D], O[0:PAGE, 0:D])
+  File "/home/z30086261/tilelang/tilelang/ascend/language/copy_op.py", line 132, in dual_copy
+    raise ValueError(f"Cannot infer dual_copy split direction: src shape {src_shape} vs dst shape {dst_shape}. " + ratio_requirement)
+ValueError: Cannot infer dual_copy split direction: src shape [64, 128] vs dst shape [64, 128]. Exactly one trailing dimension must be halved.
+[ERROR] 2026-10-19-17:01:19 (PID:64336, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
 
 === done ===
