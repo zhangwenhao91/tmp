@@ -1,9 +1,119 @@
-root@ubuntu162:/home/z30086261/tmp# cd /home/z30086261/tilelang/examples/ascend/flash_attention/
-root@ubuntu162:/home/z30086261/tilelang/examples/ascend/flash_attention# cann93
-bash: cann93: command not found
-root@ubuntu162:/home/z30086261/tilelang/examples/ascend/flash_attention# python test_mha.py -v
+CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
+=== [1/2] probe_gather（运行时间接寻址） ===
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
-2026-10-19 15:45:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=-1`
-2026-10-19 15:45:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
-PASS: test_mha
-root@ubuntu162:/home/z30086261/tilelang/examples/ascend/flash_attention# 
+2026-10-19 16:22:59  [TileLang:tilelang.language.eager.builder:CRITICAL] (builder.py:1787): Failed to build prim_func from gather_probe
+args={'BT': BT, 'KP': KP, 'O': O}
+source=def make_closure():
+
+    def gather_probe(__tb):
+        __tb_fl = '/home/z30086261/tmp/mha_stage_a/probe_gather.py'
+        __tb_fn = 'gather_probe'
+        __tb.set_fileline(__tb_fl, 25, __tb_fn)
+
+        def gather_probe(BT, KP, O, **__kwargs):
+            __tb.set_fileline(__tb_fl, 26, __tb_fn)
+            BT = __tb.arg('BT', BT)
+            __tb.set_fileline(__tb_fl, 27, __tb_fn)
+            KP = __tb.arg('KP', KP)
+            __tb.set_fileline(__tb_fl, 28, __tb_fn)
+            O = __tb.arg('O', O)
+            __tb.set_fileline(__tb_fl, 1, __tb_fn)
+            if __tb.skip_kernel_ctx():
+                __tb.set_fileline(__tb_fl, 1, __tb_fn)
+                return
+            __tb.set_fileline(__tb_fl, 30, __tb_fn)
+            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Kernel)(__tb.rval('B', B))) as bx:
+                __tb.set_fileline(__tb_fl, 31, __tb_fn)
+                K_shared = __tb.bind('K_shared', __tb.resolve_call(__tb.rval('T', T).alloc_l1)((__tb.rval('PAGE', PAGE), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 32, __tb_fn)
+                for __0 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), __tb.rval('H', H))):
+                    __tb.set_fileline(__tb_fl, 32, __tb_fn)
+                    h = __tb.bind('h', __0, loop_target=True)
+                    __tb.set_fileline(__tb_fl, 33, __tb_fn)
+                    pid = __tb.bind('pid', __tb.rval('BT', BT)[__tb.rval('bx', bx), 0])
+                    __tb.set_fileline(__tb_fl, 34, __tb_fn)
+                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('KP', KP)[__tb.rval('pid', pid) * __tb.rval('PAGE', PAGE):(__tb.rval('pid', pid) + 1) * __tb.rval('PAGE', PAGE), __tb.rval('h', h), :], __tb.rval('K_shared', K_shared)[0:__tb.rval('PAGE', PAGE), 0:__tb.rval('D', D)]))
+                    __tb.set_fileline(__tb_fl, 35, __tb_fn)
+                    __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('K_shared', K_shared)[0:__tb.rval('PAGE', PAGE), 0:__tb.rval('D', D)], __tb.rval('O', O)[__tb.rval('bx', bx), __tb.rval('h', h), 0:__tb.rval('PAGE', PAGE), 0:__tb.rval('D', D)]))
+        return gather_probe
+    return gather_probe
+Traceback (most recent call last):
+  File "/home/z30086261/tmp/mha_stage_a/probe_gather.py", line 24, in <module>
+    @T.prim_func
+     ^^^^^^^^^^^
+  File "/home/z30086261/tilelang/tilelang/language/eager/builder.py", line 1790, in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+  File "/home/z30086261/tilelang/tilelang/language/eager/builder.py", line 1788, in impl
+    raise e
+  File "/home/z30086261/tilelang/tilelang/language/eager/builder.py", line 1781, in impl
+    ir_gen.gen(builder)(**annot)
+  File "/home/z30086261/tmp/mha_stage_a/probe_gather.py", line 31, in gather_probe
+    K_shared = T.alloc_l1((PAGE, D), dtype)
+               ^^^^^^^^^^
+AttributeError: module 'tilelang.language' has no attribute 'alloc_l1'
+[ERROR] 2026-10-19-16:22:59 (PID:63650, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+
+=== [2/2] probe_dynloop（运行时守卫/动态早退） ===
+    def dynloop_probe(__tb):
+        __tb_fl = '/home/z30086261/tmp/mha_stage_a/probe_dynloop.py'
+        __tb_fn = 'dynloop_probe'
+        __tb.set_fileline(__tb_fl, 26, __tb_fn)
+
+        def dynloop_probe(BT, RL, KP, O, **__kwargs):
+            __tb.set_fileline(__tb_fl, 27, __tb_fn)
+            BT = __tb.arg('BT', BT)
+            __tb.set_fileline(__tb_fl, 28, __tb_fn)
+            RL = __tb.arg('RL', RL)
+            __tb.set_fileline(__tb_fl, 29, __tb_fn)
+            KP = __tb.arg('KP', KP)
+            __tb.set_fileline(__tb_fl, 30, __tb_fn)
+            O = __tb.arg('O', O)
+            __tb.set_fileline(__tb_fl, 1, __tb_fn)
+            if __tb.skip_kernel_ctx():
+                __tb.set_fileline(__tb_fl, 1, __tb_fn)
+                return
+            __tb.set_fileline(__tb_fl, 32, __tb_fn)
+            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Kernel)(__tb.rval('B', B))) as bx:
+                __tb.set_fileline(__tb_fl, 33, __tb_fn)
+                K_shared = __tb.bind('K_shared', __tb.resolve_call(__tb.rval('T', T).alloc_l1)((__tb.rval('PAGE', PAGE), __tb.rval('D', D)), __tb.rval('dtype', dtype)))
+                __tb.set_fileline(__tb_fl, 34, __tb_fn)
+                for __1 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), __tb.rval('H', H))):
+                    __tb.set_fileline(__tb_fl, 34, __tb_fn)
+                    h = __tb.bind('h', __1, loop_target=True)
+                    __tb.set_fileline(__tb_fl, 35, __tb_fn)
+                    rl = __tb.bind('rl', __tb.rval('RL', RL)[__tb.rval('bx', bx)])
+                    __tb.set_fileline(__tb_fl, 36, __tb_fn)
+                    for __0 in __tb.ctx_for(__tb.iter_call(__tb.resolve_call(__tb.rval('T', T).serial), __tb.rval('W', W))):
+                        __tb.set_fileline(__tb_fl, 36, __tb_fn)
+                        t = __tb.bind('t', __0, loop_target=True)
+                        __tb.set_fileline(__tb_fl, 37, __tb_fn)
+                        with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).If)(__tb.rval('t', t) * __tb.rval('PAGE', PAGE) < __tb.rval('rl', rl))):
+                            __tb.set_fileline(__tb_fl, 38, __tb_fn)
+                            with __tb.ctx_with(__tb.resolve_call(__tb.rval('T', T).Then)()):
+                                __tb.set_fileline(__tb_fl, 39, __tb_fn)
+                                pid = __tb.bind('pid', __tb.rval('BT', BT)[__tb.rval('bx', bx), __tb.rval('t', t)])
+                                __tb.set_fileline(__tb_fl, 40, __tb_fn)
+                                __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('KP', KP)[__tb.rval('pid', pid) * __tb.rval('PAGE', PAGE):(__tb.rval('pid', pid) + 1) * __tb.rval('PAGE', PAGE), __tb.rval('h', h), :], __tb.rval('K_shared', K_shared)[0:__tb.rval('PAGE', PAGE), 0:__tb.rval('D', D)]))
+                                __tb.set_fileline(__tb_fl, 41, __tb_fn)
+                                __tb.eval(__tb.resolve_call(__tb.rval('T', T).copy)(__tb.rval('K_shared', K_shared)[0:__tb.rval('PAGE', PAGE), 0:__tb.rval('D', D)], __tb.rval('O', O)[__tb.rval('bx', bx), __tb.rval('h', h), __tb.rval('t', t), 0:__tb.rval('PAGE', PAGE), 0:__tb.rval('D', D)]))
+        return dynloop_probe
+    return dynloop_probe
+Traceback (most recent call last):
+  File "/home/z30086261/tmp/mha_stage_a/probe_dynloop.py", line 25, in <module>
+    @T.prim_func
+     ^^^^^^^^^^^
+  File "/home/z30086261/tilelang/tilelang/language/eager/builder.py", line 1790, in prim_func
+    return impl(func) if func is not None else impl
+           ^^^^^^^^^^
+  File "/home/z30086261/tilelang/tilelang/language/eager/builder.py", line 1788, in impl
+    raise e
+  File "/home/z30086261/tilelang/tilelang/language/eager/builder.py", line 1781, in impl
+    ir_gen.gen(builder)(**annot)
+  File "/home/z30086261/tmp/mha_stage_a/probe_dynloop.py", line 33, in dynloop_probe
+    K_shared = T.alloc_l1((PAGE, D), dtype)
+               ^^^^^^^^^^
+AttributeError: module 'tilelang.language' has no attribute 'alloc_l1'
+[ERROR] 2026-10-19-16:23:03 (PID:63732, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+
+=== done ===
