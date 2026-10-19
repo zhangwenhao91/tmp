@@ -2,47 +2,73 @@ CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
 === stage B v1d-d5: GF ctrl vs GF_qpad + fine-grained diagnostics (H=1 nc, block store) ===
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 
---- variant GF_ctrl (qpad=False) ---
-compiling kernel (qpad=False) ...
-COMPILE_OK (qpad=False)
-  [GF_ctrl] finite=True elements_over_5pct=4/1024 (0.39%)
-    b0 row0: max_rel=0.0441 max_absdiff=0.000070 |exp|max=0.2685
-    b0 row1: max_rel=0.0433 max_absdiff=0.000073 |exp|max=0.2395
-    b0 row2: max_rel=0.1471 max_absdiff=0.000061 |exp|max=0.2288
-    b0 row3: max_rel=0.1550 max_absdiff=0.000104 |exp|max=0.2689
-    b1 row0: max_rel=0.0039 max_absdiff=0.000484 |exp|max=1.8800
-    b1 row1: max_rel=0.0857 max_absdiff=0.000474 |exp|max=2.1505
-    b1 row2: max_rel=0.0604 max_absdiff=0.000537 |exp|max=1.9026
-    b1 row3: max_rel=0.0053 max_absdiff=0.000575 |exp|max=2.0466
-/home/z30086261/tmp/mha_stage_b/decode_v1d.py:357: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
-  bb, rr_, cc = (idx // (S_Q * D)).item(), (idx // D % S_Q).item(), (idx % D).item()
-  [GF_ctrl] max-rel element: b0 row3 col108 got=0.000097 exp=0.000115 (|exp|=1.15e-04)
-GF_ctrl: max_rel=0.1550 -> FAIL
+--- variant H1_nc (H=1, causal=False) ---
+compiling kernel (H=1) ...
+2026-10-19 19:11:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 19:11:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+COMPILE_OK (H=1)
+  [H1_nc] finite=True mixed_violations=0/1024 max_absdiff=0.000566
+    b0h0 row0: max_rel=0.0880 max_absdiff=0.000068
+    b0h0 row1: max_rel=0.0204 max_absdiff=0.000071
+    b0h0 row2: max_rel=0.0838 max_absdiff=0.000096
+    b0h0 row3: max_rel=0.0099 max_absdiff=0.000071
+    b1h0 row0: max_rel=0.0431 max_absdiff=0.000532
+    b1h0 row1: max_rel=0.0112 max_absdiff=0.000497
+    b1h0 row2: max_rel=0.0053 max_absdiff=0.000566
+    b1h0 row3: max_rel=0.0061 max_absdiff=0.000551
+H1_nc: PASS
 
---- variant GF_qpad (qpad=True) ---
-compiling kernel (qpad=True) ...
-COMPILE_OK (qpad=True)
-  [GF_qpad] finite=True elements_over_5pct=4/1024 (0.39%)
-    b0 row0: max_rel=0.0441 max_absdiff=0.000070 |exp|max=0.2685
-    b0 row1: max_rel=0.0433 max_absdiff=0.000073 |exp|max=0.2395
-    b0 row2: max_rel=0.1471 max_absdiff=0.000061 |exp|max=0.2288
-    b0 row3: max_rel=0.1550 max_absdiff=0.000104 |exp|max=0.2689
-    b1 row0: max_rel=0.0039 max_absdiff=0.000484 |exp|max=1.8800
-    b1 row1: max_rel=0.0857 max_absdiff=0.000474 |exp|max=2.1505
-    b1 row2: max_rel=0.0604 max_absdiff=0.000537 |exp|max=1.9026
-    b1 row3: max_rel=0.0053 max_absdiff=0.000575 |exp|max=2.0466
-  [GF_qpad] max-rel element: b0 row3 col108 got=0.000097 exp=0.000115 (|exp|=1.15e-04)
-GF_qpad: max_rel=0.1550 -> FAIL
+--- variant H2_nc (H=2, causal=False) ---
+compiling kernel (H=2) ...
+2026-10-19 19:11:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 19:11:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+COMPILE_OK (H=2)
+  [H2_nc] finite=True mixed_violations=0/2048 max_absdiff=0.000948
+    b0h0 row0: max_rel=0.0880 max_absdiff=0.000068
+    b0h0 row1: max_rel=0.0204 max_absdiff=0.000071
+    b0h0 row2: max_rel=0.0838 max_absdiff=0.000096
+    b0h0 row3: max_rel=0.0099 max_absdiff=0.000071
+    b0h1 row0: max_rel=0.0261 max_absdiff=0.000089
+    b0h1 row1: max_rel=0.0442 max_absdiff=0.000069
+    b0h1 row2: max_rel=0.0272 max_absdiff=0.000057
+    b0h1 row3: max_rel=0.0062 max_absdiff=0.000087
+    b1h0 row0: max_rel=0.0431 max_absdiff=0.000532
+    b1h0 row1: max_rel=0.0112 max_absdiff=0.000497
+    b1h0 row2: max_rel=0.0053 max_absdiff=0.000566
+    b1h0 row3: max_rel=0.0061 max_absdiff=0.000551
+    b1h1 row0: max_rel=0.0045 max_absdiff=0.000948
+    b1h1 row1: max_rel=0.0169 max_absdiff=0.000405
+    b1h1 row2: max_rel=0.0379 max_absdiff=0.000505
+    b1h1 row3: max_rel=0.2033 max_absdiff=0.000693
+H2_nc: PASS
 
---- host fp16-quantized reference (b0) ---
-fp32-acc ref vs exp b0: max_rel=0.0005
-Traceback (most recent call last):
-  File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 431, in <module>
-    main()
-  File "/home/z30086261/tmp/mha_stage_b/decode_v1d.py", line 425, in main
-    o16 = pr16 @ v_l.float()
-          ~~~~~^~~~~~~~~~~~~
-RuntimeError: mat1 and mat2 shapes cannot be multiplied (4x300 and 1024x128)
-[ERROR] 2026-10-19-19:08:17 (PID:70823, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
-exit_code=1
+--- variant H2_c (H=2, causal=True) ---
+  [H2_c] finite=True mixed_violations=0/2048 max_absdiff=0.000931
+    b0h0 row0: max_rel=0.1921 max_absdiff=0.000071
+    b0h0 row1: max_rel=0.2424 max_absdiff=0.000077
+    b0h0 row2: max_rel=0.1004 max_absdiff=0.000097
+    b0h0 row3: max_rel=0.0099 max_absdiff=0.000071
+    b0h1 row0: max_rel=0.0101 max_absdiff=0.000134
+    b0h1 row1: max_rel=0.0222 max_absdiff=0.000083
+    b0h1 row2: max_rel=0.0856 max_absdiff=0.000078
+    b0h1 row3: max_rel=0.0062 max_absdiff=0.000087
+    b1h0 row0: max_rel=0.0000 max_absdiff=0.000000
+    b1h0 row1: max_rel=0.0000 max_absdiff=0.000000
+    b1h0 row2: max_rel=0.0523 max_absdiff=0.000931
+    b1h0 row3: max_rel=0.0061 max_absdiff=0.000551
+    b1h1 row0: max_rel=0.0000 max_absdiff=0.000000
+    b1h1 row1: max_rel=0.0000 max_absdiff=0.000000
+    b1h1 row2: max_rel=0.0027 max_absdiff=0.000776
+    b1h1 row3: max_rel=0.2033 max_absdiff=0.000693
+H2_c: PASS no_key_zero=True (count=1)
+
+=== v1d-d6 verdict (mixed criterion: |d| <= 0.01 + 0.05*|exp|) ===
+H1_nc: PASS
+H2_nc: PASS
+H2_c: PASS
+
+--- host fp16-quantized reference (b0, h0) ---
+fp32-acc ref vs golden b0h0: max_absdiff=0.025401
+fp16-P ref vs golden b0h0:   max_absdiff=0.025420
+exit_code=0
 exit_code=0
