@@ -1,11 +1,11 @@
 CANN: /home/CANN/9.3.0.weekly.20260930/cann-9.3.0
-=== stage B v1a: minimal decode kernel (B=1,H=1,S_q=1,D=128,1 page,fp16) ===
+=== stage B v1b: paged decode kernel (B=1,H=1,S_q=1,D=128,2 pages,block_table [3,0],fp16) ===
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
-=== v1a decode kernel: build & compile ===
-2026-10-19 17:18:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
-2026-10-19 17:18:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+=== v1b paged decode kernel: build & compile ===
+2026-10-19 17:21:16  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=None`
+2026-10-19 17:21:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
 COMPILE_OK (loop=serial)
-=== run on NPU & compare ===
-max_abs_diff=0.000136 max_rel=0.006569
-PASS: v1a
+=== run on NPU & compare (scrambled page order [3, 0]) ===
+max_abs_diff=0.000075 max_rel=0.012228
+PASS: v1b
 exit_code=0
