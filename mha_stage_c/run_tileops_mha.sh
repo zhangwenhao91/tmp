@@ -83,6 +83,14 @@ python3 -m pytest tests/ops/test_compile_boundary.py -k "mha-decode-paged" \
 CB_RC=${PIPESTATUS[0]}
 echo "compile_boundary_rc=$CB_RC"
 
+# 归因对照（不门禁）：同用例在 cpu+builtin 下跑。dynamo 对元组字典键的限制在
+# op 公共派发层（_signature_codegen.py），与 backend 无关；若 cpu+builtin 同样
+# 失败，即为服务器 torch 2.7 dynamo 版本限制，而非 ascend 路径问题。
+python3 -m pytest tests/ops/test_compile_boundary.py -k "mha-decode-paged" \
+  --tileops-device cpu --tileops-target builtin -v 2>&1 | tail -25
+CB_REF_RC=${PIPESTATUS[0]}
+echo "compile_boundary_cpu_builtin_rc=$CB_REF_RC (归因对照，不门禁)"
+
 # 补跑 2：manifest 官方基准组（7 个 workload）。官方 benchmarks 框架计时走 CUDA
 # events/CUPTI、conftest 硬拒 npu（"benchmarks run on cuda only"），无法在 NPU
 # 上运行；改用 manifest_workloads.py 原样实例化官方 workload（gen_inputs/ref/

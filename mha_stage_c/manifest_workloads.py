@@ -43,7 +43,27 @@ WARMUP = 3
 REPEAT = 10
 
 
-def run_case(label, B, H, S_q, N_kv, D, page_size, is_causal, kv_lens, dtype):
+def _diff_report(got, expected, tag):
+    """失败时的定位信息：逐 batch max_abs/max_rel + 全局最差元素坐标。"""
+    g, e = got.float(), expected.float()
+    absd = (g - e).abs()
+    rel = absd / e.abs().clamp_min(1e-6)
+    for b in range(g.shape[0]):
+        print(f"    [{tag}] batch{b}: max_abs={absd[b].max().item():.3e} "
+              f"max_rel={rel[b].max().item():.3e}")
+    idx = absd.flatten().argmax().item()
+    strides = [int(torch.tensor(g.shape[i:]).prod().item()) for i in range(g.ndim)]
+    coord = []
+    r = idx
+    for i in range(g.ndim):
+        strides[i] = strides[i] // g.shape[i]
+        coord.append(r // strides[i])
+        r %= strides[i]
+    print(f"    [{tag}] worst elem at {coord}: got={g.flatten()[idx].item():.6f} "
+          f"expected={e.flatten()[idx].item():.6f} absd={absd.flatten()[idx].item():.3e}")
+
+
+def run_case(label, B, H, S_q, N_kv, D, page_size, is_causal, kv_lens, dtype, isolate=False):
     # 官方 workload：乱序页表 + 满长 real，随后按 manifest kv_lens 覆写 real_seqlen
     wl = MHADecodePagedWorkload(B, H, S_q, N_kv, D, page_size, is_causal, dtype)
     q, k, v, real, table = wl.gen_inputs()
@@ -72,7 +92,22 @@ def run_case(label, B, H, S_q, N_kv, D, page_size, is_causal, kv_lens, dtype):
 
     expected = wl.ref_program(q, k, v, real, table)
     # 正规消费口：结构检查 + Custom validator（atol=1e-3 + cosine>0.99）
-    compare_outputs(got, expected, wl.verification(q, k, v, real, table))
+    try:
+        compare_outputs(got, expected, wl.verification(q, k, v, real, table))
+    except AssertionError:
+        _diff_report(got, expected, label)
+        if isolate and is_causal:
+            # 归因对照：同输入关掉 causal 再验一次，区分"causal 路径问题"与"基础路径问题"
+            wl0 = MHADecodePagedWorkload(B, H, S_q, N_kv, D, page_size, False, dtype)
+            exp0 = wl0.ref_program(q, k, v, real, table)
+            got0 = MHADecodePagedWithKVCacheFwdOp(page_size, target="ascend")(q, k, v, real, table)
+            try:
+                compare_outputs(got0, exp0, wl0.verification(q, k, v, real, table))
+                print(f"    [{label}] non-causal 同输入 PASS -> 问题定位在 causal 掩码路径")
+            except AssertionError:
+                print(f"    [{label}] non-causal 同输入也 FAIL -> 基础路径（页表/累积）问题")
+                _diff_report(got0, exp0, label + "-noncausal")
+        raise
     print(f"  {label:<20} PASS  first={first_ms:7.1f}ms med={med_ms:.3f}ms")
     return {"label": label, "first_ms": round(first_ms, 1), "median_ms": round(med_ms, 3)}
 
@@ -82,7 +117,7 @@ def main():
     rows = []
     for spec in CASES:
         try:
-            rows.append(run_case(*spec))
+            rows.append(run_case(*spec, isolate=True))
         except Exception as e:  # 单 case 失败不拖垮整表
             import traceback
             traceback.print_exc()
