@@ -2,17 +2,17 @@ Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 === Part1: rl 扫描（per-(b,row) max_abs）===
 /home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   rows = bt_t[:, pos // page_size] * page_size + pos % page_size
-  rl=1024  bad=4093  per-(b,row): 2.8e+00 2.6e+00 2.6e+00 2.2e+00; 2.5e+00 3.2e+00 2.9e+00 2.9e+00
-  rl=1000  bad=4093  per-(b,row): 2.8e+00 2.9e+00 2.3e+00 2.7e+00; 2.7e+00 2.5e+00 2.4e+00 2.7e+00
-  rl=992   bad=4092  per-(b,row): 2.4e+00 2.3e+00 2.8e+00 3.0e+00; 2.7e+00 3.2e+00 3.5e+00 2.7e+00
-  rl=960   bad=4094  per-(b,row): 2.4e+00 2.7e+00 3.1e+00 2.9e+00; 2.5e+00 2.6e+00 2.4e+00 2.2e+00
-  rl=896   bad=4092  per-(b,row): 3.2e+00 2.5e+00 3.0e+00 2.0e+00; 3.5e+00 3.0e+00 2.7e+00 2.5e+00
-  rl=768   bad=4090  per-(b,row): 2.9e+00 3.2e+00 2.6e+00 2.6e+00; 2.5e+00 2.6e+00 3.5e+00 3.0e+00
-  rl=704   bad=4093  per-(b,row): 2.5e+00 3.2e+00 2.6e+00 3.1e+00; 2.7e+00 3.1e+00 2.4e+00 2.4e+00
+  rl=1024  bad=1579  per-(b,row): 3.9e-02 5.4e-03 7.0e-03 6.1e-03; 1.4e-02 2.2e-02 3.5e-03 4.4e-03
+  rl=1000  bad=1653  per-(b,row): 1.5e-02 1.9e-02 5.1e-03 6.7e-03; 1.2e-02 7.5e-03 7.0e-03 5.0e-03
+  rl=992   bad=1965  per-(b,row): 2.0e-02 1.4e-02 6.2e-03 1.0e-02; 9.0e-03 6.4e-03 9.3e-03 6.4e-03
+  rl=960   bad=1642  per-(b,row): 1.6e-02 6.8e-03 2.8e-03 8.2e-03; 5.3e-02 9.0e-03 1.1e-02 3.6e-03
+  rl=896   bad=1693  per-(b,row): 2.1e-02 1.6e-02 8.6e-03 9.8e-03; 2.4e-02 6.5e-03 1.3e-02 5.8e-03
+  rl=768   bad=2007  per-(b,row): 1.1e-02 1.1e-02 1.1e-02 6.9e-03; 1.5e-02 1.2e-02 1.5e-02 2.1e-03
+  rl=704   bad=2255  per-(b,row): 2.1e-02 1.2e-02 8.1e-03 9.1e-03; 2.3e-02 1.3e-02 1.1e-02 8.4e-03
 
 === Part2: 同内容 q 行探针（rl=1000, B=1）===
-  输出行0 -> 最像掩码行0 (差=2.64e+00)；次近=掩码行1 (差=2.64e+00)
-  输出行1 -> 最像掩码行0 (差=2.64e+00)；次近=掩码行1 (差=2.64e+00)
-  输出行2 -> 最像掩码行0 (差=2.64e+00)；次近=掩码行1 (差=2.64e+00)
-  输出行3 -> 最像掩码行0 (差=2.64e+00)；次近=掩码行1 (差=2.64e+00)
+  输出行0 -> 最像掩码行3 (差=6.78e-05)；次近=掩码行2 (差=4.85e-03)
+  输出行1 -> 最像掩码行3 (差=6.78e-05)；次近=掩码行2 (差=4.85e-03)
+  输出行2 -> 最像掩码行3 (差=6.78e-05)；次近=掩码行2 (差=4.85e-03)
+  输出行3 -> 最像掩码行3 (差=6.78e-05)；次近=掩码行2 (差=4.85e-03)
 exit_code=0
