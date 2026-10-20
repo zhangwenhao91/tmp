@@ -1,14 +1,30 @@
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 /home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   rows = bt_t[:, pos // page_size] * page_size + pos % page_size
-[W1020 11:47:33.892240774 ToKernelNpu.cpp:164] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
-MHADecodePagedWithKVCacheFwdOp manifest workloads (official gen/ref/verification):
-  serving-p128         PASS  first=   94.5ms med=0.139ms
-  serving-b2           PASS  first=   66.0ms med=0.127ms
-  serving-kv1k         PASS  first=   64.3ms med=0.126ms
-  serving-kv512        PASS  first=   64.4ms med=0.126ms
-  speculative-decode   PASS  first=   66.3ms med=0.261ms
-  opt-1.3b-b1          PASS  first=   64.1ms med=0.126ms
-  opt-1.3b-b16         PASS  first=   67.6ms med=1.014ms
-manifest_workloads: 7/7 PASS
+calibration: 8192^3 fp16 matmul 2.954 ms -> achievable peak 372.2 TFLOPS
+peak_tflops=372.19867640159526 warmup=3 repeat=20 num_stages=1
+s1_B1H8_kv2048_p128          sq1  float16   first=    94.3ms med=   0.131ms amort=   0.118ms flops=   0.008G med=  0.064T ( 0.017%) amort=  0.071T ( 0.019%)
+s2_B8H8_kv2048_p128          sq1  float16   first=    65.5ms med=   0.132ms amort=   0.119ms flops=   0.067G med=  0.508T ( 0.137%) amort=  0.564T ( 0.151%)
+s3_B16H8_kv1024_p128         sq1  float16   first=    65.1ms med=   0.132ms amort=    0.12ms flops=   0.067G med=  0.509T ( 0.137%) amort=  0.561T ( 0.151%)
+s4_B8H32_kv4096_p256         sq1  float16   first=    65.2ms med=   0.289ms amort=   0.253ms flops=   0.537G med=  1.859T ( 0.499%) amort=  2.118T ( 0.569%)
+s5_B8H8_kv2048_p128_half     sq1  float16   first=     4.1ms med=   0.411ms amort=   0.396ms flops=   0.034G med=  0.082T ( 0.022%) amort=  0.085T ( 0.023%)
+s6_B4H8_kv4096_p256_half     sq1  float16   first=    64.5ms med=   0.408ms amort=   0.393ms flops=   0.034G med=  0.082T ( 0.022%) amort=  0.085T ( 0.023%)
+s7_bf16_B8H8_kv2048_p128     sq1  bfloat16  first=    64.0ms med=   0.131ms amort=   0.119ms flops=   0.067G med=  0.512T ( 0.138%) amort=  0.566T ( 0.152%)
+s8_B2H32_kv16384_p256        sq1  float16   first=    64.9ms med=   0.437ms amort=     0.4ms flops=   0.537G med=  1.229T (  0.33%) amort=  1.343T ( 0.361%)
+2026-10-20 15:02:09  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-20 15:02:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s1_sq16_B1H8_kv2048_p128     sq16 float16   first=  3142.7ms med=   0.127ms amort=   0.115ms flops=   0.134G med=  1.053T ( 0.283%) amort=   1.17T ( 0.314%)
+2026-10-20 15:02:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-20 15:02:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s4_sq16_B8H32_kv4096_p256    sq16 float16   first=  3143.7ms med=   0.297ms amort=   0.261ms flops=    8.59G med= 28.898T ( 7.764%) amort=   32.9T ( 8.839%)
+2026-10-20 15:02:15  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-20 15:02:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s5_sq16_B8H8_kv2048_p128_half sq16 float16   first=  3146.4ms med=   0.424ms amort=   0.412ms flops=   0.537G med=  1.265T (  0.34%) amort=  1.304T (  0.35%)
+2026-10-20 15:02:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-20 15:02:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s7_sq16_bf16_B8H8_kv2048_p128 sq16 bfloat16  first=  3128.4ms med=   0.134ms amort=   0.121ms flops=   1.074G med=  8.006T ( 2.151%) amort=  8.901T ( 2.391%)
+2026-10-20 15:02:22  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-20 15:02:25  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s8_sq16_B2H32_kv16384_p256   sq16 float16   first=  3141.4ms med=   0.445ms amort=    0.41ms flops=    8.59G med= 19.325T ( 5.192%) amort= 20.936T ( 5.625%)
+MFU_JSON: [{"name": "s1_B1H8_kv2048_p128", "S_q": 1, "dtype": "float16", "first_ms": 94.3, "median_ms": 0.131, "amortized_ms": 0.118, "real_sum": 2048, "flops_G": 0.008, "median_TFLOPS": 0.064, "amortized_TFLOPS": 0.071, "median_MFU": 0.017, "amortized_MFU": 0.019}, {"name": "s2_B8H8_kv2048_p128", "S_q": 1, "dtype": "float16", "first_ms": 65.5, "median_ms": 0.132, "amortized_ms": 0.119, "real_sum": 16384, "flops_G": 0.067, "median_TFLOPS": 0.508, "amortized_TFLOPS": 0.564, "median_MFU": 0.137, "amortized_MFU": 0.151}, {"name": "s3_B16H8_kv1024_p128", "S_q": 1, "dtype": "float16", "first_ms": 65.1, "median_ms": 0.132, "amortized_ms": 0.12, "real_sum": 16384, "flops_G": 0.067, "median_TFLOPS": 0.509, "amortized_TFLOPS": 0.561, "median_MFU": 0.137, "amortized_MFU": 0.151}, {"name": "s4_B8H32_kv4096_p256", "S_q": 1, "dtype": "float16", "first_ms": 65.2, "median_ms": 0.289, "amortized_ms": 0.253, "real_sum": 32768, "flops_G": 0.537, "median_TFLOPS": 1.859, "amortized_TFLOPS": 2.118, "median_MFU": 0.499, "amortized_MFU": 0.569}, {"name": "s5_B8H8_kv2048_p128_half", "S_q": 1, "dtype": "float16", "first_ms": 4.1, "median_ms": 0.411, "amortized_ms": 0.396, "real_sum": 8192, "flops_G": 0.034, "median_TFLOPS": 0.082, "amortized_TFLOPS": 0.085, "median_MFU": 0.022, "amortized_MFU": 0.023}, {"name": "s6_B4H8_kv4096_p256_half", "S_q": 1, "dtype": "float16", "first_ms": 64.5, "median_ms": 0.408, "amortized_ms": 0.393, "real_sum": 8192, "flops_G": 0.034, "median_TFLOPS": 0.082, "amortized_TFLOPS": 0.085, "median_MFU": 0.022, "amortized_MFU": 0.023}, {"name": "s7_bf16_B8H8_kv2048_p128", "S_q": 1, "dtype": "bfloat16", "first_ms": 64.0, "median_ms": 0.131, "amortized_ms": 0.119, "real_sum": 16384, "flops_G": 0.067, "median_TFLOPS": 0.512, "amortized_TFLOPS": 0.566, "median_MFU": 0.138, "amortized_MFU": 0.152}, {"name": "s8_B2H32_kv16384_p256", "S_q": 1, "dtype": "float16", "first_ms": 64.9, "median_ms": 0.437, "amortized_ms": 0.4, "real_sum": 32768, "flops_G": 0.537, "median_TFLOPS": 1.229, "amortized_TFLOPS": 1.343, "median_MFU": 0.33, "amortized_MFU": 0.361}, {"name": "s1_sq16_B1H8_kv2048_p128", "S_q": 16, "dtype": "float16", "first_ms": 3142.7, "median_ms": 0.127, "amortized_ms": 0.115, "real_sum": 2048, "flops_G": 0.134, "median_TFLOPS": 1.053, "amortized_TFLOPS": 1.17, "median_MFU": 0.283, "amortized_MFU": 0.314}, {"name": "s4_sq16_B8H32_kv4096_p256", "S_q": 16, "dtype": "float16", "first_ms": 3143.7, "median_ms": 0.297, "amortized_ms": 0.261, "real_sum": 32768, "flops_G": 8.59, "median_TFLOPS": 28.898, "amortized_TFLOPS": 32.9, "median_MFU": 7.764, "amortized_MFU": 8.839}, {"name": "s5_sq16_B8H8_kv2048_p128_half", "S_q": 16, "dtype": "float16", "first_ms": 3146.4, "median_ms": 0.424, "amortized_ms": 0.412, "real_sum": 8192, "flops_G": 0.537, "median_TFLOPS": 1.265, "amortized_TFLOPS": 1.304, "median_MFU": 0.34, "amortized_MFU": 0.35}, {"name": "s7_sq16_bf16_B8H8_kv2048_p128", "S_q": 16, "dtype": "bfloat16", "first_ms": 3128.4, "median_ms": 0.134, "amortized_ms": 0.121, "real_sum": 16384, "flops_G": 1.074, "median_TFLOPS": 8.006, "amortized_TFLOPS": 8.901, "median_MFU": 2.151, "amortized_MFU": 2.391}, {"name": "s8_sq16_B2H32_kv16384_p256", "S_q": 16, "dtype": "float16", "first_ms": 3141.4, "median_ms": 0.445, "amortized_ms": 0.41, "real_sum": 32768, "flops_G": 8.59, "median_TFLOPS": 19.325, "amortized_TFLOPS": 20.936, "median_MFU": 5.192, "amortized_MFU": 5.625}]
 exit_code=0
