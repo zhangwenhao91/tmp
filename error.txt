@@ -1,120 +1,13 @@
-root@ubuntu162:/home/z30086261# mv /root/TileOPs /home/z30086261/TileOPs
-root@ubuntu162:/home/z30086261# cd /home/z30086261/TileOPs
+cd /home/z30086261/TileOPs
+python3 -m pip uninstall -y tileops
+rm -rf build *.egg-info src/*.egg-info          # 清构建残留
+# 重做兼容 sed（幂等，多做无害）
+sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
+sed -i 's/^license = .*/license = {text = "MIT"}/' pyproject.toml
+sed -i '/^license-files/d' pyproject.toml
 python3 -m pip install -e . --no-deps --no-build-isolation
-Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
-Obtaining file:///home/z30086261/TileOPs
-  Checking if build backend supports build_editable ... done
-  Preparing editable metadata (pyproject.toml) ... error
-  error: subprocess-exited-with-error
-  
-  × Preparing editable metadata (pyproject.toml) did not run successfully.
-  │ exit code: 1
-  ╰─> [94 lines of output]
-      /usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py:108: _BetaConfiguration: Support for `[tool.setuptools]` in `pyproject.toml` is still *beta*.
-        warnings.warn(msg, _BetaConfiguration)
-      configuration error: `project.license` must be valid exactly by one definition (2 matches found):
-      
-          - keys:
-              'file': {type: string}
-            required: ['file']
-          - keys:
-              'text': {type: string}
-            required: ['text']
-      
-      DESCRIPTION:
-          `Project license <https://www.python.org/dev/peps/pep-0621/#license>`_.
-      
-      GIVEN VALUE:
-          "MIT"
-      
-      OFFENDING RULE: 'oneOf'
-      
-      DEFINITION:
-          {
-              "oneOf": [
-                  {
-                      "properties": {
-                          "file": {
-                              "type": "string",
-                              "$$description": [
-                                  "Relative path to the file (UTF-8) which contains the license for the",
-                                  "project."
-                              ]
-                          }
-                      },
-                      "required": [
-                          "file"
-                      ]
-                  },
-                  {
-                      "properties": {
-                          "text": {
-                              "type": "string",
-                              "$$description": [
-                                  "The license of the project whose meaning is that of the",
-                                  "`License field from the core metadata",
-                                  "<https://packaging.python.org/specifications/core-metadata/#license>`_."
-                              ]
-                          }
-                      },
-                      "required": [
-                          "text"
-                      ]
-                  }
-              ]
-          }
-      Traceback (most recent call last):
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 389, in <module>
-          main()
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 373, in main
-          json_out["return_val"] = hook(**hook_input["kwargs"])
-                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 209, in prepare_metadata_for_build_editable
-          return hook(metadata_directory, config_settings)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/build_meta.py", line 450, in prepare_metadata_for_build_editable
-          return self.prepare_metadata_for_build_wheel(
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/build_meta.py", line 377, in prepare_metadata_for_build_wheel
-          self.run_setup()
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/build_meta.py", line 335, in run_setup
-          exec(code, locals())
-        File "<string>", line 1, in <module>
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/__init__.py", line 87, in setup
-          return distutils.core.setup(**attrs)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/_distutils/core.py", line 159, in setup
-          dist.parse_config_files()
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/dist.py", line 868, in parse_config_files
-          pyprojecttoml.apply_configuration(self, filename, ignore_option_errors)
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py", line 62, in apply_configuration
-          config = read_configuration(filepath, True, ignore_option_errors, dist)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py", line 126, in read_configuration
-          validate(subset, filepath)
-        File "/usr/local/python3.11.0/lib/python3.11/site-packages/setuptools/config/pyprojecttoml.py", line 51, in validate
-          raise ValueError(f"{error}\n{summary}") from None
-      ValueError: invalid pyproject.toml config: `project.license`.
-      configuration error: `project.license` must be valid exactly by one definition (2 matches found):
-      
-          - keys:
-              'file': {type: string}
-            required: ['file']
-          - keys:
-              'text': {type: string}
-            required: ['text']
-      
-      [end of output]
-  
-  note: This error originates from a subprocess, and is likely not a problem with pip.
 
-[notice] A new release of pip is available: 25.2 -> 26.2.1
-[notice] To update, run: pip install --upgrade pip
-error: metadata-generation-failed
-
-× Encountered error while generating package metadata.
-╰─> See above for output.
-
-note: This is an issue with the package mentioned above, not pip.
-hint: See above for details.
-root@ubuntu162:/home/z30086261/TileOPs# 
+# 若 import 仍指向旧路径，找到并删掉残留 finder
+python3 -c "import tileops; print(tileops.__file__)" 2>&1
+grep -rln "root/TileOPs" "$(python3 -c 'import site; print(site.getsitepackages()[0])')" 2>/dev/null
+# 输出的文件直接删掉，再重装一次
