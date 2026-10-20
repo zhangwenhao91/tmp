@@ -43,7 +43,7 @@ def ref_attn(q, k, v, real, table, mask_cut=None):
         for i in range(S_q):
             seen = rl - S_Q + i if mask_cut is None else rl - (mask_cut[i] if i < S_Q else 10**9)
             seen = max(seen, 0)
-            s = torch.einsum("hd,rhd->hr", q[b, i].float(), kb[:seen]) * (D ** -0.5) * (D ** -0.5)
+            s = torch.einsum("hd,rhd->hr", q[b, i].float(), kb[:seen]) * (D ** -0.5)
             p = torch.softmax(s, dim=-1)
             out[b, i] = torch.einsum("hr,rhd->hd", p, vb[:seen])
     return out
