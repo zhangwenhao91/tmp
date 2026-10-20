@@ -1,18 +1,51 @@
-================ probe1_qk.py ================
-Loading tilelang libs from dev root: /home/z30086261/tilelang/build
-Traceback (most recent call last):
-  File "/home/z30086261/tmp/mla_stage_a/probe1_qk.py", line 31, in <module>
-    q = (torch.randn(BR, D, device=dev) * 0.5).to(torch.float16)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-RuntimeError: LazyInitialize:torch_npu/csrc/core/npu/sys_ctrl/npu_sys_ctrl.cpp:243 NPU function error: c10_npu::acl::AclrtSetOpExecuteTimeOut(kMaxOpExecuteTimeOut), error code is 507001
-[ERROR] 2026-10-20-16:43:35 (PID:436, Device:0, RankID:-1) ERR00100 PTA call acl api failed
-[Error]: An internal error occurs in the task scheduler module on the device. 
-        Rectify the fault based on the error information in the ascend log.
-EE9999: Inner Error!
-EE9999: [PID: 436] 2026-10-20-16:43:35.852.602 Task execute failed, device_id=4, stream_id=0, task_id=0, flip_num=0, task_type=83.[FUNC:GetError][FILE:stream.cc][LINE:1183]
-        TraceBack (most recent call last):
-       stream_id=0 failed to synchronize retCode=0x7150062.[FUNC:SetTimeoutConfigTaskSubmitDavid][FILE:stream_c.cc][LINE:814]
-       Failed to exe SetTimeoutConfigTaskSubmit, retCode=0x7150062.[FUNC:SetTimeoutConfig][FILE:runtime.cc][LINE:5275]
-       rtSetOpExecuteTimeOut execute failed, reason=[tsfw unknown error][FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:53]
-       set op execute timeout failed, runtime result = 507001[FUNC:ReportCallError][FILE:log_inner.cpp][LINE:162]
-
+(base) root@ubuntu162:/home/z30086261# npu-smi info
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.b086                            Version: 25.7.rc1.b086                         |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | AICore(%)   Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 189.5       56                0     / 0             |
+|        |                  | 0000:0D:00.0  | 0           0    / 0          5268  / 131072        |
++========+==================+===============+=====================================================+
+| 1      | Ascend950PR      | OK            | 197.2       55                0     / 0             |
+|        |                  | 0000:0E:00.0  | 0           0    / 0          5268  / 131072        |
++========+==================+===============+=====================================================+
+| 2      | Ascend950PR      | OK            | 193.3       59                0     / 0             |
+|        |                  | 0000:55:00.0  | 0           0    / 0          5015  / 131072        |
++========+==================+===============+=====================================================+
+| 3      | Ascend950PR      | OK            | 191.0       57                0     / 0             |
+|        |                  | 0000:57:00.0  | 0           0    / 0          5015  / 131072        |
++========+==================+===============+=====================================================+
+| 4      | Ascend950PR      | OK            | 189.4       56                0     / 0             |
+|        |                  | 0000:8B:00.0  | 0           0    / 0          5235  / 131072        |
++========+==================+===============+=====================================================+
+| 5      | Ascend950PR      | OK            | 194.5       56                0     / 0             |
+|        |                  | 0000:8C:00.0  | 0           0    / 0          5262  / 131072        |
++========+==================+===============+=====================================================+
+| 6      | Ascend950PR      | Critical      | 0.0         0                 0     / 0             |
+|        |                  | 0000:D4:00.0  | 0           0    / 0          0     / 0             |
++========+==================+===============+=====================================================+
+| 7      | Ascend950PR      | OK            | 196.7       58                0     / 0             |
+|        |                  | 0000:D7:00.0  | 0           0    / 0          5269  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 1                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 2                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 3                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 4                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 5                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 6                                                             |
++===========================+===============+=====================================================+
+| No running processes found in NPU 7                                                             |
++===========================+===============+=====================================================+
+(base) root@ubuntu162:/home/z30086261# 
