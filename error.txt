@@ -1,4 +1,21 @@
+# 1. 移动（mv 跨不跨文件系统都能处理）
+mv /root/TileOPs /home/z30086261/TileOPs
+
+# 2. 重装 editable（否则 python import 的还是旧路径，会报 ImportError 或拿到旧代码）
+cd /home/z30086261/TileOPs
+python3 -m pip install -e . --no-deps --no-build-isolation
+
+# 3. 验证 import 指向新位置
+python3 -c "import tileops; print(tileops.__file__)"
+# 应输出 /home/z30086261/TileOPs/src/tileops/__init__.py
+
+
+
+
+
 cd /home/z30086261/tmp && git pull
-cd ~/TileOPs
 source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
-PYTHONUNBUFFERED=1 python3 ~/tmp/mha_stage_c/bench_mfu.py > ~/tmp/error.txt 2>&1; echo "exit_code=$?" >> ~/tmp/error.txt; cd ~/tmp && git add error.txt && git commit -m "mfu bench" && git push
+cd /home/z30086261/TileOPs
+PYTHONUNBUFFERED=1 python3 /home/z30086261/tmp/mha_stage_c/bench_mfu.py > /home/z30086261/tmp/error.txt 2>&1
+echo "exit_code=$?" >> /home/z30086261/tmp/error.txt
+cd /home/z30086261/tmp && git add error.txt && git commit -m "mfu bench" && git push
