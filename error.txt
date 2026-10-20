@@ -1,6 +1,4 @@
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
-2026-10-20 11:38:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
-2026-10-20 11:38:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
 /home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   rows = bt_t[:, pos // page_size] * page_size + pos % page_size
 
