@@ -106,7 +106,8 @@ def bench_one(name, B, H, kv_rows, page_size, fill, dtype):
     amort_ms = (time.perf_counter() - t0) * 1e3 / REPEAT
 
     real_sum = int(real.sum().item())
-    flops = 4 * B * H * 1 * real_sum * D  # QK^T + PV，S_q=1
+    # QK^T + PV，S_q=1；real_sum 已是跨 batch 求和，不再乘 B
+    flops = 4 * H * 1 * real_sum * D
     med_us = statistics.median(per_call) * 1e3
     amort_us = amort_ms * 1e3
     row = {
