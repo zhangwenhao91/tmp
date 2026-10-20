@@ -2,19 +2,16 @@ Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 === Part1: rl 扫描（per-(b,row) max_abs）===
 /home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   rows = bt_t[:, pos // page_size] * page_size + pos % page_size
-  rl=1024  bad=4096  per-(b,row): 2.9e+00 2.7e+00 2.8e+00 2.6e+00; 3.4e+00 3.3e+00 3.5e+00 2.7e+00
-  rl=1000  bad=4096  per-(b,row): 2.5e+00 3.1e+00 3.1e+00 2.6e+00; 3.3e+00 3.3e+00 2.6e+00 3.3e+00
-  rl=992   bad=4093  per-(b,row): 3.3e+00 3.4e+00 3.1e+00 3.4e+00; 3.1e+00 2.7e+00 2.7e+00 2.7e+00
-  rl=960   bad=4091  per-(b,row): 2.4e+00 2.5e+00 2.6e+00 2.5e+00; 2.9e+00 3.1e+00 3.1e+00 3.2e+00
-  rl=896   bad=4096  per-(b,row): 3.3e+00 3.0e+00 3.1e+00 3.3e+00; 2.6e+00 3.3e+00 3.3e+00 3.1e+00
-  rl=768   bad=4090  per-(b,row): 3.1e+00 2.6e+00 3.0e+00 3.0e+00; 2.9e+00 2.5e+00 2.2e+00 2.3e+00
-  rl=704   bad=4091  per-(b,row): 3.3e+00 3.0e+00 3.2e+00 3.0e+00; 3.2e+00 3.0e+00 3.0e+00 2.9e+00
-
-=== Part2: 同内容 q 行探针（rl=1000, B=1）===
-2026-10-20 11:24:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
-2026-10-20 11:24:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
-  输出行0 -> 最像掩码行0 (差=3.26e+00)；次近=掩码行1 (差=3.26e+00)
-  输出行1 -> 最像掩码行0 (差=3.26e+00)；次近=掩码行1 (差=3.26e+00)
-  输出行2 -> 最像掩码行0 (差=3.26e+00)；次近=掩码行1 (差=3.26e+00)
-  输出行3 -> 最像掩码行0 (差=3.26e+00)；次近=掩码行1 (差=3.26e+00)
-exit_code=0
+Traceback (most recent call last):
+  File "/home/z30086261/tmp/mha_stage_c/diag2_specdec.py", line 54, in <module>
+    exp = ref_attn(q, k, v, real)
+          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z30086261/tmp/mha_stage_c/diag2_specdec.py", line 42, in ref_attn
+    s = torch.einsum("hd,rhd->hr", q[b, i].float(), kb[:seen])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.0/lib/python3.11/site-packages/torch/functional.py", line 422, in einsum
+    return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: einsum(): the number of subscripts in the equation (3) does not match the number of dimensions (2) for operand 1 and no ellipsis was given
+[ERROR] 2026-10-20-11:27:30 (PID:100148, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+exit_code=1
