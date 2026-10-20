@@ -287,8 +287,8 @@ Obtaining file:///root/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=bbbb71d3981ee46707147bdc0b5ad12c4e41bc06f58f5c11c36316ae12624dd5
-  Stored in directory: /tmp/pip-ephem-wheel-cache-_9b8ellv/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5691 sha256=f296b283574fec6726895a077680c8851989d0b51453f4d0ba9a4ab95de8f38a
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ace_p08j/wheels/7d/c2/e5/d190f17150a892c7de3b6ae77292a56d1ae2f5bb2e24d5acf4
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -306,14 +306,14 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f1b2c885d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f931668dd00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7f1b2c885ee0>
+MHA builder: <function build_mha_decode_paged at 0x7f931668dee0>
 + python3 -m pytest tests/ops/test_mha.py -m smoke --tileops-device npu --tileops-target detect -v
 + tail -100
 ============================= test session starts ==============================
@@ -345,7 +345,7 @@ tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-
     rows = bt_t[:, pos // page_size] * page_size + pos % page_size
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 5.36s ============
+=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 5.49s ============
 + PYTEST_RC=0
 + echo pytest_rc=0
 pytest_rc=0
@@ -379,7 +379,7 @@ tests/ops/test_mha.py: 42 warnings
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================= 7 passed, 6 deselected, 43 warnings in 5.40s =================
+================= 7 passed, 6 deselected, 43 warnings in 5.44s =================
 + SHORT_RC=0
 + echo cache_shorter_rc=0
 cache_shorter_rc=0
@@ -389,10 +389,10 @@ cache_shorter_rc=0
 + tail -10
 /root/TileOPs/bench_bw.py:36: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   y = torch.empty_like(x)
-copy   :  1443.7 GB/s  (2x2.1GB 读+写, 2.97ms)
-mul    :  1433.3 GB/s  (2x2.1GB 读+写, 3.00ms)
-strided:  1253.7 GB/s  (2x0.067GB 跨步读+写, 0.11ms)
-PEAK_GBPS=1444
+copy   :  1443.5 GB/s  (2x2.1GB 读+写, 2.98ms)
+mul    :  1433.4 GB/s  (2x2.1GB 读+写, 3.00ms)
+strided:  1250.6 GB/s  (2x0.067GB 跨步读+写, 0.11ms)
+PEAK_GBPS=1443
 ++ python3 bench_bw.py
 ++ sed -n 's/PEAK_GBPS=\([0-9]*\).*/\1/p'
 + MEASURED_PEAK=1443
@@ -406,14 +406,17 @@ peak_bw=1443.0GB/s warmup=3 repeat=20 num_stages=1 per-call 口径含 builder ho
 shape                        dtype      first(ms)  median(ms)  amort(ms)   eff(GB)     med GB/s   amort GB/s    MBU%
 /root/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   rows = bt_t[:, pos // page_size] * page_size + pos % page_size
-s1_B1H8_kv2048_p128          float16   first=    99.1ms med=   0.131ms amort=   0.118ms eff= 0.0084GB med=    63.9GB/s (  4.43%) amort=    71.1GB/s (  4.93%)
-s2_B8H8_kv2048_p128          float16   first=    66.2ms med=   0.133ms amort=   0.119ms eff= 0.0671GB med=   505.1GB/s (  35.0%) amort=   562.3GB/s ( 38.97%)
-s3_B16H8_kv1024_p128         float16   first=    65.3ms med=   0.131ms amort=   0.119ms eff= 0.0672GB med=   512.0GB/s ( 35.48%) amort=   562.3GB/s ( 38.97%)
-s4_B8H32_kv4096_p256         float16   first=    65.3ms med=   0.288ms amort=   0.252ms eff=  0.537GB med=  1867.0GB/s (129.39%) amort=  2128.8GB/s (147.53%)
-s5_B8H8_kv2048_p128_half     float16   first=     4.2ms med=   0.398ms amort=   0.383ms eff= 0.0336GB med=    84.4GB/s (  5.85%) amort=    87.8GB/s (  6.08%)
-s6_B4H8_kv4096_p256_half     float16   first=    64.7ms med=   0.402ms amort=   0.382ms eff= 0.0336GB med=    83.4GB/s (  5.78%) amort=    87.8GB/s (  6.09%)
-s7_bf16_B8H8_kv2048_p128     bfloat16  first=    64.7ms med=   0.129ms amort=   0.118ms eff= 0.0671GB med=   520.3GB/s ( 36.05%) amort=   569.0GB/s ( 39.43%)
-BENCH_JSON: [{"name": "s1_B1H8_kv2048_p128", "dtype": "float16", "first_ms": 99.1, "median_ms": 0.131, "amortized_ms": 0.118, "eff_GB": 0.0084, "median_Gbps": 63.9, "amortized_Gbps": 71.1, "median_MBU": 4.43, "amortized_MBU": 4.93}, {"name": "s2_B8H8_kv2048_p128", "dtype": "float16", "first_ms": 66.2, "median_ms": 0.133, "amortized_ms": 0.119, "eff_GB": 0.0671, "median_Gbps": 505.1, "amortized_Gbps": 562.3, "median_MBU": 35.0, "amortized_MBU": 38.97}, {"name": "s3_B16H8_kv1024_p128", "dtype": "float16", "first_ms": 65.3, "median_ms": 0.131, "amortized_ms": 0.119, "eff_GB": 0.0672, "median_Gbps": 512.0, "amortized_Gbps": 562.3, "median_MBU": 35.48, "amortized_MBU": 38.97}, {"name": "s4_B8H32_kv4096_p256", "dtype": "float16", "first_ms": 65.3, "median_ms": 0.288, "amortized_ms": 0.252, "eff_GB": 0.537, "median_Gbps": 1867.0, "amortized_Gbps": 2128.8, "median_MBU": 129.39, "amortized_MBU": 147.53}, {"name": "s5_B8H8_kv2048_p128_half", "dtype": "float16", "first_ms": 4.2, "median_ms": 0.398, "amortized_ms": 0.383, "eff_GB": 0.0336, "median_Gbps": 84.4, "amortized_Gbps": 87.8, "median_MBU": 5.85, "amortized_MBU": 6.08}, {"name": "s6_B4H8_kv4096_p256_half", "dtype": "float16", "first_ms": 64.7, "median_ms": 0.402, "amortized_ms": 0.382, "eff_GB": 0.0336, "median_Gbps": 83.4, "amortized_Gbps": 87.8, "median_MBU": 5.78, "amortized_MBU": 6.09}, {"name": "s7_bf16_B8H8_kv2048_p128", "dtype": "bfloat16", "first_ms": 64.7, "median_ms": 0.129, "amortized_ms": 0.118, "eff_GB": 0.0671, "median_Gbps": 520.3, "amortized_Gbps": 569.0, "median_MBU": 36.05, "amortized_MBU": 39.43}]
+s1_B1H8_kv2048_p128          float16   first=    94.7ms med=   0.128ms amort=   0.116ms eff= 0.0084GB med=    65.4GB/s (  4.54%) amort=    72.1GB/s (   5.0%)
+s2_B8H8_kv2048_p128          float16   first=    64.7ms med=   0.132ms amort=   0.118ms eff= 0.0671GB med=   508.7GB/s ( 35.25%) amort=   571.1GB/s ( 39.58%)
+s3_B16H8_kv1024_p128         float16   first=    64.2ms med=    0.13ms amort=   0.118ms eff= 0.0672GB med=   517.4GB/s ( 35.86%) amort=   569.4GB/s ( 39.46%)
+s4_B8H32_kv4096_p256         float16   first=    64.1ms med=   0.287ms amort=   0.251ms eff=  0.537GB med=  1872.9GB/s (129.79%) amort=  2139.7GB/s (148.28%)
+s5_B8H8_kv2048_p128_half     float16   first=     4.1ms med=   0.401ms amort=   0.386ms eff= 0.0336GB med=    83.8GB/s (  5.81%) amort=    87.0GB/s (  6.03%)
+s6_B4H8_kv4096_p256_half     float16   first=    63.8ms med=   0.396ms amort=   0.382ms eff= 0.0336GB med=    84.7GB/s (  5.87%) amort=    87.9GB/s (  6.09%)
+s7_bf16_B8H8_kv2048_p128     bfloat16  first=    63.1ms med=    0.13ms amort=   0.116ms eff= 0.0671GB med=   515.9GB/s ( 35.75%) amort=   577.5GB/s ( 40.02%)
+2026-10-20 09:31:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-20 09:31:47  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+s8_B2H32_kv16384_p256        float16   first=  3138.7ms med=   0.446ms amort=   0.409ms eff= 0.5369GB med=  1205.1GB/s ( 83.51%) amort=  1311.3GB/s ( 90.87%)
+BENCH_JSON: [{"name": "s1_B1H8_kv2048_p128", "dtype": "float16", "first_ms": 94.7, "median_ms": 0.128, "amortized_ms": 0.116, "eff_GB": 0.0084, "median_Gbps": 65.4, "amortized_Gbps": 72.1, "median_MBU": 4.54, "amortized_MBU": 5.0}, {"name": "s2_B8H8_kv2048_p128", "dtype": "float16", "first_ms": 64.7, "median_ms": 0.132, "amortized_ms": 0.118, "eff_GB": 0.0671, "median_Gbps": 508.7, "amortized_Gbps": 571.1, "median_MBU": 35.25, "amortized_MBU": 39.58}, {"name": "s3_B16H8_kv1024_p128", "dtype": "float16", "first_ms": 64.2, "median_ms": 0.13, "amortized_ms": 0.118, "eff_GB": 0.0672, "median_Gbps": 517.4, "amortized_Gbps": 569.4, "median_MBU": 35.86, "amortized_MBU": 39.46}, {"name": "s4_B8H32_kv4096_p256", "dtype": "float16", "first_ms": 64.1, "median_ms": 0.287, "amortized_ms": 0.251, "eff_GB": 0.537, "median_Gbps": 1872.9, "amortized_Gbps": 2139.7, "median_MBU": 129.79, "amortized_MBU": 148.28}, {"name": "s5_B8H8_kv2048_p128_half", "dtype": "float16", "first_ms": 4.1, "median_ms": 0.401, "amortized_ms": 0.386, "eff_GB": 0.0336, "median_Gbps": 83.8, "amortized_Gbps": 87.0, "median_MBU": 5.81, "amortized_MBU": 6.03}, {"name": "s6_B4H8_kv4096_p256_half", "dtype": "float16", "first_ms": 63.8, "median_ms": 0.396, "amortized_ms": 0.382, "eff_GB": 0.0336, "median_Gbps": 84.7, "amortized_Gbps": 87.9, "median_MBU": 5.87, "amortized_MBU": 6.09}, {"name": "s7_bf16_B8H8_kv2048_p128", "dtype": "bfloat16", "first_ms": 63.1, "median_ms": 0.13, "amortized_ms": 0.116, "eff_GB": 0.0671, "median_Gbps": 515.9, "amortized_Gbps": 577.5, "median_MBU": 35.75, "amortized_MBU": 40.02}, {"name": "s8_B2H32_kv16384_p256", "dtype": "float16", "first_ms": 3138.7, "median_ms": 0.446, "amortized_ms": 0.409, "eff_GB": 0.5369, "median_Gbps": 1205.1, "amortized_Gbps": 1311.3, "median_MBU": 83.51, "amortized_MBU": 90.87}]
 + BENCH_RC=0
 + echo bench_rc=0
 bench_rc=0
