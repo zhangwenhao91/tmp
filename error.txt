@@ -1,7 +1,29 @@
-cd /home/z30086261/tilelang-asc
+root@ubuntu162:/home/z30086261/tilelang-asc/examples/ascend/flash_attention# cd /home/z30086261/tilelang-asc
 git fetch origin pull/1/head && git reset --hard FETCH_HEAD
-git log --oneline -1   # 应为 8718ed46
-
-source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
+git log --oneline -1
+remote: Enumerating objects: 11, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 6 (delta 5), reused 6 (delta 5), pack-reused 0 (from 0)
+Unpacking objects: 100% (6/6), 842 bytes | 842.00 KiB/s, done.
+From https://github.com/HhpPCc007/tilelang-asc
+ * branch              refs/pull/1/head -> FETCH_HEAD
+HEAD is now at 8718ed46 bench the raw kernel launch, not the host wrapper
+8718ed46 (HEAD -> pr-paged-mha-decode) bench the raw kernel launch, not the host wrapper
+root@ubuntu162:/home/z30086261/tilelang-asc# source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh 
 cd examples/ascend/flash_attention
 PYTHONUNBUFFERED=1 python example_mha_paged_decode.py 2>&1 | tee /tmp/paged_bench.log
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+correctness:
+/home/z30086261/tilelang-asc/examples/ascend/flash_attention/core_paged_decode.py:371: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  rows = block_table[:, pos // page_size] * page_size + pos % page_size
+  basic fp16 B1 H8 kv2048 p128 ............ PASS
+  NaN pool, rl=[700, 3], p256 D64 ......... PASS
+  causal S_q=4, no-key rows ............... PASS
+  bf16 B2 H8 kv2048 p128 .................. PASS
+benchmark:
+[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
+    [B=8 H=8 kv=2048 S_q=1 D=128 p=256 float16] 39.07 us/iter  |  1719 GB/s effective
+[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
+    [B=2 H=32 kv=16384 S_q=1 D=128 p=256 float16] 411.96 us/iter  |  1303 GB/s effective
+root@ubuntu162:/home/z30086261/tilelang-asc/examples/ascend/flash_attention# 
