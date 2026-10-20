@@ -30,19 +30,18 @@ OP = MHADecodePagedWithKVCacheFwdOp(PAGE, target="ascend")
 
 
 def ref_attn(q, k, v, real, mask_cut=None):
-    """纯 torch 参考。mask_cut: 每行额外截断键数（模拟 causal 行差异），None=不截。"""
-    S_q = q.shape[1]
+    """纯 torch 参考，按 head 分组。mask_cut: 每行额外截断键数（模拟 causal 行差异）。"""
+    S_q, n_h = q.shape[1], q.shape[2]
     out = torch.empty_like(q, dtype=torch.float32)
     for b in range(q.shape[0]):
         rl = int(real[b])
-        kb = k[b, :rl].float()
-        vb = v[b, :rl].float()
+        kb, vb = k[b, :rl].float(), v[b, :rl].float()  # [rl, H, D]
         for i in range(S_q):
-            seen = rl - S_q + i if mask_cut is None else rl - (mask_cut[i] if i < S_q else 10**9)
+            seen = rl - S_Q + i if mask_cut is None else rl - (mask_cut[i] if i < S_Q else 10**9)
             seen = max(seen, 0)
-            s = q[b, i].float() @ kb[:seen].T
+            s = torch.einsum("hd,rhd->hr", q[b, i].float(), kb[:seen])
             p = torch.softmax(s, dim=-1)
-            out[b, i] = p @ vb[:seen]
+            out[b, i] = torch.einsum("hr,rhd->hd", p, vb[:seen])
     return out
 
 
