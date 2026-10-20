@@ -1,26 +1,2 @@
-root@ubuntu162:/home/z30086261# cd /home/z30086261/tilelang-asc
-git fetch origin pull/1/head:pr-paged-mha-decode
-git checkout pr-paged-mha-decode && git log --oneline -1
-remote: Enumerating objects: 9, done.
-remote: Counting objects: 100% (9/9), done.
-remote: Compressing objects: 100% (4/4), done.
-remote: Total 9 (delta 5), reused 9 (delta 5), pack-reused 0 (from 0)
-Unpacking objects: 100% (9/9), 9.98 KiB | 4.99 MiB/s, done.
-From https://github.com/HhpPCc007/tilelang-asc
- * [new ref]           refs/pull/1/head -> pr-paged-mha-decode
-Switched to branch 'pr-paged-mha-decode'
-e2ef0ab8 (HEAD -> pr-paged-mha-decode) [Ascend][Example] Paged MHA decode kernel over a fragmented KV cache
-root@ubuntu162:/home/z30086261/tilelang-asc# source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh 
 cd /home/z30086261/tilelang-asc/examples/ascend/flash_attention
-PYTHONUNBUFFERED=1 python example_mha_paged_decode.py --no-perf 2>&1 | tee /tmp/paged_test.log
-Loading tilelang libs from dev root: /home/z30086261/tilelang/build
-correctness:
-/home/z30086261/tilelang-asc/examples/ascend/flash_attention/core_paged_decode.py:371: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
-  rows = block_table[:, pos // page_size] * page_size + pos % page_size
-  basic fp16 B1 H8 kv2048 p128 ............ PASS
-  NaN pool, rl=[700, 3], p256 D64 ......... PASS
-  causal S_q=4, no-key rows ............... PASS
-2026-10-20 10:12:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
-2026-10-20 10:12:44  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
-  bf16 B2 H8 kv2048 p128 .................. PASS
-root@ubuntu162:/home/z30086261/tilelang-asc/examples/ascend/flash_attention# 
+PYTHONUNBUFFERED=1 python example_mha_paged_decode.py 2>&1 | tee /tmp/paged_bench.log
