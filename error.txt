@@ -1,14 +1,7 @@
-root@ubuntu162:/home/z30086261# echo $ASCEND_RT_VISIBLE_DEVICES          # 确认环境变量没被改乱
-ls -l /dev/davinci* 2>/dev/null          # 确认设备节点都在
-tail -30 ~/ascend/log/plog/*.log 2>/dev/null   # 运行时日志里的真实原因
-4
-crw-rw---- 1 114 118 235, 0 Oct 20 16:54 /dev/davinci0
-crw-rw---- 1 114 118 235, 1 Oct 20 16:54 /dev/davinci1
-crw-rw---- 1 114 118 235, 2 Oct 20 16:54 /dev/davinci2
-crw-rw---- 1 114 118 235, 3 Oct 20 16:54 /dev/davinci3
-crw-rw---- 1 114 118 235, 4 Oct 20 16:54 /dev/davinci4
-crw-rw---- 1 114 118 235, 5 Oct 20 16:54 /dev/davinci5
-crw-rw---- 1 114 118 235, 6 Oct 20 16:54 /dev/davinci6
-crw-rw---- 1 114 118 235, 7 Oct 20 16:54 /dev/davinci7
-crw-rw---- 1 114 118 236, 0 Oct 20 16:54 /dev/davinci_manager
+root@ubuntu162:/home/z30086261# echo $ASCEND_HOME_PATH
+/usr/local/Ascend/ascend-toolkit/latest
+root@ubuntu162:/home/z30086261# source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh 
+root@ubuntu162:/home/z30086261# python3 -c "import torch, torch_npu; print(torch.randn(4, device='npu'))"
+[W1020 20:02:09.064116589 ToKernelNpu.cpp:164] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+tensor([ 0.3835, -0.1653, -1.6766,  0.7863], device='npu:0')
 root@ubuntu162:/home/z30086261# 
