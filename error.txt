@@ -1,3 +1,14 @@
-echo $ASCEND_RT_VISIBLE_DEVICES          # 确认环境变量没被改乱
+root@ubuntu162:/home/z30086261# echo $ASCEND_RT_VISIBLE_DEVICES          # 确认环境变量没被改乱
 ls -l /dev/davinci* 2>/dev/null          # 确认设备节点都在
 tail -30 ~/ascend/log/plog/*.log 2>/dev/null   # 运行时日志里的真实原因
+4
+crw-rw---- 1 114 118 235, 0 Oct 20 16:54 /dev/davinci0
+crw-rw---- 1 114 118 235, 1 Oct 20 16:54 /dev/davinci1
+crw-rw---- 1 114 118 235, 2 Oct 20 16:54 /dev/davinci2
+crw-rw---- 1 114 118 235, 3 Oct 20 16:54 /dev/davinci3
+crw-rw---- 1 114 118 235, 4 Oct 20 16:54 /dev/davinci4
+crw-rw---- 1 114 118 235, 5 Oct 20 16:54 /dev/davinci5
+crw-rw---- 1 114 118 235, 6 Oct 20 16:54 /dev/davinci6
+crw-rw---- 1 114 118 235, 7 Oct 20 16:54 /dev/davinci7
+crw-rw---- 1 114 118 236, 0 Oct 20 16:54 /dev/davinci_manager
+root@ubuntu162:/home/z30086261# 
