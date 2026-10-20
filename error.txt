@@ -1,12 +1,14 @@
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 /home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   rows = bt_t[:, pos // page_size] * page_size + pos % page_size
-
-[A 乱序表(官方生成)] 输出行 -> 最像的语义行（应为恒等 r->r）
-  batch0: r0->0(2.0e-02) r1->1(3.5e-02) r2->2(1.4e-02) r3->3(2.4e-02) r4->4(1.4e-02) r5->5(1.0e-02) r6->6(2.0e-02) r7->7(3.9e-02) r8->8(2.2e-02) r9->9(2.3e-02) r10->10(8.7e-03) r11->11(7.4e-03) r12->12(4.6e-03) r13->13(5.1e-03) r14->14(4.8e-03) r15->15(6.4e-05)
-  batch1: r0->0(2.0e-02) r1->1(2.1e-02) r2->2(3.8e-02) r3->3(3.2e-02) r4->4(1.4e-02) r5->5(2.9e-02) r6->6(1.4e-02) r7->7(1.0e-02) r8->8(2.5e-02) r9->9(1.3e-02) r10->10(1.7e-02) r11->11(9.6e-03) r12->12(9.4e-03) r13->13(1.3e-02) r14->14(6.7e-03) r15->15(5.5e-05)
-
-[B 顺序表] 输出行 -> 最像的语义行（应为恒等 r->r）
-  batch0: r0->0(2.9e-02) r1->1(2.2e-02) r2->2(2.7e-02) r3->3(1.6e-02) r4->4(2.7e-02) r5->5(1.6e-02) r6->6(2.3e-02) r7->7(2.0e-02) r8->8(1.8e-02) r9->9(2.4e-02) r10->10(1.3e-02) r11->11(1.1e-02) r12->12(1.5e-02) r13->13(4.6e-03) r14->14(7.6e-03) r15->15(6.1e-05)
-  batch1: r0->0(0.0e+00) r1->0(0.0e+00) r2->0(0.0e+00) r3->0(0.0e+00) r4->0(0.0e+00) r5->0(0.0e+00) r6->0(0.0e+00) r7->0(0.0e+00) r8->0(0.0e+00) r9->0(0.0e+00) r10->0(0.0e+00) r11->0(0.0e+00) r12->0(0.0e+00) r13->0(0.0e+00) r14->0(0.0e+00) r15->0(0.0e+00)
+[W1020 11:47:33.892240774 ToKernelNpu.cpp:164] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+MHADecodePagedWithKVCacheFwdOp manifest workloads (official gen/ref/verification):
+  serving-p128         PASS  first=   94.5ms med=0.139ms
+  serving-b2           PASS  first=   66.0ms med=0.127ms
+  serving-kv1k         PASS  first=   64.3ms med=0.126ms
+  serving-kv512        PASS  first=   64.4ms med=0.126ms
+  speculative-decode   PASS  first=   66.3ms med=0.261ms
+  opt-1.3b-b1          PASS  first=   64.1ms med=0.126ms
+  opt-1.3b-b16         PASS  first=   67.6ms med=1.014ms
+manifest_workloads: 7/7 PASS
 exit_code=0
