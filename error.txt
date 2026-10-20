@@ -27,8 +27,8 @@
 ++ read -r PATH
 +++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ccec_compiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/profiler/bin:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/ascend_system_advisor/asys:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/show_kernel_debug_data:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/tools/msobjdump:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/show_kernel_debug_data/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/msobjdump/:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascc:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/ascend_system_advisor/asys:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/bin/:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ascc:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/ccec_compiler/bin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/bin:/usr/local/python3.11.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin
 +++ tr : '\n'
-+++ tr '\n' :
 +++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
++++ tr '\n' :
 +++ sed 's/:$//'
 ++ export PATH
 ++ remove_env LD_LIBRARY_PATH '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
@@ -38,8 +38,8 @@
 ++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
 ++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
 ++ read -r LD_LIBRARY_PATH
-+++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
 +++ tr : '\n'
++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
 +++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
 +++ tr '\n' :
 +++ sed 's/:$//'
@@ -429,6 +429,7 @@ From https://github.com/zhangwenhao91/TileOPs
  * branch              ascend-mha-decode -> FETCH_HEAD
 + git checkout ascend-mha-decode
 Already on 'ascend-mha-decode'
+M	pyproject.toml
 Your branch is up to date with 'origin/ascend-mha-decode'.
 + git reset --hard origin/ascend-mha-decode
 HEAD is now at 883b26e8 ascend mha: num_stages switch, T.Pipelined double-buffer variant behind TILEOPS_MHA_NUM_STAGES
@@ -447,8 +448,8 @@ Obtaining file:///home/z30086261/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5701 sha256=5a9a3f39b41e8c48e37f71f643c85cedf1fc17d30628c9563bd097d645afcde4
-  Stored in directory: /tmp/pip-ephem-wheel-cache-n45eztl8/wheels/ed/c6/c0/ced3f141bab674e26123db594d8737ff57ad9ea7bdb4a0dc85
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5701 sha256=63e7018d0734188c829297a7c156141f6a47aa42ed46c53c8dfaeabae97aae8c
+  Stored in directory: /tmp/pip-ephem-wheel-cache-5m7i_l9w/wheels/ed/c6/c0/ced3f141bab674e26123db594d8737ff57ad9ea7bdb4a0dc85
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -466,14 +467,14 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f198d4f1d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f8eaffa5d00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7f198d4f2020>
+MHA builder: <function build_mha_decode_paged at 0x7f8eaffa6020>
 + python3 -m pytest tests/ops/test_mha.py -m smoke --tileops-device npu --tileops-target detect -v
 + tail -100
 ============================= test session starts ==============================
@@ -505,12 +506,12 @@ tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-
     rows = bt_t[:, pos // page_size] * page_size + pos % page_size
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 5.67s ============
+=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 5.39s ============
 + PYTEST_RC=0
 + echo pytest_rc=0
 pytest_rc=0
-+ tail -60
 + python3 -m pytest tests/ops/test_mha.py -k 'cache_shorter or table_width' --tileops-device npu --tileops-target detect -v
++ tail -60
 ============================= test session starts ==============================
 platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
 cachedir: .pytest_cache
@@ -539,12 +540,13 @@ tests/ops/test_mha.py: 42 warnings
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================= 7 passed, 6 deselected, 43 warnings in 5.40s =================
+================= 7 passed, 6 deselected, 43 warnings in 5.46s =================
 + SHORT_RC=0
 + echo cache_shorter_rc=0
 cache_shorter_rc=0
-+ python3 -m pytest tests/ops/test_compile_boundary.py -k mha_decode_paged --tileops-device npu --tileops-target detect -v
++ python3 -m pip install einops
 + tail -40
++ python3 -m pytest tests/ops/test_compile_boundary.py -k mha_decode_paged --tileops-device npu --tileops-target detect -v
 ============================= test session starts ==============================
 platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
 cachedir: .pytest_cache
@@ -553,36 +555,77 @@ hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/home/z3
 rootdir: /home/z30086261/TileOPs
 configfile: pyproject.toml
 plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
-collecting ... collected 0 items / 1 error
+collecting ... collected 198 items / 198 deselected / 0 selected
 
-==================================== ERRORS ====================================
-_____________ ERROR collecting tests/ops/test_compile_boundary.py ______________
-ImportError while importing test module '/home/z30086261/TileOPs/tests/ops/test_compile_boundary.py'.
-Hint: make sure your test modules/packages have valid Python names.
-Traceback:
-/usr/local/python3.11.0/lib/python3.11/importlib/__init__.py:126: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-tests/ops/test_compile_boundary.py:101: in <module>
-    from workloads.attention.mla import MLADecodeWorkload
-workloads/attention/mla.py:3: in <module>
-    from einops import einsum, rearrange
-E   ModuleNotFoundError: No module named 'einops'
-=========================== short test summary info ============================
-ERROR tests/ops/test_compile_boundary.py
-!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
-=============================== 1 error in 4.68s ===============================
-+ CB_RC=2
-+ echo compile_boundary_rc=2
-compile_boundary_rc=2
-+ python3 -m pytest benchmarks/ops/bench_mha.py --tileops-device npu --tileops-target detect -v
-+ tail -60
-ERROR: --tileops-device=npu: benchmarks time with CUDA events and CUPTI, so they run on cuda only
-
-+ BM_RC=4
-+ echo 'bench_manifest_rc=4 (记录用，不门禁)'
-bench_manifest_rc=4 (记录用，不门禁)
-+ cp /home/z30086261/tmp/mha_stage_c/bench_bw.py /home/z30086261/tmp/mha_stage_c/bench_mha.py /root/TileOPs/
-cp: target '/root/TileOPs/': No such file or directory
+=========================== 198 deselected in 4.30s ============================
++ CB_RC=5
++ echo compile_boundary_rc=5
+compile_boundary_rc=5
++ cp /home/z30086261/tmp/mha_stage_c/manifest_workloads.py .
++ python3 manifest_workloads.py
++ tail -20
+  File "/home/z30086261/TileOPs/manifest_workloads.py", line 84, in main
+    rows.append(run_case(*spec))
+                ^^^^^^^^^^^^^^^
+  File "/home/z30086261/TileOPs/manifest_workloads.py", line 74, in run_case
+    checker(got, expected)  # 官方判据：assert_close(atol=1e-3) + cosine>0.99
+    ^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'Custom' object is not callable
+  opt-1.3b-b1          FAILED: 'Custom' object is not callable
+2026-10-20 11:06:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-20 11:06:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
+Traceback (most recent call last):
+  File "/home/z30086261/TileOPs/manifest_workloads.py", line 84, in main
+    rows.append(run_case(*spec))
+                ^^^^^^^^^^^^^^^
+  File "/home/z30086261/TileOPs/manifest_workloads.py", line 74, in run_case
+    checker(got, expected)  # 官方判据：assert_close(atol=1e-3) + cosine>0.99
+    ^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'Custom' object is not callable
+  opt-1.3b-b16         FAILED: 'Custom' object is not callable
+manifest_workloads: 0/7 PASS
++ MW_RC=0
++ echo manifest_rc=0
+manifest_rc=0
++ cp /home/z30086261/tmp/mha_stage_c/bench_bw.py /home/z30086261/tmp/mha_stage_c/bench_mha.py .
++ cd /home/z30086261/TileOPs
++ python3 bench_bw.py
++ tail -10
+/home/z30086261/TileOPs/bench_bw.py:36: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  y = torch.empty_like(x)
+copy   :  1442.7 GB/s  (2x2.1GB 读+写, 2.98ms)
+mul    :  1432.4 GB/s  (2x2.1GB 读+写, 3.00ms)
+strided:  1249.1 GB/s  (2x0.067GB 跨步读+写, 0.11ms)
+PEAK_GBPS=1443
+++ python3 bench_bw.py
+++ sed -n 's/PEAK_GBPS=\([0-9]*\).*/\1/p'
++ MEASURED_PEAK=1444
++ echo measured_peak=1444
+measured_peak=1444
++ BENCH_PEAK_BW_GBPS=1444
++ python3 bench_mha.py
++ tail -40
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+peak_bw=1444.0GB/s warmup=3 repeat=20 num_stages=1 per-call 口径含 builder host 开销（rl/bt D2H + launch + contiguous）
+shape                        dtype      first(ms)  median(ms)  amort(ms)   eff(GB)     med GB/s   amort GB/s    MBU%
+/home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  rows = bt_t[:, pos // page_size] * page_size + pos % page_size
+s1_B1H8_kv2048_p128          float16   first=    94.8ms med=   0.133ms amort=   0.119ms eff= 0.0084GB med=    63.1GB/s (  4.37%) amort=    70.8GB/s (   4.9%)
+s2_B8H8_kv2048_p128          float16   first=    66.0ms med=   0.133ms amort=    0.12ms eff= 0.0671GB med=   503.8GB/s ( 34.89%) amort=   560.1GB/s ( 38.79%)
+s3_B16H8_kv1024_p128         float16   first=    65.2ms med=   0.132ms amort=   0.121ms eff= 0.0672GB med=   507.2GB/s ( 35.13%) amort=   557.0GB/s ( 38.57%)
+s4_B8H32_kv4096_p256         float16   first=    65.2ms med=   0.287ms amort=   0.252ms eff=  0.537GB med=  1869.4GB/s (129.46%) amort=  2130.6GB/s (147.55%)
+s5_B8H8_kv2048_p128_half     float16   first=     4.0ms med=   0.399ms amort=   0.385ms eff= 0.0336GB med=    84.2GB/s (  5.83%) amort=    87.3GB/s (  6.05%)
+s6_B4H8_kv4096_p256_half     float16   first=    65.0ms med=   0.396ms amort=    0.38ms eff= 0.0336GB med=    84.7GB/s (  5.86%) amort=    88.4GB/s (  6.12%)
+s7_bf16_B8H8_kv2048_p128     bfloat16  first=    64.3ms med=   0.132ms amort=   0.119ms eff= 0.0671GB med=   507.9GB/s ( 35.17%) amort=   561.9GB/s ( 38.91%)
+s8_B2H32_kv16384_p256        float16   first=    65.0ms med=   0.447ms amort=    0.41ms eff= 0.5369GB med=  1199.8GB/s ( 83.09%) amort=  1311.0GB/s ( 90.79%)
+BENCH_JSON: [{"name": "s1_B1H8_kv2048_p128", "dtype": "float16", "first_ms": 94.8, "median_ms": 0.133, "amortized_ms": 0.119, "eff_GB": 0.0084, "median_Gbps": 63.1, "amortized_Gbps": 70.8, "median_MBU": 4.37, "amortized_MBU": 4.9}, {"name": "s2_B8H8_kv2048_p128", "dtype": "float16", "first_ms": 66.0, "median_ms": 0.133, "amortized_ms": 0.12, "eff_GB": 0.0671, "median_Gbps": 503.8, "amortized_Gbps": 560.1, "median_MBU": 34.89, "amortized_MBU": 38.79}, {"name": "s3_B16H8_kv1024_p128", "dtype": "float16", "first_ms": 65.2, "median_ms": 0.132, "amortized_ms": 0.121, "eff_GB": 0.0672, "median_Gbps": 507.2, "amortized_Gbps": 557.0, "median_MBU": 35.13, "amortized_MBU": 38.57}, {"name": "s4_B8H32_kv4096_p256", "dtype": "float16", "first_ms": 65.2, "median_ms": 0.287, "amortized_ms": 0.252, "eff_GB": 0.537, "median_Gbps": 1869.4, "amortized_Gbps": 2130.6, "median_MBU": 129.46, "amortized_MBU": 147.55}, {"name": "s5_B8H8_kv2048_p128_half", "dtype": "float16", "first_ms": 4.0, "median_ms": 0.399, "amortized_ms": 0.385, "eff_GB": 0.0336, "median_Gbps": 84.2, "amortized_Gbps": 87.3, "median_MBU": 5.83, "amortized_MBU": 6.05}, {"name": "s6_B4H8_kv4096_p256_half", "dtype": "float16", "first_ms": 65.0, "median_ms": 0.396, "amortized_ms": 0.38, "eff_GB": 0.0336, "median_Gbps": 84.7, "amortized_Gbps": 88.4, "median_MBU": 5.86, "amortized_MBU": 6.12}, {"name": "s7_bf16_B8H8_kv2048_p128", "dtype": "bfloat16", "first_ms": 64.3, "median_ms": 0.132, "amortized_ms": 0.119, "eff_GB": 0.0671, "median_Gbps": 507.9, "amortized_Gbps": 561.9, "median_MBU": 35.17, "amortized_MBU": 38.91}, {"name": "s8_B2H32_kv16384_p256", "dtype": "float16", "first_ms": 65.0, "median_ms": 0.447, "amortized_ms": 0.41, "eff_GB": 0.5369, "median_Gbps": 1199.8, "amortized_Gbps": 1311.0, "median_MBU": 83.09, "amortized_MBU": 90.79}]
++ BENCH_RC=0
++ echo bench_rc=0
+bench_rc=0
++ echo 'FINAL: pytest=0 cache_shorter=0 compile_boundary=5 manifest=0 bench=0'
+FINAL: pytest=0 cache_shorter=0 compile_boundary=5 manifest=0 bench=0
++ '[' 0 = 0 ']'
++ '[' 0 = 0 ']'
++ '[' 5 = 0 ']'
 + exit 1
 exit_code=1
