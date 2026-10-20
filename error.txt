@@ -1,6 +1,15 @@
-cd /home/z30086261/tmp && git pull
-source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
-cd /home/z30086261/TileOPs
-PYTHONUNBUFFERED=1 python3 /home/z30086261/tmp/mha_stage_c/bench_mfu.py > /home/z30086261/tmp/error.txt 2>&1
-echo "exit_code=$?" >> /home/z30086261/tmp/error.txt
-cd /home/z30086261/tmp && git add error.txt && git commit -m "mfu bench" && git push
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+calibration: 8192^3 fp16 matmul 2.953 ms -> achievable peak 372.3 TFLOPS
+peak_tflops=372.33878446112993 warmup=3 repeat=20 num_stages=1
+/home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  rows = bt_t[:, pos // page_size] * page_size + pos % page_size
+s1_B1H8_kv2048_p128          float16   first=    95.6ms med=   0.129ms amort=   0.116ms flops=   0.008G med=  0.065T ( 0.017%) amort=  0.072T ( 0.019%)
+s2_B8H8_kv2048_p128          float16   first=    65.7ms med=   0.131ms amort=   0.119ms flops=   0.537G med=  4.083T ( 1.097%) amort=  4.506T (  1.21%)
+s3_B16H8_kv1024_p128         float16   first=    64.9ms med=   0.132ms amort=   0.119ms flops=   1.074G med=  8.113T ( 2.179%) amort=  9.011T (  2.42%)
+s4_B8H32_kv4096_p256         float16   first=    65.0ms med=   0.288ms amort=   0.252ms flops=   4.295G med= 14.934T ( 4.011%) amort= 17.016T (  4.57%)
+s5_B8H8_kv2048_p128_half     float16   first=     4.0ms med=   0.395ms amort=   0.378ms flops=   0.268G med=   0.68T ( 0.183%) amort=   0.71T ( 0.191%)
+s6_B4H8_kv4096_p256_half     float16   first=    64.5ms med=   0.389ms amort=   0.375ms flops=   0.134G med=  0.345T ( 0.093%) amort=  0.358T ( 0.096%)
+s7_bf16_B8H8_kv2048_p128     bfloat16  first=    64.2ms med=    0.13ms amort=   0.117ms flops=   0.537G med=  4.144T ( 1.113%) amort=  4.592T ( 1.233%)
+s8_B2H32_kv16384_p256        float16   first=    64.8ms med=   0.437ms amort=   0.403ms flops=   1.074G med=   2.46T ( 0.661%) amort=  2.667T ( 0.716%)
+MFU_JSON: [{"name": "s1_B1H8_kv2048_p128", "dtype": "float16", "first_ms": 95.6, "median_ms": 0.129, "amortized_ms": 0.116, "real_sum": 2048, "flops_G": 0.008, "median_TFLOPS": 0.065, "amortized_TFLOPS": 0.072, "median_MFU": 0.017, "amortized_MFU": 0.019}, {"name": "s2_B8H8_kv2048_p128", "dtype": "float16", "first_ms": 65.7, "median_ms": 0.131, "amortized_ms": 0.119, "real_sum": 16384, "flops_G": 0.537, "median_TFLOPS": 4.083, "amortized_TFLOPS": 4.506, "median_MFU": 1.097, "amortized_MFU": 1.21}, {"name": "s3_B16H8_kv1024_p128", "dtype": "float16", "first_ms": 64.9, "median_ms": 0.132, "amortized_ms": 0.119, "real_sum": 16384, "flops_G": 1.074, "median_TFLOPS": 8.113, "amortized_TFLOPS": 9.011, "median_MFU": 2.179, "amortized_MFU": 2.42}, {"name": "s4_B8H32_kv4096_p256", "dtype": "float16", "first_ms": 65.0, "median_ms": 0.288, "amortized_ms": 0.252, "real_sum": 32768, "flops_G": 4.295, "median_TFLOPS": 14.934, "amortized_TFLOPS": 17.016, "median_MFU": 4.011, "amortized_MFU": 4.57}, {"name": "s5_B8H8_kv2048_p128_half", "dtype": "float16", "first_ms": 4.0, "median_ms": 0.395, "amortized_ms": 0.378, "real_sum": 8192, "flops_G": 0.268, "median_TFLOPS": 0.68, "amortized_TFLOPS": 0.71, "median_MFU": 0.183, "amortized_MFU": 0.191}, {"name": "s6_B4H8_kv4096_p256_half", "dtype": "float16", "first_ms": 64.5, "median_ms": 0.389, "amortized_ms": 0.375, "real_sum": 8192, "flops_G": 0.134, "median_TFLOPS": 0.345, "amortized_TFLOPS": 0.358, "median_MFU": 0.093, "amortized_MFU": 0.096}, {"name": "s7_bf16_B8H8_kv2048_p128", "dtype": "bfloat16", "first_ms": 64.2, "median_ms": 0.13, "amortized_ms": 0.117, "real_sum": 16384, "flops_G": 0.537, "median_TFLOPS": 4.144, "amortized_TFLOPS": 4.592, "median_MFU": 1.113, "amortized_MFU": 1.233}, {"name": "s8_B2H32_kv16384_p256", "dtype": "float16", "first_ms": 64.8, "median_ms": 0.437, "amortized_ms": 0.403, "real_sum": 32768, "flops_G": 1.074, "median_TFLOPS": 2.46, "amortized_TFLOPS": 2.667, "median_MFU": 0.661, "amortized_MFU": 0.716}]
+exit_code=0
