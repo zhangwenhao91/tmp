@@ -32,25 +32,32 @@ NUM_STAGES = os.environ.get("TILEOPS_MHA_NUM_STAGES", "1")
 
 WARMUP = 3
 REPEAT = 20
-# 与 bench_mha.py 完全相同的形状表（S_q=1 全部）
+# 与 bench_mha.py 完全相同的形状表（S_q=1 全部）+ 一组 S_q=16 对照
+# 字段：(name, B, H, kv_rows, page_size, fill, dtype, S_q)
 SHAPES = [
-    ("s1_B1H8_kv2048_p128",      1,  8, 2048, 128, 1.0, torch.float16),
-    ("s2_B8H8_kv2048_p128",      8,  8, 2048, 128, 1.0, torch.float16),
-    ("s3_B16H8_kv1024_p128",    16,  8, 1024, 128, 1.0, torch.float16),
-    ("s4_B8H32_kv4096_p256",     8, 32, 4096, 256, 1.0, torch.float16),
-    ("s5_B8H8_kv2048_p128_half", 8,  8, 2048, 128, 0.5, torch.float16),
-    ("s6_B4H8_kv4096_p256_half", 4,  8, 4096, 256, 0.5, torch.float16),
-    ("s7_bf16_B8H8_kv2048_p128", 8,  8, 2048, 128, 1.0, torch.bfloat16),
-    ("s8_B2H32_kv16384_p256",    2, 32, 16384, 256, 1.0, torch.float16),
+    ("s1_B1H8_kv2048_p128",      1,  8, 2048, 128, 1.0, torch.float16,  1),
+    ("s2_B8H8_kv2048_p128",      8,  8, 2048, 128, 1.0, torch.float16,  1),
+    ("s3_B16H8_kv1024_p128",    16,  8, 1024, 128, 1.0, torch.float16,  1),
+    ("s4_B8H32_kv4096_p256",     8, 32, 4096, 256, 1.0, torch.float16,  1),
+    ("s5_B8H8_kv2048_p128_half", 8,  8, 2048, 128, 0.5, torch.float16,  1),
+    ("s6_B4H8_kv4096_p256_half", 4,  8, 4096, 256, 0.5, torch.float16,  1),
+    ("s7_bf16_B8H8_kv2048_p128", 8,  8, 2048, 128, 1.0, torch.bfloat16, 1),
+    ("s8_B2H32_kv16384_p256",    2, 32, 16384, 256, 1.0, torch.float16,  1),
+    # S_q=16 对照（同形状同名 + _sq16 后缀）：算术强度 AI≈S_q，理论 MFU 上限 ≈ MBU*16/258
+    ("s1_sq16_B1H8_kv2048_p128",      1,  8, 2048, 128, 1.0, torch.float16,  16),
+    ("s4_sq16_B8H32_kv4096_p256",     8, 32, 4096, 256, 1.0, torch.float16,  16),
+    ("s5_sq16_B8H8_kv2048_p128_half", 8,  8, 2048, 128, 0.5, torch.float16,  16),
+    ("s7_sq16_bf16_B8H8_kv2048_p128", 8,  8, 2048, 128, 1.0, torch.bfloat16, 16),
+    ("s8_sq16_B2H32_kv16384_p256",    2, 32, 16384, 256, 1.0, torch.float16,  16),
 ]
 D = 128
 
 
-def make_inputs(B, H, kv_rows, page_size, fill, dtype):
+def make_inputs(B, H, kv_rows, page_size, fill, dtype, S_q=1):
     W = (kv_rows + page_size - 1) // page_size
     pool_rows = W * page_size
     torch.manual_seed(0)
-    q = torch.randn(B, 1, H, D, device=DEV, dtype=dtype) * 0.5
+    q = torch.randn(B, S_q, H, D, device=DEV, dtype=dtype) * 0.5
     kp = torch.randn(pool_rows, H, D, device=DEV, dtype=dtype) * 0.5
     vp = torch.randn(pool_rows, H, D, device=DEV, dtype=dtype) * 0.5
     full = W * page_size
@@ -77,8 +84,8 @@ def calibrate_peak_tflops():
     return tflops
 
 
-def bench_one(name, B, H, kv_rows, page_size, fill, dtype):
-    q, kp, vp, real, table = make_inputs(B, H, kv_rows, page_size, fill, dtype)
+def bench_one(name, B, H, kv_rows, page_size, fill, dtype, S_q):
+    q, kp, vp, real, table = make_inputs(B, H, kv_rows, page_size, fill, dtype, S_q)
     op = MHADecodePagedWithKVCacheFwdOp(page_size, target="ascend")
 
     torch.npu.synchronize()
@@ -106,12 +113,13 @@ def bench_one(name, B, H, kv_rows, page_size, fill, dtype):
     amort_ms = (time.perf_counter() - t0) * 1e3 / REPEAT
 
     real_sum = int(real.sum().item())
-    # QK^T + PV，S_q=1；real_sum 已是跨 batch 求和，不再乘 B
-    flops = 4 * H * 1 * real_sum * D
+    # QK^T + PV；real_sum 已是跨 batch 求和，不再乘 B
+    flops = 4 * H * S_q * real_sum * D
     med_us = statistics.median(per_call) * 1e3
     amort_us = amort_ms * 1e3
     row = {
         "name": name,
+        "S_q": S_q,
         "dtype": str(dtype).replace("torch.", ""),
         "first_ms": round(first_ms, 1),
         "median_ms": round(statistics.median(per_call), 3),
@@ -124,7 +132,7 @@ def bench_one(name, B, H, kv_rows, page_size, fill, dtype):
         "amortized_MFU": round(flops / (amort_us * 1e-6) / 1e12 / float(PEAK_TFLOPS) * 100, 3),
     }
     print(
-        f"{name:<28} {row['dtype']:<9} first={row['first_ms']:>8}ms "
+        f"{name:<28} sq{S_q:<2} {row['dtype']:<9} first={row['first_ms']:>8}ms "
         f"med={row['median_ms']:>8}ms amort={row['amortized_ms']:>8}ms "
         f"flops={row['flops_G']:>8}G med={row['median_TFLOPS']:>7}T "
         f"({row['median_MFU']:>6}%) amort={row['amortized_TFLOPS']:>7}T "
