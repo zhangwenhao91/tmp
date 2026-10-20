@@ -42,6 +42,8 @@ SHAPES = [
     ("s5_B8H8_kv2048_p128_half", 8,  8, 2048, 128, 0.5, torch.float16),
     ("s6_B4H8_kv4096_p256_half", 4,  8, 4096, 256, 0.5, torch.float16),
     ("s7_bf16_B8H8_kv2048_p128", 8,  8, 2048, 128, 1.0, torch.bfloat16),
+    # 大池形状：K+V 池 256MB，远超 L2，排除缓存加成拿 HBM 诚实口径
+    ("s8_B2H32_kv16384_p256",    2, 32, 16384, 256, 1.0, torch.float16),
 ]
 D = 128  # head dim，全部形状统一
 
