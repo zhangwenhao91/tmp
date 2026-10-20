@@ -78,7 +78,7 @@ echo "cache_shorter_rc=$SHORT_RC"
 # 补跑 1：compile-boundary 测试里的 mha_decode_paged 用例（同文件其余 op 无 ascend
 # builder，属预期失败，必须 -k 过滤；mla/nsa 等 workload 模块 import 期需要 einops）
 python3 -m pip install einops >/dev/null 2>&1
-python3 -m pytest tests/ops/test_compile_boundary.py -k mha_decode_paged \
+python3 -m pytest tests/ops/test_compile_boundary.py -k "mha-decode-paged" \
   --tileops-device npu --tileops-target detect -v 2>&1 | tail -40
 CB_RC=${PIPESTATUS[0]}
 echo "compile_boundary_rc=$CB_RC"

@@ -24,6 +24,7 @@ from workloads.device import set_run_device  # noqa: E402
 set_run_device(torch.device("npu", 0))
 
 from workloads.attention.mha import MHADecodePagedWorkload  # noqa: E402
+from workloads.numerics import compare_outputs  # noqa: E402
 from tileops.ops import MHADecodePagedWithKVCacheFwdOp  # noqa: E402
 
 # 与 manifest/spec/attention.yaml 的 7 条 workload 一一对应
@@ -70,8 +71,8 @@ def run_case(label, B, H, S_q, N_kv, D, page_size, is_causal, kv_lens, dtype):
     med_ms = statistics.median(per_call)
 
     expected = wl.ref_program(q, k, v, real, table)
-    checker = wl.verification(q, k, v, real, table)
-    checker(got, expected)  # 官方判据：assert_close(atol=1e-3) + cosine>0.99
+    # 正规消费口：结构检查 + Custom validator（atol=1e-3 + cosine>0.99）
+    compare_outputs(got, expected, wl.verification(q, k, v, real, table))
     print(f"  {label:<20} PASS  first={first_ms:7.1f}ms med={med_ms:.3f}ms")
     return {"label": label, "first_ms": round(first_ms, 1), "median_ms": round(med_ms, 3)}
 
@@ -88,6 +89,7 @@ def main():
             print(f"  {spec[0]:<20} FAILED: {e}")
     ok = len(rows)
     print(f"manifest_workloads: {ok}/{len(CASES)} PASS")
+    sys.exit(0 if ok == len(CASES) else 1)
 
 
 if __name__ == "__main__":
