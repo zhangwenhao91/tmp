@@ -29,13 +29,17 @@ B, H, S_Q, N_KV, D, PAGE = 2, 8, 4, 1024, 64, 256
 OP = MHADecodePagedWithKVCacheFwdOp(PAGE, target="ascend")
 
 
-def ref_attn(q, k, v, real, mask_cut=None):
-    """纯 torch 参考，按 head 分组。mask_cut: 每行额外截断键数（模拟 causal 行差异）。"""
-    S_q, n_h = q.shape[1], q.shape[2]
+def ref_attn(q, k, v, real, table, mask_cut=None):
+    """纯 torch 参考，按 head 分组；池全局共享，物理行经 block_table 间接寻址。"""
+    S_q = q.shape[1]
+    W = table.shape[1]
+    dev = q.device
     out = torch.empty_like(q, dtype=torch.float32)
     for b in range(q.shape[0]):
+        rows = (table[b][:, None] * PAGE + torch.arange(PAGE, device=dev).view(1, -1)).reshape(-1)
+        kb, vb = k[rows].float(), v[rows].float()  # [W*PAGE, H, D]
         rl = int(real[b])
-        kb, vb = k[b, :rl].float(), v[b, :rl].float()  # [rl, H, D]
+        kb, vb = kb[:rl], vb[:rl]
         for i in range(S_q):
             seen = rl - S_Q + i if mask_cut is None else rl - (mask_cut[i] if i < S_Q else 10**9)
             seen = max(seen, 0)
@@ -51,7 +55,7 @@ for rl in [1024, 1000, 992, 960, 896, 768, 704]:
     q, k, v, real, table = wl.gen_inputs()
     real = torch.tensor([rl] * B, dtype=torch.int32, device=real.device)
     got = OP(q, k, v, real, table)
-    exp = ref_attn(q, k, v, real)
+    exp = ref_attn(q, k, v, real, table)
     absd = (got.float() - exp).abs().reshape(B, S_Q, -1).amax(dim=2)
     n_bad = int(((got.float() - exp).abs() > 1e-3).sum())
     rows = "; ".join(" ".join(f"{absd[b, i]:7.1e}" for i in range(S_Q)) for b in range(B))
@@ -64,7 +68,7 @@ real = torch.tensor([1000], dtype=torch.int32, device=real.device)
 q = q[:, 0:1].expand(-1, S_Q, -1, -1).contiguous()  # 4 行内容全同
 got = OP(q, k, v, real, table)
 # 4 个候选掩码参考：行 i 的语义 = 键可见到 rl-S_Q+i
-cands = [ref_attn(q, k, v, real, mask_cut=[S_Q - 1 - i] * S_Q) for i in range(S_Q)]
+cands = [ref_attn(q, k, v, real, table, mask_cut=[S_Q - 1 - i] * S_Q) for i in range(S_Q)]
 for r in range(S_Q):
     dists = [(float((got[0, r].float() - c[0, 0].float()).abs().max()), m)
              for m, c in enumerate(cands)]
