@@ -1,13 +1,6 @@
+cd /home/z30086261/tmp && git pull
+source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
 cd /home/z30086261/TileOPs
-python3 -m pip uninstall -y tileops
-rm -rf build *.egg-info src/*.egg-info          # 清构建残留
-# 重做兼容 sed（幂等，多做无害）
-sed -i 's/requires-python = .*/requires-python = ">=3.11"/' pyproject.toml
-sed -i 's/^license = .*/license = {text = "MIT"}/' pyproject.toml
-sed -i '/^license-files/d' pyproject.toml
-python3 -m pip install -e . --no-deps --no-build-isolation
-
-# 若 import 仍指向旧路径，找到并删掉残留 finder
-python3 -c "import tileops; print(tileops.__file__)" 2>&1
-grep -rln "root/TileOPs" "$(python3 -c 'import site; print(site.getsitepackages()[0])')" 2>/dev/null
-# 输出的文件直接删掉，再重装一次
+PYTHONUNBUFFERED=1 python3 /home/z30086261/tmp/mha_stage_c/bench_mfu.py > /home/z30086261/tmp/error.txt 2>&1
+echo "exit_code=$?" >> /home/z30086261/tmp/error.txt
+cd /home/z30086261/tmp && git add error.txt && git commit -m "mfu bench" && git push
