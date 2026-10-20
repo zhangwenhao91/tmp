@@ -1,20 +1,33 @@
-cd /home/z30086261/TileOPs
+root@ubuntu162:/home/z30086261/tmp# cd /home/z30086261/TileOPs
 git log --oneline -2 && git branch --show-current
-ls -d TileOPs 2>/dev/null          # 有输出说明 fork 被嵌套挪进来了
-
-
-
-cd /home/z30086261/TileOPs
+ls -d TileOPs 2>/dev/null
+a308da8f (HEAD -> main, origin/main, origin/HEAD) [Test][Backend] Add an npu_only end-to-end case for the ascend target
+964aaefa [Feat][Backend] Serve AddFwdOp on Ascend from precompiled vadd objects
+main
+TileOPs
+root@ubuntu162:/home/z30086261/TileOPs# cd /home/z30086261/TileOPs
 git remote set-url origin https://github.com/zhangwenhao91/TileOPs.git
 git fetch origin ascend-mha-decode
 git checkout ascend-mha-decode
 git reset --hard origin/ascend-mha-decode
-
-# 验证垫片在位（应看到 try/except 两行）
-grep -n "sym_and" src/tileops/ops/_signature_codegen.py | head -3
-
-# 验证 import 通过
-python3 -c "from tileops.ops import MHADecodePagedWithKVCacheFwdOp; print('OK')"
-
-# 若发现了嵌套的 TileOPs/TileOPs，确认无用后删掉
-ls -d TileOPs && rm -rf TileOPs/TileOPs
+remote: Enumerating objects: 82, done.
+remote: Counting objects: 100% (4/4), done.
+remote: Total 82 (delta 3), reused 3 (delta 3), pack-reused 78 (from 1)
+Unpacking objects: 100% (82/82), 40.56 KiB | 1.04 MiB/s, done.
+From https://github.com/zhangwenhao91/TileOPs
+ * branch              ascend-mha-decode -> FETCH_HEAD
+ * [new branch]        ascend-mha-decode -> origin/ascend-mha-decode
+M       pyproject.toml
+branch 'ascend-mha-decode' set up to track 'origin/ascend-mha-decode'.
+Switched to a new branch 'ascend-mha-decode'
+HEAD is now at 883b26e8 ascend mha: num_stages switch, T.Pipelined double-buffer variant behind TILEOPS_MHA_NUM_STAGES
+root@ubuntu162:/home/z30086261/TileOPs# grep -n "sym_and" src/tileops/ops/_signature_codegen.py | head -3
+29:    from torch.fx.experimental.symbolic_shapes import sym_and, sym_or
+31:    def sym_and(a, b):
+142:            value = sym_and(value, thunk())
+root@ubuntu162:/home/z30086261/TileOPs# python3 -c "from tileops.ops import MHADecodePagedWithKVCacheFwdOp; print('OK')"
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+OK
+root@ubuntu162:/home/z30086261/TileOPs# ls -d TileOPs && rm -rf TileOPs/TileOPs
+TileOPs
+root@ubuntu162:/home/z30086261/TileOPs# 
