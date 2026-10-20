@@ -1,6 +1,21 @@
-cd /home/z30086261/tmp && git pull
-source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
-cd /home/z30086261/TileOPs
-PYTHONUNBUFFERED=1 python3 /home/z30086261/tmp/mha_stage_c/bench_mfu.py > /home/z30086261/tmp/error.txt 2>&1
-echo "exit_code=$?" >> /home/z30086261/tmp/error.txt
-cd /home/z30086261/tmp && git add error.txt && git commit -m "mfu bench" && git push
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+Traceback (most recent call last):
+  File "/home/z30086261/tmp/mha_stage_c/bench_mfu.py", line 27, in <module>
+    from tileops.ops import MHADecodePagedWithKVCacheFwdOp
+  File "/home/z30086261/TileOPs/src/tileops/ops/__init__.py", line 284, in __getattr__
+    value = getattr(importlib.import_module(module, __package__), name)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.0/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/z30086261/TileOPs/src/tileops/ops/attention/__init__.py", line 1, in <module>
+    from tileops.ops.attention.dsa import DSADecodeWithKVCacheFwdOp
+  File "/home/z30086261/TileOPs/src/tileops/ops/attention/dsa.py", line 9, in <module>
+    from tileops.ops.op_base import Op
+  File "/home/z30086261/TileOPs/src/tileops/ops/op_base.py", line 35, in <module>
+    from tileops.ops._signature_codegen import check_result
+  File "/home/z30086261/TileOPs/src/tileops/ops/_signature_codegen.py", line 27, in <module>
+    from torch.fx.experimental.symbolic_shapes import sym_and, sym_or
+ImportError: cannot import name 'sym_and' from 'torch.fx.experimental.symbolic_shapes' (/usr/local/python3.11.0/lib/python3.11/site-packages/torch/fx/experimental/symbolic_shapes.py)
+[ERROR] 2026-10-20-10:42:09 (PID:92972, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+exit_code=1
