@@ -1,12 +1,12 @@
-"""d806 HBM 带宽探针：校准 bench_mha.py 的峰值带宽（替换 3200 占位）。
+"""d806 HBM 带宽探针：校准 bench_mha.py 的峰值带宽（替换占位值）。
 
-三个口径：
-- copy     ：整块 clone，读+写对称，是最稳的峰值下界；
-- read     ：纯读规约；
-- strided  ：按 MHA kernel 的真实访问模式读（256B 连续段、行间 8KB 步长，
-             对应 [rows, H, D] 池按 head 列整页读），衡量该模式下可达带宽。
+口径：
+- copy    ：整块 clone（读+写对称，纯 DMA 路径）；
+- mul     ：in-place mul_（读+写对称，向量单元路径，与 copy 互为下界校验）；
+- strided ：out.copy_(x3[:, h, :])——按 kernel 真实访问模式跨步读（256B 连续段、
+            行间 8KB 步长）+ 连续写。注意只读 1/32 的张量，字节按实际量计。
 
-末行输出 PEAK_GBPS=<值>（copy/read 取大者），供 BENCH_PEAK_BW_GBPS 使用。
+末行输出 PEAK_GBPS=<值>（copy/mul 取大者），供 BENCH_PEAK_BW_GBPS 使用。
 """
 import statistics
 import time
@@ -31,25 +31,27 @@ def timed(fn):
 
 
 def main():
-    n = 512 * 1024 * 1024  # 1 GiB fp16
+    n = 1024 * 1024 * 1024  # 2 GiB fp16
     x = torch.randn(n, dtype=torch.float16, device=DEV)
     y = torch.empty_like(x)
-    # 模拟 kernel 的 K/V 页读：32 头、D=128，取 h=4 一列，256B 段 + 8KB 行步长
+    # kernel 的 K/V 页读模式：32 头、D=128，取 h=4 一列 = 256B 段 + 8KB 行步长
     x3 = x.view(-1, 32, 128)
     h = 4
+    out = torch.empty(x3.shape[0], 128, dtype=torch.float16, device=DEV)
 
     t_copy = timed(lambda: y.copy_(x))
-    t_read = timed(lambda: torch.sum(x, dtype=torch.float32))
-    t_strided = timed(lambda: x3[:, h, :].sum(dtype=torch.float32))
+    t_mul = timed(lambda: x.mul_(1.0))
+    t_strided = timed(lambda: out.copy_(x3[:, h, :]))
 
-    gb = n * 2 / 1e9
-    copy_gbps = 2 * gb / t_copy
-    read_gbps = gb / t_read
-    strided_gbps = gb / t_strided
-    print(f"copy   : {copy_gbps:7.1f} GB/s  (读+写)")
-    print(f"read   : {read_gbps:7.1f} GB/s  (纯读)")
-    print(f"strided: {strided_gbps:7.1f} GB/s  (纯读, 256B chunk / 8KB stride)")
-    print(f"PEAK_GBPS={max(copy_gbps, read_gbps):.0f}")
+    gb_total = n * 2 / 1e9           # 2 GiB 张量的字节数
+    gb_slice = n * 2 / 32 / 1e9      # strided 口径只触达 1/32
+    copy_gbps = 2 * gb_total / t_copy
+    mul_gbps = 2 * gb_total / t_mul
+    strided_gbps = 2 * gb_slice / t_strided
+    print(f"copy   : {copy_gbps:7.1f} GB/s  (2x{gb_total:.1f}GB 读+写, {t_copy*1e3:.2f}ms)")
+    print(f"mul    : {mul_gbps:7.1f} GB/s  (2x{gb_total:.1f}GB 读+写, {t_mul*1e3:.2f}ms)")
+    print(f"strided: {strided_gbps:7.1f} GB/s  (2x{gb_slice:.3f}GB 跨步读+写, {t_strided*1e3:.2f}ms)")
+    print(f"PEAK_GBPS={max(copy_gbps, mul_gbps):.0f}")
 
 
 if __name__ == "__main__":
