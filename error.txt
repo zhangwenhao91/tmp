@@ -1,15 +1,3 @@
-root@ubuntu162:/home/z30086261/tmp# python3 -c "import torch, torch_npu; print(torch.randn(4, device='npu'
-))"
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-RuntimeError: LazyInitialize:torch_npu/csrc/core/npu/sys_ctrl/npu_sys_ctrl.cpp:243 NPU function error: c10_npu::acl::AclrtSetOpExecuteTimeOut(kMaxOpExecuteTimeOut), error code is 507001
-[ERROR] 2026-10-20-17:22:34 (PID:551, Device:0, RankID:-1) ERR00100 PTA call acl api failed
-[Error]: An internal error occurs in the task scheduler module on the device. 
-        Rectify the fault based on the error information in the ascend log.
-EE9999: Inner Error!
-EE9999: [PID: 551] 2026-10-20-17:22:34.910.312 Task execute failed, device_id=4, stream_id=0, task_id=0, flip_num=0, task_type=83.[FUNC:GetError][FILE:stream.cc][LINE:1183]
-        TraceBack (most recent call last):
-       stream_id=0 failed to synchronize retCode=0x7150062.[FUNC:SetTimeoutConfigTaskSubmitDavid][FILE:stream_c.cc][LINE:814]
-       Failed to exe SetTimeoutConfigTaskSubmit, retCode=0x7150062.[FUNC:SetTimeoutConfig][FILE:runtime.cc][LINE:5275]
-       rtSetOpExecuteTimeOut execute failed, reason=[tsfw unknown error][FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:53]
-       set op execute timeout failed, runtime result = 507001[FUNC:ReportCallError][FILE:log_inner.cpp][LINE:162]
+echo $ASCEND_RT_VISIBLE_DEVICES          # 确认环境变量没被改乱
+ls -l /dev/davinci* 2>/dev/null          # 确认设备节点都在
+tail -30 ~/ascend/log/plog/*.log 2>/dev/null   # 运行时日志里的真实原因
