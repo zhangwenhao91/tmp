@@ -14,12 +14,13 @@ python3 -c "import tilelang; print('tilelang', tilelang.__version__)" || exit 1
 python3 -c "import pytest; print('pytest', pytest.__version__)" 2>/dev/null \
   || python3 -m pip install pytest || exit 1
 
-cd ~
-if [ ! -d TileOPs ]; then
+# TileOPs 固定放在 /home/z30086261/TileOPs（editable install 指向此路径，勿再迁动）
+TILEOPS_DIR=/home/z30086261/TileOPs
+if [ ! -d "$TILEOPS_DIR" ]; then
   # 服务器走内网 HTTP 代理，SSH 协议不通，必须用 HTTPS 拉公开仓库
-  GIT_TERMINAL_PROMPT=0 git clone -b ascend-mha-decode https://github.com/zhangwenhao91/TileOPs.git || exit 1
+  GIT_TERMINAL_PROMPT=0 git clone -b ascend-mha-decode https://github.com/zhangwenhao91/TileOPs.git "$TILEOPS_DIR" || exit 1
 fi
-cd ~/TileOPs
+cd "$TILEOPS_DIR"
 git fetch origin ascend-mha-decode || exit 1
 git checkout ascend-mha-decode || exit 1
 git reset --hard origin/ascend-mha-decode || exit 1
@@ -74,6 +75,21 @@ python3 -m pytest tests/ops/test_mha.py -k "cache_shorter or table_width" \
 SHORT_RC=${PIPESTATUS[0]}
 echo "cache_shorter_rc=$SHORT_RC"
 
+# 补跑 1：compile-boundary 测试里的 mha_decode_paged 用例（同文件其余 op 无 ascend
+# builder，属预期失败，必须 -k 过滤）
+python3 -m pytest tests/ops/test_compile_boundary.py -k mha_decode_paged \
+  --tileops-device npu --tileops-target detect -v 2>&1 | tail -40
+CB_RC=${PIPESTATUS[0]}
+echo "compile_boundary_rc=$CB_RC"
+
+# 补跑 2：manifest 官方基准组（7 个 workload）。NPU 上没有 FA3/FlashInfer，
+# 自动回落 torch-ref；op.request_tune() 在 ascend builder 上的行为未探过，
+# 本轮 rc 仅记录不作为门禁，失败不影响 exit_code。
+python3 -m pytest benchmarks/ops/bench_mha.py \
+  --tileops-device npu --tileops-target detect -v 2>&1 | tail -60
+BM_RC=${PIPESTATUS[0]}
+echo "bench_manifest_rc=$BM_RC (记录用，不门禁)"
+
 # 带宽探针：实测 d806 峰值，替换 bench 的 3200 GB/s 占位；取不到就回落 3200
 cp "$SCRIPT_DIR/bench_bw.py" "$SCRIPT_DIR/bench_mha.py" ~/TileOPs/ || exit 1
 cd ~/TileOPs
@@ -88,6 +104,6 @@ echo "bench_rc=$BENCH_RC"
 
 # T.Pipelined A/B 已定论（精度过、s4 变慢 10%，serial 保持默认），不再重跑。
 
-echo "FINAL: pytest=$PYTEST_RC cache_shorter=$SHORT_RC bench=$BENCH_RC"
-[ "$PYTEST_RC" = "0" ] && [ "$SHORT_RC" = "0" ] && [ "$BENCH_RC" = "0" ]
+echo "FINAL: pytest=$PYTEST_RC cache_shorter=$SHORT_RC compile_boundary=$CB_RC bench=$BENCH_RC bench_manifest=$BM_RC"
+[ "$PYTEST_RC" = "0" ] && [ "$SHORT_RC" = "0" ] && [ "$CB_RC" = "0" ] && [ "$BENCH_RC" = "0" ]
 exit $?
