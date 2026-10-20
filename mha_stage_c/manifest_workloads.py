@@ -70,7 +70,7 @@ def run_case(label, B, H, S_q, N_kv, D, page_size, is_causal, kv_lens, dtype, is
     real = torch.tensor(kv_lens, dtype=torch.int32, device=real.device)
     table = table.contiguous()
 
-    op = MHADecodePagedWithKVCacheFwdOp(page_size, target="ascend")
+    op = MHADecodePagedWithKVCacheFwdOp(page_size, is_causal, target="ascend")
 
     torch.npu.synchronize()
     t0 = time.perf_counter()
