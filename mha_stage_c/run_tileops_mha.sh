@@ -76,23 +76,25 @@ SHORT_RC=${PIPESTATUS[0]}
 echo "cache_shorter_rc=$SHORT_RC"
 
 # 补跑 1：compile-boundary 测试里的 mha_decode_paged 用例（同文件其余 op 无 ascend
-# builder，属预期失败，必须 -k 过滤）
+# builder，属预期失败，必须 -k 过滤；mla/nsa 等 workload 模块 import 期需要 einops）
+python3 -m pip install einops >/dev/null 2>&1
 python3 -m pytest tests/ops/test_compile_boundary.py -k mha_decode_paged \
   --tileops-device npu --tileops-target detect -v 2>&1 | tail -40
 CB_RC=${PIPESTATUS[0]}
 echo "compile_boundary_rc=$CB_RC"
 
-# 补跑 2：manifest 官方基准组（7 个 workload）。NPU 上没有 FA3/FlashInfer，
-# 自动回落 torch-ref；op.request_tune() 在 ascend builder 上的行为未探过，
-# 本轮 rc 仅记录不作为门禁，失败不影响 exit_code。
-python3 -m pytest benchmarks/ops/bench_mha.py \
-  --tileops-device npu --tileops-target detect -v 2>&1 | tail -60
-BM_RC=${PIPESTATUS[0]}
-echo "bench_manifest_rc=$BM_RC (记录用，不门禁)"
+# 补跑 2：manifest 官方基准组（7 个 workload）。官方 benchmarks 框架计时走 CUDA
+# events/CUPTI、conftest 硬拒 npu（"benchmarks run on cuda only"），无法在 NPU
+# 上运行；改用 manifest_workloads.py 原样实例化官方 workload（gen_inputs/ref/
+# verification 全部来自 workloads 层），功能等价覆盖。
+cp "$SCRIPT_DIR/manifest_workloads.py" . || exit 1
+python3 manifest_workloads.py 2>&1 | tail -20
+MW_RC=${PIPESTATUS[0]}
+echo "manifest_rc=$MW_RC"
 
 # 带宽探针：实测 d806 峰值，替换 bench 的 3200 GB/s 占位；取不到就回落 3200
-cp "$SCRIPT_DIR/bench_bw.py" "$SCRIPT_DIR/bench_mha.py" ~/TileOPs/ || exit 1
-cd ~/TileOPs
+cp "$SCRIPT_DIR/bench_bw.py" "$SCRIPT_DIR/bench_mha.py" . || exit 1
+cd "$TILEOPS_DIR"
 python3 bench_bw.py 2>&1 | tail -10
 MEASURED_PEAK=$(python3 bench_bw.py 2>/dev/null | sed -n 's/PEAK_GBPS=\([0-9]*\).*/\1/p')
 echo "measured_peak=${MEASURED_PEAK:-FALLBACK_3200}"
@@ -104,6 +106,6 @@ echo "bench_rc=$BENCH_RC"
 
 # T.Pipelined A/B 已定论（精度过、s4 变慢 10%，serial 保持默认），不再重跑。
 
-echo "FINAL: pytest=$PYTEST_RC cache_shorter=$SHORT_RC compile_boundary=$CB_RC bench=$BENCH_RC bench_manifest=$BM_RC"
-[ "$PYTEST_RC" = "0" ] && [ "$SHORT_RC" = "0" ] && [ "$CB_RC" = "0" ] && [ "$BENCH_RC" = "0" ]
+echo "FINAL: pytest=$PYTEST_RC cache_shorter=$SHORT_RC compile_boundary=$CB_RC manifest=$MW_RC bench=$BENCH_RC"
+[ "$PYTEST_RC" = "0" ] && [ "$SHORT_RC" = "0" ] && [ "$CB_RC" = "0" ] && [ "$MW_RC" = "0" ] && [ "$BENCH_RC" = "0" ]
 exit $?
