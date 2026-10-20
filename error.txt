@@ -38,8 +38,8 @@
 ++++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
 ++ local env_value=/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
 ++ read -r LD_LIBRARY_PATH
-+++ tr : '\n'
 +++ echo /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/opskernel:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/lib64/plugin/nnengine:/home/CANN/9.3.0.weekly.20260930/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe/op_tiling/lib/linux/x86_64:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/8.3.RC1/tools/aoe/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/profiler/lib64/plugin:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64:/usr/local/Ascend/ascend-toolkit/latest/toolkit/tools/aml/lib64/plugin:/usr/local/Ascend/ascend-toolkit/8.3.RC1/opp/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/opskernel:/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/plugin/nnengine:/usr/local/Ascend/ascend-toolkit/8.3.RC1/runtime/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/driver/lib64:/usr/local/python3.11.0/lib/::/usr/local/Ascend/ascend-toolkit/8.3.RC1/compiler/lib64/stub:/usr/local/Ascend/ascend-toolkit/8.3.RC1/hccl/lib64/stub
++++ tr : '\n'
 +++ grep -v -E '^/home/CANN/9.3.0.weekly.20260930/cann[/_-]'
 +++ tr '\n' :
 +++ sed 's/:$//'
@@ -448,8 +448,8 @@ Obtaining file:///home/z30086261/TileOPs
 Building wheels for collected packages: tileops
   Building editable for tileops (pyproject.toml): started
   Building editable for tileops (pyproject.toml): finished with status 'done'
-  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5701 sha256=63e7018d0734188c829297a7c156141f6a47aa42ed46c53c8dfaeabae97aae8c
-  Stored in directory: /tmp/pip-ephem-wheel-cache-5m7i_l9w/wheels/ed/c6/c0/ced3f141bab674e26123db594d8737ff57ad9ea7bdb4a0dc85
+  Created wheel for tileops: filename=tileops-0.0.0-0.editable-py3-none-any.whl size=5701 sha256=c9aa9e9cbd7f8b5f4a749bb63f2d4dd7766205ae70eea6b06e4be3418da13845
+  Stored in directory: /tmp/pip-ephem-wheel-cache-y6_ma6nu/wheels/ed/c6/c0/ced3f141bab674e26123db594d8737ff57ad9ea7bdb4a0dc85
 Successfully built tileops
 Installing collected packages: tileops
   Attempting uninstall: tileops
@@ -467,14 +467,14 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 torch 2.7.1+cpu
 torch_npu imported
 LOAD_FAILURES: []
-DETECTORS: {'ascend': <function detects_ascend_npu at 0x7f8eaffa5d00>}
+DETECTORS: {'ascend': <function detects_ascend_npu at 0x7fcbdc191d00>}
 BUILDERS: [('AddFwdOp', 'ascend'), ('MHADecodePagedWithKVCacheFwdOp', 'ascend')]
 default_target: None
 device.type: npu
 detect_target(npu): ascend
 select_target(None, npu): ascend
 MHA registered_targets: ['ascend']
-MHA builder: <function build_mha_decode_paged at 0x7f8eaffa6020>
+MHA builder: <function build_mha_decode_paged at 0x7fcbdc192020>
 + python3 -m pytest tests/ops/test_mha.py -m smoke --tileops-device npu --tileops-target detect -v
 + tail -100
 ============================= test session starts ==============================
@@ -506,7 +506,7 @@ tests/ops/test_mha.py::test_mha_decode_paged_op[1-16-1-512-128-128-False-dtype0-
     rows = bt_t[:, pos // page_size] * page_size + pos % page_size
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 5.39s ============
+=========== 7 passed, 1 skipped, 5 deselected, 50 warnings in 5.51s ============
 + PYTEST_RC=0
 + echo pytest_rc=0
 pytest_rc=0
@@ -540,63 +540,92 @@ tests/ops/test_mha.py: 42 warnings
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================= 7 passed, 6 deselected, 43 warnings in 5.46s =================
+================= 7 passed, 6 deselected, 43 warnings in 5.33s =================
 + SHORT_RC=0
 + echo cache_shorter_rc=0
 cache_shorter_rc=0
 + python3 -m pip install einops
++ python3 -m pytest tests/ops/test_compile_boundary.py -k mha-decode-paged --tileops-device npu --tileops-target detect -v
 + tail -40
-+ python3 -m pytest tests/ops/test_compile_boundary.py -k mha_decode_paged --tileops-device npu --tileops-target detect -v
-============================= test session starts ==============================
-platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0 -- /usr/local/python3.11.0/bin/python3
-cachedir: .pytest_cache
-metadata: {'Python': '3.11.0', 'Platform': 'Linux-5.4.0-144-generic-x86_64-with-glibc2.36', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'html': '4.1.1', 'cov': '6.2.1', 'metadata': '3.1.1', 'hypothesis': '6.70.1', 'xdist': '3.8.0', 'repeat': '0.9.4'}}
-hypothesis profile 'default' -> database=DirectoryBasedExampleDatabase('/home/z30086261/TileOPs/.hypothesis/examples')
-rootdir: /home/z30086261/TileOPs
-configfile: pyproject.toml
-plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
-collecting ... collected 198 items / 198 deselected / 0 selected
+            try:
+                return fn(*args, **kwargs)
+            except Unsupported as e:
+                if config.verbose:
+                    raise
+>               raise e.with_traceback(None) from None
+E               torch._dynamo.exc.Unsupported: Dict key of type <class 'torch._dynamo.variables.lists.TupleVariable'>. Key: TupleVariable(length=3)
+E               
+E               from user code:
+E                  File "/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_dynamo/external_utils.py", line 70, in inner
+E                   return fn(*args, **kwargs)
+E                 File "/home/z30086261/TileOPs/src/tileops/ops/op_base.py", line 1025, in __call__
+E                   return self._call_boundary(*args, **kwargs)
+E                 File "<MHADecodePagedWithKVCacheFwdOp boundary>", line 2, in _call_boundary
+E                 File "/home/z30086261/TileOPs/src/tileops/ops/_signature_codegen.py", line 1345, in call
+E                   operator, out, returns, picks = self.branches[self.plan.effect_branch(op, present)]
+E               
+E               Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"
 
-=========================== 198 deselected in 4.30s ============================
-+ CB_RC=5
-+ echo compile_boundary_rc=5
-compile_boundary_rc=5
+/usr/local/python3.11.0/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py:659: Unsupported
+=============================== warnings summary ===============================
+tests/ops/test_compile_boundary.py::test_the_fake_reports_what_the_op_returns[mha-decode-paged]
+tests/ops/test_compile_boundary.py::test_the_fake_reports_what_the_op_returns[mha-decode-paged]
+tests/ops/test_compile_boundary.py::test_the_fake_reports_what_the_op_returns[mha-decode-paged]
+tests/ops/test_compile_boundary.py::test_the_fake_reports_what_the_op_returns[mha-decode-paged]
+tests/ops/test_compile_boundary.py::test_the_fake_reports_what_the_op_returns[mha-decode-paged]
+tests/ops/test_compile_boundary.py::test_the_fake_reports_what_the_op_returns[mha-decode-paged]
+tests/ops/test_compile_boundary.py::test_the_fake_reports_what_the_op_returns[mha-decode-paged]
+  /home/z30086261/tilelang/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
+    deprecated_warning(method_name, new_method_name, phaseout_version)
+
+tests/ops/test_compile_boundary.py::test_the_fake_reports_what_the_op_returns[mha-decode-paged]
+  /home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    rows = bt_t[:, pos // page_size] * page_size + pos % page_size
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/ops/test_compile_boundary.py::test_a_cold_op_traces_fullgraph_and_matches_eager[mha-decode-paged]
+FAILED tests/ops/test_compile_boundary.py::test_the_traced_graph_holds_only_this_ops_operator[mha-decode-paged]
+=========== 2 failed, 1 passed, 195 deselected, 8 warnings in 9.71s ============
++ CB_RC=1
++ echo compile_boundary_rc=1
+compile_boundary_rc=1
 + cp /home/z30086261/tmp/mha_stage_c/manifest_workloads.py .
 + python3 manifest_workloads.py
 + tail -20
-  File "/home/z30086261/TileOPs/manifest_workloads.py", line 84, in main
-    rows.append(run_case(*spec))
-                ^^^^^^^^^^^^^^^
-  File "/home/z30086261/TileOPs/manifest_workloads.py", line 74, in run_case
-    checker(got, expected)  # 官方判据：assert_close(atol=1e-3) + cosine>0.99
-    ^^^^^^^^^^^^^^^^^^^^^^
-TypeError: 'Custom' object is not callable
-  opt-1.3b-b1          FAILED: 'Custom' object is not callable
-2026-10-20 11:06:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
-2026-10-20 11:06:07  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
-Traceback (most recent call last):
-  File "/home/z30086261/TileOPs/manifest_workloads.py", line 84, in main
-    rows.append(run_case(*spec))
-                ^^^^^^^^^^^^^^^
-  File "/home/z30086261/TileOPs/manifest_workloads.py", line 74, in run_case
-    checker(got, expected)  # 官方判据：assert_close(atol=1e-3) + cosine>0.99
-    ^^^^^^^^^^^^^^^^^^^^^^
-TypeError: 'Custom' object is not callable
-  opt-1.3b-b16         FAILED: 'Custom' object is not callable
-manifest_workloads: 0/7 PASS
-+ MW_RC=0
-+ echo manifest_rc=0
-manifest_rc=0
+    compare_outputs(got, expected, wl.verification(q, k, v, real, table))
+  File "/home/z30086261/TileOPs/workloads/numerics.py", line 357, in compare_outputs
+    evidence.validator(produced, expected)
+  File "/home/z30086261/TileOPs/workloads/attention/mha.py", line 103, in validate
+    torch.testing.assert_close(got, expected, atol=atol, rtol=atol)
+  File "/usr/local/python3.11.0/lib/python3.11/site-packages/torch/testing/_comparison.py", line 1519, in assert_close
+    raise error_metas[0].to_error(msg)
+AssertionError: Tensor-likes are not close!
+
+Mismatched elements: 1276 / 4096 (31.2%)
+Greatest absolute difference: 0.01416015625 at index (0, 1, 5, 48) (up to 0.001 allowed)
+Greatest relative difference: 35.46875 at index (0, 0, 5, 6) (up to 0.001 allowed)
+  speculative-decode   FAILED: Tensor-likes are not close!
+
+Mismatched elements: 1276 / 4096 (31.2%)
+Greatest absolute difference: 0.01416015625 at index (0, 1, 5, 48) (up to 0.001 allowed)
+Greatest relative difference: 35.46875 at index (0, 0, 5, 6) (up to 0.001 allowed)
+  opt-1.3b-b1          PASS  first=   65.7ms med=0.128ms
+  opt-1.3b-b16         PASS  first=   66.6ms med=1.018ms
+manifest_workloads: 6/7 PASS
++ MW_RC=1
++ echo manifest_rc=1
+manifest_rc=1
 + cp /home/z30086261/tmp/mha_stage_c/bench_bw.py /home/z30086261/tmp/mha_stage_c/bench_mha.py .
 + cd /home/z30086261/TileOPs
 + python3 bench_bw.py
 + tail -10
 /home/z30086261/TileOPs/bench_bw.py:36: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   y = torch.empty_like(x)
-copy   :  1442.7 GB/s  (2x2.1GB 读+写, 2.98ms)
-mul    :  1432.4 GB/s  (2x2.1GB 读+写, 3.00ms)
-strided:  1249.1 GB/s  (2x0.067GB 跨步读+写, 0.11ms)
-PEAK_GBPS=1443
+copy   :  1442.1 GB/s  (2x2.1GB 读+写, 2.98ms)
+mul    :  1431.4 GB/s  (2x2.1GB 读+写, 3.00ms)
+strided:  1248.1 GB/s  (2x0.067GB 跨步读+写, 0.11ms)
+PEAK_GBPS=1442
 ++ python3 bench_bw.py
 ++ sed -n 's/PEAK_GBPS=\([0-9]*\).*/\1/p'
 + MEASURED_PEAK=1444
@@ -610,22 +639,22 @@ peak_bw=1444.0GB/s warmup=3 repeat=20 num_stages=1 per-call 口径含 builder ho
 shape                        dtype      first(ms)  median(ms)  amort(ms)   eff(GB)     med GB/s   amort GB/s    MBU%
 /home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   rows = bt_t[:, pos // page_size] * page_size + pos % page_size
-s1_B1H8_kv2048_p128          float16   first=    94.8ms med=   0.133ms amort=   0.119ms eff= 0.0084GB med=    63.1GB/s (  4.37%) amort=    70.8GB/s (   4.9%)
-s2_B8H8_kv2048_p128          float16   first=    66.0ms med=   0.133ms amort=    0.12ms eff= 0.0671GB med=   503.8GB/s ( 34.89%) amort=   560.1GB/s ( 38.79%)
-s3_B16H8_kv1024_p128         float16   first=    65.2ms med=   0.132ms amort=   0.121ms eff= 0.0672GB med=   507.2GB/s ( 35.13%) amort=   557.0GB/s ( 38.57%)
-s4_B8H32_kv4096_p256         float16   first=    65.2ms med=   0.287ms amort=   0.252ms eff=  0.537GB med=  1869.4GB/s (129.46%) amort=  2130.6GB/s (147.55%)
-s5_B8H8_kv2048_p128_half     float16   first=     4.0ms med=   0.399ms amort=   0.385ms eff= 0.0336GB med=    84.2GB/s (  5.83%) amort=    87.3GB/s (  6.05%)
-s6_B4H8_kv4096_p256_half     float16   first=    65.0ms med=   0.396ms amort=    0.38ms eff= 0.0336GB med=    84.7GB/s (  5.86%) amort=    88.4GB/s (  6.12%)
-s7_bf16_B8H8_kv2048_p128     bfloat16  first=    64.3ms med=   0.132ms amort=   0.119ms eff= 0.0671GB med=   507.9GB/s ( 35.17%) amort=   561.9GB/s ( 38.91%)
-s8_B2H32_kv16384_p256        float16   first=    65.0ms med=   0.447ms amort=    0.41ms eff= 0.5369GB med=  1199.8GB/s ( 83.09%) amort=  1311.0GB/s ( 90.79%)
-BENCH_JSON: [{"name": "s1_B1H8_kv2048_p128", "dtype": "float16", "first_ms": 94.8, "median_ms": 0.133, "amortized_ms": 0.119, "eff_GB": 0.0084, "median_Gbps": 63.1, "amortized_Gbps": 70.8, "median_MBU": 4.37, "amortized_MBU": 4.9}, {"name": "s2_B8H8_kv2048_p128", "dtype": "float16", "first_ms": 66.0, "median_ms": 0.133, "amortized_ms": 0.12, "eff_GB": 0.0671, "median_Gbps": 503.8, "amortized_Gbps": 560.1, "median_MBU": 34.89, "amortized_MBU": 38.79}, {"name": "s3_B16H8_kv1024_p128", "dtype": "float16", "first_ms": 65.2, "median_ms": 0.132, "amortized_ms": 0.121, "eff_GB": 0.0672, "median_Gbps": 507.2, "amortized_Gbps": 557.0, "median_MBU": 35.13, "amortized_MBU": 38.57}, {"name": "s4_B8H32_kv4096_p256", "dtype": "float16", "first_ms": 65.2, "median_ms": 0.287, "amortized_ms": 0.252, "eff_GB": 0.537, "median_Gbps": 1869.4, "amortized_Gbps": 2130.6, "median_MBU": 129.46, "amortized_MBU": 147.55}, {"name": "s5_B8H8_kv2048_p128_half", "dtype": "float16", "first_ms": 4.0, "median_ms": 0.399, "amortized_ms": 0.385, "eff_GB": 0.0336, "median_Gbps": 84.2, "amortized_Gbps": 87.3, "median_MBU": 5.83, "amortized_MBU": 6.05}, {"name": "s6_B4H8_kv4096_p256_half", "dtype": "float16", "first_ms": 65.0, "median_ms": 0.396, "amortized_ms": 0.38, "eff_GB": 0.0336, "median_Gbps": 84.7, "amortized_Gbps": 88.4, "median_MBU": 5.86, "amortized_MBU": 6.12}, {"name": "s7_bf16_B8H8_kv2048_p128", "dtype": "bfloat16", "first_ms": 64.3, "median_ms": 0.132, "amortized_ms": 0.119, "eff_GB": 0.0671, "median_Gbps": 507.9, "amortized_Gbps": 561.9, "median_MBU": 35.17, "amortized_MBU": 38.91}, {"name": "s8_B2H32_kv16384_p256", "dtype": "float16", "first_ms": 65.0, "median_ms": 0.447, "amortized_ms": 0.41, "eff_GB": 0.5369, "median_Gbps": 1199.8, "amortized_Gbps": 1311.0, "median_MBU": 83.09, "amortized_MBU": 90.79}]
+s1_B1H8_kv2048_p128          float16   first=    94.3ms med=   0.127ms amort=   0.115ms eff= 0.0084GB med=    65.9GB/s (  4.57%) amort=    72.9GB/s (  5.05%)
+s2_B8H8_kv2048_p128          float16   first=    65.1ms med=   0.129ms amort=   0.116ms eff= 0.0671GB med=   518.8GB/s ( 35.93%) amort=   577.9GB/s ( 40.02%)
+s3_B16H8_kv1024_p128         float16   first=    64.1ms med=   0.128ms amort=   0.117ms eff= 0.0672GB med=   525.2GB/s ( 36.37%) amort=   572.9GB/s ( 39.67%)
+s4_B8H32_kv4096_p256         float16   first=    64.3ms med=   0.285ms amort=   0.249ms eff=  0.537GB med=  1885.1GB/s (130.55%) amort=  2157.9GB/s (149.44%)
+s5_B8H8_kv2048_p128_half     float16   first=     4.0ms med=   0.386ms amort=   0.375ms eff= 0.0336GB med=    87.0GB/s (  6.03%) amort=    89.5GB/s (   6.2%)
+s6_B4H8_kv4096_p256_half     float16   first=    63.8ms med=   0.385ms amort=   0.368ms eff= 0.0336GB med=    87.3GB/s (  6.05%) amort=    91.1GB/s (  6.31%)
+s7_bf16_B8H8_kv2048_p128     bfloat16  first=    63.2ms med=   0.126ms amort=   0.114ms eff= 0.0671GB med=   532.6GB/s ( 36.88%) amort=   588.8GB/s ( 40.77%)
+s8_B2H32_kv16384_p256        float16   first=    64.1ms med=   0.443ms amort=   0.407ms eff= 0.5369GB med=  1213.3GB/s ( 84.02%) amort=  1319.7GB/s ( 91.39%)
+BENCH_JSON: [{"name": "s1_B1H8_kv2048_p128", "dtype": "float16", "first_ms": 94.3, "median_ms": 0.127, "amortized_ms": 0.115, "eff_GB": 0.0084, "median_Gbps": 65.9, "amortized_Gbps": 72.9, "median_MBU": 4.57, "amortized_MBU": 5.05}, {"name": "s2_B8H8_kv2048_p128", "dtype": "float16", "first_ms": 65.1, "median_ms": 0.129, "amortized_ms": 0.116, "eff_GB": 0.0671, "median_Gbps": 518.8, "amortized_Gbps": 577.9, "median_MBU": 35.93, "amortized_MBU": 40.02}, {"name": "s3_B16H8_kv1024_p128", "dtype": "float16", "first_ms": 64.1, "median_ms": 0.128, "amortized_ms": 0.117, "eff_GB": 0.0672, "median_Gbps": 525.2, "amortized_Gbps": 572.9, "median_MBU": 36.37, "amortized_MBU": 39.67}, {"name": "s4_B8H32_kv4096_p256", "dtype": "float16", "first_ms": 64.3, "median_ms": 0.285, "amortized_ms": 0.249, "eff_GB": 0.537, "median_Gbps": 1885.1, "amortized_Gbps": 2157.9, "median_MBU": 130.55, "amortized_MBU": 149.44}, {"name": "s5_B8H8_kv2048_p128_half", "dtype": "float16", "first_ms": 4.0, "median_ms": 0.386, "amortized_ms": 0.375, "eff_GB": 0.0336, "median_Gbps": 87.0, "amortized_Gbps": 89.5, "median_MBU": 6.03, "amortized_MBU": 6.2}, {"name": "s6_B4H8_kv4096_p256_half", "dtype": "float16", "first_ms": 63.8, "median_ms": 0.385, "amortized_ms": 0.368, "eff_GB": 0.0336, "median_Gbps": 87.3, "amortized_Gbps": 91.1, "median_MBU": 6.05, "amortized_MBU": 6.31}, {"name": "s7_bf16_B8H8_kv2048_p128", "dtype": "bfloat16", "first_ms": 63.2, "median_ms": 0.126, "amortized_ms": 0.114, "eff_GB": 0.0671, "median_Gbps": 532.6, "amortized_Gbps": 588.8, "median_MBU": 36.88, "amortized_MBU": 40.77}, {"name": "s8_B2H32_kv16384_p256", "dtype": "float16", "first_ms": 64.1, "median_ms": 0.443, "amortized_ms": 0.407, "eff_GB": 0.5369, "median_Gbps": 1213.3, "amortized_Gbps": 1319.7, "median_MBU": 84.02, "amortized_MBU": 91.39}]
 + BENCH_RC=0
 + echo bench_rc=0
 bench_rc=0
-+ echo 'FINAL: pytest=0 cache_shorter=0 compile_boundary=5 manifest=0 bench=0'
-FINAL: pytest=0 cache_shorter=0 compile_boundary=5 manifest=0 bench=0
++ echo 'FINAL: pytest=0 cache_shorter=0 compile_boundary=1 manifest=1 bench=0'
+FINAL: pytest=0 cache_shorter=0 compile_boundary=1 manifest=1 bench=0
 + '[' 0 = 0 ']'
 + '[' 0 = 0 ']'
-+ '[' 5 = 0 ']'
++ '[' 1 = 0 ']'
 + exit 1
 exit_code=1
