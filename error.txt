@@ -1,7 +1,7 @@
-cd ~/tilelang-asc
+cd /home/z30086261/tilelang-asc
 git fetch origin pull/1/head:pr-paged-mha-decode
 git checkout pr-paged-mha-decode && git log --oneline -1   # 应为 e2ef0ab8
 
 source /home/CANN/9.3.0.weekly.20260930/cann-9.3.0/set_env.sh
-cd examples/ascend/flash_attention
+cd /home/z30086261/tilelang-asc/examples/ascend/flash_attention
 PYTHONUNBUFFERED=1 python example_mha_paged_decode.py --no-perf 2>&1 | tee /tmp/paged_test.log
