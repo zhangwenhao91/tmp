@@ -1,18 +1,14 @@
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
-=== Part1: rl 扫描（per-(b,row) max_abs）===
+2026-10-20 11:38:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mha_decode_paged` with `out_idx=None`
+2026-10-20 11:38:06  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mha_decode_paged`
 /home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
   rows = bt_t[:, pos // page_size] * page_size + pos % page_size
-  rl=1024  bad=1547  per-(b,row): 1.2e-02 1.7e-02 1.0e-02 6.1e-03; 4.6e-03 1.5e-02 7.4e-03 3.3e-03
-  rl=1000  bad=1675  per-(b,row): 1.9e-02 7.0e-03 1.2e-02 3.5e-03; 1.6e-02 6.5e-03 1.1e-02 5.6e-03
-  rl=992   bad=1682  per-(b,row): 6.7e-03 9.4e-03 1.1e-02 9.6e-03; 3.9e-02 7.3e-03 7.2e-03 6.1e-03
-  rl=960   bad=1884  per-(b,row): 1.2e-02 2.0e-02 1.5e-02 9.3e-03; 1.5e-02 2.3e-02 6.3e-03 4.0e-03
-  rl=896   bad=1937  per-(b,row): 1.4e-02 6.5e-03 7.6e-03 3.9e-03; 1.6e-02 7.8e-03 4.0e-02 6.4e-03
-  rl=768   bad=1880  per-(b,row): 1.2e-02 7.7e-03 1.1e-02 3.3e-03; 2.1e-02 1.6e-02 1.9e-02 1.5e-02
-  rl=704   bad=1951  per-(b,row): 1.8e-02 9.4e-03 7.7e-03 2.3e-03; 1.5e-02 1.6e-02 1.7e-02 2.6e-02
 
-=== Part2: 同内容 q 行探针（rl=1000, B=1）===
-  输出行0 -> 最像掩码行3 (差=5.43e-05)；次近=掩码行1 (差=6.57e-03)
-  输出行1 -> 最像掩码行3 (差=5.43e-05)；次近=掩码行1 (差=6.57e-03)
-  输出行2 -> 最像掩码行3 (差=5.43e-05)；次近=掩码行1 (差=6.57e-03)
-  输出行3 -> 最像掩码行3 (差=5.43e-05)；次近=掩码行1 (差=6.57e-03)
+[A 乱序表(官方生成)] 输出行 -> 最像的语义行（应为恒等 r->r）
+  batch0: r0->0(2.0e-02) r1->1(3.5e-02) r2->2(1.4e-02) r3->3(2.4e-02) r4->4(1.4e-02) r5->5(1.0e-02) r6->6(2.0e-02) r7->7(3.9e-02) r8->8(2.2e-02) r9->9(2.3e-02) r10->10(8.7e-03) r11->11(7.4e-03) r12->12(4.6e-03) r13->13(5.1e-03) r14->14(4.8e-03) r15->15(6.4e-05)
+  batch1: r0->0(2.0e-02) r1->1(2.1e-02) r2->2(3.8e-02) r3->3(3.2e-02) r4->4(1.4e-02) r5->5(2.9e-02) r6->6(1.4e-02) r7->7(1.0e-02) r8->8(2.5e-02) r9->9(1.3e-02) r10->10(1.7e-02) r11->11(9.6e-03) r12->12(9.4e-03) r13->13(1.3e-02) r14->14(6.7e-03) r15->15(5.5e-05)
+
+[B 顺序表] 输出行 -> 最像的语义行（应为恒等 r->r）
+  batch0: r0->0(2.9e-02) r1->1(2.2e-02) r2->2(2.7e-02) r3->3(1.6e-02) r4->4(2.7e-02) r5->5(1.6e-02) r6->6(2.3e-02) r7->7(2.0e-02) r8->8(1.8e-02) r9->9(2.4e-02) r10->10(1.3e-02) r11->11(1.1e-02) r12->12(1.5e-02) r13->13(4.6e-03) r14->14(7.6e-03) r15->15(6.1e-05)
+  batch1: r0->0(0.0e+00) r1->0(0.0e+00) r2->0(0.0e+00) r3->0(0.0e+00) r4->0(0.0e+00) r5->0(0.0e+00) r6->0(0.0e+00) r7->0(0.0e+00) r8->0(0.0e+00) r9->0(0.0e+00) r10->0(0.0e+00) r11->0(0.0e+00) r12->0(0.0e+00) r13->0(0.0e+00) r14->0(0.0e+00) r15->0(0.0e+00)
 exit_code=0
