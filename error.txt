@@ -1,20 +1,4 @@
-root@ubuntu162:/home/z30086261/TileKernels# python -m pytest \
+python -m pytest \
   "tests/mhc/test_head_compute_mix.py::test_head_compute_mix_fwd_benchmark" \
   "tests/mhc/test_post.py::test_mhc_post_bwd_benchmark" \
-  -v 2>&1 | tail -15
-collecting ... collected 8 items
-
-tests/mhc/test_head_compute_mix.py::test_head_compute_mix_fwd_benchmark[1-512-4] SKIPPED [ 12%]
-tests/mhc/test_head_compute_mix.py::test_head_compute_mix_fwd_benchmark[1-8192-4] SKIPPED [ 25%]
-tests/mhc/test_post.py::test_mhc_post_bwd_benchmark[1-512-7168-4] SKIPPED [ 37%]
-tests/mhc/test_post.py::test_mhc_post_bwd_benchmark[1-512-5120-4] SKIPPED [ 50%]
-tests/mhc/test_post.py::test_mhc_post_bwd_benchmark[1-512-4096-4] SKIPPED [ 62%]
-tests/mhc/test_post.py::test_mhc_post_bwd_benchmark[1-8192-7168-4] SKIPPED [ 75%]
-tests/mhc/test_post.py::test_mhc_post_bwd_benchmark[1-8192-5120-4] SKIPPED [ 87%]
-tests/mhc/test_post.py::test_mhc_post_bwd_benchmark[1-8192-4096-4] SKIPPED [100%]
-======================== GPU Memory Auto-Classification ========================
-
-8 test(s) have no GPU memory profile and were conservatively classified as large_gpu_mem (Stage 2).
-Run pytest with '--refresh-mem' to measure and record their actual GPU memory usage.
-============================== 8 skipped in 0.05s ==============================
-root@ubuntu162:/home/z30086261/TileKernels# 
+  -v --run-benchmark 2>&1 | tail -15
