@@ -334,3 +334,31 @@ Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 [probe3] GQ=128 NT=8 grid=NBLK=1 (K 重读 1 倍, AI≈248)
 2026-10-21 09:47:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mla_decode_slots` with `out_idx=None`
 [probe3:GQ=128] COMPILE FAIL: InternalError: Z3 loop scheduling failed: scope "shared.l0b" capacity 0 is insufficient for minimum buffer usage 16384. Try using T.annotate_unlimit_memory("shared.l0b") or reduce buffer sizes.
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+[09:49:19] /home/z30086261/tilelang/src/ascend/transform/layout_inference.cc:468: Fatal: Get different layout for kb_l0b
+ current layout: Layout((128, 128) -> (8, 8, 16, 16), transform: (_i, _j) -> (_i // 16, _j // 16, _j % 16, _i % 16))
+ previous layout: Layout((128, 128) -> (8, 8, 16, 16), transform: (_i, _j) -> (_j // 16, _i // 16, _i % 16, _j % 16))
+  --> /home/z30086261/tmp/mla_stage_a/probe3_slots.py:239:1
+[probe3] GQ=64 NT=4 grid=NBLK=2 (K 重读 2 倍, AI≈124)
+2026-10-21 09:49:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mla_decode_slots` with `out_idx=None`
+[probe3:GQ=64] COMPILE FAIL: InternalError: Get different layout for kb_l0b
+ current layout: Layout((128, 128) -> (8, 8, 16, 16), transform: (_i, _j) -> (_i // 16, _j // 16, _j % 16, _i % 16))
+ previous layout: Layout((128, 128) -> (8, 8, 16, 16), transform: (_i, _j) -> (_j // 16, _i // 16, _i % 16, _j % 16))
+  --> /home/z30086261/tmp/mla_stage_a/probe3_slots.py:239:1
+      |
+ 239 |         kb_l0b = T.alloc_l0b((BC, 128), dtype)
+      |         ^
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+[09:49:32] /home/z30086261/tilelang/src/ascend/transform/layout_inference.cc:468: Fatal: Get different layout for kb_l0b
+ current layout: Layout((128, 128) -> (8, 8, 16, 16), transform: (_i, _j) -> (_i // 16, _j // 16, _j % 16, _i % 16))
+ previous layout: Layout((128, 128) -> (8, 8, 16, 16), transform: (_i, _j) -> (_j // 16, _i // 16, _i % 16, _j % 16))
+  --> /home/z30086261/tmp/mla_stage_a/probe3_slots.py:239:1
+[probe3] GQ=128 NT=8 grid=NBLK=1 (K 重读 1 倍, AI≈248)
+2026-10-21 09:49:32  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mla_decode_slots` with `out_idx=None`
+[probe3:GQ=128] COMPILE FAIL: InternalError: Get different layout for kb_l0b
+ current layout: Layout((128, 128) -> (8, 8, 16, 16), transform: (_i, _j) -> (_i // 16, _j // 16, _j % 16, _i % 16))
+ previous layout: Layout((128, 128) -> (8, 8, 16, 16), transform: (_i, _j) -> (_j // 16, _i // 16, _i % 16, _j % 16))
+  --> /home/z30086261/tmp/mla_stage_a/probe3_slots.py:239:1
+      |
+ 239 |         kb_l0b = T.alloc_l0b((BC, 128), dtype)
+      |         ^
