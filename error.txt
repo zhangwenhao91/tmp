@@ -1,26 +1,31 @@
-root@ubuntu162:/home/z30086261# pip uninstall -y tile-kernels
-Found existing installation: tile_kernels 1.0.0
-Uninstalling tile_kernels-1.0.0:
-  Successfully uninstalled tile_kernels-1.0.0
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
-root@ubuntu162:/home/z30086261# git clone --depth 1 https://github.com/deepseek-ai/TileKernels.git
-Cloning into 'TileKernels'...
-remote: Enumerating objects: 201, done.
-remote: Counting objects: 100% (201/201), done.
-remote: Compressing objects: 100% (185/185), done.
-remote: Total 201 (delta 13), reused 119 (delta 11), pack-reused 0 (from 0)
-Receiving objects: 100% (201/201), 277.98 KiB | 451.00 KiB/s, done.
-Resolving deltas: 100% (13/13), done.
-root@ubuntu162:/home/z30086261# pip install -e ./TileKernels --no-deps
-Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
-Obtaining file:///home/z30086261/TileKernels
-  Installing build dependencies ... done
-  Checking if build backend supports build_editable ... done
-  Getting requirements to build editable ... done
-  Preparing editable metadata (pyproject.toml) ... done
-INFO: pip is looking at multiple versions of tile-kernels to determine which version is compatible with other requirements. This could take a while.
+root@ubuntu162:/home/z30086261/TileKernels# python -m pytest tests/mhc/ -x -n 4 2>&1 | tail -30
+============================= test session starts ==============================
+platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/z30086261/TileKernels
+configfile: pyproject.toml
+plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
+created: 4/4 workers
+4 workers [218 items]
 
-[notice] A new release of pip is available: 25.2 -> 26.2.1
-[notice] To update, run: pip install --upgrade pip
-ERROR: Package 'tile-kernels' requires a different Python: 3.11.0 not in '>=3.12'
-root@ubuntu162:/home/z30086261# 
+ssssssssss.........................ss...ssss.....s.......sssssssss...... [ 33%]
+......................ssssss......sssssss...sss..ssss...ss.......sssss.. [ 66%]
+.......sssss........................sssss.........ssss..........ssss.... [ 99%]
+..                                                                       [100%]Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+
+=============================== warnings summary ===============================
+tests/mhc/test_head_compute_mix.py::test_head_compute_mix_comprehensive[4-1024-2]
+tests/mhc/test_head_compute_mix.py::test_head_compute_mix_comprehensive[4-1001-1]
+  /home/z30086261/TileKernels/tests/mhc/test_head_compute_mix.py:35: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    output_mix = torch.empty_like(input_mix)
+
+tests/mhc/test_multilayer_recompute.py::test_mhc_multilayer_recompute_correctness[10-9-2304]
+  /home/z30086261/TileKernels/tile_kernels/mhc/post_kernel.py:33: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    out = torch.empty_like(residual)
+
+tests/mhc/test_norm_fn.py::test_correctness[False-320-4096]
+  /home/z30086261/TileKernels/tests/mhc/test_norm_fn.py:171: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    out_mul_grad = torch.empty_like(out_mul)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========== 147 passed, 71 skipped, 4 warnings in 130.39s (0:02:10) ============
+root@ubuntu162:/home/z30086261/TileKernels# 
