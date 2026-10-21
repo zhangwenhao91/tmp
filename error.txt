@@ -1,19 +1,26 @@
-root@ubuntu162:/home/z30086261# python -c "from tile_kernels.mhc import mhc_pre_big_fuse_fwd, mhc_post_fwd, mhc_sinkhorn_fwd; print('mhc import OK')"
-Loading tilelang libs from dev root: /home/z30086261/tilelang/build
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/tile_kernels/__init__.py", line 3, in <module>
-    from . import (
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/tile_kernels/moe/__init__.py", line 2, in <module>
-    from .reduce_fused_kernel import reduce_fused
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/tile_kernels/moe/reduce_fused_kernel.py", line 6, in <module>
-    from tile_kernels.quant.common import *
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/tile_kernels/quant/__init__.py", line 1, in <module>
-    from .swiglu_forward_and_per_channel_cast_and_transpose_kernel import swiglu_forward_and_per_channel_cast_and_transpose
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/tile_kernels/quant/swiglu_forward_and_per_channel_cast_and_transpose_kernel.py", line 5, in <module>
-    from tile_kernels.quant.common import *
-  File "/usr/local/python3.11.0/lib/python3.11/site-packages/tile_kernels/quant/common.py", line 7, in <module>
-    from tilelang.utils.target import determine_target
-ModuleNotFoundError: No module named 'tilelang.utils.target'
-[ERROR] 2026-10-21-16:50:26 (PID:9633, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+root@ubuntu162:/home/z30086261# pip uninstall -y tile-kernels
+Found existing installation: tile_kernels 1.0.0
+Uninstalling tile_kernels-1.0.0:
+  Successfully uninstalled tile_kernels-1.0.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+root@ubuntu162:/home/z30086261# git clone --depth 1 https://github.com/deepseek-ai/TileKernels.git
+Cloning into 'TileKernels'...
+remote: Enumerating objects: 201, done.
+remote: Counting objects: 100% (201/201), done.
+remote: Compressing objects: 100% (185/185), done.
+remote: Total 201 (delta 13), reused 119 (delta 11), pack-reused 0 (from 0)
+Receiving objects: 100% (201/201), 277.98 KiB | 451.00 KiB/s, done.
+Resolving deltas: 100% (13/13), done.
+root@ubuntu162:/home/z30086261# pip install -e ./TileKernels --no-deps
+Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
+Obtaining file:///home/z30086261/TileKernels
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... done
+INFO: pip is looking at multiple versions of tile-kernels to determine which version is compatible with other requirements. This could take a while.
+
+[notice] A new release of pip is available: 25.2 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+ERROR: Package 'tile-kernels' requires a different Python: 3.11.0 not in '>=3.12'
 root@ubuntu162:/home/z30086261# 
