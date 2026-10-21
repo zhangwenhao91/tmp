@@ -1,22 +1,36 @@
+root@ubuntu162:/home/z30086261/TileOPs# git pull
+remote: Enumerating objects: 8, done.
+remote: Counting objects: 100% (8/8), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 8 (delta 5), reused 8 (delta 5), pack-reused 0 (from 0)
+Unpacking objects: 100% (8/8), 656 bytes | 656.00 KiB/s, done.
+From https://github.com/zhangwenhao91/TileOPs
+   d4b76dcd..5c521f44  ascend-mha-decode -> origin/ascend-mha-decode
+Updating d4b76dcd..5c521f44
+Fast-forward
+ src/tileops/backends/ascend/kernels/mla_decode.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+root@ubuntu162:/home/z30086261/TileOPs# git log --oneline -1
+5c521f44 (HEAD -> ascend-mha-decode, origin/ascend-mha-decode) MLA kernel: return a compiled kernel, not the raw PrimFunc
 root@ubuntu162:/home/z30086261/TileOPs# pytest tests/ops/test_mla_decode.py -m smoke --tileops-target detect --tileops-device npu -k "not masks_keys_past" -v 2>&1 | tail -20
-        o_buf = torch.empty(
-            batch, head_blocks, min(128, heads), dim, dtype=q_t.dtype, device=q_t.device
-        )
-        # The kernel writes every head slot, so the flat view is the contract's
-        # ``(B, H, D)`` output with heads in order — no permute or zero fill needed.
->       kernel(q_t, q_pe_t, k_t, k_pe_t, o_buf)
-E       TypeError: 'PrimFunc' object is not callable
+rootdir: /home/z30086261/TileOPs
+configfile: pyproject.toml
+plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
+collecting ... collected 7 items / 4 deselected / 3 selected
 
-src/tileops/backends/ascend/builders/attention.py:231: TypeError
+tests/ops/test_mla_decode.py::test_mla_decode[32-128-1-8192-512-64-dtype0-False] PASSED [ 33%]
+tests/ops/test_mla_decode.py::test_mla_decode[dim-128] PASSED            [ 66%]
+tests/ops/test_mla_decode.py::test_mla_decode[tail-heads] PASSED         [100%]
+
 =============================== warnings summary ===============================
 tests/ops/test_mla_decode.py: 15 warnings
   /home/z30086261/tilelang/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
     deprecated_warning(method_name, new_method_name, phaseout_version)
 
+tests/ops/test_mla_decode.py::test_mla_decode[32-128-1-8192-512-64-dtype0-False]
+  /home/z30086261/TileOPs/workloads/numerics.py:147: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    changed[index] = torch.zeros_like(changed[index])
+
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========================== short test summary info ============================
-FAILED tests/ops/test_mla_decode.py::test_mla_decode[32-128-1-8192-512-64-dtype0-False]
-FAILED tests/ops/test_mla_decode.py::test_mla_decode[dim-128] - TypeError: 'P...
-FAILED tests/ops/test_mla_decode.py::test_mla_decode[tail-heads] - TypeError:...
-================= 3 failed, 4 deselected, 15 warnings in 5.60s =================
+================ 3 passed, 4 deselected, 16 warnings in 58.34s =================
 root@ubuntu162:/home/z30086261/TileOPs# 
