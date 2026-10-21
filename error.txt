@@ -1,43 +1,22 @@
-root@ubuntu162:/home/z30086261/TileOPs# pip install -e . --no-deps
-Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
-Obtaining file:///home/z30086261/TileOPs
-  Installing build dependencies ... done
-  Checking if build backend supports build_editable ... done
-  Getting requirements to build editable ... done
-  Preparing editable metadata (pyproject.toml) ... done
-Building wheels for collected packages: tileops
-  Building editable for tileops (pyproject.toml) ... done
-  Created wheel for tileops: filename=tileops-0.0.1.dev1352+gd4b76dcdc.d20261021-0.editable-py3-none-any.whl size=6194 sha256=0ecef1b279bcd36eb47a4c348448d4928815e7873432b7453cfac0f384822537
-  Stored in directory: /tmp/pip-ephem-wheel-cache-hkveef7u/wheels/ed/c6/c0/ced3f141bab674e26123db594d8737ff57ad9ea7bdb4a0dc85
-Successfully built tileops
-Installing collected packages: tileops
-  Attempting uninstall: tileops
-    Found existing installation: tileops 0.0.0
-    Uninstalling tileops-0.0.0:
-      Successfully uninstalled tileops-0.0.0
-Successfully installed tileops-0.0.1.dev1352+gd4b76dcdc.d20261021
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+root@ubuntu162:/home/z30086261/TileOPs# pytest tests/ops/test_mla_decode.py -m smoke --tileops-target detect --tileops-device npu -k "not masks_keys_past" -v 2>&1 | tail -20
+        o_buf = torch.empty(
+            batch, head_blocks, min(128, heads), dim, dtype=q_t.dtype, device=q_t.device
+        )
+        # The kernel writes every head slot, so the flat view is the contract's
+        # ``(B, H, D)`` output with heads in order — no permute or zero fill needed.
+>       kernel(q_t, q_pe_t, k_t, k_pe_t, o_buf)
+E       TypeError: 'PrimFunc' object is not callable
 
-[notice] A new release of pip is available: 25.2 -> 26.2.1
-[notice] To update, run: pip install --upgrade pip
-root@ubuntu162:/home/z30086261/TileOPs# pytest tests/ops/test_mla_decode.py -m smoke --tileops-target detect -k "not masks_keys_past" -v 2>&1 | tail -20
-            if is_initialized():
-                return
-            # It is important to prevent other threads from entering _lazy_init
-            # immediately, while we are still guaranteed to have the GIL, because some
-            # of the C calls we make below will release the GIL
-            if _is_in_bad_fork():
-                raise RuntimeError(
-                    "Cannot re-initialize CUDA in forked subprocess. To use CUDA with "
-                    "multiprocessing, you must use the 'spawn' start method"
-                )
-            if not hasattr(torch._C, "_cuda_getDeviceCount"):
->               raise AssertionError("Torch not compiled with CUDA enabled")
-E               AssertionError: Torch not compiled with CUDA enabled
+src/tileops/backends/ascend/builders/attention.py:231: TypeError
+=============================== warnings summary ===============================
+tests/ops/test_mla_decode.py: 15 warnings
+  /home/z30086261/tilelang/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
+    deprecated_warning(method_name, new_method_name, phaseout_version)
 
-/usr/local/python3.11.0/lib/python3.11/site-packages/torch/cuda/__init__.py:363: AssertionError
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ============================
 FAILED tests/ops/test_mla_decode.py::test_mla_decode[32-128-1-8192-512-64-dtype0-False]
-FAILED tests/ops/test_mla_decode.py::test_mla_decode[dim-128] - AssertionErro...
-FAILED tests/ops/test_mla_decode.py::test_mla_decode[tail-heads] - AssertionE...
-======================= 3 failed, 4 deselected in 3.29s ========================
+FAILED tests/ops/test_mla_decode.py::test_mla_decode[dim-128] - TypeError: 'P...
+FAILED tests/ops/test_mla_decode.py::test_mla_decode[tail-heads] - TypeError:...
+================= 3 failed, 4 deselected, 15 warnings in 5.60s =================
+root@ubuntu162:/home/z30086261/TileOPs# 
