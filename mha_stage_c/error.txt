@@ -1,0 +1,13 @@
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+/home/z30086261/TileOPs/src/tileops/backends/ascend/builders/attention.py:121: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+  rows = bt_t[:, pos // page_size] * page_size + pos % page_size
+[W1021 10:17:32.001104044 ToKernelNpu.cpp:164] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+MHADecodePagedWithKVCacheFwdOp manifest workloads (official gen/ref/verification):
+  serving-p128         PASS  first=   96.7ms med=0.135ms
+  serving-b2           PASS  first=   67.3ms med=0.125ms
+  serving-kv1k         PASS  first=   65.8ms med=0.126ms
+  serving-kv512        PASS  first=   65.8ms med=0.124ms
+  speculative-decode   PASS  first=   67.9ms med=0.263ms
+  opt-1.3b-b1          PASS  first=   65.9ms med=0.126ms
+  opt-1.3b-b16         PASS  first=   68.9ms med=1.016ms
+manifest_workloads: 7/7 PASS
