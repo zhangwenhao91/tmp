@@ -1,8 +1,20 @@
-[v1a:s1] compile B=2 H=128 N_kv=256 GQ=128 grid=2 ...
 Loading tilelang libs from dev root: /home/z30086261/tilelang/build
-[v1a:s1] RUN FAIL: TypeError: 'PrimFunc' object is not callable
+[v1a:s1] compile B=2 H=128 N_kv=256 GQ=128 grid=2 ...
+[10:02:09] /home/z30086261/tilelang/src/ascend/transform/auto_schedule.cc:702: Warning: Python Z3 scheduler failed with exception: Z3 scheduling failed: solver returned unsat, falling back to topological sort
+[10:02:16] /home/z30086261/tilelang/src/ascend/transform/insert_sync.cc:2046: Warning: Ascend auto-schedule reached an intra-core flag-id high-water mark of 9 for 5:V_MTE3 after safe reuse, exceeding the dav-3510 limit of 8; the later RewriteFlagToBuf pass will compact sparse out-of-range ids or spill excess flag blocks to get_buf/rls_buf when capacity is exceeded.
+2026-10-21 10:01:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mla_decode_v1a` with `out_idx=None`
+2026-10-21 10:02:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mla_decode_v1a`
+[v1a:s1] B=2 H=128 N_kv=256 max_abs=5.201e-05 PASS
 [v1a:s2] compile B=2 H=128 N_kv=4096 GQ=128 grid=2 ...
-[v1a:s2] RUN FAIL: TypeError: 'PrimFunc' object is not callable
+[10:02:31] /home/z30086261/tilelang/src/ascend/transform/auto_schedule.cc:702: Warning: Python Z3 scheduler failed with exception: Z3 scheduling failed: solver returned unsat, falling back to topological sort
+[10:02:38] /home/z30086261/tilelang/src/ascend/transform/insert_sync.cc:2046: Warning: Ascend auto-schedule reached an intra-core flag-id high-water mark of 9 for 5:V_MTE3 after safe reuse, exceeding the dav-3510 limit of 8; the later RewriteFlagToBuf pass will compact sparse out-of-range ids or spill excess flag blocks to get_buf/rls_buf when capacity is exceeded.
+2026-10-21 10:02:21  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mla_decode_v1a` with `out_idx=None`
+2026-10-21 10:02:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mla_decode_v1a`
+[v1a:s2] B=2 H=128 N_kv=4096 max_abs=1.710e-05 PASS
+[v1a:s2] per-call = 0.595 ms (B=2 H=128 N_kv=4096)
 [v1a:s3] compile B=1 H=64 N_kv=1024 GQ=64 grid=1 ...
-[v1a:s3] RUN FAIL: TypeError: 'PrimFunc' object is not callable
-FINAL mla_stage_b_v1a rc_sum=3
+[10:02:59] /home/z30086261/tilelang/src/ascend/transform/auto_schedule.cc:702: Warning: Python Z3 scheduler failed with exception: Z3 scheduling failed: solver returned unsat, falling back to topological sort
+2026-10-21 10:02:41  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mla_decode_v1a` with `out_idx=None`
+2026-10-21 10:03:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mla_decode_v1a`
+[v1a:s3] B=1 H=64 N_kv=1024 max_abs=2.810e-05 PASS
+FINAL mla_stage_b_v1a rc_sum=0
