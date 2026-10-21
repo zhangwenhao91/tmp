@@ -15,6 +15,7 @@ import functools
 import sys
 import time
 
+import tilelang
 import torch
 import torch_npu  # noqa: F401
 
@@ -310,7 +311,7 @@ def main() -> int:
         print(f"[v1a:{name}] compile B={B} H={H} N_kv={N_KV} "
               f"GQ={GQ} grid={B * (H // GQ)} ...", flush=True)
         try:
-            kern = compile_kernel(B, H, D, PE, N_KV)
+            kern = tilelang.compile(compile_kernel(B, H, D, PE, N_KV))
         except Exception as e:  # noqa: BLE001
             print(f"[v1a:{name}] COMPILE FAIL: {type(e).__name__}: {e}")
             rc_sum += 1
