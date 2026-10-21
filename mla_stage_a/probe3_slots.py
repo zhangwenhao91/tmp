@@ -253,12 +253,12 @@ def mla_decode_slots(
         o_slots = [T.alloc_shared((ROWS, D), accum_dtype) for _ in range(NT)]
 
         # 初始化：m=-inf、l=0、O=0（逐 tile 槽）
-        for ht in range(NT):
+        for ht in list(range(NT)):
             init_m_l(m_bufs[ht], l_bufs[ht])
         with T.SimdVF(latency=142):
             clear_mask = S.pset(32, "PAT_ALL")
             output_zero = S.vdup(T.float32(0.0), accum_dtype, clear_mask)
-            for ht in range(NT):
+            for ht in list(range(NT)):
                 for i in range(ROWS):
                     for c in range(0, D, VL):
                         S.vsts(o_slots[ht][i, c], output_zero, clear_mask, "NORM_B32")
@@ -267,7 +267,7 @@ def mla_decode_slots(
             kb0 = kv * BC
             T.copy(K[kb0:kb0 + BC, 0, 0:D], K_shared[0:BC, 0:D])
             T.copy(KPE[kb0:kb0 + BC, 0, 0:PE], KPE_shared[0:BC, 0:PE])
-            for ht in range(NT):
+            for ht in list(range(NT)):
                 T.copy(Q[0, head0 + ht * BR:head0 + (ht + 1) * BR, 0:D], Q_shared[0:BR, 0:D])
                 T.copy(QPE[0, head0 + ht * BR:head0 + (ht + 1) * BR, 0:PE], QPE_shared[0:BR, 0:PE])
                 qk_tile(Q_shared, QPE_shared, K_shared, KPE_shared,
@@ -278,7 +278,7 @@ def mla_decode_slots(
                 pv_tile(P_shared, K_shared, pv_a, pv_b, pv_acc, O_tmp_ub)
                 accumulate_tile(O_tmp_ub, o_slots[ht], alpha_bufs[ht])
 
-        for ht in range(NT):
+        for ht in list(range(NT)):
             finalize_tile(O, head0, ht, o_slots[ht], O_cast_ub, l_bufs[ht])
 
 
