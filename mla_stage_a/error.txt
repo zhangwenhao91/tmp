@@ -324,3 +324,13 @@ Traceback (most recent call last):
     raise ValueError(f"Cannot infer dual_copy split direction: src shape {src_shape} vs dst shape {dst_shape}. " + ratio_requirement)
 ValueError: Cannot infer dual_copy split direction: src shape [8, 512] vs dst shape [1, head0 * 15 + 16, 512]. Exactly one trailing dimension must be halved.
 [ERROR] 2026-10-21-09:43:53 (PID:4218, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+[09:46:59] /home/z30086261/tilelang/src/ascend/transform/auto_schedule.cc:937: Fatal: Z3 loop scheduling failed: scope "shared.l0b" capacity 0 is insufficient for minimum buffer usage 16384. Try using T.annotate_unlimit_memory("shared.l0b") or reduce buffer sizes.
+[probe3] GQ=64 NT=4 grid=NBLK=2 (K 重读 2 倍, AI≈124)
+2026-10-21 09:46:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mla_decode_slots` with `out_idx=None`
+[probe3:GQ=64] COMPILE FAIL: InternalError: Z3 loop scheduling failed: scope "shared.l0b" capacity 0 is insufficient for minimum buffer usage 16384. Try using T.annotate_unlimit_memory("shared.l0b") or reduce buffer sizes.
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+[09:47:13] /home/z30086261/tilelang/src/ascend/transform/auto_schedule.cc:937: Fatal: Z3 loop scheduling failed: scope "shared.l0b" capacity 0 is insufficient for minimum buffer usage 16384. Try using T.annotate_unlimit_memory("shared.l0b") or reduce buffer sizes.
+[probe3] GQ=128 NT=8 grid=NBLK=1 (K 重读 1 倍, AI≈248)
+2026-10-21 09:47:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mla_decode_slots` with `out_idx=None`
+[probe3:GQ=128] COMPILE FAIL: InternalError: Z3 loop scheduling failed: scope "shared.l0b" capacity 0 is insufficient for minimum buffer usage 16384. Try using T.annotate_unlimit_memory("shared.l0b") or reduce buffer sizes.
