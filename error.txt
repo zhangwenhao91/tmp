@@ -1,34 +1,10 @@
-root@ubuntu162:/home/z30086261/tilelang/examples/ascend/flash_attention# python -m pytest test_mha.py 
-========================================== test session starts ===========================================
-platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0
-rootdir: /home/z30086261/tilelang/examples
-configfile: pytest.ini
-plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
-collected 1 item                                                                                         
+root@ubuntu162:/home/z30086261# pip install --no-deps tile-kernels
+Looking in indexes: https://mirrors.aliyun.com/pypi/simple/
+Collecting tile-kernels
+  Using cached https://mirrors.aliyun.com/pypi/packages/d3/74/7511421ab2a2f292ca2c147a7af78eaec90e39bd6d6703283a4ba8fd7dfc/tile_kernels-1.0.0-py3-none-any.whl (120 kB)
+Installing collected packages: tile-kernels
+Successfully installed tile-kernels-1.0.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
-test_mha.py .                                                                                      [100%]
-
-============================================ warnings summary ============================================
-ascend/flash_attention/test_mha.py::test_mha
-ascend/flash_attention/test_mha.py::test_mha
-ascend/flash_attention/test_mha.py::test_mha
-ascend/flash_attention/test_mha.py::test_mha
-  /home/z30086261/tilelang/tilelang/utils/deprecated.py:34: DeprecationWarning: T.Buffer(...) is deprecated, use T.Tensor(...) instead
-    deprecated_warning(method_name, new_method_name, phaseout_version)
-
--- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-===================================== 1 passed, 4 warnings in 1.55s ======================================
-root@ubuntu162:/home/z30086261/tilelang/examples/ascend/flash_attention# python example_mha.py 
-Loading tilelang libs from dev root: /home/z30086261/tilelang/build
-Compiling mha (D=128, SEQ_LEN=4096)...
-Compilation succeeded!
-  rel=0.0025 PASS
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-    53.8 us  |  159.7 TFLOPS
-
---- Performance comparison ---
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-  Torch SDPA: 49.77 us/iter | 172.6 TFLOPS
-
-  TileLang: 0.05 ms | Torch: 0.05 ms | Torch is 1.08x faster
-root@ubuntu162:/home/z30086261/tilelang/examples/ascend/flash_attention# 
+[notice] A new release of pip is available: 25.2 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
