@@ -64,14 +64,17 @@ REF = ref_mla()
 @T.macro
 def qk_tile(Q_shared, QPE_shared, K_shared, KPE_shared,
             qk_a, qk_b, qk_a_pe, qk_b_pe, qk_acc, S_ub):
-    for d0 in range(0, D, 128):
-        T.copy(Q_shared[0:BR, d0:d0 + 128], qk_a)
-        T.copy(K_shared[0:BC, d0:d0 + 128], qk_b)
-        T.gemm(qk_a, qk_b, qk_acc, transpose_B=True, clear_accum=(d0 == 0))
+    # BC=128 拆两个 64 行半块复用同一 qk_b（16KB）：qk 用转置布局、pv 用正向布局，
+    # 两者不能共用 L0B（layout_inference 报 Get different layout），只能各自独立缓冲
     T.copy(QPE_shared[0:BR, 0:PE], qk_a_pe)
-    T.copy(KPE_shared[0:BC, 0:PE], qk_b_pe)
-    T.gemm(qk_a_pe, qk_b_pe, qk_acc, transpose_B=True, clear_accum=False)
-    T.dual_copy(qk_acc, S_ub[0:ROWS, 0:BC])
+    for kh in range(2):
+        for d0 in range(0, D, 128):
+            T.copy(Q_shared[0:BR, d0:d0 + 128], qk_a)
+            T.copy(K_shared[kh * 64:(kh + 1) * 64, d0:d0 + 128], qk_b)
+            T.gemm(qk_a, qk_b, qk_acc, transpose_B=True, clear_accum=(d0 == 0))
+        T.copy(KPE_shared[kh * 64:(kh + 1) * 64, 0:PE], qk_b_pe)
+        T.gemm(qk_a_pe, qk_b_pe, qk_acc, transpose_B=True, clear_accum=False)
+        T.dual_copy(qk_acc, S_ub[0:ROWS, kh * 64:(kh + 1) * 64])
 
 
 @T.macro
@@ -234,11 +237,12 @@ def mla_decode_slots(
         qk_a = T.alloc_l0a((BR, 128), dtype)
         qk_a_pe = T.alloc_l0a((BR, PE), dtype)
         pv_a = T.alloc_l0a((BR, BC), dtype)
-        # L0B 总容量 64KB：qk_b/pv_b 形状相同且生命周期不相交，共用一个 32KB；
-        # qk_b_pe 16KB，合计 48KB ≤ 64KB（三者并存会报 Z3 shared.l0b capacity 0）
-        kb_l0b = T.alloc_l0b((BC, 128), dtype)
-        qk_b_pe = T.alloc_l0b((BC, PE), dtype)
-        qk_acc = T.alloc_l0c((BR, BC), accum_dtype)
+        # L0B 64KB 预算：qk 半块化 16+8KB（转置布局）与 pv_b 32KB（正向布局）
+        # 分离——qk/pv 布局形态互斥，共用于同一缓冲会报 Get different layout
+        qk_b = T.alloc_l0b((64, 128), dtype)
+        qk_b_pe = T.alloc_l0b((64, PE), dtype)
+        pv_b = T.alloc_l0b((BC, 128), dtype)
+        qk_acc = T.alloc_l0c((BR, 64), accum_dtype)
         pv_acc = T.alloc_l0c((BR, 128), accum_dtype)
 
         S_ub = T.alloc_shared((ROWS, BC), accum_dtype)
@@ -274,11 +278,11 @@ def mla_decode_slots(
                 T.copy(Q[0, head0 + ht * BR:head0 + (ht + 1) * BR, 0:D], Q_shared[0:BR, 0:D])
                 T.copy(QPE[0, head0 + ht * BR:head0 + (ht + 1) * BR, 0:PE], QPE_shared[0:BR, 0:PE])
                 qk_tile(Q_shared, QPE_shared, K_shared, KPE_shared,
-                        qk_a, kb_l0b, qk_a_pe, qk_b_pe, qk_acc, S_ub)
+                        qk_a, qk_b, qk_a_pe, qk_b_pe, qk_acc, S_ub)
                 softmax_tile(S_ub, P_nz_ub, m_bufs[ht], l_bufs[ht], alpha_bufs[ht],
                              old_bufs[ht], rs_bufs[ht])
                 pack_p(P_nz_ub, P_shared)
-                pv_tile(P_shared, K_shared, pv_a, kb_l0b, pv_acc, O_tmp_ub)
+                pv_tile(P_shared, K_shared, pv_a, pv_b, pv_acc, O_tmp_ub)
                 accumulate_tile(O_tmp_ub, o_slots[ht], alpha_bufs[ht])
 
         for fb in list(range(NT)):
