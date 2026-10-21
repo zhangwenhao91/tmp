@@ -362,3 +362,18 @@ Loading tilelang libs from dev root: /home/z30086261/tilelang/build
       |
  239 |         kb_l0b = T.alloc_l0b((BC, 128), dtype)
       |         ^
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+[09:51:48] /home/z30086261/tilelang/src/ascend/transform/auto_schedule.cc:702: Warning: Python Z3 scheduler failed with exception: Z3 scheduling failed: solver returned unsat, falling back to topological sort
+[probe3] GQ=64 NT=4 grid=NBLK=2 (K 重读 2 倍, AI≈124)
+2026-10-21 09:51:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mla_decode_slots` with `out_idx=None`
+2026-10-21 09:51:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mla_decode_slots`
+[probe3:GQ=64] max_abs=4.756e-05 PASS
+[probe3:GQ=64] B=1 H=64 S_kv=256 per-call = 0.024 ms
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+[09:52:23] /home/z30086261/tilelang/src/ascend/transform/auto_schedule.cc:702: Warning: Python Z3 scheduler failed with exception: Z3 scheduling failed: solver returned unsat, falling back to topological sort
+[09:52:30] /home/z30086261/tilelang/src/ascend/transform/insert_sync.cc:2046: Warning: Ascend auto-schedule reached an intra-core flag-id high-water mark of 9 for 5:V_MTE3 after safe reuse, exceeding the dav-3510 limit of 8; the later RewriteFlagToBuf pass will compact sparse out-of-range ids or spill excess flag blocks to get_buf/rls_buf when capacity is exceeded.
+[probe3] GQ=128 NT=8 grid=NBLK=1 (K 重读 1 倍, AI≈248)
+2026-10-21 09:52:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mla_decode_slots` with `out_idx=None`
+2026-10-21 09:52:33  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mla_decode_slots`
+[probe3:GQ=128] max_abs=4.756e-05 PASS
+[probe3:GQ=128] B=1 H=128 S_kv=256 per-call = 0.043 ms
