@@ -193,7 +193,7 @@ def init_m_l(m_ub, l_ub):
 
 
 @T.macro
-def finalize_tile(O, head0, ht, O_slot, O_cast_ub, l_ub):
+def finalize_tile(O, bx, ht, O_slot, O_cast_ub, l_ub):
     with T.SimdVF(latency=1780):
         mask = S.pset(32, "PAT_ALL")
         for i in range(ROWS):
@@ -207,8 +207,10 @@ def finalize_tile(O, head0, ht, O_slot, O_cast_ub, l_ub):
             for c in range(0, D, VL):
                 ob = S.vcvt(S.vld(O_slot[r, c], "NORM"), out_dtype, cast_mask)
                 S.vsts(O_cast_ub[r, c], ob, cast_mask, "PK_B32")
+    # v1d 教训：dual_copy dst 必须是干净 2D 切片（标量索引掉维），
+    # 3D O 的 [0, a:b, 0:D] region 保留 3 维会报 Cannot infer split direction
     T.dual_copy(O_cast_ub[0:ROWS, 0:D],
-                O[0, head0 + ht * BR:(head0 + (ht + 1)) * BR, 0:D])
+                O[0, bx, ht * BR:(ht + 1) * BR, 0:D])
 
 
 @T.prim_func
@@ -217,7 +219,7 @@ def mla_decode_slots(
     QPE: T.Buffer((1, H, PE), dtype),
     K: T.Buffer((S_KV, 1, D), dtype),
     KPE: T.Buffer((S_KV, 1, PE), dtype),
-    O: T.Buffer((1, H, D), out_dtype),
+    O: T.Buffer((1, NBLK, GQ, D), out_dtype),
 ):
     with T.Kernel(NBLK) as bx:
         head0: T.int32 = bx * GQ
@@ -278,8 +280,8 @@ def mla_decode_slots(
                 pv_tile(P_shared, K_shared, pv_a, pv_b, pv_acc, O_tmp_ub)
                 accumulate_tile(O_tmp_ub, o_slots[ht], alpha_bufs[ht])
 
-        for ht in list(range(NT)):
-            finalize_tile(O, head0, ht, o_slots[ht], O_cast_ub, l_bufs[ht])
+        for fb in list(range(NT)):
+            finalize_tile(O, bx, fb, o_slots[fb], O_cast_ub, l_bufs[fb])
 
 
 def main() -> int:
@@ -291,10 +293,10 @@ def main() -> int:
         print(f"[probe3:GQ={GQ}] COMPILE FAIL: {type(e).__name__}: {e}")
         return 1
     try:
-        o = torch.zeros(1, H, D, dtype=torch.float16, device=dev)
+        o = torch.zeros(1, NBLK, GQ, D, dtype=torch.float16, device=dev)
         kern(q, q_pe, k, k_pe, o)
         torch.npu.synchronize()
-        diff = (o[0].float() - REF).abs()
+        diff = (o.view(1, H, D)[0].float() - REF).abs()
         max_abs = float(diff.max())
         ok = max_abs < 5e-3
         print(f"[probe3:GQ={GQ}] max_abs={max_abs:.3e} {'PASS' if ok else 'FAIL'}")
