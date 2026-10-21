@@ -1,31 +1,776 @@
-root@ubuntu162:/home/z30086261/TileKernels# python -m pytest tests/mhc/ -x -n 4 2>&1 | tail -30
-============================= test session starts ==============================
+root@ubuntu162:/home/z30086261/TileKernels# TK_TEST_LEVEL=2 python -m pytest tests/mhc/ -n 4
+=================================================== test session starts ===================================================
 platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0
 rootdir: /home/z30086261/TileKernels
 configfile: pyproject.toml
 plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
-created: 4/4 workers
-4 workers [218 items]
+4 workers [218 items]   
+ssssssssss.................ssss.............ss...........s..ssssssssssssssss............................ssssssss... [ 52%]
+...ssss.........sssss.ss............s..sssss..................sssss........ssss..........ssss..........             [100%]
+==================================================== warnings summary =====================================================
+tests/mhc/test_head_compute_mix.py::test_head_compute_mix_comprehensive[4-1001-1]
+tests/mhc/test_head_compute_mix.py::test_head_compute_mix_comprehensive[4-1024-2]
+  /home/z30086261/TileKernels/tests/mhc/test_head_compute_mix.py:35: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    output_mix = torch.empty_like(input_mix)
 
-ssssssssss.........................ss...ssss.....s.......sssssssss...... [ 33%]
-......................ssssss......sssssss...sss..ssss...ss.......sssss.. [ 66%]
-.......sssss........................sssss.........ssss..........ssss.... [ 99%]
-..                                                                       [100%]Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+tests/mhc/test_norm_fn.py::test_correctness[False-5120-8192]
+  /home/z30086261/TileKernels/tests/mhc/test_norm_fn.py:171: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    out_mul_grad = torch.empty_like(out_mul)
 
-=============================== warnings summary ===============================
+tests/mhc/test_multilayer_recompute.py::test_mhc_multilayer_recompute_correctness[10-9-2304]
+  /home/z30086261/TileKernels/tile_kernels/mhc/post_kernel.py:33: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
+    out = torch.empty_like(residual)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+====================================== 147 passed, 71 skipped, 4 warnings in 15.52s =======================================
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+root@ubuntu162:/home/z30086261/TileKernels# python -m pytest tests/mhc/ --run-benchmark -n 4
+=================================================== test session starts ===================================================
+platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/z30086261/TileKernels
+configfile: pyproject.toml
+plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
+4 workers [218 items]   
+.....................................................................F............................................. [ 52%]
+...................................................................F...................................             [100%]
+======================================================== FAILURES =========================================================
+______________________________________ test_head_compute_mix_fwd_benchmark[1-8192-4] ______________________________________
+[gw2] linux -- Python 3.11.0 /usr/bin/python
+
+n0 = 1, n1 = 8192, mhc_mult = 4, benchmark_timer = <function benchmark_timer.<locals>._timer at 0x7f7a799c0a40>
+benchmark_record = <function benchmark_record.<locals>._record at 0x7f7a799c2de0>
+
+    @pytest.mark.benchmark
+    @pytest.mark.parametrize('n0,n1,mhc_mult', _HEAD_COMPUTE_BENCH_CASES)
+    def test_head_compute_mix_fwd_benchmark(
+        n0: int,
+        n1: int,
+        mhc_mult: int,
+        benchmark_timer,
+        benchmark_record,
+    ) -> None:
+        test_data = generate_head_compute_mix_test_data(n0=n0, n1=n1, mhc_mult=mhc_mult)
+        input_mix = test_data['input_mix']
+        mhc_scale = test_data['mhc_scale']
+        mhc_base = test_data['mhc_base']
+        eps = test_data['mhc_pre_eps']
+        num_tokens = n0 * n1
+    
+        output_mix = torch.empty_like(input_mix)
+        io_gb = count_bytes(input_mix) * 2 / 1e9  # read + write, same shape
+    
+        input_mix_2d = input_mix.view(num_tokens, mhc_mult)
+        output_mix_2d = output_mix.view(num_tokens, mhc_mult)
+>       t_us = benchmark_timer(lambda: mhc_head_compute_mix_fwd(input_mix_2d, mhc_scale, mhc_base, output_mix_2d, eps))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/mhc/test_head_compute_mix.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tile_kernels/testing/pytest/benchmark.py:800: in _timer
+    return do_bench(fn, **kwargs) * 1e3  # ms → us
+           ^^^^^^^^^^^^^^^^^^^^^^
+../tilelang/tilelang/profiler/bench.py:146: in do_bench
+    return _do_bench_impl(
+../tilelang/tilelang/profiler/bench.py:263: in _do_bench_impl
+    return bench_with_msprof(fn, cache, n_repeat, detailed=backend == "msprof_detail")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fn = <function test_head_compute_mix_fwd_benchmark.<locals>.<lambda> at 0x7f7a797194e0>
+cache = tensor([0, 0, 0,  ..., 0, 0, 0], device='npu:0', dtype=torch.int32), n_repeat = 79, detailed = False
+
+    def bench_with_msprof(
+        fn: Callable,
+        cache: torch.Tensor,
+        n_repeat: int,
+        detailed: bool = False,
+    ) -> float:
+        """Benchmark using torch_npu msprof timing."""
+        import shutil
+        import signal
+        import struct
+        import tempfile
+        from collections import defaultdict
+        from contextlib import contextmanager, redirect_stderr, redirect_stdout
+        from dataclasses import dataclass
+        from pathlib import Path
+    
+        import torch_npu.profiler
+    
+        @dataclass
+        class KernelProfile:
+            """Per-kernel profiling result with AIC and AIV pipe utilization.
+    
+            All pipe fields are ratios in [0, 1] relative to their own total_cycles.
+            """
+    
+            dur_ns: float
+            # AIC pipes
+            aic_total_cycles: int = 0
+            aic_mad: float = 0.0
+            aic_scalar: float = 0.0
+            aic_mte1: float = 0.0
+            aic_mte2: float = 0.0
+            aic_mte3: float = 0.0
+            aic_fixpipe: float = 0.0
+            # AIV pipes
+            aiv_total_cycles: int = 0
+            aiv_vec: float = 0.0
+            aiv_scalar: float = 0.0
+            aiv_mte2: float = 0.0
+            aiv_mte3: float = 0.0
+    
+            def __add__(self, other: KernelProfile) -> KernelProfile:
+                """Sum two profiles: dur_ns adds, pipe ratios are cycle-weighted averages."""
+                aic_c = self.aic_total_cycles + other.aic_total_cycles
+                aiv_c = self.aiv_total_cycles + other.aiv_total_cycles
+                wa = self.aic_total_cycles / aic_c if aic_c else 0
+                wb = other.aic_total_cycles / aic_c if aic_c else 0
+                va = self.aiv_total_cycles / aiv_c if aiv_c else 0
+                vb = other.aiv_total_cycles / aiv_c if aiv_c else 0
+                return KernelProfile(
+                    dur_ns=self.dur_ns + other.dur_ns,
+                    aic_total_cycles=aic_c,
+                    aic_mad=self.aic_mad * wa + other.aic_mad * wb,
+                    aic_scalar=self.aic_scalar * wa + other.aic_scalar * wb,
+                    aic_mte1=self.aic_mte1 * wa + other.aic_mte1 * wb,
+                    aic_mte2=self.aic_mte2 * wa + other.aic_mte2 * wb,
+                    aic_mte3=self.aic_mte3 * wa + other.aic_mte3 * wb,
+                    aic_fixpipe=self.aic_fixpipe * wa + other.aic_fixpipe * wb,
+                    aiv_total_cycles=aiv_c,
+                    aiv_vec=self.aiv_vec * va + other.aiv_vec * vb,
+                    aiv_scalar=self.aiv_scalar * va + other.aiv_scalar * vb,
+                    aiv_mte2=self.aiv_mte2 * va + other.aiv_mte2 * vb,
+                    aiv_mte3=self.aiv_mte3 * va + other.aiv_mte3 * vb,
+                )
+    
+            @property
+            def dur_us(self) -> float:
+                return self.dur_ns / 1000
+    
+            def tflops(self, flops: float) -> float:
+                return flops / self.dur_ns / 1000
+    
+            def gbps(self, bytes: float) -> float:
+                return bytes / self.dur_ns
+    
+            def __repr__(self):
+                def _fmt(label, val):
+                    return f"{label}={val * 100:.1f}%" if val > 0.001 else None
+    
+                parts = [f"{self.dur_ns / 1000:.1f}us"]
+                for s in [
+                    _fmt("mad", self.aic_mad),
+                    _fmt("aic_mte2", self.aic_mte2),
+                    _fmt("aic_mte1", self.aic_mte1),
+                    _fmt("aic_fix", self.aic_fixpipe),
+                    _fmt("aiv_vec", self.aiv_vec),
+                    _fmt("aiv_mte2", self.aiv_mte2),
+                    _fmt("aiv_mte3", self.aiv_mte3),
+                ]:
+                    if s:
+                        parts.append(s)
+                if self.aic_total_cycles:
+                    parts.append(f"aic_cycles={self.aic_total_cycles}")
+                if self.aiv_total_cycles:
+                    parts.append(f"aiv_cycles={self.aiv_total_cycles}")
+                return f"KernelProfile({', '.join(parts)})"
+    
+        @contextmanager
+        def _suppress_output(suppress: bool):
+            if not suppress:
+                yield
+                return
+    
+            with open(os.devnull, "w") as devnull, redirect_stderr(devnull), redirect_stdout(devnull):
+                yield
+    
+        @contextmanager
+        def _defer_signals():
+            pending_signal = None
+    
+            def _handler(signum, frame):
+                nonlocal pending_signal
+                pending_signal = signum
+    
+            old_sigint = signal.signal(signal.SIGINT, _handler)
+            old_sigterm = signal.signal(signal.SIGTERM, _handler)
+            try:
+                yield
+            finally:
+                signal.signal(signal.SIGINT, old_sigint)
+                signal.signal(signal.SIGTERM, old_sigterm)
+                if pending_signal == signal.SIGINT:
+                    raise KeyboardInterrupt()
+                if pending_signal == signal.SIGTERM:
+                    raise SystemExit(128 + signal.SIGTERM)
+    
+        @contextmanager
+        def _prof_work_path():
+            key = "ASCEND_WORK_PATH"
+            old = os.environ.get(key)
+            tmp_dir = tempfile.mkdtemp(prefix="tilelang_prof_")
+            os.environ[key] = tmp_dir
+            try:
+                yield tmp_dir
+            finally:
+                if old is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = old
+                shutil.rmtree(tmp_dir, ignore_errors=True)
+    
+        def _nop_trace_ready(_prof):
+            pass
+    
+        def _parse_ffts_profile(prof_path: Path, n_repeat: int):
+            hash_to_name: dict[int, str] = {}
+            for f in prof_path.rglob("*hash_dic.slice_*"):
+                if f.name.endswith(".done"):
+                    continue
+                text = f.read_bytes().decode("utf-8", errors="replace")
+                for line in text.strip().split("\n"):
+                    parts = line.split(":", 1)
+                    if len(parts) == 2:
+                        try:
+                            h = int(parts[0])
+                            if h >= 2**63:
+                                h -= 2**64
+                            hash_to_name[h] = parts[1]
+                        except ValueError:
+                            pass
+    
+            seq_to_name: dict[int, str] = {}
+            for f in prof_path.rglob("*task_track.slice_*"):
+                if f.name.endswith(".done"):
+                    continue
+                data = f.read_bytes()
+                for i in range(len(data) // 64):
+                    vals = struct.unpack_from("<8q", data, i * 64)
+                    seq = (vals[3] >> 32) & 0xFFFF
+                    name_hash = vals[5]
+                    if name_hash != 0:
+                        seq_to_name[seq] = hash_to_name.get(name_hash, f"<unknown {name_hash}>")
+    
+            aic_records: dict[str, list[dict[str, float]]] = defaultdict(list)
+            aiv_records: dict[str, list[dict[str, float]]] = defaultdict(list)
+            for f in prof_path.rglob("ffts_profile*"):
+                if f.name.endswith(".done") or f.stat().st_size == 0:
+                    continue
+                data = f.read_bytes()
+                for i in range(len(data) // 128):
+                    vals = struct.unpack_from("<16q", data, i * 128)
+                    total_cycles = vals[1]
+                    if total_cycles == 0:
+                        continue
+                    seq = (vals[0] >> 32) & 0xFFFF
+                    is_aiv = vals[2] >= (1 << 31)
+                    dur_ns = float(vals[15] - vals[14])
+                    name = seq_to_name.get(seq, "<unknown>")
+                    metrics = {
+                        "dur_ns": dur_ns,
+                        "total_cycles": float(total_cycles),
+                        "vec": vals[4] / total_cycles,
+                        "mad": vals[5] / total_cycles,
+                        "scalar": vals[6] / total_cycles,
+                        "mte1": vals[7] / total_cycles,
+                        "mte2": vals[8] / total_cycles,
+                        "mte3": vals[9] / total_cycles,
+                        "fixpipe": vals[12] / total_cycles,
+                    }
+                    if is_aiv:
+                        aiv_records[name].append(metrics)
+                    else:
+                        aic_records[name].append(metrics)
+    
+            profiles: dict[str, KernelProfile] = {}
+            for name in set(aic_records.keys()) | set(aiv_records.keys()):
+                aic_list = aic_records.get(name, [])
+                aiv_list = aiv_records.get(name, [])
+                dur_list = aic_list or aiv_list
+                n_aic = len(aic_list) or 1
+                n_aiv = len(aiv_list) or 1
+                profiles[name] = KernelProfile(
+                    dur_ns=sum(m["dur_ns"] for m in dur_list) / n_repeat,
+                    aic_total_cycles=int(sum(m["total_cycles"] for m in aic_list) / n_repeat),
+                    aic_mad=sum(m["mad"] for m in aic_list) / n_aic,
+                    aic_scalar=sum(m["scalar"] for m in aic_list) / n_aic,
+                    aic_mte1=sum(m["mte1"] for m in aic_list) / n_aic,
+                    aic_mte2=sum(m["mte2"] for m in aic_list) / n_aic,
+                    aic_mte3=sum(m["mte3"] for m in aic_list) / n_aic,
+                    aic_fixpipe=sum(m["fixpipe"] for m in aic_list) / n_aic,
+                    aiv_total_cycles=int(sum(m["total_cycles"] for m in aiv_list) / n_repeat),
+                    aiv_vec=sum(m["vec"] for m in aiv_list) / n_aiv,
+                    aiv_scalar=sum(m["scalar"] for m in aiv_list) / n_aiv,
+                    aiv_mte2=sum(m["mte2"] for m in aiv_list) / n_aiv,
+                    aiv_mte3=sum(m["mte3"] for m in aiv_list) / n_aiv,
+                )
+            return profiles
+    
+        def _sum_profiles(profiles):
+            total = profiles[0]
+            for profile in profiles[1:]:
+                total += profile
+            return total
+    
+        cache_dtype = "int32" if cache.dtype == torch.int32 else "int8"
+        cache_flush_kernel = get_msprof_cache_flush_kernel(int(cache.numel()), cache_dtype)
+        cache_flush_kernel(cache)
+        torch.npu.synchronize()
+    
+        with _defer_signals(), _prof_work_path(), _suppress_output(True):
+            with torch_npu.profiler.profile(
+                activities=[torch_npu.profiler.ProfilerActivity.NPU],
+                schedule=torch_npu.profiler.schedule(wait=0, warmup=0, active=1, repeat=1, skip_first=0),
+                on_trace_ready=_nop_trace_ready,
+                experimental_config=torch_npu.profiler._ExperimentalConfig(
+                    profiler_level=torch_npu.profiler.ProfilerLevel.Level1,
+                    aic_metrics=torch_npu.profiler.AiCMetrics.PipeUtilization,
+                    l2_cache=False,
+                    data_simplification=False,
+                ),
+            ) as prof:
+                for _ in range(n_repeat):
+                    cache_flush_kernel(cache)
+                    fn()
+                torch.npu.synchronize()
+                prof.step()
+    
+            kernel_profiles = _parse_ffts_profile(Path(prof.prof_if.prof_path), n_repeat)
+    
+        kernel_profiles = {name: profile for name, profile in kernel_profiles.items() if "_tilelang_profiler_cache_flush_kernel" not in name}
+        if not kernel_profiles:
+>           raise RuntimeError("No profiled kernels remain after excluding the msprof flush kernel.")
+E           RuntimeError: No profiled kernels remain after excluding the msprof flush kernel.
+
+../tilelang/tilelang/profiler/msprof.py:301: RuntimeError
+-------------------------------------------------- Captured stdout call ---------------------------------------------------
+[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
+________________________________________ test_mhc_post_bwd_benchmark[1-512-5120-4] ________________________________________
+[gw1] linux -- Python 3.11.0 /usr/bin/python
+
+n0 = 1, n1 = 512, h = 5120, mhc_mult = 4, benchmark_timer = <function benchmark_timer.<locals>._timer at 0x7fb3eff42340>
+benchmark_record = <function benchmark_record.<locals>._record at 0x7fb3eff40360>
+
+    @pytest.mark.benchmark
+    @pytest.mark.parametrize('n0,n1,h,mhc_mult', _POST_FWD_BENCH_CASES)
+    def test_mhc_post_bwd_benchmark(
+        n0: int,
+        n1: int,
+        h: int,
+        mhc_mult: int,
+        benchmark_timer,
+        benchmark_record,
+    ) -> None:
+        test_data = generate_mhc_post_test_data(n0=n0, n1=n1, h=h, mhc_mult=mhc_mult)
+        x = test_data['x']
+        residual = test_data['residual']
+        post_layer_mix = test_data['post_layer_mix']
+        comb_res_mix = test_data['comb_res_mix']
+        o_grad = test_data['o_grad']
+    
+        grad_x, grad_residual, grad_post_layer_mix, grad_comb_res_mix = mhc_post_bwd(
+            x,
+            residual,
+            post_layer_mix,
+            comb_res_mix,
+            o_grad,
+        )
+        io_gb = (
+            count_bytes(
+                o_grad,
+                comb_res_mix,
+                residual,
+                post_layer_mix,
+                x,
+                grad_x,
+                grad_residual,
+                grad_post_layer_mix,
+                grad_comb_res_mix,
+            )
+            / 1e9
+        )
+    
+>       t_us = benchmark_timer(lambda: mhc_post_bwd(x, residual, post_layer_mix, comb_res_mix, o_grad))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/mhc/test_post.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tile_kernels/testing/pytest/benchmark.py:800: in _timer
+    return do_bench(fn, **kwargs) * 1e3  # ms → us
+           ^^^^^^^^^^^^^^^^^^^^^^
+../tilelang/tilelang/profiler/bench.py:146: in do_bench
+    return _do_bench_impl(
+../tilelang/tilelang/profiler/bench.py:263: in _do_bench_impl
+    return bench_with_msprof(fn, cache, n_repeat, detailed=backend == "msprof_detail")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fn = <function test_mhc_post_bwd_benchmark.<locals>.<lambda> at 0x7fb3eff42520>
+cache = tensor([0, 0, 0,  ..., 0, 0, 0], device='npu:0', dtype=torch.int32), n_repeat = 126, detailed = False
+
+    def bench_with_msprof(
+        fn: Callable,
+        cache: torch.Tensor,
+        n_repeat: int,
+        detailed: bool = False,
+    ) -> float:
+        """Benchmark using torch_npu msprof timing."""
+        import shutil
+        import signal
+        import struct
+        import tempfile
+        from collections import defaultdict
+        from contextlib import contextmanager, redirect_stderr, redirect_stdout
+        from dataclasses import dataclass
+        from pathlib import Path
+    
+        import torch_npu.profiler
+    
+        @dataclass
+        class KernelProfile:
+            """Per-kernel profiling result with AIC and AIV pipe utilization.
+    
+            All pipe fields are ratios in [0, 1] relative to their own total_cycles.
+            """
+    
+            dur_ns: float
+            # AIC pipes
+            aic_total_cycles: int = 0
+            aic_mad: float = 0.0
+            aic_scalar: float = 0.0
+            aic_mte1: float = 0.0
+            aic_mte2: float = 0.0
+            aic_mte3: float = 0.0
+            aic_fixpipe: float = 0.0
+            # AIV pipes
+            aiv_total_cycles: int = 0
+            aiv_vec: float = 0.0
+            aiv_scalar: float = 0.0
+            aiv_mte2: float = 0.0
+            aiv_mte3: float = 0.0
+    
+            def __add__(self, other: KernelProfile) -> KernelProfile:
+                """Sum two profiles: dur_ns adds, pipe ratios are cycle-weighted averages."""
+                aic_c = self.aic_total_cycles + other.aic_total_cycles
+                aiv_c = self.aiv_total_cycles + other.aiv_total_cycles
+                wa = self.aic_total_cycles / aic_c if aic_c else 0
+                wb = other.aic_total_cycles / aic_c if aic_c else 0
+                va = self.aiv_total_cycles / aiv_c if aiv_c else 0
+                vb = other.aiv_total_cycles / aiv_c if aiv_c else 0
+                return KernelProfile(
+                    dur_ns=self.dur_ns + other.dur_ns,
+                    aic_total_cycles=aic_c,
+                    aic_mad=self.aic_mad * wa + other.aic_mad * wb,
+                    aic_scalar=self.aic_scalar * wa + other.aic_scalar * wb,
+                    aic_mte1=self.aic_mte1 * wa + other.aic_mte1 * wb,
+                    aic_mte2=self.aic_mte2 * wa + other.aic_mte2 * wb,
+                    aic_mte3=self.aic_mte3 * wa + other.aic_mte3 * wb,
+                    aic_fixpipe=self.aic_fixpipe * wa + other.aic_fixpipe * wb,
+                    aiv_total_cycles=aiv_c,
+                    aiv_vec=self.aiv_vec * va + other.aiv_vec * vb,
+                    aiv_scalar=self.aiv_scalar * va + other.aiv_scalar * vb,
+                    aiv_mte2=self.aiv_mte2 * va + other.aiv_mte2 * vb,
+                    aiv_mte3=self.aiv_mte3 * va + other.aiv_mte3 * vb,
+                )
+    
+            @property
+            def dur_us(self) -> float:
+                return self.dur_ns / 1000
+    
+            def tflops(self, flops: float) -> float:
+                return flops / self.dur_ns / 1000
+    
+            def gbps(self, bytes: float) -> float:
+                return bytes / self.dur_ns
+    
+            def __repr__(self):
+                def _fmt(label, val):
+                    return f"{label}={val * 100:.1f}%" if val > 0.001 else None
+    
+                parts = [f"{self.dur_ns / 1000:.1f}us"]
+                for s in [
+                    _fmt("mad", self.aic_mad),
+                    _fmt("aic_mte2", self.aic_mte2),
+                    _fmt("aic_mte1", self.aic_mte1),
+                    _fmt("aic_fix", self.aic_fixpipe),
+                    _fmt("aiv_vec", self.aiv_vec),
+                    _fmt("aiv_mte2", self.aiv_mte2),
+                    _fmt("aiv_mte3", self.aiv_mte3),
+                ]:
+                    if s:
+                        parts.append(s)
+                if self.aic_total_cycles:
+                    parts.append(f"aic_cycles={self.aic_total_cycles}")
+                if self.aiv_total_cycles:
+                    parts.append(f"aiv_cycles={self.aiv_total_cycles}")
+                return f"KernelProfile({', '.join(parts)})"
+    
+        @contextmanager
+        def _suppress_output(suppress: bool):
+            if not suppress:
+                yield
+                return
+    
+            with open(os.devnull, "w") as devnull, redirect_stderr(devnull), redirect_stdout(devnull):
+                yield
+    
+        @contextmanager
+        def _defer_signals():
+            pending_signal = None
+    
+            def _handler(signum, frame):
+                nonlocal pending_signal
+                pending_signal = signum
+    
+            old_sigint = signal.signal(signal.SIGINT, _handler)
+            old_sigterm = signal.signal(signal.SIGTERM, _handler)
+            try:
+                yield
+            finally:
+                signal.signal(signal.SIGINT, old_sigint)
+                signal.signal(signal.SIGTERM, old_sigterm)
+                if pending_signal == signal.SIGINT:
+                    raise KeyboardInterrupt()
+                if pending_signal == signal.SIGTERM:
+                    raise SystemExit(128 + signal.SIGTERM)
+    
+        @contextmanager
+        def _prof_work_path():
+            key = "ASCEND_WORK_PATH"
+            old = os.environ.get(key)
+            tmp_dir = tempfile.mkdtemp(prefix="tilelang_prof_")
+            os.environ[key] = tmp_dir
+            try:
+                yield tmp_dir
+            finally:
+                if old is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = old
+                shutil.rmtree(tmp_dir, ignore_errors=True)
+    
+        def _nop_trace_ready(_prof):
+            pass
+    
+        def _parse_ffts_profile(prof_path: Path, n_repeat: int):
+            hash_to_name: dict[int, str] = {}
+            for f in prof_path.rglob("*hash_dic.slice_*"):
+                if f.name.endswith(".done"):
+                    continue
+                text = f.read_bytes().decode("utf-8", errors="replace")
+                for line in text.strip().split("\n"):
+                    parts = line.split(":", 1)
+                    if len(parts) == 2:
+                        try:
+                            h = int(parts[0])
+                            if h >= 2**63:
+                                h -= 2**64
+                            hash_to_name[h] = parts[1]
+                        except ValueError:
+                            pass
+    
+            seq_to_name: dict[int, str] = {}
+            for f in prof_path.rglob("*task_track.slice_*"):
+                if f.name.endswith(".done"):
+                    continue
+                data = f.read_bytes()
+                for i in range(len(data) // 64):
+                    vals = struct.unpack_from("<8q", data, i * 64)
+                    seq = (vals[3] >> 32) & 0xFFFF
+                    name_hash = vals[5]
+                    if name_hash != 0:
+                        seq_to_name[seq] = hash_to_name.get(name_hash, f"<unknown {name_hash}>")
+    
+            aic_records: dict[str, list[dict[str, float]]] = defaultdict(list)
+            aiv_records: dict[str, list[dict[str, float]]] = defaultdict(list)
+            for f in prof_path.rglob("ffts_profile*"):
+                if f.name.endswith(".done") or f.stat().st_size == 0:
+                    continue
+                data = f.read_bytes()
+                for i in range(len(data) // 128):
+                    vals = struct.unpack_from("<16q", data, i * 128)
+                    total_cycles = vals[1]
+                    if total_cycles == 0:
+                        continue
+                    seq = (vals[0] >> 32) & 0xFFFF
+                    is_aiv = vals[2] >= (1 << 31)
+                    dur_ns = float(vals[15] - vals[14])
+                    name = seq_to_name.get(seq, "<unknown>")
+                    metrics = {
+                        "dur_ns": dur_ns,
+                        "total_cycles": float(total_cycles),
+                        "vec": vals[4] / total_cycles,
+                        "mad": vals[5] / total_cycles,
+                        "scalar": vals[6] / total_cycles,
+                        "mte1": vals[7] / total_cycles,
+                        "mte2": vals[8] / total_cycles,
+                        "mte3": vals[9] / total_cycles,
+                        "fixpipe": vals[12] / total_cycles,
+                    }
+                    if is_aiv:
+                        aiv_records[name].append(metrics)
+                    else:
+                        aic_records[name].append(metrics)
+    
+            profiles: dict[str, KernelProfile] = {}
+            for name in set(aic_records.keys()) | set(aiv_records.keys()):
+                aic_list = aic_records.get(name, [])
+                aiv_list = aiv_records.get(name, [])
+                dur_list = aic_list or aiv_list
+                n_aic = len(aic_list) or 1
+                n_aiv = len(aiv_list) or 1
+                profiles[name] = KernelProfile(
+                    dur_ns=sum(m["dur_ns"] for m in dur_list) / n_repeat,
+                    aic_total_cycles=int(sum(m["total_cycles"] for m in aic_list) / n_repeat),
+                    aic_mad=sum(m["mad"] for m in aic_list) / n_aic,
+                    aic_scalar=sum(m["scalar"] for m in aic_list) / n_aic,
+                    aic_mte1=sum(m["mte1"] for m in aic_list) / n_aic,
+                    aic_mte2=sum(m["mte2"] for m in aic_list) / n_aic,
+                    aic_mte3=sum(m["mte3"] for m in aic_list) / n_aic,
+                    aic_fixpipe=sum(m["fixpipe"] for m in aic_list) / n_aic,
+                    aiv_total_cycles=int(sum(m["total_cycles"] for m in aiv_list) / n_repeat),
+                    aiv_vec=sum(m["vec"] for m in aiv_list) / n_aiv,
+                    aiv_scalar=sum(m["scalar"] for m in aiv_list) / n_aiv,
+                    aiv_mte2=sum(m["mte2"] for m in aiv_list) / n_aiv,
+                    aiv_mte3=sum(m["mte3"] for m in aiv_list) / n_aiv,
+                )
+            return profiles
+    
+        def _sum_profiles(profiles):
+            total = profiles[0]
+            for profile in profiles[1:]:
+                total += profile
+            return total
+    
+        cache_dtype = "int32" if cache.dtype == torch.int32 else "int8"
+        cache_flush_kernel = get_msprof_cache_flush_kernel(int(cache.numel()), cache_dtype)
+        cache_flush_kernel(cache)
+        torch.npu.synchronize()
+    
+        with _defer_signals(), _prof_work_path(), _suppress_output(True):
+            with torch_npu.profiler.profile(
+                activities=[torch_npu.profiler.ProfilerActivity.NPU],
+                schedule=torch_npu.profiler.schedule(wait=0, warmup=0, active=1, repeat=1, skip_first=0),
+                on_trace_ready=_nop_trace_ready,
+                experimental_config=torch_npu.profiler._ExperimentalConfig(
+                    profiler_level=torch_npu.profiler.ProfilerLevel.Level1,
+                    aic_metrics=torch_npu.profiler.AiCMetrics.PipeUtilization,
+                    l2_cache=False,
+                    data_simplification=False,
+                ),
+            ) as prof:
+                for _ in range(n_repeat):
+                    cache_flush_kernel(cache)
+                    fn()
+                torch.npu.synchronize()
+                prof.step()
+    
+            kernel_profiles = _parse_ffts_profile(Path(prof.prof_if.prof_path), n_repeat)
+    
+        kernel_profiles = {name: profile for name, profile in kernel_profiles.items() if "_tilelang_profiler_cache_flush_kernel" not in name}
+        if not kernel_profiles:
+>           raise RuntimeError("No profiled kernels remain after excluding the msprof flush kernel.")
+E           RuntimeError: No profiled kernels remain after excluding the msprof flush kernel.
+
+../tilelang/tilelang/profiler/msprof.py:301: RuntimeError
+-------------------------------------------------- Captured stdout call ---------------------------------------------------
+[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
+==================================================== warnings summary =====================================================
 tests/mhc/test_head_compute_mix.py::test_head_compute_mix_comprehensive[4-1024-2]
 tests/mhc/test_head_compute_mix.py::test_head_compute_mix_comprehensive[4-1001-1]
   /home/z30086261/TileKernels/tests/mhc/test_head_compute_mix.py:35: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
     output_mix = torch.empty_like(input_mix)
 
 tests/mhc/test_multilayer_recompute.py::test_mhc_multilayer_recompute_correctness[10-9-2304]
+tests/mhc/test_multilayer_recompute.py::test_mhc_multilayer_recompute_correctness[10-10-2560]
   /home/z30086261/TileKernels/tile_kernels/mhc/post_kernel.py:33: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
     out = torch.empty_like(residual)
 
-tests/mhc/test_norm_fn.py::test_correctness[False-320-4096]
-  /home/z30086261/TileKernels/tests/mhc/test_norm_fn.py:171: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at torch_npu/csrc/aten/common/TensorFactories.cpp:339.)
-    out_mul_grad = torch.empty_like(out_mul)
-
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========== 147 passed, 71 skipped, 4 warnings in 130.39s (0:02:10) ============
+=============================================== Benchmark Regression Report ===============================================
+Ratio = current latency / recorded latency (smaller is better)
+No baseline file found — skipping regression comparison.
+  (looked at: /home/z30086261/TileKernels/tests/benchmark_baselines)
+
+Kernel                                                             Current    Bandwidth
+---------------------------------------------------------------------------------------
+expand_to_mhc_bwd/expand_backward[1-512-4-4096,]                   15.3 us  1371.9 GB/s
+expand_to_mhc_bwd/expand_backward[1-8192-4-4096,]                 281.6 us  1191.6 GB/s
+expand_to_mhc_bwd/expand_backward[1-512-4-5120,]                   27.9 us   939.8 GB/s
+expand_to_mhc_bwd/expand_backward[1-8192-4-5120,]                 282.8 us  1483.2 GB/s
+expand_to_mhc_bwd/expand_backward[1-512-4-7168,]                   25.5 us  1441.6 GB/s
+expand_to_mhc_bwd/expand_backward[1-8192-4-7168,]                 389.9 us  1505.8 GB/s
+expand_to_mhc_fwd/expand_forward[1-512-4-4096,]                    11.7 us  1787.1 GB/s
+expand_to_mhc_fwd/expand_forward[1-8192-4-4096,]                  259.9 us  1290.9 GB/s
+expand_to_mhc_fwd/expand_forward[1-512-4-5120,]                    15.0 us  1752.4 GB/s
+expand_to_mhc_fwd/expand_forward[1-8192-4-5120,]                  296.0 us  1417.0 GB/s
+expand_to_mhc_fwd/expand_forward[1-512-4-7168,]                    21.4 us  1712.6 GB/s
+expand_to_mhc_fwd/expand_forward[1-8192-4-7168,]                  415.9 us  1411.7 GB/s
+mhc_fn_normw_merge_bwd/normw_merge_backward[5120,]                 18.6 us   108.8 GB/s
+mhc_fn_normw_merge_bwd/normw_merge_backward[10240,]                 3.6 us  1127.4 GB/s
+mhc_fn_normw_merge_bwd/normw_merge_backward[16384,]                 5.9 us  1108.0 GB/s
+mhc_fn_normw_merge_bwd/normw_merge_backward[20480,]                20.6 us   394.1 GB/s
+mhc_fn_normw_merge_bwd/normw_merge_backward[28672,]                 8.5 us  1332.0 GB/s
+mhc_fn_normw_merge_fwd/normw_merge_forward[5120,]                   1.8 us   565.1 GB/s
+mhc_fn_normw_merge_fwd/normw_merge_forward[10240,]                 22.8 us    88.1 GB/s
+mhc_fn_normw_merge_fwd/normw_merge_forward[16384,]                  3.9 us   828.4 GB/s
+mhc_fn_normw_merge_fwd/normw_merge_forward[20480,]                  2.9 us  1369.4 GB/s
+mhc_fn_normw_merge_fwd/normw_merge_forward[28672,]                  3.7 us  1530.0 GB/s
+mhc_head_compute_mix/head_compute_mix_backward[1-512-4,]            5.4 us     3.0 GB/s
+mhc_head_compute_mix/head_compute_mix_backward[1-8192-4,]          21.3 us    12.3 GB/s
+mhc_head_compute_mix/head_compute_mix_forward[1-512-4,]            11.4 us     1.4 GB/s
+mhc_multilayer_recompute/recompute[10-9-1-8192-4-2560,]          1795.4 us  1382.3 GB/s
+mhc_multilayer_recompute/recompute[10-10-1-8192-4-2560,]         2085.8 us  1290.7 GB/s
+mhc_multilayer_recompute/recompute[10-9-1-8192-4-4096,]          3015.0 us  1315.6 GB/s
+mhc_multilayer_recompute/recompute[10-10-1-8192-4-4096,]         3173.9 us  1355.7 GB/s
+mhc_multilayer_recompute/recompute[10-9-1-8192-4-5120,]          3575.5 us  1386.2 GB/s
+mhc_multilayer_recompute/recompute[10-10-1-8192-4-5120,]         4053.9 us  1326.3 GB/s
+mhc_multilayer_recompute/recompute[10-9-1-8192-4-7168,]          5020.2 us  1381.7 GB/s
+mhc_multilayer_recompute/recompute[10-10-1-8192-4-7168,]         5380.4 us  1398.4 GB/s
+mhc_multilayer_recompute/recompute[10-9-1-8192-4-8192,]          5769.4 us  1373.8 GB/s
+mhc_multilayer_recompute/recompute[10-10-1-8192-4-8192,]         6292.6 us  1366.3 GB/s
+mhc_post_bwd/post_backward[1-512-4096-4,]                          46.5 us  1264.5 GB/s
+mhc_post_bwd/post_backward[1-8192-4096-4,]                        637.7 us  1475.4 GB/s
+mhc_post_bwd/post_backward[1-8192-5120-4,]                        796.2 us  1476.6 GB/s
+mhc_post_bwd/post_backward[1-512-7168-4,]                          77.3 us  1330.4 GB/s
+mhc_post_bwd/post_backward[1-8192-7168-4,]                       1106.4 us  1487.2 GB/s
+mhc_post_fwd/post_forward[1-512-4096-4,]                          189.3 us   199.6 GB/s
+mhc_post_fwd/post_forward[1-8192-4096-4,]                         399.0 us  1515.5 GB/s
+mhc_post_fwd/post_forward[1-512-5120-4,]                           30.8 us  1533.4 GB/s
+mhc_post_fwd/post_forward[1-8192-5120-4,]                         499.7 us  1512.3 GB/s
+mhc_post_fwd/post_forward[1-512-7168-4,]                           47.0 us  1405.5 GB/s
+mhc_post_fwd/post_forward[1-8192-7168-4,]                         777.0 us  1361.2 GB/s
+mhc_pre_apply_mix_bwd/pre_apply_mix_backward[1-512-4096-4,]        39.3 us  1386.7 GB/s
+mhc_pre_apply_mix_bwd/pre_apply_mix_backward[1-8192-4096-4,]      608.9 us  1433.2 GB/s
+mhc_pre_apply_mix_bwd/pre_apply_mix_backward[1-8192-5120-4,]      729.8 us  1494.6 GB/s
+mhc_pre_apply_mix_bwd/pre_apply_mix_backward[1-512-7168-4,]        66.6 us  1433.8 GB/s
+mhc_pre_apply_mix_bwd/pre_apply_mix_backward[1-8192-7168-4,]     1083.7 us  1409.1 GB/s
+mhc_pre_apply_mix_fwd/pre_apply_mix_forward[1-512-4096-4,]         48.6 us   431.7 GB/s
+mhc_pre_apply_mix_fwd/pre_apply_mix_forward[1-8192-4096-4,]       224.5 us  1495.4 GB/s
+mhc_pre_apply_mix_fwd/pre_apply_mix_forward[1-8192-5120-4,]       342.2 us  1225.9 GB/s
+mhc_pre_apply_mix_fwd/pre_apply_mix_forward[1-512-7168-4,]         55.0 us   667.0 GB/s
+mhc_pre_apply_mix_fwd/pre_apply_mix_forward[1-8192-7168-4,]       390.0 us  1506.0 GB/s
+mhc_pre_big_fuse_fwd/pre_big_fuse_forward[512-4096,]               28.3 us   743.5 GB/s
+mhc_pre_big_fuse_fwd/pre_big_fuse_forward[8192-4096,]             228.8 us  1472.8 GB/s
+mhc_pre_big_fuse_fwd/pre_big_fuse_forward[8192-5120,]             284.7 us  1478.6 GB/s
+mhc_pre_big_fuse_fwd/pre_big_fuse_forward[512-7168,]               28.9 us  1274.5 GB/s
+mhc_pre_big_fuse_fwd/pre_big_fuse_forward[8192-7168,]             423.6 us  1389.8 GB/s
+mhc_pre_split_mixes/pre_split_mixes_backward[1-512-4,]              7.2 us    20.4 GB/s
+mhc_pre_split_mixes/pre_split_mixes_backward[1-8192-4,]             8.7 us   272.2 GB/s
+mhc_pre_split_mixes/pre_split_mixes_forward[1-512-4,]               2.0 us    47.9 GB/s
+mhc_pre_split_mixes/pre_split_mixes_forward[1-8192-4,]              3.2 us   488.6 GB/s
+mhc_sinkhorn/sinkhorn_backward[1-512-4,]                            7.0 us            -
+mhc_sinkhorn/sinkhorn_backward[1-8192-4,]                          55.5 us            -
+mhc_sinkhorn/sinkhorn_forward[1-512-4,]                             4.6 us            -
+mhc_sinkhorn/sinkhorn_forward[1-8192-4,]                           46.7 us            -
+---------------------------------------------------------------------------------------
+GEOMEAN                                                            94.6 us   747.8 GB/s
+
+Total: 69 benchmarks, 0 with baselines, 69 missing, 0 regressions, 0 improvements (threshold: 5%)
+================================================= short test summary info =================================================
+FAILED tests/mhc/test_head_compute_mix.py::test_head_compute_mix_fwd_benchmark[1-8192-4] - RuntimeError: No profiled kernels remain after excluding the msprof flush kernel.
+FAILED tests/mhc/test_post.py::test_mhc_post_bwd_benchmark[1-512-5120-4] - RuntimeError: No profiled kernels remain after excluding the msprof flush kernel.
+======================================= 2 failed, 216 passed, 4 warnings in 33.12s ========================================
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
 root@ubuntu162:/home/z30086261/TileKernels# 
