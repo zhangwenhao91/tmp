@@ -1,3 +1,28 @@
+MHA规格（实例默认及当前测试规格）
+参考代码仓：
+https://github.com/tile-ai/tilelang
+参考文件：
+examples/ascend/flash_attention/example_mha.py
+内核定义：core.py::flash_attention_fwd
+测试调用：test_mha.py
+计算属性：
+SEQ_LEN（Q/K/V序列长度）　静态　4096
+head_dim（注意力头维度）　静态　128
+scaling（注意力分数缩放系数）　静态　1/sqrt(128)，约0.08838835
+out_dtype（输出数据类型）　静态　float32
+causal（因果屏蔽）　静态　False
+dropout（随机丢弃概率）　静态　0
+运行时动态shape：无；Q/K/V数据内容为运行时输入。
+输入输出：
+input：
+Q　shape:[SEQ_LEN,head_dim] = [4096,128]　dtype:BF16
+K　shape:[SEQ_LEN,head_dim] = [4096,128]　dtype:BF16
+V　shape:[SEQ_LEN,head_dim] = [4096,128]　dtype:BF16
+output：
+O　shape:[SEQ_LEN,head_dim] = [4096,128]　dtype:FP32
+
+---
+
 mHC规格：DeepSeek-V4.1-Flash-1017
 
 参考仓库：
