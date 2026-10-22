@@ -1,25 +1,28 @@
-DSA规格：
-参考代码仓https://github.com/huggingface/transformers/blob/4f71a8918cd2df65aa456a152e4b48d7f9346ef0/src/transformers/models/glm_moe_dsa/modeling_glm_moe_dsa.py
-参数配置：https://huggingface.co/zai-org/GLM-5.3/blob/ba32f8c19c8738e2c57c71798c601d477a7bf844/config.json
+root@ubuntu162:/home/z30086261/TileKernels# cd /home/z30086261/tilelang/examples/ascend/flash_attention/
+root@ubuntu162:/home/z30086261/tilelang/examples/ascend/flash_attention# python example_mha.py 
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+Compiling mha (D=128, SEQ_LEN=4096)...
+Compilation succeeded!
+  rel=0.0025 PASS
+[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
+    53.8 us  |  159.6 TFLOPS
 
-计算属性：
-num_heads   静态   64
-head_dim	静态   256
-scaling(注意力分数缩放系数)  静态    0.0625
-index_topk(TopK上限)   静态  2048
-dropout(随机丢弃概率)  静态   0
-batch_size/B	动态
-seq_len/sq		动态
-kv_length/T(KV序列轴长度)   动态
-indices(稀疏索引内容)  动态
-attention_mask(位置是否参与计算的约束)  动态
+--- Performance comparison ---
+[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
+  Torch SDPA: 49.67 us/iter | 173.0 TFLOPS
 
-输入输出：
-input:
-Q  shape:[B,num_heads,sq,head_dim]  dtype:BF16
-K  shape:[B,num_heads,T,head_dim]  dtype:BF16
-V  shape:[B,num_heads,T,head_dim]  dtype:BF16
-indices  shape:[B,sq,Ksel]   Ksel=min(topK,T)  dtype:int32
-attention_mask  shape:[B,1,sq,T]
-output:
-O  shape:[B,sq,num_heads,head_dim]  dtype:BF16
+  TileLang: 0.05 ms | Torch: 0.05 ms | Torch is 1.08x faster
+root@ubuntu162:/home/z30086261/tilelang/examples/ascend/flash_attention# cd /home/z30086261/TileKernels/
+root@ubuntu162:/home/z30086261/TileKernels# TK_TEST_LEVEL=2 python -m pytest tests/mhc/--run-benchmark 2>&1 | tail -80
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+ERROR: file or directory not found: tests/mhc/--run-benchmark
+
+============================= test session starts ==============================
+platform linux -- Python 3.11.0, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/z30086261/TileKernels
+configfile: pyproject.toml
+plugins: html-4.1.1, cov-6.2.1, metadata-3.1.1, hypothesis-6.70.1, xdist-3.8.0, repeat-0.9.4
+collected 0 items
+
+============================ no tests ran in 0.00s =============================
+root@ubuntu162:/home/z30086261/TileKernels# 
