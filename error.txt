@@ -23,3 +23,52 @@ indices  shape:[B,sq,Ksel]   Ksel=min(topK,T)  dtype:int32
 attention_mask  shape:[B,1,sq,T]
 output:
 O  shape:[B,sq,num_heads,head_dim]  dtype:BF16
+
+
+
+MHA 规格： 
+ 参考代码仓 `https://github.com/tile-ai/tilelang/blob/main/examples/ascend/flash_attention/example_mha.py` 
+ 参数配置： D=128（assert 硬约束）、block_kv=128、softmax_scale=1/√128
+
+ 计算属性： 
+ num_heads   静态   1 
+ head_dim	静态   128 
+ scaling(注意力分数缩放系数)  静态    0.0884 
+ causal(因果掩码)   静态   无（全量双向注意力） 
+ dropout(随机丢弃概率)   静态  0 
+ seq_len/sq		动态 
+ kv_length/T(KV序列轴长度)   动态（需满足 T % 128 == 0） 
+ 
+ 输入输出： 
+ input: 
+ Q  shape:[sq,head_dim]  dtype:BF16 
+ K  shape:[T,head_dim]  dtype:BF16 
+ V  shape:[T,head_dim]  dtype:BF16 
+ output: 
+ O  shape:[sq,head_dim]  dtype:FP32
+
+---
+
+mHC 规格： 
+ 参考代码仓 `https://github.com/deepseek-ai/TileKernels/blob/main/tile_kernels/mhc/pre_big_fuse_kernel.py`（Ascend 实现同目录 `_asc.py`） 
+ 参数配置： hc_mult=4（assert 硬约束）、hc_sinkhorn_iters=20、hc_eps=1e-6、hidden_block=gcd(512,hidden_size)
+
+ 计算属性： 
+ hc_mult(流数)   静态   4 
+ hidden_size   静态   4096/5120/7168 
+ hc_sinkhorn_iters(Sinkhorn迭代次数)   静态   20 
+ hc_eps(数值稳定项)   静态   1e-6 
+ num_tokens(批×seq展平的token数)   动态 
+ 
+ 输入输出： 
+ input: 
+ residual  shape:[num_tokens,hidden_size]  dtype:BF16 
+ hidden  shape:[num_tokens,hidden_size]  dtype:BF16 
+ comb_mix  shape:[num_tokens,16]  dtype:FP32 
+ post_mix  shape:[num_tokens,4]  dtype:FP32 
+ mhc_scale  shape:[3]  dtype:FP32 
+ mhc_base  shape:[24]  dtype:FP32 
+ gemm_out_mul  shape:[1,num_tokens,24]  dtype:FP32 
+ gemm_out_sqrsum  shape:[1,num_tokens]  dtype:FP32 
+ output: 
+ O  shape:[num_tokens,hidden_size]  dtype:BF16
