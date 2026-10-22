@@ -1,82 +1,18 @@
-root@ubuntu162:/home/z30086261/TileKernels# TK_TEST_LEVEL=2 python -m pytest tests/mhc/ --run-benchmark 2>&1 | tail -80
-mhc_fn_normw_merge_bwd/normw_merge_backward[10240,]                 3.6 us  1125.8 GB/s
-mhc_fn_normw_merge_bwd/normw_merge_backward[16384,]                 5.7 us  1139.1 GB/s
-mhc_fn_normw_merge_bwd/normw_merge_backward[20480,]                 6.4 us  1275.2 GB/s
-mhc_fn_normw_merge_bwd/normw_merge_backward[28672,]                 8.5 us  1333.3 GB/s
-mhc_fn_normw_merge_fwd/normw_merge_forward[5120,]                   1.8 us   544.6 GB/s
-mhc_fn_normw_merge_fwd/normw_merge_forward[10240,]                  2.1 us   969.9 GB/s
-mhc_fn_normw_merge_fwd/normw_merge_forward[16384,]                  2.8 us  1143.7 GB/s
-mhc_fn_normw_merge_fwd/normw_merge_forward[20480,]                  2.9 us  1379.2 GB/s
-mhc_fn_normw_merge_fwd/normw_merge_forward[28672,]                  3.8 us  1477.8 GB/s
-mhc_head_compute_mix/head_compute_mix_backward[1-512-4,]            5.7 us     2.9 GB/s
-mhc_head_compute_mix/head_compute_mix_backward[1-8192-4,]           6.2 us    42.6 GB/s
-mhc_head_compute_mix/head_compute_mix_forward[1-512-4,]             2.8 us     5.8 GB/s
-mhc_head_compute_mix/head_compute_mix_forward[1-8192-4,]            2.8 us    92.8 GB/s
-mhc_multilayer_recompute/recompute[10-9-1-8192-4-2560,]          1788.7 us  1387.5 GB/s
-mhc_multilayer_recompute/recompute[10-10-1-8192-4-2560,]         1941.2 us  1386.9 GB/s
-mhc_multilayer_recompute/recompute[10-9-1-8192-4-4096,]          2846.9 us  1393.3 GB/s
-mhc_multilayer_recompute/recompute[10-10-1-8192-4-4096,]         3091.8 us  1391.7 GB/s
-mhc_multilayer_recompute/recompute[10-9-1-8192-4-5120,]          3566.6 us  1389.7 GB/s
-mhc_multilayer_recompute/recompute[10-10-1-8192-4-5120,]         3878.1 us  1386.4 GB/s
-mhc_multilayer_recompute/recompute[10-9-1-8192-4-7168,]          4974.1 us  1394.5 GB/s
-mhc_multilayer_recompute/recompute[10-10-1-8192-4-7168,]         5394.0 us  1394.9 GB/s
-mhc_multilayer_recompute/recompute[10-9-1-8192-4-8192,]          5676.6 us  1396.3 GB/s
-mhc_multilayer_recompute/recompute[10-10-1-8192-4-8192,]         6172.9 us  1392.8 GB/s
-mhc_post_bwd/post_backward[1-512-4096-4,]                          46.3 us  1269.2 GB/s
-mhc_post_bwd/post_backward[1-8192-4096-4,]                        638.5 us  1473.6 GB/s
-mhc_post_bwd/post_backward[1-512-5120-4,]                          57.3 us  1282.5 GB/s
-mhc_post_bwd/post_backward[1-8192-5120-4,]                        794.4 us  1480.0 GB/s
-mhc_post_bwd/post_backward[1-512-7168-4,]                          77.5 us  1326.8 GB/s
-mhc_post_bwd/post_backward[1-8192-7168-4,]                       1105.2 us  1488.8 GB/s
-mhc_post_fwd/post_forward[1-512-4096-4,]                           24.4 us  1552.2 GB/s
-mhc_post_fwd/post_forward[1-8192-4096-4,]                         399.0 us  1515.5 GB/s
-mhc_post_fwd/post_forward[1-512-5120-4,]                           30.7 us  1539.7 GB/s
-mhc_post_fwd/post_forward[1-8192-5120-4,]                         499.9 us  1511.5 GB/s
-mhc_post_fwd/post_forward[1-512-7168-4,]                           43.0 us  1538.8 GB/s
-mhc_post_fwd/post_forward[1-8192-7168-4,]                         697.7 us  1515.9 GB/s
-mhc_pre_apply_mix_bwd/pre_apply_mix_backward[1-512-4096-4,]        39.1 us  1393.6 GB/s
-mhc_pre_apply_mix_bwd/pre_apply_mix_backward[1-8192-4096-4,]      584.1 us  1494.0 GB/s
-mhc_pre_apply_mix_bwd/pre_apply_mix_backward[1-8192-5120-4,]      729.6 us  1495.1 GB/s
-mhc_pre_apply_mix_bwd/pre_apply_mix_backward[1-512-7168-4,]        66.5 us  1434.9 GB/s
-mhc_pre_apply_mix_bwd/pre_apply_mix_backward[1-8192-7168-4,]     1017.1 us  1501.3 GB/s
-mhc_pre_apply_mix_fwd/pre_apply_mix_forward[1-512-4096-4,]         15.3 us  1374.6 GB/s
-mhc_pre_apply_mix_fwd/pre_apply_mix_forward[1-8192-4096-4,]       224.6 us  1494.5 GB/s
-mhc_pre_apply_mix_fwd/pre_apply_mix_forward[1-8192-5120-4,]       280.6 us  1495.1 GB/s
-mhc_pre_apply_mix_fwd/pre_apply_mix_forward[1-512-7168-4,]         25.6 us  1435.6 GB/s
-mhc_pre_apply_mix_fwd/pre_apply_mix_forward[1-8192-7168-4,]       389.6 us  1507.5 GB/s
-mhc_pre_big_fuse_fwd/pre_big_fuse_forward[512-4096,]               17.2 us  1225.0 GB/s
-mhc_pre_big_fuse_fwd/pre_big_fuse_forward[8192-4096,]             229.0 us  1471.5 GB/s
-mhc_pre_big_fuse_fwd/pre_big_fuse_forward[8192-5120,]             284.4 us  1480.2 GB/s
-mhc_pre_big_fuse_fwd/pre_big_fuse_forward[512-7168,]               26.6 us  1382.5 GB/s
-mhc_pre_big_fuse_fwd/pre_big_fuse_forward[8192-7168,]             396.2 us  1485.8 GB/s
-mhc_pre_split_mixes/pre_split_mixes_backward[1-512-4,]              7.2 us    20.5 GB/s
-mhc_pre_split_mixes/pre_split_mixes_backward[1-8192-4,]             8.6 us   274.6 GB/s
-mhc_pre_split_mixes/pre_split_mixes_forward[1-512-4,]               1.9 us    50.6 GB/s
-mhc_pre_split_mixes/pre_split_mixes_forward[1-8192-4,]              2.9 us   547.1 GB/s
-mhc_sinkhorn/sinkhorn_backward[1-512-4,]                            7.0 us            -
-mhc_sinkhorn/sinkhorn_backward[1-8192-4,]                          55.9 us            -
-mhc_sinkhorn/sinkhorn_forward[1-512-4,]                             4.5 us            -
-mhc_sinkhorn/sinkhorn_forward[1-8192-4,]                           42.6 us            -
----------------------------------------------------------------------------------------
-GEOMEAN                                                            72.5 us   910.2 GB/s
+root@ubuntu162:/home/z30086261/TileKernels# cd /home/z30086261/tilelang/examples/ascend/flash_attention/
+root@ubuntu162:/home/z30086261/tilelang/examples/ascend/flash_attention# python example_gqa.py 
+Loading tilelang libs from dev root: /home/z30086261/tilelang/build
+Compiling GQA attention kernel...
+2026-10-22 11:11:18  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `main` with `out_idx=-1`
+2026-10-22 11:11:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `main`
+Compilation succeeded!
+  rel=0.0029 PASS
 
-Total: 71 benchmarks, 0 with baselines, 71 missing, 0 regressions, 0 improvements (threshold: 5%)
-======================= 218 passed, 1 warning in 46.16s ========================
-e: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
+--- Performance comparison ---
+2026-10-22 11:11:23  [TileLang:tilelang.cache.kernel_cache:WARNING] (kernel_cache.py:379): Found kernel 'main' in memory cache. For better performance, consider using `@tilelang.jit` instead of direct kernel caching.
 [WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
+    [S1=8192 G=32 S2=8192 D=128] 6007.93 us/iter | 183.0 TFLOPS
 [WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-[WARN]FormatFeatureList,feature_mgr.cpp:55:Do not support feature: AICORE_SHAPE, log is: It not support feature: AICORE_SHAPE!
-root@ubuntu162:/home/z30086261/TileKernels#
+  Torch SDPA: 3459.61 us/iter | 317.8 TFLOPS
+
+  TileLang: 6.01 ms | Torch: 3.46 ms | Torch is 1.74x faster
+root@ubuntu162:/home/z30086261/tilelang/examples/ascend/flash_attention# 
