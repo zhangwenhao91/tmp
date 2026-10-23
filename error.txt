@@ -1,14 +1,9 @@
-(mhc) root@ubuntu162:/home/z30086261/mhc_bench/ops-transformer# bash build.sh --pkg --experimental --soc=ascend950 --vendor_name=custom \
->   --ops=mhc_pre_sinkhorn_premix -j16 2>&1 | tee build_log.txt
-[2026-10-23 17:04:10] Warning: The current environment is configured for ascend950, Please use Ascend 950PR/Ascend 950DT series hardware for optimal performance.
-[2026-10-23 17:04:10] [2026-10-23 17:04:10] Info: cmake config -DBUILD_OPEN_PROJECT=ON -DVENDOR_NAME=custom -DENABLE_EXPERIMENTAL=TRUE -DASCEND_OP_NAME=mhc_pre_sinkhorn_premix -DENABLE_TILING_SINK=OFF -DUT_INFERSHAPE_FLAG=TRUE -DENABLE_UT_EXEC=TRUE -DCANN_3RD_LIB_PATH=/home/z30086261/mhc_bench/ops-transformer/third_party -DENABLE_AICPU_KERNEL=FALSE -DPACKAGE_TYPE=run -DCUSTOM_ASCEND_CANN_PACKAGE_PATH=/home/CANN/9.3.0.weekly.20260916/cann-9.3.0 -DCHECK_COMPATIBLE=true -DASCEND_COMPUTE_UNIT=ascend950 -DENABLE_BUILT_IN=OFF -DENABLE_OPS_HOST=ON -DENABLE_OPS_KERNEL=ON -DENABLE_BUILD_PKG=ON .
-CMake Error at CMakeLists.txt:11 (cmake_minimum_required):
-  CMake 3.18.4 or higher is required.  You are running version 3.16.3
+pip install "cmake>=3.30" -i https://mirrors.ustc.edu.cn/pypi/web/simple --trusted-host mirrors.ustc.edu.cn
 
+# 确认版本变成 3.3x
+cmake --version
 
-[2026-10-23 17:04:10] -- Configuring incomplete, errors occurred!
-(mhc) root@ubuntu162:/home/z30086261/mhc_bench/ops-transformer# ls build_out/
-ls: cannot access 'build_out/': No such file or directory
-(mhc) root@ubuntu162:/home/z30086261/mhc_bench/ops-transformer# bash build_out/custom_osp_*.run
-bash: build_out/custom_osp_*.run: No such file or directory
-(mhc) root@ubuntu162:/home/z30086261/mhc_bench/ops-transformer# 
+# 重新编译
+cd /home/z30086261/mhc_bench/ops-transformer
+bash build.sh --pkg --experimental --soc=ascend950 --vendor_name=custom \
+  --ops=mhc_pre_sinkhorn_premix -j16 2>&1 | tee build_log.txt
