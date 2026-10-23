@@ -1,16 +1,53 @@
-# 1) 装缺的 pybind11
-pip install pybind11 -i https://mirrors.ustc.edu.cn/pypi/web/simple --trusted-host mirrors.ustc.edu.cn
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# pip install pybind11 -i https://mirrors.ustc.edu.cn/pypi/web/simple --trusted-host mirrors.ustc.edu.cn
+Looking in indexes: https://mirrors.ustc.edu.cn/pypi/web/simple
+Collecting pybind11
+  Downloading pybind11-3.1.0-py3-none-any.whl (319 kB)
+Installing collected packages: pybind11
+Successfully installed pybind11-3.1.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# echo $PYTHONPATH
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/python/site-packages:/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/opp/built-in/op_impl/ai_core/tbe:/home/h00932613/tilelang-te/tilelang-mlir-ascend:/home/z00957040/code/tilelang-mlir-ascend/3rdparty/AscendNPU-IR-Dev/build/install/python_packages/mlir_core:/home/z00957040/code/tilelang-mlir-ascend/3rdparty/AscendNPU-IR-Dev/build/install/python_packages/bishengir:/home/h00932613/tilelang-mlir-ascend:/home/h00932613/tilelang-te/tilelang-mlir-ascend:/home/z00957040/code/tilelang-mlir-ascend/3rdparty/AscendNPU-IR-Dev/build/install/python_packages/mlir_core:/home/z00957040/code/tilelang-mlir-ascend/3rdparty/AscendNPU-IR-Dev/build/install/python_packages/bishengir:/home/h00932613/tilelang-mlir-ascend:
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# grep -rn "PYTHONPATH" /root/.bashrc /etc/profile /etc/profile.d/ 2>/dev/null | head
+/root/.bashrc:116:export PYTHONPATH=/home/h00932613/tilelang-mlir-ascend:$PYTHONPATH
+/root/.bashrc:117:export PYTHONPATH=/home/z00957040/code/tilelang-mlir-ascend/3rdparty/AscendNPU-IR-Dev/build/install/python_packages/mlir_core:/home/z00957040/code/tilelang-mlir-ascend/3rdparty/AscendNPU-IR-Dev/build/install/python_packages/bishengir:$PYTHONPATH
+/root/.bashrc:118:export PYTHONPATH=/home/h00932613/tilelang-te/tilelang-mlir-ascend:$PYTHONPATH
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# python -c "import tilelang; print(tilelang.__file__)"
+2026-10-23 16:33:31  [TileLang:tilelang.env:WARNING]: Loading tilelang libs from dev root: /home/h00932613/tilelang-te/tilelang-mlir-ascend/build
+2026-10-23 16:33:31  [TileLang:tilelang.env:WARNING]: CUTLASS is not installed or found in the expected path
+2026-10-23 16:33:31  [TileLang:tilelang.env:WARNING]: Composable Kernel is not installed or found in the expected path
+2026-10-23 16:33:33  [TileLang:tilelang.jit.adapter.cython.adapter:INFO]: No cached version found for cython jit adapter, need to compile...
+2026-10-23 16:33:33  [TileLang:tilelang.jit.adapter.cython.adapter:INFO]: Waiting for lock to compile cython jit adapter...
+2026-10-23 16:33:33  [TileLang:tilelang.jit.adapter.cython.adapter:INFO]: Compiling cython jit adapter...
+Traceback (most recent call last):
+  File "/home/h00932613/tilelang-te/tilelang-mlir-ascend/tilelang/jit/adapter/cython/adapter.py", line 155, in <module>
+    raise Exception(
+Exception: Cython is not installed, please install it first.
 
-# 2) 看看 PYTHONPATH 是谁设的
-echo $PYTHONPATH
-grep -rn "PYTHONPATH" /root/.bashrc /etc/profile /etc/profile.d/ 2>/dev/null | head
+The above exception was the direct cause of the following exception:
 
-# 3) 确认 tilelang 实际加载路径
-python -c "import tilelang; print(tilelang.__file__)"
-
-
-
-unset PYTHONPATH
-python -c "import tilelang; print(tilelang.__file__)"   # 应指向 miniconda3/envs/mhc/.../site-packages/tilelang
-cd /home/z30086261/mhc_bench/TileKernels
-python -m pytest tests/mhc/test_post.py -q -x 2>&1 | tail -20
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/home/h00932613/tilelang-te/tilelang-mlir-ascend/tilelang/__init__.py", line 86, in <module>
+    from .jit import jit, compile  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/h00932613/tilelang-te/tilelang-mlir-ascend/tilelang/jit/__init__.py", line 23, in <module>
+    from tilelang.cache import cached_npu
+  File "/home/h00932613/tilelang-te/tilelang-mlir-ascend/tilelang/cache/__init__.py", line 10, in <module>
+    from .kernel_cache import KernelCache
+  File "/home/h00932613/tilelang-te/tilelang-mlir-ascend/tilelang/cache/kernel_cache.py", line 10, in <module>
+    from tilelang.jit.jit_npu import JitKernel_NPU
+  File "/home/h00932613/tilelang-te/tilelang-mlir-ascend/tilelang/jit/jit_npu.py", line 26, in <module>
+    from tilelang.profiler import Profiler, TensorSupplyType
+  File "/home/h00932613/tilelang-te/tilelang-mlir-ascend/tilelang/profiler/__init__.py", line 14, in <module>
+    from tilelang.jit.adapter import BaseKernelAdapter
+  File "/home/h00932613/tilelang-te/tilelang-mlir-ascend/tilelang/jit/adapter/__init__.py", line 7, in <module>
+    from .cython import CythonKernelAdapter  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/h00932613/tilelang-te/tilelang-mlir-ascend/tilelang/jit/adapter/cython/__init__.py", line 4, in <module>
+    from .adapter import CythonKernelAdapter  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/h00932613/tilelang-te/tilelang-mlir-ascend/tilelang/jit/adapter/cython/adapter.py", line 171, in <module>
+    raise Exception(f"Failed to compile cython jit adapter: {e}") from e
+Exception: Failed to compile cython jit adapter: Cython is not installed, please install it first.
+[ERROR] 2026-10-23-16:33:33 (PID:556962, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# 
