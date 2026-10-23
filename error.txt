@@ -1,15 +1,13 @@
-# 1) 注释掉 .bashrc 里的三行干扰（保留原文件备份）
-cp /root/.bashrc /root/.bashrc.bak
-sed -i '116,118s/^/#/' /root/.bashrc
-
-# 2) 本会话清掉已加载的（当前 shell 里 export 的还在，必须处理）
-export PYTHONPATH=""
-
-# 3) 验证 tilelang 现在指向 pip 版
-python -c "import tilelang; print(tilelang.__file__)"
-# 期望: /root/miniconda3/envs/mhc/lib/python3.12/site-packages/tilelang/__init__.py
-# 且不再有 "Loading tilelang libs from dev root" 警告
-
-
-cd /home/z30086261/mhc_bench/TileKernels
-python -m pytest tests/mhc/test_post.py -q -x 2>&1 | tail -20
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# cp /root/.bashrc /root/.bashrc.bak
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# sed -i '116,118s/^/#/' /root/.bashrc
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# export PYTHONPATH=""
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# python -c "import tilelang; print(tilelang.__file__)"
+/root/miniconda3/envs/mhc/lib/python3.12/site-packages/tilelang/__init__.py
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# cd /home/z30086261/mhc_bench/TileKernels
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# python -m pytest tests/mhc/test_post.py -q -x 2>&1 | tail -20
+........ssssssssssss                                                     [100%]
+======================== GPU Memory Auto-Classification ========================
+20 test(s) have no GPU memory profile and were conservatively classified as large_gpu_mem (Stage 2).
+Run pytest with '--refresh-mem' to measure and record their actual GPU memory usage.
+8 passed, 12 skipped in 30.78s
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels#
