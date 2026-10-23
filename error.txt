@@ -1,78 +1,138 @@
-(base) root@ubuntu162:/home/z30086261# npu-smi info
-+-------------------------------------------------------------------------------------------------+
-| npu-smi 25.7.rc1.b086                            Version: 25.7.rc1.b086                         |
-+--------+------------------+---------------+-----------------------------------------------------+
-| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
-|        |                  | Bus-Id        | AICore(%)   Memory-Usage(MB)  HBM-Usage(MB)         |
-+========+==================+===============+=====================================================+
-| 0      | Ascend950PR      | OK            | 189.5       57                0     / 0             |
-|        |                  | 0000:0D:00.0  | 0           0    / 0          5270  / 131072        |
-+========+==================+===============+=====================================================+
-| 1      | Ascend950PR      | Critical      | 0.0         0                 0     / 0             |
-|        |                  | 0000:0E:00.0  | 0           0    / 0          0     / 0             |
-+========+==================+===============+=====================================================+
-| 2      | Ascend950PR      | OK            | 193.4       58                0     / 0             |
-|        |                  | 0000:55:00.0  | 0           0    / 0          5016  / 131072        |
-+========+==================+===============+=====================================================+
-| 3      | Ascend950PR      | OK            | 191.0       57                0     / 0             |
-|        |                  | 0000:57:00.0  | 0           0    / 0          5016  / 131072        |
-+========+==================+===============+=====================================================+
-| 4      | Ascend950PR      | OK            | 189.7       56                0     / 0             |
-|        |                  | 0000:8B:00.0  | 0           0    / 0          5274  / 131072        |
-+========+==================+===============+=====================================================+
-| 5      | Ascend950PR      | OK            | 195.0       59                0     / 0             |
-|        |                  | 0000:8C:00.0  | 0           0    / 0          5234  / 131072        |
-+========+==================+===============+=====================================================+
-| 6      | Ascend950PR      | Critical      | 0.0         0                 0     / 0             |
-|        |                  | 0000:D4:00.0  | 0           0    / 0          0     / 0             |
-+========+==================+===============+=====================================================+
-| 7      | Ascend950PR      | Critical      | 0.0         0                 0     / 0             |
-|        |                  | 0000:D7:00.0  | 0           0    / 0          0     / 0             |
-+========+==================+===============+=====================================================+
-+---------------------------+---------------+-----------------------------------------------------+
-| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
-+===========================+===============+=====================================================+
-| No running processes found in NPU 0                                                             |
-+===========================+===============+=====================================================+
-| No running processes found in NPU 1                                                             |
-+===========================+===============+=====================================================+
-| No running processes found in NPU 2                                                             |
-+===========================+===============+=====================================================+
-| No running processes found in NPU 3                                                             |
-+===========================+===============+=====================================================+
-| No running processes found in NPU 4                                                             |
-+===========================+===============+=====================================================+
-| No running processes found in NPU 5                                                             |
-+===========================+===============+=====================================================+
-| No running processes found in NPU 6                                                             |
-+===========================+===============+=====================================================+
-| No running processes found in NPU 7                                                             |
-+===========================+===============+=====================================================+
-(base) root@ubuntu162:/home/z30086261# docker exec -it z30086261 bash
-root@ubuntu162:/# source /home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh 
-root@ubuntu162:/# python3 --version
-Python 3.11.0
-root@ubuntu162:/# python3 -c "import torch, torch_npu; print(torch.__version__, torch_npu.__version__)"
-2.7.1+cpu 2.7.1.post3.dev20260129
-root@ubuntu162:/# export http_proxy=http://141.3.1.3:3128
-export https_proxy=${http_proxy}
-export no_proxy=127.0.0.1,*.huawei.com,localhost,local,.local,inhuawei.com
-export GIT_SSL_NO_VERIFY=true
-root@ubuntu162:/# mkdir -p /home/z30086261/mhc_bench
-root@ubuntu162:/# cd /home/z30086261/mhc_bench/
-root@ubuntu162:/home/z30086261/mhc_bench# git clone https://github.com/deepseek-ai/TileKernels.git
-Cloning into 'TileKernels'...
-remote: Enumerating objects: 375, done.
-remote: Counting objects: 100% (206/206), done.
-remote: Compressing objects: 100% (191/191), done.
-remote: Total 375 (delta 45), reused 15 (delta 15), pack-reused 169 (from 1)
-Receiving objects: 100% (375/375), 422.72 KiB | 2.53 MiB/s, done.
-Resolving deltas: 100% (79/79), done.
-root@ubuntu162:/home/z30086261/mhc_bench# git clone https://gitcode.com/cann/ops-transformer.git
-Cloning into 'ops-transformer'...
-remote: Enumerating objects: 185154, done.
-remote: Counting objects: 100% (119587/119587), done.
-remote: Compressing objects: 100% (54144/54144), done.
-remote: Total 185154 (delta 106929), reused 65736 (delta 65440), pack-reused 65567 (from 1)
-Receiving objects: 100% (185154/185154), 112.46 MiB | 6.93 MiB/s, done.
-Resolving deltas: 100% (139112/139112), done.
+(base) root@ubuntu162:/home/z30086261# conda create -n mhc python=3.12 -y
+2 channel Terms of Service accepted
+Channels:
+ - https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge
+ - https://mirrors.ustc.edu.cn/anaconda/pkgs/r
+ - https://mirrors.ustc.edu.cn/anaconda/pkgs/main
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): / /root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+| /root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+- /root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+/root/miniconda3/lib/python3.14/site-packages/urllib3/connectionpool.py:1110: InsecureRequestWarning: Unverified HTTPS request is being made to host '141.3.1.3'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+done
+Solving environment: done
+
+
+==> WARNING: A newer version of conda exists. <==
+    current version: 26.5.3
+    latest version: 26.9.4
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+
+
+## Package Plan ##
+
+  environment location: /root/miniconda3/envs/mhc
+
+  added / updated specs:
+    - python=3.12
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    ca-certificates-2026.10.19 |       hbd8a1cb_0         128 KB  https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge
+    libpython-3.12.15          |ha57cdbe_2_cpython         8.4 MB  https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge
+    libsqlite-3.54.1           |     h0737f62_100         957 KB  https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge
+    pip-26.2.2                 |     pyh8b19718_0         1.1 MB  https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge
+    python-3.12.15             |h5f976f7_2_cpython        22.0 MB  https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge
+    setuptools-84.2.1          |     pyhe730653_0         554 KB  https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge
+    ------------------------------------------------------------
+                                           Total:        33.1 MB
+
+The following NEW packages will be INSTALLED:
+
+  _openmp_mutex      anaconda/cloud/conda-forge/linux-64::_openmp_mutex-4.5-20_gnu 
+  bzip2              anaconda/cloud/conda-forge/linux-64::bzip2-1.0.8-hda65f42_10 
+  ca-certificates    anaconda/cloud/conda-forge/noarch::ca-certificates-2026.10.19-hbd8a1cb_0 
+  ld_impl_linux-64   anaconda/cloud/conda-forge/linux-64::ld_impl_linux-64-2.46.1-default_hbd61a6d_103 
+  libexpat           anaconda/cloud/conda-forge/linux-64::libexpat-2.8.5-hd2095e1_0 
+  libffi             anaconda/cloud/conda-forge/linux-64::libffi-3.7.0-h81df57d_1 
+  libgcc             anaconda/cloud/conda-forge/linux-64::libgcc-16.2.0-ha9f2e26_7 
+  libgomp            anaconda/cloud/conda-forge/linux-64::libgomp-16.2.0-he0feb66_7 
+  liblzma            anaconda/cloud/conda-forge/linux-64::liblzma-5.8.3-hb03c661_1 
+  libnsl             anaconda/cloud/conda-forge/linux-64::libnsl-2.0.1-hb9d3cd8_1 
+  libpython          anaconda/cloud/conda-forge/linux-64::libpython-3.12.15-ha57cdbe_2_cpython 
+  libsqlite          anaconda/cloud/conda-forge/linux-64::libsqlite-3.54.1-h0737f62_100 
+  libuuid            anaconda/cloud/conda-forge/linux-64::libuuid-2.42.4-hcfc3c73_0 
+  libxcrypt          anaconda/cloud/conda-forge/linux-64::libxcrypt-4.4.38-h280c20c_0 
+  libzlib            anaconda/cloud/conda-forge/linux-64::libzlib-1.3.2-h25fd6f3_3 
+  ncurses            anaconda/cloud/conda-forge/linux-64::ncurses-6.6-hdb14827_1 
+  openssl            anaconda/cloud/conda-forge/linux-64::openssl-3.6.5-h781a0a9_0 
+  packaging          anaconda/cloud/conda-forge/noarch::packaging-26.3-pyhc364b38_0 
+  pip                anaconda/cloud/conda-forge/noarch::pip-26.2.2-pyh8b19718_0 
+  python             anaconda/cloud/conda-forge/linux-64::python-3.12.15-h5f976f7_2_cpython 
+  readline           anaconda/cloud/conda-forge/linux-64::readline-8.3-hd6e31c0_1 
+  setuptools         anaconda/cloud/conda-forge/noarch::setuptools-84.2.1-pyhe730653_0 
+  tk                 anaconda/cloud/conda-forge/linux-64::tk-8.6.13-noxft_h1df4ec4_4 
+  tzdata             anaconda/cloud/conda-forge/noarch::tzdata-2026c-h151e31d_0 
+  wheel              anaconda/cloud/conda-forge/noarch::wheel-0.48.0-pyhd8ed1ab_0 
+  zstd               anaconda/cloud/conda-forge/linux-64::zstd-1.5.7-hb78ec9c_7 
+
+
+
+Downloading and Extracting Packages:
+python-3.12.15       | 22.0 MB   | ################9                                                               |  21% Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'RemoteDisconnected('Remote end closed connection without response')': /anaconda/cloud/conda-forge/noarch/setuptools-84.2.1-pyhe730653_0.condaibsqlite-3.54.1     | 957 KB    | ############################################################################### | 100% 
+setuptools-84.2.1    | 554 KB    |                                                                                 |   0% 
+Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'RemoteDisconnected('Remote end closed connection without response')': /anaconda/cloud/conda-forge/noarch/pip-26.2.2-pyh8b19718_0.conda
+
+python-3.12.15       | 22.0 MB   | ############################################################################### | 100% Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'RemoteDisconnected('Remote end closed connection without response')': /anaconda/cloud/conda-forge/noarch/pip-26.2.2-pyh8b19718_0.conda
+
+                                                                                                                          Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'RemoteDisconnected('Remote end closed connection without response')': /anaconda/cloud/conda-forge/noarch/setuptools-84.2.1-pyhe730653_0.conda
+
+                                                                                                                          
+Preparing transaction: done                                                                                               
+Verifying transaction: done                                                                                               
+Executing transaction: done                                                                                               
+#                                                                                                                         
+# To activate this environment, use                                                                                       
+#
+#     $ conda activate mhc
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+WARNING conda.conda_pypi.main:notify_externally_managed_future(156): 
+  Did you know? You can install many PyPI packages with conda
+  using the conda-pypi beta. Get started:
+    https://docs.conda.io/projects/conda/en/stable/new-features.html
+
+(base) root@ubuntu162:/home/z30086261# conda activate mhc
+(mhc) root@ubuntu162:/home/z30086261# pip index versions torch-npu 2>/dev/null || pip install torch-npu== 2>&1 | head -3
+torch-npu (2.14.0)
+Available versions: 2.14.0, 2.13.0, 2.12.0.post3, 2.12.0.post2, 2.12.0, 2.11.0.post3, 2.11.0.post2, 2.11.0, 2.10.0.post7, 2.10.0.post4, 2.10.0.post2, 2.10.0, 2.9.1, 2.9.0.post9, 2.9.0.post8, 2.9.0.post6, 2.9.0.post4, 2.9.0.post2, 2.9.0, 2.8.0.post5, 2.8.0.post4, 2.8.0.post2, 2.7.1.post11, 2.7.1.post10, 2.7.1.post8, 2.7.1.post6, 2.7.1.post4, 2.7.1.post2, 2.6.0.post5
+(mhc) root@ubuntu162:/home/z30086261# 
