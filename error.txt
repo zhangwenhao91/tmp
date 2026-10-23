@@ -1,12 +1,18 @@
-conda activate mhc
-export http_proxy=http://141.3.1.3:3128
-export https_proxy=${http_proxy}
-export ASCEND_RT_VISIBLE_DEVICES=0        # 别忘了绑定健康卡
+(mhc) root@ubuntu162:/home/z30086261# export http_proxy=http://141.3.1.3:3128
+(mhc) root@ubuntu162:/home/z30086261# export https_proxy=${http_proxy}
+(mhc) root@ubuntu162:/home/z30086261# export ASCEND_RT_VISIBLE_DEVICES=4
+(mhc) root@ubuntu162:/home/z30086261# pip install torch==2.13.0 --index-url https://download.pytorch.org/whl/cpu
+Looking in indexes: https://download.pytorch.org/whl/cpu
+Collecting torch==2.13.0
+  WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)')': /whl/cpu/torch-2.13.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata
+  WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)')': /whl/cpu/torch-2.13.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata
+  WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)')': /whl/cpu/torch-2.13.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata
+  WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)')': /whl/cpu/torch-2.13.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata
+  WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)')': /whl/cpu/torch-2.13.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata
+error: ssl-verification-failed
 
-# 1) 装 torch 2.13（CPU 版即可，NPU 靠 torch_npu）+ torch-npu 2.13
-pip install torch==2.13.0 --index-url https://download.pytorch.org/whl/cpu
-pip install torch-npu==2.13.0
+× Failed to establish a secure connection to download-r2.pytorch.org while fetching https://download-r2.pytorch.org/whl/cpu/torch-2.13.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata
+╰─> [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)
 
-# 2) 验证 NPU 可用
-python -c "import torch,torch_npu; print(torch.__version__, torch_npu.__version__); \
-x=torch.randn(3).npu(); torch.npu.synchronize(); print('NPU OK', x.sum().item())"
+hint: You may need to use --cert or check your proxy/firewall configuration
+(mhc) root@ubuntu162:/home/z30086261# pip install torch-npu==2.13.0
