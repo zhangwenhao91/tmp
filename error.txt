@@ -1,15 +1,101 @@
-cd /home/z30086261/mhc_bench
-export https_proxy=http://141.3.1.3:3128
-wget https://raw.githubusercontent.com/zhangwenhao91/tmp/main/bench_mhc_compare.py -O bench_mhc_compare.py
-head -5 bench_mhc_compare.py   # 确认下载的是新文件
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench# cd ..
+(mhc) root@ubuntu162:/home/z30086261# cd tmp/
+(mhc) root@ubuntu162:/home/z30086261/tmp# git pull
+remote: Enumerating objects: 125, done.
+remote: Counting objects: 100% (125/125), done.
+remote: Compressing objects: 100% (121/121), done.
+remote: Total 123 (delta 53), reused 4 (delta 1), pack-reused 0 (from 0)
+Receiving objects: 100% (123/123), 78.15 KiB | 381.00 KiB/s, done.
+Resolving deltas: 100% (53/53), completed with 1 local object.
+From https://github.com/zhangwenhao91/tmp
+   a7aa2b7..3af480b  main       -> origin/main
+Updating a7aa2b7..3af480b
+Fast-forward
+ "MHA\344\270\216MHC\347\256\227\345\255\220\350\247\204\346\240\274.md" |  60 ++++++++
+ bench_mhc_compare.py                                                    | 289 +++++++++++++++++++++++++++++++++++
+ error.txt                                                               |  43 ++----
+ mla_stage_d/probe_m32.py                                                | 350 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 710 insertions(+), 32 deletions(-)
+ create mode 100644 "MHA\344\270\216MHC\347\256\227\345\255\220\350\247\204\346\240\274.md"
+ create mode 100644 bench_mhc_compare.py
+ create mode 100644 mla_stage_d/probe_m32.py
+(mhc) root@ubuntu162:/home/z30086261/tmp# cp /home/z30086261/tmp/bench_mhc_compare.py /home/z30086261/mhc_bench/
+(mhc) root@ubuntu162:/home/z30086261/tmp# cd ..
+(mhc) root@ubuntu162:/home/z30086261# cd mhc_bench/
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench# ll
+total 36
+drwxr-xr-x  4 root root  4096 Oct 23 16:57 ./
+drwxr-xr-x  9 root root  4096 Oct 23 16:48 ../
+-rw-r--r--  1 root root 13218 Oct 23 16:57 bench_mhc_compare.py
+-rw-r--r--  1 root root   111 Oct 23 16:46 bench_result.txt
+drwxr-xr-x 20 root root  4096 Oct 23 15:39 ops-transformer/
+drwxr-xr-x  8 root root  4096 Oct 23 16:41 TileKernels/
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench# python3 bench_mhc_compare.py --t 512 8192 --c 4096 7168 --iters 100 2>&1 | tee bench_result.txt
+==============================================================================
+mHC 性能对比: AscendC (ops-transformer) vs TileLang (TileKernels)
+  device=Ascend950PR_9579  aicore=28  torch=2.13.0+cpu  torch_npu=2.13.0+cpu
+  N=4, sinkhorn_iters=20, eps=1e-06, dtype=x:bf16/param:fp32
+==============================================================================
 
+### shape: T=512, N=4, C=4096
+  [AscendC] 初始化失败: No module named 'cann_ops_transformer_customize'
+    (提示: 需先安装 ops-transformer experimental 单算子包, 见操作说明)
+2026-10-23 16:58:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mhc_pre_big_fuse_fwd_asc` with `out_idx=None`
+2026-10-23 16:58:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mhc_pre_big_fuse_fwd_asc`
+  [TileLang] pre_big_fuse (官方口径, 不含 GEMM):
+  TileLang big_fuse                      mean=    37.38 us  min=    34.63 us  ~  563.5 GB/s
+  [TileLang] torch GEMM 单独计时 (供端到端参考):
+  torch GEMM                             mean=   102.31 us  min=    98.53 us  ~  179.9 GB/s
+  [TileLang] big_fuse + GEMM (端到端, 对标 AscendC 单算子):
+  TileLang e2e                           mean=   115.96 us  min=   112.70 us  ~  194.8 GB/s
+  [TileLang] mhc_post (post+res 融合, AscendC 无 950 对应):
+2026-10-23 16:58:57  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mhc_post_fwd_asc` with `out_idx=None`
+2026-10-23 16:58:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mhc_post_fwd_asc`
+  TileLang post                          mean=    34.64 us  min=    32.47 us  ~ 1091.0 GB/s
 
+### shape: T=512, N=4, C=7168
+  [AscendC] 初始化失败: No module named 'cann_ops_transformer_customize'
+    (提示: 需先安装 ops-transformer experimental 单算子包, 见操作说明)
+2026-10-23 16:58:59  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang begins to compile kernel `mhc_pre_big_fuse_fwd_asc` with `out_idx=None`
+2026-10-23 16:59:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:145): TileLang completes to compile kernel `mhc_pre_big_fuse_fwd_asc`
+  [TileLang] pre_big_fuse (官方口径, 不含 GEMM):
+  TileLang big_fuse                      mean=    41.07 us  min=    39.12 us  ~  895.8 GB/s
+  [TileLang] torch GEMM 单独计时 (供端到端参考):
+  torch GEMM                             mean=   163.64 us  min=   160.67 us  ~  196.6 GB/s
+  [TileLang] big_fuse + GEMM (端到端, 对标 AscendC 单算子):
+  TileLang e2e                           mean=   192.89 us  min=   188.15 us  ~  204.7 GB/s
+  [TileLang] mhc_post (post+res 融合, AscendC 无 950 对应):
+  TileLang post                          mean=    41.55 us  min=    39.37 us  ~ 1591.0 GB/s
 
-# 本机 PowerShell 执行
-scp c:\Users\admin\Documents\trae_projects\zwh\mhc_bench\bench_mhc_compare.py root@<ubuntu162的IP>:/home/z30086261/mhc_bench/
+### shape: T=8192, N=4, C=4096
+  [AscendC] 初始化失败: No module named 'cann_ops_transformer_customize'
+    (提示: 需先安装 ops-transformer experimental 单算子包, 见操作说明)
+  [TileLang] pre_big_fuse (官方口径, 不含 GEMM):
+  TileLang big_fuse                      mean=   260.83 us  min=   255.36 us  ~ 1292.1 GB/s
+  [TileLang] torch GEMM 单独计时 (供端到端参考):
+  torch GEMM                             mean=  2122.85 us  min=  2111.72 us  ~  127.6 GB/s
+  [TileLang] big_fuse + GEMM (端到端, 对标 AscendC 单算子):
+  TileLang e2e                           mean=  2350.66 us  min=  2340.25 us  ~  143.7 GB/s
+  [TileLang] mhc_post (post+res 融合, AscendC 无 950 对应):
+  TileLang post                          mean=   424.38 us  min=   417.88 us  ~ 1424.7 GB/s
 
+### shape: T=8192, N=4, C=7168
+  [AscendC] 初始化失败: No module named 'cann_ops_transformer_customize'
+    (提示: 需先安装 ops-transformer experimental 单算子包, 见操作说明)
+  [TileLang] pre_big_fuse (官方口径, 不含 GEMM):
+  TileLang big_fuse                      mean=   426.42 us  min=   421.72 us  ~ 1380.5 GB/s
+  [TileLang] torch GEMM 单独计时 (供端到端参考):
+  torch GEMM                             mean=  3638.86 us  min=  3630.92 us  ~  130.1 GB/s
+  [TileLang] big_fuse + GEMM (端到端, 对标 AscendC 单算子):
+  TileLang e2e                           mean=  4027.59 us  min=  4018.25 us  ~  146.6 GB/s
+  [TileLang] mhc_post (post+res 融合, AscendC 无 950 对应):
+  TileLang post                          mean=   724.41 us  min=   718.83 us  ~ 1460.0 GB/s
 
+结果已写入 mhc_bench_result.csv
 
-cd /home/z30086261/mhc_bench
-export ASCEND_RT_VISIBLE_DEVICES=4    # 4 号卡是健康的，没问题
-python3 bench_mhc_compare.py --t 512 8192 --c 4096 7168 --iters 100 2>&1 | tee bench_result.txt
+=== 汇总（同一 shape 下 AscendC vs TileLang 端到端对比）===
+  T=512    C=4096   TileLang(e2e)    115.96 us | TileLang(kernel)     37.38 us
+  T=512    C=7168   TileLang(e2e)    192.89 us | TileLang(kernel)     41.07 us
+  T=8192   C=4096   TileLang(e2e)   2350.66 us | TileLang(kernel)    260.83 us
+  T=8192   C=7168   TileLang(e2e)   4027.59 us | TileLang(kernel)    426.42 us
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench# 
