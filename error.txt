@@ -1,10 +1,7 @@
-# 1) 环境变量（安装提示要求的）
-export LD_LIBRARY_PATH=/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/opp/vendors/custom_transformer/op_api/lib/:${LD_LIBRARY_PATH}
-export ASCEND_RT_VISIBLE_DEVICES=4
-
-# 2) 验证 python 封装模块
-python -c "import cann_ops_transformer_customize; print('OK')"
-
-# 3) 重跑基准
-cd /home/z30086261/mhc_bench
-python3 bench_mhc_compare.py --t 512 8192 --c 4096 7168 --iters 100 2>&1 | tee bench_result2.txt
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/ops-transformer# export LD_LIBRARY_PATH=/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/opp/vendors/custom_transformer/op_api/lib/:${LD_LIBRARY_PATH}
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/ops-transformer# export ASCEND_RT_VISIBLE_DEVICES=4
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/ops-transformer# python -c "import cann_ops_transformer_customize; print('OK')"
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'cann_ops_transformer_customize'
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/ops-transformer# 
