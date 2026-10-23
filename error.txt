@@ -1,9 +1,773 @@
-pip install "cmake>=3.30" -i https://mirrors.ustc.edu.cn/pypi/web/simple --trusted-host mirrors.ustc.edu.cn
+  The DOWNLOAD_EXTRACT_TIMESTAMP option was not given and policy CMP0135 is
+  not set.  The policy's OLD behavior will be used.  When using a URL
+  download, the timestamps of extracted files should preferably be that of
+  the time of extraction, otherwise code that depends on the extracted
+  contents might not be rebuilt if the URL changes.  The OLD behavior
+  preserves the timestamps from the archive instead, but this is usually not
+  what you want.  Update your project to the NEW behavior or specify the
+  DOWNLOAD_EXTRACT_TIMESTAMP option with a value of true to avoid this
+  robustness issue.
+Call Stack (most recent call first):
+  /root/miniconda3/envs/mhc/lib/python3.12/site-packages/cmake/data/share/cmake-4.4/Modules/ExternalProject.cmake:3283 (_ep_add_download_command)
+  build/_deps/cann-cmake-src/third_party/abseil-cpp.cmake:86 (ExternalProject_Add)
+  build/_deps/cann-cmake-src/function/prepare.cmake:314 (include)
+  CMakeLists.txt:196 (add_cann_third_party)
+This warning is for project developers.  Use -Wno-author to suppress it.
 
-# 确认版本变成 3.3x
-cmake --version
+[2026-10-23 17:07:30] -- [ThirdParty][protobuf] /home/z30086261/mhc_bench/ops-transformer/third_party/protobuf/protobuf-25.1.tar.gz not found, need download.
+CMake Warning (author) at /root/miniconda3/envs/mhc/lib/python3.12/site-packages/cmake/data/share/cmake-4.4/Modules/ExternalProject/shared_internal_commands.cmake:1277 (message):
+  The DOWNLOAD_EXTRACT_TIMESTAMP option was not given and policy CMP0135 is
+  not set.  The policy's OLD behavior will be used.  When using a URL
+  download, the timestamps of extracted files should preferably be that of
+  the time of extraction, otherwise code that depends on the extracted
+  contents might not be rebuilt if the URL changes.  The OLD behavior
+  preserves the timestamps from the archive instead, but this is usually not
+  what you want.  Update your project to the NEW behavior or specify the
+  DOWNLOAD_EXTRACT_TIMESTAMP option with a value of true to avoid this
+  robustness issue.
+Call Stack (most recent call first):
+  /root/miniconda3/envs/mhc/lib/python3.12/site-packages/cmake/data/share/cmake-4.4/Modules/ExternalProject.cmake:3283 (_ep_add_download_command)
+  build/_deps/cann-cmake-src/third_party/protobuf.cmake:136 (ExternalProject_Add)
+  build/_deps/cann-cmake-src/function/prepare.cmake:314 (include)
+  CMakeLists.txt:197 (add_cann_third_party)
+This warning is for project developers.  Use -Wno-author to suppress it.
 
-# 重新编译
-cd /home/z30086261/mhc_bench/ops-transformer
-bash build.sh --pkg --experimental --soc=ascend950 --vendor_name=custom \
-  --ops=mhc_pre_sinkhorn_premix -j16 2>&1 | tee build_log.txt
+[2026-10-23 17:07:30] -- [ThirdParty][protobuf] protobuf_shared build.
+[2026-10-23 17:07:30] -- [ThirdParty][protobuf] protoc build.
+[2026-10-23 17:07:30] -- [ThirdParty][protobuf] protobuf_static build.
+[2026-10-23 17:07:30] -- [ThirdParty][protobuf] protobuf_host_static build.
+[2026-10-23 17:07:30] -- Found alog: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include
+[2026-10-23 17:07:30] -- Variables in alog module:
+[2026-10-23 17:07:30] -- alog_a_INCLUDE_DIR="/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include"
+[2026-10-23 17:07:30] -- slog_a_SHARED_LIBRARY="/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/lib64/libascendalog.so"
+[2026-10-23 17:07:30] -- alog_a_SHARED_LIBRARY="/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/lib64/libascendalog.so"
+[2026-10-23 17:07:30] -- 
+[2026-10-23 17:07:30]  Properties for TARGET slog_a:
+[2026-10-23 17:07:30]    slog_a.INTERFACE_COMPILE_DEFINITIONS = "LOG_CPP;PROCESS_LOG"
+[2026-10-23 17:07:30]    slog_a.INTERFACE_LINK_LIBRARIES = "alog_headers"
+[2026-10-23 17:07:30]    slog_a.IMPORTED_LOCATION = "/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/lib64/libascendalog.so"
+[2026-10-23 17:07:30] 
+[2026-10-23 17:07:30] -- 
+[2026-10-23 17:07:30]  Properties for TARGET alog_a:
+[2026-10-23 17:07:30]    alog_a.INTERFACE_COMPILE_DEFINITIONS = "LOG_CPP;PROCESS_LOG"
+[2026-10-23 17:07:30]    alog_a.INTERFACE_LINK_LIBRARIES = "alog_headers"
+[2026-10-23 17:07:30]    alog_a.IMPORTED_LOCATION = "/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/lib64/libascendalog.so"
+[2026-10-23 17:07:30] 
+[2026-10-23 17:07:30] -- 
+[2026-10-23 17:07:30]  Properties for TARGET alog_headers:
+[2026-10-23 17:07:30]    alog_headers.INTERFACE_INCLUDE_DIRECTORIES = "/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include;/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/base"
+[2026-10-23 17:07:30] 
+[2026-10-23 17:07:30] -- Could NOT find unified_dlog (missing: _INCLUDE_ROOT_DIR) 
+[2026-10-23 17:07:30] -- Generated helper script: /home/z30086261/mhc_bench/ops-transformer/build/cmake/run_gen_esb_with_lock.sh
+[2026-10-23 17:07:30] -- Using existing Python3: /root/miniconda3/envs/mhc/bin/python3.12
+[2026-10-23 17:07:30] -- _add_es_library_impl: OUTPUT_PATH is /home/z30086261/mhc_bench/ops-transformer/build/es_packages_math
+[2026-10-23 17:07:30] -- _add_es_library_impl: EXCLUDE_OPS is not provided
+[2026-10-23 17:07:30] -- add_es_package: OPP_PROTO_TARGET output directory: /home/z30086261/mhc_bench/ops-transformer/build
+[2026-10-23 17:07:30] -- add_es_package: Derived ASCEND_OPP_PATH: /home/z30086261/mhc_bench/ops-transformer/build
+[2026-10-23 17:07:30] --   - Created standard OPP path: /home/z30086261/mhc_bench/ops-transformer/build/common/stub/op_graph/es_math_build/opp_standard_path_proto_math
+[2026-10-23 17:07:30] -- _add_es_library_impl: gen_esb target not found, searching in environment...
+[2026-10-23 17:07:30] --     Found gen_esb in PATH (environment variables configured)
+[2026-10-23 17:07:30] --     - gen_esb path: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/bin/gen_esb
+[2026-10-23 17:07:30] --     - library path: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/lib64
+[2026-10-23 17:07:30] -- Using proto library path (derived from OPP_PROTO_TARGET): /home/z30086261/mhc_bench/ops-transformer/build/common/stub/op_graph/es_math_build/opp_standard_path_proto_math
+[2026-10-23 17:07:30] -- add_es_package: Module name for gen_esb: math
+[2026-10-23 17:07:30] -- [add_es_library] No history registry found at /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/opp/history_registry/math, skipping
+[2026-10-23 17:07:30] -- Trying to locate eager_style_graph_builder_base library from run package...
+[2026-10-23 17:07:30] --   Found library in run package: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/lib64/libeager_style_graph_builder_base.so
+[2026-10-23 17:07:30] -- Configuring ES package: es_math
+[2026-10-23 17:07:30] --   - Exported target: es_math (public interface)
+[2026-10-23 17:07:30] --   - Internal .obj target: es_math_obj (compile once)
+[2026-10-23 17:07:30] --   - Internal .so target: es_math_so
+[2026-10-23 17:07:30] --   - Internal .a target: es_math_a
+[2026-10-23 17:07:30] --   - Module name (for gen_esb): math
+[2026-10-23 17:07:30] --   - OPP proto target: proto_math (type: SHARED_LIBRARY)
+[2026-10-23 17:07:30] --   - OPP proto path: /home/z30086261/mhc_bench/ops-transformer/build/common/stub/op_graph/es_math_build/opp_standard_path_proto_math
+[2026-10-23 17:07:30] --   - Output path: /home/z30086261/mhc_bench/ops-transformer/build/es_packages_math (artifacts will be copied)
+[2026-10-23 17:07:30] --   - Library files: libes_math.so, libes_math.a
+[2026-10-23 17:07:30] --   - Python package: es_math
+[2026-10-23 17:07:30] -- ES package 'es_math' using single-file compilation mode
+[2026-10-23 17:07:30] --   - Wrapper file: /home/z30086261/mhc_bench/ops-transformer/build/common/stub/op_graph/es_math_build/generated_code/es_math_all_in_one.cpp
+[2026-10-23 17:07:30] --   - Module name: math
+[2026-10-23 17:07:30] -- add_es_library: Using default compile options: -fPIC;-Wall;-fstack-protector-all;-std=c++17;-D_GLIBCXX_USE_CXX11_ABI=0;-O2;-Wno-free-nonheap-object
+[2026-10-23 17:07:30] -- add_es_library: Set _GLIBCXX_USE_CXX11_ABI=0 for ABI compatibility
+[2026-10-23 17:07:30] -- add_es_library: Deduced header base path from cmake file: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0
+[2026-10-23 17:07:30] -- add_es_library: metadef_headers target not found, skipping
+[2026-10-23 17:07:30] -- add_es_library: Found c_sec target
+[2026-10-23 17:07:30] -- add_es_library: Linking with CANN libraries: c_sec
+[2026-10-23 17:07:30] -- add_es_package: 'build_es_math' is the first ES package (will be built first)
+[2026-10-23 17:07:30] -- ES package 'es_math' configured successfully (single-file mode):
+[2026-10-23 17:07:30] --   - Exported target (for linking): es_math
+[2026-10-23 17:07:30] --   - Build target: build_es_math
+[2026-10-23 17:07:30] --   - Wrapper file: /home/z30086261/mhc_bench/ops-transformer/build/common/stub/op_graph/es_math_build/generated_code/es_math_all_in_one.cpp
+[2026-10-23 17:07:30] --   - Internal targets:
+[2026-10-23 17:07:30] --     * Code generation: generate_es_math_code
+[2026-10-23 17:07:30] --     * Object library: es_math_obj (compiled once)
+[2026-10-23 17:07:30] --     * Shared library: es_math_so
+[2026-10-23 17:07:30] --     * Static library: es_math_a
+[2026-10-23 17:07:30] --     * Wheel generation: generate_es_math_whl
+[2026-10-23 17:07:30] --     * Install: install_es_math
+[2026-10-23 17:07:30] --   - Library files: libes_math.so, libes_math.a
+[2026-10-23 17:07:30] --   - Python package: es_math
+[2026-10-23 17:07:30] --   - ES base library: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/lib64/libeager_style_graph_builder_base.so (from library)
+[2026-10-23 17:07:30] -- 
+[2026-10-23 17:07:30] -- Build mode: Single-file compilation (no reconfiguration needed)
+[2026-10-23 17:07:30] -- 
+[2026-10-23 17:07:30] -- Quick start:
+[2026-10-23 17:07:30] --   1. Link:    target_link_libraries(your_target PRIVATE es_math)
+[2026-10-23 17:07:30] --   2. Build:   make your_target  (recommended, triggers automatically)
+[2026-10-23 17:07:30] -- 
+[2026-10-23 17:07:30] -- Build experimental module
+[2026-10-23 17:07:30] -- === Debug: start ops.mhc.mhc_pre_sinkhorn_premix.op_graph.CMakeLists.txt 
+LIBASAN_PATH = 
+[2026-10-23 17:07:30] -- Update proto header path: /home/z30086261/mhc_bench/ops-transformer/experimental/mhc/mhc_pre_sinkhorn_premix/op_graph/mhc_pre_sinkhorn_premix_proto.h
+[2026-10-23 17:07:30] -- Update proto header path: /home/z30086261/mhc_bench/ops-transformer/experimental/mhc/mhc_pre_sinkhorn_premix/op_graph/mhc_pre_sinkhorn_premix_proto.h
+[2026-10-23 17:07:30] -- Start Generating es transformer for custom pkg
+[2026-10-23 17:07:30] -- _add_es_library_impl: OUTPUT_PATH is /home/z30086261/mhc_bench/ops-transformer/build/es_packages
+[2026-10-23 17:07:30] -- _add_es_library_impl: EXCLUDE_OPS is not provided
+[2026-10-23 17:07:30] -- add_es_package: Using default output directory: /home/z30086261/mhc_bench/ops-transformer/build
+[2026-10-23 17:07:30] -- add_es_package: OPP_PROTO_TARGET output directory: /home/z30086261/mhc_bench/ops-transformer/build
+[2026-10-23 17:07:30] -- add_es_package: Derived ASCEND_OPP_PATH: /home/z30086261/mhc_bench/ops-transformer/build
+[2026-10-23 17:07:30] --   - Created standard OPP path: /home/z30086261/mhc_bench/ops-transformer/build/es_transformer_cust_build/opp_standard_path_proto_transformer_cust
+[2026-10-23 17:07:30] -- _add_es_library_impl: gen_esb target not found, searching in environment...
+[2026-10-23 17:07:30] --     Found gen_esb in PATH (environment variables configured)
+[2026-10-23 17:07:30] --     - gen_esb path: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/bin/gen_esb
+[2026-10-23 17:07:30] --     - library path: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/lib64
+[2026-10-23 17:07:30] -- Using proto library path (derived from OPP_PROTO_TARGET): /home/z30086261/mhc_bench/ops-transformer/build/es_transformer_cust_build/opp_standard_path_proto_transformer_cust
+[2026-10-23 17:07:30] -- add_es_package: Module name for gen_esb: transformer_cust
+[2026-10-23 17:07:30] -- [add_es_library] No history registry found at /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/opp/history_registry/transformer_cust, skipping
+[2026-10-23 17:07:30] -- Trying to locate eager_style_graph_builder_base library from run package...
+[2026-10-23 17:07:30] --   Found library in run package: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/lib64/libeager_style_graph_builder_base.so
+[2026-10-23 17:07:30] -- Configuring ES package: es_transformer_cust
+[2026-10-23 17:07:30] --   - Exported target: es_transformer_cust (public interface)
+[2026-10-23 17:07:30] --   - Internal .obj target: es_transformer_cust_obj (compile once)
+[2026-10-23 17:07:30] --   - Internal .so target: es_transformer_cust_so
+[2026-10-23 17:07:30] --   - Internal .a target: es_transformer_cust_a
+[2026-10-23 17:07:30] --   - Module name (for gen_esb): transformer_cust
+[2026-10-23 17:07:30] --   - OPP proto target: proto_transformer_cust (type: SHARED_LIBRARY)
+[2026-10-23 17:07:30] --   - OPP proto path: /home/z30086261/mhc_bench/ops-transformer/build/es_transformer_cust_build/opp_standard_path_proto_transformer_cust
+[2026-10-23 17:07:30] --   - Output path: /home/z30086261/mhc_bench/ops-transformer/build/es_packages (artifacts will be copied)
+[2026-10-23 17:07:30] --   - Library files: libes_transformer_cust.so, libes_transformer_cust.a
+[2026-10-23 17:07:30] --   - Python package: es_transformer_cust
+[2026-10-23 17:07:30] -- ES package 'es_transformer_cust' using single-file compilation mode
+[2026-10-23 17:07:30] --   - Wrapper file: /home/z30086261/mhc_bench/ops-transformer/build/es_transformer_cust_build/generated_code/es_transformer_cust_all_in_one.cpp
+[2026-10-23 17:07:30] --   - Module name: transformer_cust
+[2026-10-23 17:07:30] -- add_es_library: Using default compile options: -fPIC;-Wall;-fstack-protector-all;-std=c++17;-D_GLIBCXX_USE_CXX11_ABI=0;-O2;-Wno-free-nonheap-object
+[2026-10-23 17:07:30] -- add_es_library: Set _GLIBCXX_USE_CXX11_ABI=0 for ABI compatibility
+[2026-10-23 17:07:30] -- add_es_library: Deduced header base path from cmake file: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0
+[2026-10-23 17:07:30] -- add_es_library: metadef_headers target not found, skipping
+[2026-10-23 17:07:30] -- add_es_library: Found c_sec target
+[2026-10-23 17:07:30] -- add_es_library: Linking with CANN libraries: c_sec
+[2026-10-23 17:07:30] -- add_es_package: 'build_es_transformer_cust' depends on 'build_es_math' to avoid concurrent builds of shared dependencies
+[2026-10-23 17:07:30] -- ES package 'es_transformer_cust' configured successfully (single-file mode):
+[2026-10-23 17:07:30] --   - Exported target (for linking): es_transformer_cust
+[2026-10-23 17:07:30] --   - Build target: build_es_transformer_cust
+[2026-10-23 17:07:30] --   - Wrapper file: /home/z30086261/mhc_bench/ops-transformer/build/es_transformer_cust_build/generated_code/es_transformer_cust_all_in_one.cpp
+[2026-10-23 17:07:30] --   - Internal targets:
+[2026-10-23 17:07:30] --     * Code generation: generate_es_transformer_cust_code
+[2026-10-23 17:07:30] --     * Object library: es_transformer_cust_obj (compiled once)
+[2026-10-23 17:07:30] --     * Shared library: es_transformer_cust_so
+[2026-10-23 17:07:30] --     * Static library: es_transformer_cust_a
+[2026-10-23 17:07:30] --     * Wheel generation: generate_es_transformer_cust_whl
+[2026-10-23 17:07:30] --     * Install: install_es_transformer_cust
+[2026-10-23 17:07:30] --   - Library files: libes_transformer_cust.so, libes_transformer_cust.a
+[2026-10-23 17:07:30] --   - Python package: es_transformer_cust
+[2026-10-23 17:07:30] --   - ES base library: /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/lib64/libeager_style_graph_builder_base.so (from library)
+[2026-10-23 17:07:30] -- 
+[2026-10-23 17:07:30] -- Build mode: Single-file compilation (no reconfiguration needed)
+[2026-10-23 17:07:30] -- 
+[2026-10-23 17:07:30] -- Quick start:
+[2026-10-23 17:07:30] --   1. Link:    target_link_libraries(your_target PRIVATE es_transformer_cust)
+[2026-10-23 17:07:30] --   2. Build:   make your_target  (recommended, triggers automatically)
+[2026-10-23 17:07:30] -- 
+[2026-10-23 17:07:30] -- Detected architecture: x86_64
+[2026-10-23 17:07:30] -- End building custom package.
+[2026-10-23 17:07:30] -- create aclnn master header file: /home/z30086261/mhc_bench/ops-transformer/build/aclnn_ops_transformer_custom.h
+[2026-10-23 17:07:30] -- no operator info to generate
+[2026-10-23 17:07:30] -- Start building custom package.
+[2026-10-23 17:07:30] -- No aicpu opdef/json files to merge, skipping.
+[2026-10-23 17:07:30] -- No aicpu cust obj targets found, skipping.
+[2026-10-23 17:07:30] -- Configuring done (61.4s)
+[2026-10-23 17:07:30] -- Generating done (0.0s)
+[2026-10-23 17:07:30] -- Build files have been written to: /home/z30086261/mhc_bench/ops-transformer/build
+[2026-10-23 17:07:30] [  1%] Generating op_host_aclnn_inner_stub.cpp
+[2026-10-23 17:07:30] [  2%] Generating op_host_aclnn_stub.cpp
+[2026-10-23 17:07:30] [  3%] Generating version.ops-transformer.info
+[2026-10-23 17:07:30] [  3%] Creating directories for 'third_party_json'
+[2026-10-23 17:07:30] [  4%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/ophost_transformer_infer_obj.dir/mhc_pre_sinkhorn_premix_infershape.cpp.o
+[2026-10-23 17:07:30] [  4%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_tiling_objs.dir/__/__/__/__/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling.cpp.o
+[2026-10-23 17:07:30] [  7%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_util_objs.dir/__/__/__/__/third_party/opbase/src/op_common/log/log.cpp.o
+[2026-10-23 17:07:30] [  7%] Building CXX object common/stub/op_api/CMakeFiles/opapi_math.dir/opapi_stub.cpp.o
+[2026-10-23 17:07:30] [  8%] Building CXX object common/CMakeFiles/common_transformer_fallback_obj.dir/src/fallback/fallback_comm.cpp.o
+[2026-10-23 17:07:30] [  8%] Building CXX object common/CMakeFiles/common_transformer_obj.dir/src/op_host/tiling_util.cpp.o
+[2026-10-23 17:07:30] [  9%] Building CXX object common/stub/op_graph/CMakeFiles/proto_math.dir/math_proto_stub.cpp.o
+[2026-10-23 17:07:30] [  9%] Copying update proto /home/z30086261/mhc_bench/ops-transformer/experimental/mhc/mhc_pre_sinkhorn_premix/op_graph/mhc_pre_sinkhorn_premix_proto.h to /home/z30086261/mhc_bench/ops-transformer/build/autogen/updateproto/mhc_pre_sinkhorn_premix_proto.cpp
+[2026-10-23 17:07:30] [  9%] Generating binary/ascend950/bin/mhc_pre_sinkhorn_premix_apt
+[2026-10-23 17:07:30] [ 10%] Building CXX object CMakeFiles/op_host_aclnnExc.dir/experimental/mhc/mhc_pre_sinkhorn_premix/op_host/mhc_pre_sinkhorn_premix_def.cpp.o
+[2026-10-23 17:07:30] [ 11%] Generating binary/ascend950/src/mhc_pre_sinkhorn_premix_apt/MhcPreSinkhornPremix.py
+[2026-10-23 17:07:30] [ 11%] Building CXX object CMakeFiles/op_host_aclnnInner.dir/op_host_aclnn_inner_stub.cpp.o
+[2026-10-23 17:07:30] [ 11%] Building CXX object CMakeFiles/op_host_aclnn.dir/op_host_aclnn_stub.cpp.o
+[2026-10-23 17:07:30] [ 11%] Built target mhc_pre_sinkhorn_premix_apt_ascend950_mkdir
+[2026-10-23 17:07:30] [ 11%] Built target mhc_pre_sinkhorn_premix_apt_ascend950_py_copy
+[2026-10-23 17:07:30] [ 11%] Building update proto files
+[2026-10-23 17:07:30] [ 11%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_util_objs.dir/__/__/__/__/third_party/opbase/src/op_common/op_host/util/fp16.cpp.o
+[2026-10-23 17:07:30] [ 11%] Built target update_proto_target
+[2026-10-23 17:07:30] [ 12%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_util_objs.dir/__/__/__/__/third_party/opbase/src/op_common/op_host/util/math_util.cpp.o
+[2026-10-23 17:07:30] [ 14%] Generating scripts/install.sh, scripts/upgrade.sh
+[2026-10-23 17:07:30] [ 14%] Generating binary/ascend950/src/ascendc/common/.utils_copy.stamp
+[2026-10-23 17:07:30] [ 15%] Linking CXX shared library libop_host_aclnnInner.so
+[2026-10-23 17:07:30] [ 16%] Linking CXX shared library libop_host_aclnn.so
+[2026-10-23 17:07:30] [ 16%] Built target modify_vendor
+[2026-10-23 17:07:30] [ 16%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_util_objs.dir/__/__/__/__/third_party/opbase/src/op_common/op_host/util/op_arch_helper.cpp.o
+[2026-10-23 17:07:30] [ 16%] Built target version_ops-transformer_info
+[2026-10-23 17:07:30] [ 17%] Building CXX object common/CMakeFiles/common_transformer_fallback_obj.dir/src/fallback/fallback_comm_2stages.cpp.o
+[2026-10-23 17:07:30] [ 17%] Performing download step (download, verify and extract) for 'third_party_json'
+[2026-10-23 17:07:30] -- Downloading...
+[2026-10-23 17:07:30]    dst='/home/z30086261/mhc_bench/ops-transformer/third_party/pkg/json-3.12.0.tar.gz'
+[2026-10-23 17:07:30]    timeout='300 seconds'
+[2026-10-23 17:07:30]    inactivity timeout='none'
+[2026-10-23 17:07:30] -- Using src='https://cann-3rd.obs.cn-north-4.myhuaweicloud.com/json/json-3.12.0.tar.gz'
+[2026-10-23 17:07:30] [ 17%] Built target op_host_aclnnInner
+[2026-10-23 17:07:30] [ 18%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_util_objs.dir/__/__/__/__/third_party/opbase/src/op_common/op_host/util/shape_util.cpp.o
+[2026-10-23 17:07:30] [ 18%] Built target ops_utils_inc_kernel_ascend950
+[2026-10-23 17:07:30] [ 18%] Built target op_host_aclnn
+[2026-10-23 17:07:31] [ 18%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_tiling_objs.dir/__/__/__/__/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling_base.cpp.o
+[2026-10-23 17:07:31] [ 20%] Generating version.info
+[2026-10-23 17:07:31] [ 20%] Built target gen_version_info
+[2026-10-23 17:07:31] [ 21%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_tiling_objs.dir/__/__/__/__/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling_noncontiguous.cpp.o
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/log/log.cpp:18:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/experimental/mhc/mhc_pre_sinkhorn_premix/op_host/mhc_pre_sinkhorn_premix_infershape.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/op_execute_context.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/include/fallback/fallback_comm.h:20,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/src/fallback/fallback_comm.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/op_execute_context.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/include/fallback/fallback_comm.h:20,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/src/fallback/fallback_comm.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_impl_registry.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/include/op_host/tiling_util.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/src/op_host/tiling_util.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_impl_registry.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/include/op_host/tiling_util.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/src/op_host/tiling_util.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_base.h:20,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/op_execute_context.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/include/fallback/fallback_comm_2stages.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/src/fallback/fallback_comm_2stages.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/op_execute_context.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/include/fallback/fallback_comm_2stages.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/src/fallback/fallback_comm_2stages.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/util/shape_util.cpp:15:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_impl_registry.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/experimental/mhc/mhc_pre_sinkhorn_premix/op_host/mhc_pre_sinkhorn_premix_infershape.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_impl_registry.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/experimental/mhc/mhc_pre_sinkhorn_premix/op_host/mhc_pre_sinkhorn_premix_infershape.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/aclnn/opdev/common_types.h:21,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/aclnn/opdev/op_executor.h:20,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/stub/op_api/opapi_stub.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tensor.h:14:111: note: #pragma message: Warning: tensor.h is deprecated and will be removed after 2027-06. Include "runtime_tensor.h" instead.
+   14 |     "Warning: tensor.h is deprecated and will be removed after 2027-06. Include \"runtime_tensor.h\" instead.")
+      |                                                                                                               ^
+In file included from /home/z30086261/mhc_bench/ops-transformer/common/include/fallback/fallback_comm.h:21,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/src/fallback/fallback_comm.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/tensor.h:14:111: note: #pragma message: Warning: tensor.h is deprecated and will be removed after 2027-06. Include "runtime_tensor.h" instead.
+   14 |     "Warning: tensor.h is deprecated and will be removed after 2027-06. Include \"runtime_tensor.h\" instead.")
+      |                                                                                                               ^
+[2026-10-23 17:07:31] [ 21%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_tiling_objs.dir/__/__/__/__/third_party/opbase/src/op_common/atvoss/elewise/elewise_tiling.cpp.o
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_impl_registry.h:19,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_def.h:19,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_def_registry.h:14,
+                 from /home/z30086261/mhc_bench/ops-transformer/experimental/mhc/mhc_pre_sinkhorn_premix/op_host/mhc_pre_sinkhorn_premix_def.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_impl_registry.h:19,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_def.h:19,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_def_registry.h:14,
+                 from /home/z30086261/mhc_bench/ops-transformer/experimental/mhc/mhc_pre_sinkhorn_premix/op_host/mhc_pre_sinkhorn_premix_def.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+[2026-10-23 17:07:31] [ 22%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_tiling_objs.dir/__/__/__/__/third_party/opbase/src/op_common/atvoss/reduce/reduce_tiling.cpp.o
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tiling_context.h:15,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_base.h:21,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tiling_context.h:15,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_base.h:21,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_impl_registry.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/stub/op_graph/math_proto_stub.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_impl_registry.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/stub/op_graph/math_proto_stub.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_impl_registry.h:19,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_def.h:19,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_def_registry.h:14,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/op_host/util/op_arch_helper.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/util/op_arch_helper.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_impl_registry.h:19,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_def.h:19,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/register/op_def_registry.h:14,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/op_host/util/op_arch_helper.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/util/op_arch_helper.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+[2026-10-23 17:07:31] [ 23%] Creating directories for 'abseil_cve_patch'
+In file included from /home/z30086261/mhc_bench/ops-transformer/common/include/fallback/fallback_comm_2stages.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/src/fallback/fallback_comm_2stages.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/exe_graph/runtime/tensor.h:14:111: note: #pragma message: Warning: tensor.h is deprecated and will be removed after 2027-06. Include "runtime_tensor.h" instead.
+   14 |     "Warning: tensor.h is deprecated and will be removed after 2027-06. Include \"runtime_tensor.h\" instead.")
+      |                                                                                                               ^
+[2026-10-23 17:07:31] [ 24%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_infer_objs.dir/__/__/__/__/third_party/opbase/src/op_common/op_host/infershape_broadcast_util.cpp.o
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_base.h:20,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling_base.cpp:15:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/common/src/fallback/fallback_comm_2stages.cpp:25:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/x86_64-linux/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_base.h:20,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_noncontiguous.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling_noncontiguous.cpp:15:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tiling_context.h:15,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_base.h:21,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling_base.cpp:15:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tiling_context.h:15,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_base.h:21,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling_base.cpp:15:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+[2026-10-23 17:07:31] [ 25%] Performing download step (download and verify) for 'abseil_cve_patch'
+[2026-10-23 17:07:31] -- Downloading...
+[2026-10-23 17:07:31]    dst='/home/z30086261/mhc_bench/ops-transformer/third_party/patch/backport-CVE-2025-0838.patch'
+[2026-10-23 17:07:31]    timeout='60 seconds'
+[2026-10-23 17:07:31]    inactivity timeout='none'
+[2026-10-23 17:07:31] -- Using src='https://gitcode.com/cann-src-third-party/abseil-cpp/releases/download/20230802.1-h0/backport-CVE-2025-0838.patch'
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tiling_context.h:15,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_base.h:21,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_noncontiguous.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling_noncontiguous.cpp:15:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tiling_context.h:15,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_base.h:21,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/broadcast/broadcast_tiling_noncontiguous.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/broadcast/broadcast_tiling_noncontiguous.cpp:15:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+[2026-10-23 17:07:31] [ 25%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_infer_objs.dir/__/__/__/__/third_party/opbase/src/op_common/op_host/infershape_elewise_util.cpp.o
+CMake Error at /home/z30086261/mhc_bench/ops-transformer/build/third_party_json-prefix/src/third_party_json-stamp/download-third_party_json.cmake:163 (message):
+  Each download failed!
+
+    error: downloading 'https://cann-3rd.obs.cn-north-4.myhuaweicloud.com/json/json-3.12.0.tar.gz' failed
+          status_code: 60
+          status_string: "SSL peer certificate or SSH remote key was not OK.  If this is due to https certificate verification failure, one may set environment variable CMAKE_TLS_VERIFY=0 to suppress it."
+          log:
+          --- LOG BEGIN ---
+          Uses proxy env variable no_proxy == '127.0.0.1,*.huawei.com,localhost,local,.local,inhuawei.com'
+
+  Uses proxy env variable https_proxy == 'http://141.3.1.3:3128'
+
+    Trying 141.3.1.3:3128...
+
+  CONNECT: no ALPN negotiated
+
+  allocate connect buffer
+
+  Establish HTTP proxy tunnel to
+  cann-3rd.obs.cn-north-4.myhuaweicloud.com:443
+
+  CONNECT cann-3rd.obs.cn-north-4.myhuaweicloud.com:443 HTTP/1.1
+
+  Host: cann-3rd.obs.cn-north-4.myhuaweicloud.com:443
+
+  User-Agent: curl/8.20.0
+
+  Proxy-Connection: Keep-Alive
+
+  
+
+  HTTP/1.1 200 Connection established
+
+  Proxy-agent: netentsec
+
+  Connection: close
+
+  
+
+  CONNECT phase completed
+
+  CONNECT tunnel established, response 200
+
+  ALPN: curl offers h2,http/1.1
+
+  [5 bytes data]
+
+  TLSv1.3 (OUT), TLS handshake, Client hello (1):
+
+  [1587 bytes data]
+
+  SSL Trust Anchors:
+
+    CAfile: /etc/ssl/certs/ca-certificates.crt
+    CApath: /etc/ssl/certs
+
+  [5 bytes data]
+
+  TLSv1.3 (IN), TLS handshake, Server hello (2):
+
+  [93 bytes data]
+
+  [5 bytes data]
+
+  TLSv1.2 (IN), TLS handshake, Certificate (11):
+
+  [4052 bytes data]
+
+  [5 bytes data]
+
+  TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+
+  [333 bytes data]
+
+  [5 bytes data]
+
+  TLSv1.2 (IN), TLS handshake, Server finished (14):
+
+  [4 bytes data]
+
+  [5 bytes data]
+
+  TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+
+  [70 bytes data]
+
+  [5 bytes data]
+
+  TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):
+
+  [1 bytes data]
+
+  [5 bytes data]
+
+  TLSv1.2 (OUT), TLS handshake, Finished (20):
+
+  [16 bytes data]
+
+  [5 bytes data]
+
+  [5 bytes data]
+
+  TLSv1.2 (IN), TLS handshake, Finished (20):
+
+  [16 bytes data]
+
+  SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384 / secp256r1 /
+  rsaEncryption
+
+  ALPN: server did not agree on a protocol.  Uses default.
+
+  Server certificate:
+
+    subject: C=CN; ST=Jiangsu; L=Nanjing; O="Huawei Software Technologies Co., Ltd."; CN=obs.cn-north-4.myhuaweicloud.com
+    start date: Oct 22 08:26:09 2026 GMT
+    expire date: Oct 24 08:26:09 2026 GMT
+    issuer: C=CN; ST=GuangDong; L=Shenzhen; O=Huawei; OU=IT; CN=Huawei Web Secure Internet Gateway CA V2
+    Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+    Certificate level 1: Public key type RSA (3072/128 Bits/secBits), signed using sha256WithRSAEncryption
+    subjectAltName: "cann-3rd.obs.cn-north-4.myhuaweicloud.com" matches cert's "*.obs.cn-north-4.myhuaweicloud.com"
+
+  OpenSSL verify result: 13
+
+  SSL certificate OpenSSL verify result: self-signed certificate in
+  certificate chain (19)
+
+  closing connection #0
+
+
+
+          --- LOG END ---
+          
+    
+
+
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/infershape_broadcast_util.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tiling_context.h:15,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/reduce/reduce_tiling.h:20,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/reduce/reduce_tiling.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tiling_context.h:15,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/reduce/reduce_tiling.h:20,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/reduce/reduce_tiling.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+[2026-10-23 17:07:31] [ 27%] Linking CXX shared library ../../../libproto_math.so
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/op_host/infershape_broadcast_util.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/infershape_broadcast_util.cpp:18:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/op_host/infershape_broadcast_util.h:19,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/infershape_broadcast_util.cpp:18:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tiling_context.h:15,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/elewise/elewise_tiling.h:21,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/elewise/elewise_tiling.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/tiling_context.h:15,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/elewise/elewise_tiling.h:21,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/elewise/elewise_tiling.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+[2026-10-23 17:07:31] [ 27%] Built target common_transformer_obj
+[2026-10-23 17:07:31] [ 28%] Building CXX object experimental/mhc/mhc_pre_sinkhorn_premix/op_host/CMakeFiles/opbase_infer_objs.dir/__/__/__/__/third_party/opbase/src/op_common/op_host/infershape_reduce_util.cpp.o
+[2026-10-23 17:07:31] [ 28%] Built target common_transformer_fallback_obj
+[2026-10-23 17:07:31] [ 28%] Built target opbuild_gen_inner
+[2026-10-23 17:07:31] [ 28%] Built target opbuild_gen_default
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/elewise/elewise_tiling.h:22,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/elewise/elewise_tiling.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+make[2]: *** [CMakeFiles/third_party_json.dir/build.make:99: third_party_json-prefix/src/third_party_json-stamp/third_party_json-download] Error 1
+make[1]: *** [CMakeFiles/Makefile2:472: CMakeFiles/third_party_json.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+[2026-10-23 17:07:31] [ 28%] Generating binary/ascend950/src/mhc_pre_sinkhorn_premix_apt/mhc_pre_sinkhorn_premix_apt_ascend950_src_copy.done
+[2026-10-23 17:07:31] [ 28%] Built target mhc_pre_sinkhorn_premix_apt_ascend950_src_copy
+[2026-10-23 17:07:31] [ 28%] Linking CXX shared library ../../../libopapi_math.so
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/../pkg_inc/op_common/atvoss/reduce/reduce_tiling.h:24,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/atvoss/reduce/reduce_tiling.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+[2026-10-23 17:07:31] [ 28%] Built target ophost_transformer_infer_obj
+[2026-10-23 17:07:31] [ 28%] Built target opbase_util_objs
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/infershape_elewise_util.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+[2026-10-23 17:07:31] [ 28%] Built target proto_math
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/op_host/infershape_elewise_util.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/infershape_elewise_util.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/op_host/infershape_elewise_util.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/infershape_elewise_util.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+[2026-10-23 17:07:31] [ 28%] Built target opapi_math
+[2026-10-23 17:07:31] [ 28%] Linking CXX shared library libop_host_aclnnExc.so
+In file included from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/log/log.h:25,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/infershape_reduce_util.cpp:16:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/graph/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/op_host/infershape_reduce_util.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/infershape_reduce_util.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_error_codes.h:15:122: note: #pragma message: Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include "graph/error_codes.h" instead.
+   15 |     "Warning: ge_error_codes.h is deprecated and will be removed after 2027-06. Include \"graph/error_codes.h\" instead.")
+      |                                                                                                                          ^
+In file included from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/api_error_codes.h:17,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/continuous_vector.h:20,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/runtime_attrs.h:16,
+                 from /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/exe_graph/runtime/infer_shape_context.h:16,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/include/op_common/op_host/infershape_reduce_util.h:18,
+                 from /home/z30086261/mhc_bench/ops-transformer/third_party/opbase/src/op_common/op_host/infershape_reduce_util.cpp:17:
+/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/include/external/ge_common/ge_api_types.h:15:122: note: #pragma message: Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include "ge_common_api_types.h" instead.
+   15 |     "Warning: ge_api_types.h is deprecated and will be removed after 2027-06. Include \"ge_common_api_types.h\" instead.")
+      |                                                                                                                          ^
+[2026-10-23 17:07:31] [ 28%] Built target op_host_aclnnExc
+[2026-10-23 17:07:31] [ 28%] Built target opbase_infer_objs
+[2026-10-23 17:07:31] [ 28%] Built target opbase_tiling_objs
+[2026-10-23 17:07:32] -- verifying file...
+[2026-10-23 17:07:32]        file='/home/z30086261/mhc_bench/ops-transformer/third_party/patch/backport-CVE-2025-0838.patch'
+[2026-10-23 17:07:32] -- Downloading... done
+[2026-10-23 17:07:32] [ 28%] No update step for 'abseil_cve_patch'
+[2026-10-23 17:07:32] [ 29%] No patch step for 'abseil_cve_patch'
+[2026-10-23 17:07:32] [ 29%] No configure step for 'abseil_cve_patch'
+[2026-10-23 17:07:32] [ 30%] No build step for 'abseil_cve_patch'
+[2026-10-23 17:07:32] [ 30%] No install step for 'abseil_cve_patch'
+[2026-10-23 17:07:32] [ 31%] Completed 'abseil_cve_patch'
+make: *** [Makefile:156: all] Error 2
+[2026-10-23 17:07:32] [ 31%] Built target abseil_cve_patch
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/ops-transformer# 
