@@ -1,19 +1,25 @@
-# 1) 验证 NPU 可用（确认 CANN 环境已 source）
-source /home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
-python -c "import torch,torch_npu; print(torch.__version__, torch_npu.__version__); \
-x=torch.randn(3).npu(); torch.npu.synchronize(); print('NPU OK', x.sum().item())"
+(mhc) root@ubuntu162:/home/z30086261# source /home/CANN/9.3.0.weekly.20260916/ascend-toolkit/set_env.sh
+(mhc) root@ubuntu162:/home/z30086261# python -c "import torch,torch_npu; print(torch.__version__, torch_npu.__version__); \
+> x=torch.randn(3).npu(); torch.npu.synchronize(); print('NPU OK', x.sum().item())"
+terminate called after throwing an instance of 'c10::ValueError'
+  what():  Duplicated key 'pinned_reserve_segment_size_mb' found in device-specific configuration parser hook registration
+Exception raised from registerDeviceConfigParserHook at /opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/torch/include/c10/core/AllocatorConfig.h:273 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x7f26b42e7bfd in /root/miniconda3/envs/mhc/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::ValueError::ValueError(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x72 (0x7f26b42e8122 in /root/miniconda3/envs/mhc/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: c10::CachingAllocator::AcceleratorAllocatorConfig::registerDeviceConfigParserHook(std::function<void (std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)>&&, std::unordered_set<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) + 0x16f (0x7f260912db3f in /root/miniconda3/envs/mhc/lib/python3.12/site-packages/torch_npu/lib/libtorch_npu.so)
+frame #3: <unknown function> + 0x1a4f24c (0x7f260912e24c in /root/miniconda3/envs/mhc/lib/python3.12/site-packages/torch_npu/lib/libtorch_npu.so)
+frame #4: <unknown function> + 0x11b9a (0x7f2764863b9a in /lib64/ld-linux-x86-64.so.2)
+frame #5: <unknown function> + 0x11ca1 (0x7f2764863ca1 in /lib64/ld-linux-x86-64.so.2)
+frame #6: _dl_catch_exception + 0xe5 (0x7f2764637ba5 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #7: <unknown function> + 0x160cf (0x7f27648680cf in /lib64/ld-linux-x86-64.so.2)
+frame #8: _dl_catch_exception + 0x88 (0x7f2764637b48 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #9: <unknown function> + 0x1560a (0x7f276486760a in /lib64/ld-linux-x86-64.so.2)
+frame #10: <unknown function> + 0x134c (0x7f276481e34c in /lib/x86_64-linux-gnu/libdl.so.2)
+frame #11: _dl_catch_exception + 0x88 (0x7f2764637b48 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #12: _dl_catch_error + 0x33 (0x7f2764637c13 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #13: <unknown function> + 0x1b59 (0x7f276481eb59 in /lib/x86_64-linux-gnu/libdl.so.2)
+frame #14: dlopen + 0x4a (0x7f276481e3da in /lib/x86_64-linux-gnu/libdl.so.2)
+<omitting python frames>
 
-
-
-# 2) 安装 TileKernels（含 tilelang）
-cd /home/z30086261/mhc_bench/TileKernels
-pip install -e ".[dev]" -i https://mirrors.ustc.edu.cn/pypi/web/simple --trusted-host mirrors.ustc.edu.cn
-
-# 3) 跑 mHC 正确性用例验证 Ascend 后端
-python -m pytest tests/mhc/test_post.py -q -x 2>&1 | tail -20
-
-
-
-cd /home/z30086261/mhc_bench
-# 把 bench_mhc_compare.py 传上来后：
-python3 bench_mhc_compare.py --t 512 8192 --c 4096 7168 --iters 100
+Aborted (core dumped)
+(mhc) root@ubuntu162:/home/z30086261#
