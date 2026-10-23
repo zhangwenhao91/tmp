@@ -1,17 +1,23 @@
-cd /home/z30086261/mhc_bench/ops-transformer
-
-# 1) 安装 run 包（看安装输出末尾的环境变量提示并照做）
-bash build_out/cann-ops-transformer-custom_linux-x86_64.run
-
-# 2) 找一下 python 封装模块装到哪了
-find ~/Ascend /usr/local/Ascend -maxdepth 6 -name "cann_ops_transformer_customize*" 2>/dev/null
-
-
-
-# 3) 验证
-python -c "import cann_ops_transformer_customize; print('AscendC op OK')"
-
-# 4) 重跑基准（记得带上 run 包提示的环境变量 + 显卡绑定）
-export ASCEND_RT_VISIBLE_DEVICES=4
-cd /home/z30086261/mhc_bench
-python3 bench_mhc_compare.py --t 512 8192 --c 4096 7168 --iters 100 2>&1 | tee bench_result2.txt
+(mhc) root@ubuntu162:/home/z30086261/mhc_bench/ops-transformer# bash build_out/cann-ops-transformer-custom_linux-x86_64.run
+Verifying archive integrity...  100%   SHA256 checksums are OK. All good.
+Uncompressing version:1.0  100%  
+[ops_custom] [2026-10-23 17:16:08] [INFO] create /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/opp/vendors/custom_transformer.
+[ops_custom] [2026-10-23 17:16:08] [INFO] validate shared libraries before installation
+[ops_custom] [2026-10-23 17:16:08] [INFO] upgrade framework
+[ops_custom] [2026-10-23 17:16:08] [INFO] no need to upgrade ops framework files
+[ops_custom] [2026-10-23 17:16:08] [INFO] upgrade op proto
+[ops_custom] [2026-10-23 17:16:08] [INFO] create /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/opp/vendors/custom_transformer/op_proto.
+[ops_custom] [2026-10-23 17:16:08] [INFO] copy new ops op_proto files ......
+[ops_custom] [2026-10-23 17:16:08] [INFO] upgrade op impl
+[ops_custom] [2026-10-23 17:16:08] [INFO] create /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/opp/vendors/custom_transformer/op_impl.
+[ops_custom] [2026-10-23 17:16:08] [INFO] copy new ops op_impl files ......
+[ops_custom] [2026-10-23 17:16:08] [INFO] upgrade op api
+[ops_custom] [2026-10-23 17:16:08] [INFO] create /home/CANN/9.3.0.weekly.20260916/cann-9.3.0/opp/vendors/custom_transformer/op_api.
+[ops_custom] [2026-10-23 17:16:08] [INFO] copy new ops op_api files ......
+[ops_custom] [2026-10-23 17:16:08] [INFO] upgrade uninstall
+[ops_custom] [2026-10-23 17:16:08] [INFO] copy new uninstall.sh files ......
+[ops_custom] [2026-10-23 17:16:08] [INFO] upgrade version.info
+[ops_custom] [2026-10-23 17:16:08] [INFO] copy new version.info files ......
+[ops_custom] [2026-10-23 17:16:08] [INFO] no need to upgrade custom.proto files
+[ops_custom] [2026-10-23 17:16:08] [INFO] using requirements: when custom module install finished or before you run the custom module, execute the command [ export LD_LIBRARY_PATH=/home/CANN/9.3.0.weekly.20260916/cann-9.3.0/opp/vendors/custom_transformer/op_api/lib/:${LD_LIBRARY_PATH} ] to set the environment path
+SUCCESS
