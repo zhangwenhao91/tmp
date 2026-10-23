@@ -1,15 +1,15 @@
-(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# python -m pytest tests/mhc/test_post.py -q -rs 2>&1 | grep -A2 SKIPPED | head -30
-SKIPPED [6] tests/mhc/test_post.py:94: need --run-benchmark to run
-SKIPPED [6] tests/mhc/test_post.py:125: need --run-benchmark to run
-8 passed, 12 skipped in 2.10s
-(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels# python -m pytest tests/mhc/test_pre_big_fuse.py -q 2>&1 | tail -5
- ..............................sssss                                      [100%]
-======================== GPU Memory Auto-Classification ========================
-35 test(s) have no GPU memory profile and were conservatively classified as large_gpu_mem (Stage 2).
-Run pytest with '--refresh-mem' to measure and record their actual GPU memory usage.
-30 passed, 5 skipped in 68.27s (0:01:08)
-(mhc) root@ubuntu162:/home/z30086261/mhc_bench/TileKernels#  cd /home/z30086261/mhc_bench
-(mhc) root@ubuntu162:/home/z30086261/mhc_bench# export ASCEND_RT_VISIBLE_DEVICES=4
-(mhc) root@ubuntu162:/home/z30086261/mhc_bench# python3 bench_mhc_compare.py --t 512 8192 --c 4096 7168 --iters 100 2>&1 | tee bench_result.txt
-python3: can't open file '/home/z30086261/mhc_bench/bench_mhc_compare.py': [Errno 2] No such file or directory
-(mhc) root@ubuntu162:/home/z30086261/mhc_bench#
+cd /home/z30086261/mhc_bench
+export https_proxy=http://141.3.1.3:3128
+wget https://raw.githubusercontent.com/zhangwenhao91/tmp/main/bench_mhc_compare.py -O bench_mhc_compare.py
+head -5 bench_mhc_compare.py   # 确认下载的是新文件
+
+
+
+# 本机 PowerShell 执行
+scp c:\Users\admin\Documents\trae_projects\zwh\mhc_bench\bench_mhc_compare.py root@<ubuntu162的IP>:/home/z30086261/mhc_bench/
+
+
+
+cd /home/z30086261/mhc_bench
+export ASCEND_RT_VISIBLE_DEVICES=4    # 4 号卡是健康的，没问题
+python3 bench_mhc_compare.py --t 512 8192 --c 4096 7168 --iters 100 2>&1 | tee bench_result.txt
